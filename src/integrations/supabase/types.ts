@@ -83,6 +83,53 @@ export type Database = {
         }
         Relationships: []
       }
+      medicamentos_paciente: {
+        Row: {
+          cantidad_disponible: number | null
+          created_at: string | null
+          dosis: string | null
+          frecuencia: string | null
+          id: string
+          muestra_medica: boolean | null
+          nombre_medicamento: string
+          notas: string | null
+          paciente_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          cantidad_disponible?: number | null
+          created_at?: string | null
+          dosis?: string | null
+          frecuencia?: string | null
+          id?: string
+          muestra_medica?: boolean | null
+          nombre_medicamento: string
+          notas?: string | null
+          paciente_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          cantidad_disponible?: number | null
+          created_at?: string | null
+          dosis?: string | null
+          frecuencia?: string | null
+          id?: string
+          muestra_medica?: boolean | null
+          nombre_medicamento?: string
+          notas?: string | null
+          paciente_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medicamentos_paciente_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pacientes: {
         Row: {
           apellido: string
@@ -231,6 +278,7 @@ export type Database = {
           id: string
           nombre: string
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           activo?: boolean | null
@@ -243,6 +291,7 @@ export type Database = {
           id?: string
           nombre: string
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           activo?: boolean | null
@@ -255,38 +304,48 @@ export type Database = {
           id?: string
           nombre?: string
           updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
       profiles: {
         Row: {
           apellido: string
+          avatar_url: string | null
           cedula: string
           created_at: string | null
           email: string
+          especialidad: string | null
           id: string
           nombre: string
           rol: Database["public"]["Enums"]["user_role"]
+          telefono: string | null
           updated_at: string | null
         }
         Insert: {
           apellido: string
+          avatar_url?: string | null
           cedula: string
           created_at?: string | null
           email: string
+          especialidad?: string | null
           id: string
           nombre: string
           rol?: Database["public"]["Enums"]["user_role"]
+          telefono?: string | null
           updated_at?: string | null
         }
         Update: {
           apellido?: string
+          avatar_url?: string | null
           cedula?: string
           created_at?: string | null
           email?: string
+          especialidad?: string | null
           id?: string
           nombre?: string
           rol?: Database["public"]["Enums"]["user_role"]
+          telefono?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -345,14 +404,72 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          created_at: string | null
+          email_notifications: boolean | null
+          id: string
+          sidebar_collapsed: boolean | null
+          theme: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          sidebar_collapsed?: boolean | null
+          theme?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          sidebar_collapsed?: boolean | null
+          theme?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "admin" | "coordinador" | "medico" | "enfermera"
       estado_visita:
         | "pendiente"
         | "realizada"
@@ -501,6 +618,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "coordinador", "medico", "enfermera"],
       estado_visita: [
         "pendiente",
         "realizada",
