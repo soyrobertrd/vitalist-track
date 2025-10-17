@@ -18,8 +18,8 @@ interface Visita {
   motivo_visita: string | null;
   estado: string;
   notas_visita: string | null;
-  pacientes: { nombre: string; apellido: string };
-  personal_salud: { nombre: string; apellido: string };
+  pacientes: { nombre: string; apellido: string } | null;
+  personal_salud: { nombre: string; apellido: string } | null;
 }
 
 const Visitas = () => {
@@ -33,13 +33,13 @@ const Visitas = () => {
     const [visitasRes, pacientesRes, personalRes] = await Promise.all([
       supabase
         .from("control_visitas")
-        .select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)")
+        .select("*, pacientes!control_visitas_paciente_id_fkey(nombre, apellido), personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)")
         .order("fecha_hora_visita", { ascending: false }),
       supabase.from("pacientes").select("*").eq("status_px", "activo"),
       supabase.from("personal_salud").select("*").eq("activo", true),
     ]);
 
-    if (visitasRes.data) setVisitas(visitasRes.data);
+    if (visitasRes.data) setVisitas(visitasRes.data as any);
     if (pacientesRes.data) setPacientes(pacientesRes.data);
     if (personalRes.data) setPersonal(personalRes.data);
   };
@@ -184,7 +184,7 @@ const Visitas = () => {
                   <span className="text-2xl">{getTipoIcon(visita.tipo_visita)}</span>
                   <div>
                     <CardTitle className="text-lg">
-                      {visita.pacientes.nombre} {visita.pacientes.apellido}
+                      {visita.pacientes?.nombre || 'N/A'} {visita.pacientes?.apellido || ''}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground capitalize">
                       Visita {visita.tipo_visita}
@@ -201,10 +201,12 @@ const Visitas = () => {
                 <Calendar className="mr-2 h-4 w-4" />
                 {new Date(visita.fecha_hora_visita).toLocaleString()}
               </div>
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium">Profesional:</span>{" "}
-                {visita.personal_salud.nombre} {visita.personal_salud.apellido}
-              </p>
+              {visita.personal_salud && (
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium">Profesional:</span>{" "}
+                  {visita.personal_salud.nombre} {visita.personal_salud.apellido}
+                </p>
+              )}
               {visita.motivo_visita && (
                 <p className="text-sm">
                   <span className="font-medium">Motivo:</span> {visita.motivo_visita}

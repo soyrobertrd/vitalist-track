@@ -16,8 +16,8 @@ interface Llamada {
   motivo: string | null;
   comentarios_resultados: string | null;
   resultado_seguimiento: string | null;
-  pacientes: { nombre: string; apellido: string };
-  personal_salud: { nombre: string; apellido: string };
+  pacientes: { nombre: string; apellido: string } | null;
+  personal_salud: { nombre: string; apellido: string } | null;
 }
 
 const Llamadas = () => {
@@ -31,13 +31,13 @@ const Llamadas = () => {
     const [llamadasRes, pacientesRes, personalRes] = await Promise.all([
       supabase
         .from("registro_llamadas")
-        .select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)")
+        .select("*, pacientes!registro_llamadas_paciente_id_fkey(nombre, apellido), personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
         .order("fecha_hora_realizada", { ascending: false }),
       supabase.from("pacientes").select("*").eq("status_px", "activo"),
       supabase.from("personal_salud").select("*").eq("activo", true),
     ]);
 
-    if (llamadasRes.data) setLlamadas(llamadasRes.data);
+    if (llamadasRes.data) setLlamadas(llamadasRes.data as any);
     if (pacientesRes.data) setPacientes(pacientesRes.data);
     if (personalRes.data) setPersonal(personalRes.data);
   };
@@ -170,7 +170,7 @@ const Llamadas = () => {
                 <div className="flex items-center gap-2">
                   <Phone className="h-5 w-5 text-primary" />
                   <CardTitle className="text-lg">
-                    {llamada.pacientes.nombre} {llamada.pacientes.apellido}
+                    {llamada.pacientes?.nombre || 'N/A'} {llamada.pacientes?.apellido || ''}
                   </CardTitle>
                 </div>
                 <Badge className={getResultadoColor(llamada.resultado_seguimiento)}>
@@ -183,10 +183,12 @@ const Llamadas = () => {
                 <span className="font-medium">Fecha:</span>{" "}
                 {new Date(llamada.fecha_hora_realizada).toLocaleString()}
               </p>
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium">Profesional:</span>{" "}
-                {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
-              </p>
+              {llamada.personal_salud && (
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium">Profesional:</span>{" "}
+                  {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
+                </p>
+              )}
               {llamada.motivo && (
                 <p className="text-sm">
                   <span className="font-medium">Motivo:</span> {llamada.motivo}

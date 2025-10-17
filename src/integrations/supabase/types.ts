@@ -66,6 +66,20 @@ export type Database = {
             referencedRelation: "personal_salud"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_control_visitas_paciente"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_control_visitas_profesional"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
         ]
       }
       dias_no_laborables: {
@@ -388,6 +402,20 @@ export type Database = {
             | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_registro_llamadas_paciente"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_registro_llamadas_profesional"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "registro_llamadas_paciente_id_fkey"
             columns: ["paciente_id"]

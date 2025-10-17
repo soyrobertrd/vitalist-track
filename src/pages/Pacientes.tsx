@@ -3,12 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { PacienteDetailDialog } from "@/components/PacienteDetailDialog";
+import { ImportPacientesDialog } from "@/components/ImportPacientesDialog";
 
 interface Paciente {
   id: string;
@@ -26,6 +28,9 @@ const Pacientes = () => {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedPacienteId, setSelectedPacienteId] = useState<string | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   const fetchPacientes = async () => {
     const { data, error } = await supabase
@@ -113,13 +118,18 @@ const Pacientes = () => {
           <h1 className="text-3xl font-bold">Pacientes</h1>
           <p className="text-muted-foreground">Gestión de pacientes del centro</p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Nuevo Paciente
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setImportOpen(true)}>
+            <Upload className="mr-2 h-4 w-4" />
+            Importar
+          </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Nuevo Paciente
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Agregar Nuevo Paciente</DialogTitle>
@@ -183,7 +193,8 @@ const Pacientes = () => {
               </Button>
             </form>
           </DialogContent>
-        </Dialog>
+          </Dialog>
+        </div>
       </div>
 
       <div className="relative">
@@ -198,7 +209,14 @@ const Pacientes = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredPacientes.map((paciente) => (
-          <Card key={paciente.id}>
+          <Card 
+            key={paciente.id} 
+            className="cursor-pointer hover:bg-accent transition-colors"
+            onClick={() => {
+              setSelectedPacienteId(paciente.id);
+              setDetailOpen(true);
+            }}
+          >
             <CardHeader>
               <div className="flex justify-between items-start">
                 <CardTitle className="text-lg">
@@ -233,6 +251,18 @@ const Pacientes = () => {
           </CardContent>
         </Card>
       )}
+
+      <PacienteDetailDialog
+        pacienteId={selectedPacienteId}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
+
+      <ImportPacientesDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        onSuccess={fetchPacientes}
+      />
     </div>
   );
 };
