@@ -160,8 +160,10 @@ export type Database = {
           id: string
           nombre: string
           nombre_cuidador: string | null
+          profesional_asignado_id: string | null
           status_px: Database["public"]["Enums"]["status_paciente"] | null
           updated_at: string | null
+          zona: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Insert: {
           apellido: string
@@ -178,8 +180,10 @@ export type Database = {
           id?: string
           nombre: string
           nombre_cuidador?: string | null
+          profesional_asignado_id?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
           updated_at?: string | null
+          zona?: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Update: {
           apellido?: string
@@ -196,10 +200,20 @@ export type Database = {
           id?: string
           nombre?: string
           nombre_cuidador?: string | null
+          profesional_asignado_id?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
           updated_at?: string | null
+          zona?: Database["public"]["Enums"]["zona_distrito"] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pacientes_profesional_asignado_id_fkey"
+            columns: ["profesional_asignado_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       parametros_seguimiento: {
         Row: {
@@ -368,6 +382,9 @@ export type Database = {
         Row: {
           comentarios_resultados: string | null
           created_at: string | null
+          duracion_minutos: number | null
+          estado: Database["public"]["Enums"]["estado_llamada"] | null
+          fecha_agendada: string | null
           fecha_hora_realizada: string | null
           id: string
           motivo: string | null
@@ -380,6 +397,9 @@ export type Database = {
         Insert: {
           comentarios_resultados?: string | null
           created_at?: string | null
+          duracion_minutos?: number | null
+          estado?: Database["public"]["Enums"]["estado_llamada"] | null
+          fecha_agendada?: string | null
           fecha_hora_realizada?: string | null
           id?: string
           motivo?: string | null
@@ -392,6 +412,9 @@ export type Database = {
         Update: {
           comentarios_resultados?: string | null
           created_at?: string | null
+          duracion_minutos?: number | null
+          estado?: Database["public"]["Enums"]["estado_llamada"] | null
+          fecha_agendada?: string | null
           fecha_hora_realizada?: string | null
           id?: string
           motivo?: string | null
@@ -498,6 +521,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "coordinador" | "medico" | "enfermera"
+      estado_llamada: "agendada" | "realizada" | "pospuesta" | "cancelada"
       estado_visita:
         | "pendiente"
         | "realizada"
@@ -519,6 +543,11 @@ export type Database = {
         | "medico"
         | "enfermera"
         | "coordinador"
+      zona_distrito:
+        | "santo_domingo_oeste"
+        | "santo_domingo_este"
+        | "santo_domingo_norte"
+        | "distrito_nacional"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -647,6 +676,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "coordinador", "medico", "enfermera"],
+      estado_llamada: ["agendada", "realizada", "pospuesta", "cancelada"],
       estado_visita: [
         "pendiente",
         "realizada",
@@ -670,6 +700,12 @@ export const Constants = {
         "medico",
         "enfermera",
         "coordinador",
+      ],
+      zona_distrito: [
+        "santo_domingo_oeste",
+        "santo_domingo_este",
+        "santo_domingo_norte",
+        "distrito_nacional",
       ],
     },
   },

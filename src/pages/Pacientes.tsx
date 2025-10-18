@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Upload } from "lucide-react";
+import { Plus, Phone, MapPin, Upload, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -21,22 +21,28 @@ interface Paciente {
   contacto_px: string | null;
   status_px: string;
   grado_dificultad: string;
+  zona: string | null;
 }
 
 const Pacientes = () => {
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
-  const [search, setSearch] = useState("");
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [selectedPacienteId, setSelectedPacienteId] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    status: "todos",
+    zona: "todos",
+    grado: "todos",
+    busqueda: ""
+  });
 
   const fetchPacientes = async () => {
     const { data, error } = await supabase
       .from("pacientes")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("nombre", { ascending: true });
 
     if (error) {
       toast.error("Error al cargar pacientes");
@@ -44,6 +50,19 @@ const Pacientes = () => {
       setPacientes(data || []);
     }
   };
+
+  const filteredPacientes = pacientes.filter((p) => {
+    if (filters.status !== "todos" && p.status_px !== filters.status) return false;
+    if (filters.zona !== "todos" && p.zona !== filters.zona) return false;
+    if (filters.grado !== "todos" && p.grado_dificultad !== filters.grado) return false;
+    if (filters.busqueda) {
+      const busqueda = filters.busqueda.toLowerCase();
+      const nombreCompleto = `${p.nombre} ${p.apellido}`.toLowerCase();
+      const cedula = p.cedula.toLowerCase();
+      if (!nombreCompleto.includes(busqueda) && !cedula.includes(busqueda)) return false;
+    }
+    return true;
+  });
 
   useEffect(() => {
     fetchPacientes();
@@ -63,6 +82,7 @@ const Pacientes = () => {
       nombre_cuidador: formData.get("nombre_cuidador") as string,
       contacto_cuidador: formData.get("contacto_cuidador") as string,
       direccion_domicilio: formData.get("direccion_domicilio") as string,
+      zona: formData.get("zona") as any,
       grado_dificultad: formData.get("grado_dificultad") as any,
       status_px: "activo" as any,
     };
@@ -79,13 +99,6 @@ const Pacientes = () => {
     }
     setLoading(false);
   };
-
-  const filteredPacientes = pacientes.filter(
-    (p) =>
-      p.nombre.toLowerCase().includes(search.toLowerCase()) ||
-      p.apellido.toLowerCase().includes(search.toLowerCase()) ||
-      p.cedula.includes(search)
-  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -116,7 +129,7 @@ const Pacientes = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Pacientes</h1>
-          <p className="text-muted-foreground">Gestión de pacientes del centro</p>
+          <p className="text-muted-foreground">Gestión de pacientes del programa</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setImportOpen(true)}>
@@ -130,82 +143,153 @@ const Pacientes = () => {
                 Nuevo Paciente
               </Button>
             </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Agregar Nuevo Paciente</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="cedula">Cédula *</Label>
-                  <Input id="cedula" name="cedula" required />
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Agregar Nuevo Paciente</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="cedula">Cédula *</Label>
+                    <Input id="cedula" name="cedula" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="fecha_nacimiento">Fecha Nacimiento</Label>
+                    <Input id="fecha_nacimiento" name="fecha_nacimiento" type="date" />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="fecha_nacimiento">Fecha Nacimiento</Label>
-                  <Input id="fecha_nacimiento" name="fecha_nacimiento" type="date" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nombre">Nombre *</Label>
+                    <Input id="nombre" name="nombre" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="apellido">Apellido *</Label>
+                    <Input id="apellido" name="apellido" required />
+                  </div>
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nombre">Nombre *</Label>
-                  <Input id="nombre" name="nombre" required />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="contacto_px">Contacto Paciente</Label>
+                    <Input id="contacto_px" name="contacto_px" type="tel" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="zona">Zona</Label>
+                    <Select name="zona">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar zona" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="santo_domingo_oeste">SD Oeste</SelectItem>
+                        <SelectItem value="santo_domingo_este">SD Este</SelectItem>
+                        <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
+                        <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="apellido">Apellido *</Label>
-                  <Input id="apellido" name="apellido" required />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="contacto_px">Contacto Paciente</Label>
-                  <Input id="contacto_px" name="contacto_px" type="tel" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="grado_dificultad">Grado Dificultad</Label>
-                  <Select name="grado_dificultad" defaultValue="medio">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bajo">Bajo</SelectItem>
-                      <SelectItem value="medio">Medio</SelectItem>
-                      <SelectItem value="alto">Alto</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nombre_cuidador">Nombre Cuidador</Label>
-                  <Input id="nombre_cuidador" name="nombre_cuidador" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="grado_dificultad">Grado Dificultad</Label>
+                    <Select name="grado_dificultad" defaultValue="medio">
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="bajo">Bajo</SelectItem>
+                        <SelectItem value="medio">Medio</SelectItem>
+                        <SelectItem value="alto">Alto</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="nombre_cuidador">Nombre Cuidador</Label>
+                    <Input id="nombre_cuidador" name="nombre_cuidador" />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="contacto_cuidador">Contacto Cuidador</Label>
                   <Input id="contacto_cuidador" name="contacto_cuidador" type="tel" />
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="direccion_domicilio">Dirección</Label>
-                <Input id="direccion_domicilio" name="direccion_domicilio" />
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Guardando..." : "Guardar Paciente"}
-              </Button>
-            </form>
-          </DialogContent>
+                <div className="space-y-2">
+                  <Label htmlFor="direccion_domicilio">Dirección</Label>
+                  <Input id="direccion_domicilio" name="direccion_domicilio" />
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Guardando..." : "Guardar Paciente"}
+                </Button>
+              </form>
+            </DialogContent>
           </Dialog>
         </div>
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Buscar por nombre, apellido o cédula..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-10"
-        />
-      </div>
+      {/* Filtros */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Filtros
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Búsqueda</label>
+              <Input
+                placeholder="Nombre o cédula..."
+                value={filters.busqueda}
+                onChange={(e) => setFilters({ ...filters, busqueda: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Estado</label>
+              <Select value={filters.status} onValueChange={(v) => setFilters({ ...filters, status: v })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos</SelectItem>
+                  <SelectItem value="activo">Activo</SelectItem>
+                  <SelectItem value="inactivo">Inactivo</SelectItem>
+                  <SelectItem value="fallecido">Fallecido</SelectItem>
+                  <SelectItem value="renuncio">Renunció</SelectItem>
+                  <SelectItem value="cambio_ars">Cambió ARS</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Zona</label>
+              <Select value={filters.zona} onValueChange={(v) => setFilters({ ...filters, zona: v })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todas</SelectItem>
+                  <SelectItem value="santo_domingo_oeste">SD Oeste</SelectItem>
+                  <SelectItem value="santo_domingo_este">SD Este</SelectItem>
+                  <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
+                  <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Grado Dificultad</label>
+              <Select value={filters.grado} onValueChange={(v) => setFilters({ ...filters, grado: v })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos</SelectItem>
+                  <SelectItem value="bajo">Bajo</SelectItem>
+                  <SelectItem value="medio">Medio</SelectItem>
+                  <SelectItem value="alto">Alto</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredPacientes.map((paciente) => (
@@ -232,8 +316,15 @@ const Pacientes = () => {
                 <span className="font-medium">Cédula:</span> {paciente.cedula}
               </p>
               {paciente.contacto_px && (
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-medium">Contacto:</span> {paciente.contacto_px}
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Phone className="h-3 w-3" />
+                  {paciente.contacto_px}
+                </p>
+              )}
+              {paciente.zona && (
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <MapPin className="h-3 w-3" />
+                  {paciente.zona.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
                 </p>
               )}
               <Badge className={getDificultadColor(paciente.grado_dificultad)}>

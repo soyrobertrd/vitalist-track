@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { PersonalDetailDialog } from "@/components/PersonalDetailDialog";
 
 interface Personal {
   id: string;
@@ -24,6 +25,8 @@ const Personal = () => {
   const [personal, setPersonal] = useState<Personal[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedPersonal, setSelectedPersonal] = useState<Personal | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   const fetchPersonal = async () => {
     const { data, error } = await supabase
@@ -47,27 +50,52 @@ const Personal = () => {
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
+    const email = formData.get("email_contacto") as string;
+    const password = formData.get("password") as string;
+    
     const data = {
       cedula: formData.get("cedula") as string,
       nombre: formData.get("nombre") as string,
       apellido: formData.get("apellido") as string,
       especialidad: formData.get("especialidad") as string,
       contacto: formData.get("contacto") as string,
-      email_contacto: formData.get("email_contacto") as string,
+      email_contacto: email,
       activo: true,
     };
 
-    const { error } = await supabase.from("personal_salud").insert([data]);
+    try {
+      // Create user account first
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            nombre: data.nombre,
+            apellido: data.apellido,
+            cedula: data.cedula,
+            especialidad: data.especialidad,
+          }
+        }
+      });
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Personal agregado exitosamente");
+      if (authError) throw authError;
+
+      // Add to personal_salud table
+      const { error: personalError } = await supabase
+        .from("personal_salud")
+        .insert([{ ...data, user_id: authData.user?.id }]);
+
+      if (personalError) throw personalError;
+
+      toast.success("Personal y usuario creados exitosamente");
       setOpen(false);
       fetchPersonal();
       (e.target as HTMLFormElement).reset();
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -112,11 +140,15 @@ const Personal = () => {
                 <Input id="contacto" name="contacto" type="tel" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email_contacto">Email</Label>
-                <Input id="email_contacto" name="email_contacto" type="email" />
+                <Label htmlFor="email_contacto">Email *</Label>
+                <Input id="email_contacto" name="email_contacto" type="email" required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Contraseña *</Label>
+                <Input id="password" name="password" type="password" required minLength={6} />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Guardando..." : "Guardar Personal"}
+                {loading ? "Guardando..." : "Crear Personal y Usuario"}
               </Button>
             </form>
           </DialogContent>
@@ -125,7 +157,14 @@ const Personal = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {personal.map((p) => (
-          <Card key={p.id}>
+          <Card 
+            key={p.id} 
+            className="cursor-pointer hover:shadow-lg transition-shadow"
+            onClick={() => {
+              setSelectedPersonal(p);
+              setDetailOpen(true);
+            }}
+          >
             <CardHeader>
               <div className="flex justify-between items-start">
                 <CardTitle className="text-lg">
@@ -170,6 +209,12 @@ const Personal = () => {
           </CardContent>
         </Card>
       )}
+
+      <PersonalDetailDialog
+        personal={selectedPersonal}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
     </div>
   );
 };
