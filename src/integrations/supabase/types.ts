@@ -380,46 +380,61 @@ export type Database = {
       }
       registro_llamadas: {
         Row: {
+          archivos_adjuntos: Json | null
           comentarios_resultados: string | null
           created_at: string | null
+          duracion_estimada: number | null
           duracion_minutos: number | null
           estado: Database["public"]["Enums"]["estado_llamada"] | null
           fecha_agendada: string | null
           fecha_hora_realizada: string | null
           id: string
           motivo: string | null
+          notas_adicionales: string | null
           paciente_id: string | null
           profesional_id: string | null
+          recordatorio_enviado: boolean | null
+          requiere_seguimiento: boolean | null
           resultado_seguimiento:
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
         }
         Insert: {
+          archivos_adjuntos?: Json | null
           comentarios_resultados?: string | null
           created_at?: string | null
+          duracion_estimada?: number | null
           duracion_minutos?: number | null
           estado?: Database["public"]["Enums"]["estado_llamada"] | null
           fecha_agendada?: string | null
           fecha_hora_realizada?: string | null
           id?: string
           motivo?: string | null
+          notas_adicionales?: string | null
           paciente_id?: string | null
           profesional_id?: string | null
+          recordatorio_enviado?: boolean | null
+          requiere_seguimiento?: boolean | null
           resultado_seguimiento?:
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
         }
         Update: {
+          archivos_adjuntos?: Json | null
           comentarios_resultados?: string | null
           created_at?: string | null
+          duracion_estimada?: number | null
           duracion_minutos?: number | null
           estado?: Database["public"]["Enums"]["estado_llamada"] | null
           fecha_agendada?: string | null
           fecha_hora_realizada?: string | null
           id?: string
           motivo?: string | null
+          notas_adicionales?: string | null
           paciente_id?: string | null
           profesional_id?: string | null
+          recordatorio_enviado?: boolean | null
+          requiere_seguimiento?: boolean | null
           resultado_seguimiento?:
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
@@ -511,6 +526,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calcular_indicadores_llamadas: {
+        Args: {
+          fecha_fin?: string
+          fecha_inicio?: string
+          profesional_uuid?: string
+        }
+        Returns: {
+          duracion_promedio: number
+          llamadas_canceladas: number
+          llamadas_contactadas: number
+          llamadas_pendientes: number
+          llamadas_realizadas: number
+          requieren_seguimiento: number
+          tasa_contacto: number
+          total_llamadas: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -521,7 +553,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "coordinador" | "medico" | "enfermera"
-      estado_llamada: "agendada" | "realizada" | "pospuesta" | "cancelada"
+      estado_llamada:
+        | "agendada"
+        | "realizada"
+        | "pospuesta"
+        | "cancelada"
+        | "pendiente"
+        | "reagendada"
+        | "no_contesta"
       estado_visita:
         | "pendiente"
         | "realizada"
@@ -529,7 +568,15 @@ export type Database = {
         | "postpuesta"
         | "no_realizada"
       grado_dificultad: "bajo" | "medio" | "alto"
-      resultado_seguimiento: "contactado" | "no_contestada" | "mensaje_dejado"
+      resultado_seguimiento:
+        | "contactado"
+        | "no_contestada"
+        | "mensaje_dejado"
+        | "llamada_fallida"
+        | "requiere_seguimiento"
+        | "visita_agendada"
+        | "paciente_decline"
+        | "no_disponible"
       status_paciente:
         | "activo"
         | "inactivo"
@@ -676,7 +723,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "coordinador", "medico", "enfermera"],
-      estado_llamada: ["agendada", "realizada", "pospuesta", "cancelada"],
+      estado_llamada: [
+        "agendada",
+        "realizada",
+        "pospuesta",
+        "cancelada",
+        "pendiente",
+        "reagendada",
+        "no_contesta",
+      ],
       estado_visita: [
         "pendiente",
         "realizada",
@@ -685,7 +740,16 @@ export const Constants = {
         "no_realizada",
       ],
       grado_dificultad: ["bajo", "medio", "alto"],
-      resultado_seguimiento: ["contactado", "no_contestada", "mensaje_dejado"],
+      resultado_seguimiento: [
+        "contactado",
+        "no_contestada",
+        "mensaje_dejado",
+        "llamada_fallida",
+        "requiere_seguimiento",
+        "visita_agendada",
+        "paciente_decline",
+        "no_disponible",
+      ],
       status_paciente: [
         "activo",
         "inactivo",
