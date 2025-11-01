@@ -8,9 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { PacienteDetailDialog } from "@/components/PacienteDetailDialog";
 import { ImportPacientesDialog } from "@/components/ImportPacientesDialog";
+import { addDays, format, isWeekend } from "date-fns";
 
 interface Paciente {
   id: string;
@@ -31,6 +33,8 @@ const Pacientes = () => {
   const [open, setOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingCedula, setLoadingCedula] = useState(false);
+  const [medicamentos, setMedicamentos] = useState<string[]>([""]);
   const [filters, setFilters] = useState({
     status: "todos",
     zona: "todos",
@@ -68,12 +72,55 @@ const Pacientes = () => {
     fetchPacientes();
   }, []);
 
+  const fetchCedulaData = async (cedula: string) => {
+    if (cedula.length < 11) return;
+    
+    setLoadingCedula(true);
+    try {
+      const response = await fetch(`http://190.122.98.11:11080/jce/api/citizen/${cedula}`);
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Rellenar campos del formulario
+        const nombreInput = document.getElementById("nombre") as HTMLInputElement;
+        const apellidoInput = document.getElementById("apellido") as HTMLInputElement;
+        const fechaNacimientoInput = document.getElementById("fecha_nacimiento") as HTMLInputElement;
+        
+        if (nombreInput && data.nombres) nombreInput.value = data.nombres;
+        if (apellidoInput && data.apellido1) {
+          apellidoInput.value = data.apellido2 ? `${data.apellido1} ${data.apellido2}` : data.apellido1;
+        }
+        if (fechaNacimientoInput && data.fechaNacimiento) {
+          // Convertir formato de fecha si es necesario
+          fechaNacimientoInput.value = data.fechaNacimiento;
+        }
+        
+        toast.success("Datos cargados desde JCE");
+      }
+    } catch (error) {
+      console.error("Error fetching cedula data:", error);
+    } finally {
+      setLoadingCedula(false);
+    }
+  };
+
+  const calcularFechaLlamada = (fechaBase: Date): Date => {
+    let fecha = addDays(fechaBase, 2);
+    
+    // Si cae en fin de semana, mover al lunes
+    while (isWeekend(fecha)) {
+      fecha = addDays(fecha, 1);
+    }
+    
+    return fecha;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const data = {
+    const dataPaciente = {
       cedula: formData.get("cedula") as string,
       nombre: formData.get("nombre") as string,
       apellido: formData.get("apellido") as string,
@@ -82,21 +129,65 @@ const Pacientes = () => {
       nombre_cuidador: formData.get("nombre_cuidador") as string,
       contacto_cuidador: formData.get("contacto_cuidador") as string,
       direccion_domicilio: formData.get("direccion_domicilio") as string,
+      historia_medica_basica: formData.get("historia_medica") as string,
       zona: formData.get("zona") as any,
       grado_dificultad: formData.get("grado_dificultad") as any,
       status_px: "activo" as any,
     };
 
-    const { error } = await supabase.from("pacientes").insert([data]);
+    const { data: paciente, error: pacienteError } = await supabase
+      .from("pacientes")
+      .insert([dataPaciente])
+      .select()
+      .single();
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Paciente agregado exitosamente");
-      setOpen(false);
-      fetchPacientes();
-      (e.target as HTMLFormElement).reset();
+    if (pacienteError) {
+      toast.error(pacienteError.message);
+      setLoading(false);
+      return;
     }
+
+    // Insertar medicamentos
+    const medicamentosValidos = medicamentos.filter(m => m.trim() !== "");
+    if (medicamentosValidos.length > 0 && paciente) {
+      const medicamentosData = medicamentosValidos.map(med => ({
+        paciente_id: paciente.id,
+        nombre_medicamento: med,
+      }));
+      
+      await supabase.from("medicamentos_paciente").insert(medicamentosData);
+    }
+
+    // Insertar parámetros de seguimiento
+    if (paciente) {
+      const periodoLlamada = parseInt(formData.get("periodo_llamada") as string) || 30;
+      const periodoVisita = parseInt(formData.get("periodo_visita") as string) || 90;
+      
+      await supabase.from("parametros_seguimiento").insert([{
+        paciente_id: paciente.id,
+        periodo_llamada_ciclico: periodoLlamada,
+        periodo_visita_ciclico: periodoVisita,
+        fecha_proxima_llamada_prog: format(calcularFechaLlamada(new Date()), "yyyy-MM-dd"),
+        fecha_proxima_visita_prog: format(addDays(new Date(), periodoVisita), "yyyy-MM-dd"),
+      }]);
+
+      // Agendar llamada automáticamente
+      const fechaLlamada = calcularFechaLlamada(new Date());
+      await supabase.from("registro_llamadas").insert([{
+        paciente_id: paciente.id,
+        fecha_agendada: fechaLlamada.toISOString(),
+        estado: "agendada" as any,
+        motivo: "Llamada inicial de seguimiento",
+        duracion_estimada: 15,
+      }]);
+
+      toast.success("Paciente agregado exitosamente con llamada agendada");
+    }
+
+    setOpen(false);
+    fetchPacientes();
+    setMedicamentos([""]);
+    (e.target as HTMLFormElement).reset();
     setLoading(false);
   };
 
@@ -151,7 +242,14 @@ const Pacientes = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="cedula">Cédula *</Label>
-                    <Input id="cedula" name="cedula" required />
+                    <Input 
+                      id="cedula" 
+                      name="cedula" 
+                      required 
+                      onBlur={(e) => fetchCedulaData(e.target.value)}
+                      disabled={loadingCedula}
+                    />
+                    {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="fecha_nacimiento">Fecha Nacimiento</Label>
@@ -215,6 +313,67 @@ const Pacientes = () => {
                   <Label htmlFor="direccion_domicilio">Dirección</Label>
                   <Input id="direccion_domicilio" name="direccion_domicilio" />
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="historia_medica">Historia Médica</Label>
+                  <Textarea 
+                    id="historia_medica" 
+                    name="historia_medica" 
+                    placeholder="Resumen de condiciones médicas relevantes..."
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Medicamentos</Label>
+                  {medicamentos.map((med, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        value={med}
+                        onChange={(e) => {
+                          const newMeds = [...medicamentos];
+                          newMeds[index] = e.target.value;
+                          setMedicamentos(newMeds);
+                        }}
+                        placeholder="Nombre del medicamento"
+                      />
+                      {index === medicamentos.length - 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => setMedicamentos([...medicamentos, ""])}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="periodo_llamada">Período Llamadas (días)</Label>
+                    <Input 
+                      id="periodo_llamada" 
+                      name="periodo_llamada" 
+                      type="number" 
+                      defaultValue="30"
+                      min="1"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="periodo_visita">Período Visitas (días)</Label>
+                    <Input 
+                      id="periodo_visita" 
+                      name="periodo_visita" 
+                      type="number" 
+                      defaultValue="90"
+                      min="1"
+                    />
+                  </div>
+                </div>
+
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Guardando..." : "Guardar Paciente"}
                 </Button>

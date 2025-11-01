@@ -25,6 +25,7 @@ const Personal = () => {
   const [personal, setPersonal] = useState<Personal[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingCedula, setLoadingCedula] = useState(false);
   const [selectedPersonal, setSelectedPersonal] = useState<Personal | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
@@ -44,6 +45,32 @@ const Personal = () => {
   useEffect(() => {
     fetchPersonal();
   }, []);
+
+  const fetchCedulaData = async (cedula: string) => {
+    if (cedula.length < 11) return;
+    
+    setLoadingCedula(true);
+    try {
+      const response = await fetch(`http://190.122.98.11:11080/jce/api/citizen/${cedula}`);
+      if (response.ok) {
+        const data = await response.json();
+        
+        const nombreInput = document.getElementById("nombre") as HTMLInputElement;
+        const apellidoInput = document.getElementById("apellido") as HTMLInputElement;
+        
+        if (nombreInput && data.nombres) nombreInput.value = data.nombres;
+        if (apellidoInput && data.apellido1) {
+          apellidoInput.value = data.apellido2 ? `${data.apellido1} ${data.apellido2}` : data.apellido1;
+        }
+        
+        toast.success("Datos cargados desde JCE");
+      }
+    } catch (error) {
+      console.error("Error fetching cedula data:", error);
+    } finally {
+      setLoadingCedula(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -119,7 +146,14 @@ const Personal = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="cedula">Cédula *</Label>
-                <Input id="cedula" name="cedula" required />
+                <Input 
+                  id="cedula" 
+                  name="cedula" 
+                  required 
+                  onBlur={(e) => fetchCedulaData(e.target.value)}
+                  disabled={loadingCedula}
+                />
+                {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">

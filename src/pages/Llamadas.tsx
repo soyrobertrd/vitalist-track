@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Plus, Calendar, Filter, TrendingUp } from "lucide-react";
+import { Phone, Plus, Calendar, Filter, TrendingUp, Clock, User } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -89,7 +89,7 @@ const Llamadas = () => {
       .join(' ');
   };
 
-  const getEstadoColor = (estado: string) => {
+  const getEstadoBadgeColor = (estado: string) => {
     switch (estado) {
       case "agendada":
       case "pendiente":
@@ -107,7 +107,7 @@ const Llamadas = () => {
     }
   };
 
-  const getResultadoColor = (resultado: string | null) => {
+  const getResultadoBadgeColor = (resultado: string | null) => {
     switch (resultado) {
       case "contactado":
         return "bg-success/10 text-success border-success/20";
@@ -167,15 +167,78 @@ const Llamadas = () => {
     setOpenDetail(true);
   };
 
-  const renderLlamadaCard = (llamada: Llamada) => (
+  const renderLlamadaCardAgendada = (llamada: Llamada) => (
+    <Card 
+      key={llamada.id}
+      className="cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full"
+      onClick={() => handleLlamadaClick(llamada)}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-2">
+          <CardTitle className="text-base line-clamp-2 flex-1">
+            {llamada.pacientes?.nombre} {llamada.pacientes?.apellido}
+          </CardTitle>
+          <Badge className={getEstadoBadgeColor(llamada.estado)} variant="secondary">
+            {formatearTexto(llamada.estado)}
+          </Badge>
+        </div>
+      </CardHeader>
+      
+      <CardContent className="space-y-3 flex-1 flex flex-col">
+        {llamada.fecha_agendada && (
+          <div className="bg-primary/5 p-3 rounded-lg">
+            <p className="text-xs text-muted-foreground mb-1">Fecha y Hora</p>
+            <p className="font-semibold flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-primary" />
+              {format(new Date(llamada.fecha_agendada), "dd/MM/yyyy")}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {format(new Date(llamada.fecha_agendada), "HH:mm")}
+            </p>
+          </div>
+        )}
+        
+        {llamada.personal_salud && (
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Profesional Asignado</p>
+            <p className="text-sm font-medium flex items-center gap-2">
+              <User className="h-4 w-4" />
+              {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
+            </p>
+          </div>
+        )}
+        
+        {llamada.duracion_estimada && (
+          <p className="text-xs text-muted-foreground flex items-center gap-2">
+            <Clock className="h-3 w-3" />
+            Duración: {llamada.duracion_estimada} min
+          </p>
+        )}
+        
+        {llamada.resultado_seguimiento && (
+          <Badge variant="outline" className={`${getResultadoBadgeColor(llamada.resultado_seguimiento)} w-full justify-center`}>
+            {formatearTexto(llamada.resultado_seguimiento)}
+          </Badge>
+        )}
+        
+        {llamada.motivo && (
+          <p className="text-xs text-muted-foreground line-clamp-2 pt-2 border-t mt-auto">
+            {llamada.motivo}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  const renderLlamadaCardHistorial = (llamada: Llamada) => (
     <Card 
       key={llamada.id} 
       className="cursor-pointer hover:shadow-md transition-all hover:scale-[1.01] border-l-4"
       style={{
-        borderLeftColor: llamada.estado === 'agendada' || llamada.estado === 'pendiente' 
-          ? 'hsl(var(--primary))' 
-          : llamada.estado === 'realizada' 
+        borderLeftColor: llamada.estado === 'realizada' 
           ? 'hsl(var(--success))' 
+          : llamada.estado === 'cancelada'
+          ? 'hsl(var(--destructive))'
           : 'hsl(var(--muted))'
       }}
       onClick={() => handleLlamadaClick(llamada)}
@@ -199,11 +262,11 @@ const Llamadas = () => {
             </div>
           </div>
           <div className="flex flex-col gap-2 items-end">
-            <Badge variant="outline" className={getEstadoColor(llamada.estado)}>
+            <Badge variant="outline" className={getEstadoBadgeColor(llamada.estado)}>
               {formatearTexto(llamada.estado)}
             </Badge>
             {llamada.resultado_seguimiento && (
-              <Badge variant="outline" className={getResultadoColor(llamada.resultado_seguimiento)}>
+              <Badge variant="outline" className={getResultadoBadgeColor(llamada.resultado_seguimiento)}>
                 {formatearTexto(llamada.resultado_seguimiento)}
               </Badge>
             )}
@@ -212,16 +275,16 @@ const Llamadas = () => {
       </CardHeader>
       <CardContent className="space-y-3 pt-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {llamada.fecha_agendada && (
+          {llamada.fecha_hora_realizada && (
             <div className="flex items-start gap-2 p-2 rounded-md bg-muted/50">
               <Calendar className="h-4 w-4 text-primary mt-0.5" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-muted-foreground">Fecha y Hora Agendada</p>
+                <p className="text-xs font-medium text-muted-foreground">Fecha Realizada</p>
                 <p className="text-sm font-semibold">
-                  {format(new Date(llamada.fecha_agendada), "PPP", { locale: es })}
+                  {format(new Date(llamada.fecha_hora_realizada), "PPP", { locale: es })}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {format(new Date(llamada.fecha_agendada), "p", { locale: es })}
+                  {format(new Date(llamada.fecha_hora_realizada), "p", { locale: es })}
                 </p>
               </div>
             </div>
@@ -381,8 +444,8 @@ const Llamadas = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4">
-              {llamadasAgendadasFiltradas.map(renderLlamadaCard)}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {llamadasAgendadasFiltradas.map(renderLlamadaCardAgendada)}
             </div>
           )}
         </TabsContent>
@@ -396,7 +459,7 @@ const Llamadas = () => {
             </Card>
           ) : (
             <div className="grid gap-4">
-              {llamadasHistorialFiltradas.map(renderLlamadaCard)}
+              {llamadasHistorialFiltradas.map(renderLlamadaCardHistorial)}
             </div>
           )}
         </TabsContent>
