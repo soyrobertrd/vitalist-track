@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Calendar, Clock, User, Phone, FileText } from "lucide-react";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -86,11 +86,12 @@ export function LlamadaDetailDialog({
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
+    const resultado = formData.get("resultado_seguimiento") as string;
     
     const updateData = {
       estado: "realizada" as const,
       fecha_hora_realizada: new Date().toISOString(),
-      resultado_seguimiento: formData.get("resultado_seguimiento") as any,
+      resultado_seguimiento: resultado as any,
       duracion_minutos: parseInt(formData.get("duracion_minutos") as string) || null,
       comentarios_resultados: formData.get("comentarios_resultados") as string,
       notas_adicionales: formData.get("notas_adicionales") as string,
@@ -107,10 +108,55 @@ export function LlamadaDetailDialog({
       console.error(error);
     } else {
       toast.success("Llamada registrada como realizada");
+      
+      // Si el resultado es "contactado" o "visita_agendada", renovar la agenda según el período del paciente
+      if ((resultado === 'contactado' || resultado === 'visita_agendada') && llamada.paciente_id) {
+        await renovarAgendaLlamada(llamada.paciente_id, llamada.profesional_id);
+      }
+      
       onSuccess();
       onOpenChange(false);
     }
     setLoading(false);
+  };
+
+  const renovarAgendaLlamada = async (pacienteId: string, profesionalId: string) => {
+    try {
+      // Obtener los parámetros de seguimiento del paciente
+      const { data: parametros, error: parametrosError } = await supabase
+        .from("parametros_seguimiento")
+        .select("periodo_llamada_ciclico")
+        .eq("paciente_id", pacienteId)
+        .single();
+
+      if (parametrosError && parametrosError.code !== 'PGRST116') {
+        console.error("Error al obtener parámetros:", parametrosError);
+        return;
+      }
+
+      // Usar el período del paciente o 30 días por defecto
+      const periodo = parametros?.periodo_llamada_ciclico || 30;
+      const fechaProximaLlamada = addDays(new Date(), periodo);
+
+      // Crear nueva llamada agendada
+      const { error: nuevaLlamadaError } = await supabase
+        .from("registro_llamadas")
+        .insert({
+          paciente_id: pacienteId,
+          profesional_id: profesionalId,
+          fecha_agendada: fechaProximaLlamada.toISOString(),
+          estado: 'agendada' as any,
+          motivo: 'Seguimiento programado',
+        });
+
+      if (nuevaLlamadaError) {
+        console.error("Error al crear nueva llamada:", nuevaLlamadaError);
+      } else {
+        toast.success(`Nueva llamada agendada para ${format(fechaProximaLlamada, "PPP", { locale: es })}`);
+      }
+    } catch (error) {
+      console.error("Error en renovación de agenda:", error);
+    }
   };
 
   const puedeReagendar = llamada.estado === "agendada" || llamada.estado === "pendiente";
@@ -170,7 +216,7 @@ export function LlamadaDetailDialog({
                     <span>Estado</span>
                   </div>
                   <Badge variant="outline">
-                    {llamada.estado?.replace("_", " ")}
+                    {llamada.estado?.replace("_", " ").split(' ').map((palabra: string) => palabra.charAt(0).toUpperCase() + palabra.slice(1)).join(' ')}
                   </Badge>
                 </div>
               </div>
@@ -191,7 +237,7 @@ export function LlamadaDetailDialog({
                     <span>Resultado</span>
                   </div>
                   <Badge variant="outline">
-                    {llamada.resultado_seguimiento.replace("_", " ")}
+                    {llamada.resultado_seguimiento.replace("_", " ").split(' ').map((palabra: string) => palabra.charAt(0).toUpperCase() + palabra.slice(1)).join(' ')}
                   </Badge>
                 </div>
               )}

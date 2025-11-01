@@ -81,6 +81,14 @@ const Llamadas = () => {
     fetchData();
   }, []);
 
+  const formatearTexto = (texto: string | null) => {
+    if (!texto) return 'N/A';
+    return texto
+      .split('_')
+      .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+      .join(' ');
+  };
+
   const getEstadoColor = (estado: string) => {
     switch (estado) {
       case "agendada":
@@ -162,55 +170,79 @@ const Llamadas = () => {
   const renderLlamadaCard = (llamada: Llamada) => (
     <Card 
       key={llamada.id} 
-      className="cursor-pointer hover:shadow-md transition-shadow"
+      className="cursor-pointer hover:shadow-md transition-all hover:scale-[1.01] border-l-4"
+      style={{
+        borderLeftColor: llamada.estado === 'agendada' || llamada.estado === 'pendiente' 
+          ? 'hsl(var(--primary))' 
+          : llamada.estado === 'realizada' 
+          ? 'hsl(var(--success))' 
+          : 'hsl(var(--muted))'
+      }}
       onClick={() => handleLlamadaClick(llamada)}
     >
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <div className="flex items-center gap-2 flex-1">
-            <Phone className="h-5 w-5 text-primary" />
-            <div>
-              <CardTitle className="text-lg">
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-start gap-4">
+          <div className="flex items-start gap-3 flex-1">
+            <div className="mt-1 p-2 rounded-lg bg-primary/10">
+              <Phone className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-lg mb-1">
                 {llamada.pacientes?.nombre || 'N/A'} {llamada.pacientes?.apellido || ''}
               </CardTitle>
               {llamada.personal_salud && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                  <span className="font-medium">Profesional:</span>
                   {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
                 </p>
               )}
             </div>
           </div>
-          <div className="flex gap-2 flex-wrap justify-end">
+          <div className="flex flex-col gap-2 items-end">
             <Badge variant="outline" className={getEstadoColor(llamada.estado)}>
-              {llamada.estado?.replace("_", " ")}
+              {formatearTexto(llamada.estado)}
             </Badge>
             {llamada.resultado_seguimiento && (
               <Badge variant="outline" className={getResultadoColor(llamada.resultado_seguimiento)}>
-                {llamada.resultado_seguimiento?.replace("_", " ")}
+                {formatearTexto(llamada.resultado_seguimiento)}
               </Badge>
             )}
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-2">
-        <div className="flex items-center gap-4 text-sm flex-wrap">
+      <CardContent className="space-y-3 pt-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {llamada.fecha_agendada && (
-            <div className="flex items-center gap-1">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="font-medium">Agendada:</span>
-              <span>{format(new Date(llamada.fecha_agendada), "PPp", { locale: es })}</span>
+            <div className="flex items-start gap-2 p-2 rounded-md bg-muted/50">
+              <Calendar className="h-4 w-4 text-primary mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-muted-foreground">Fecha y Hora Agendada</p>
+                <p className="text-sm font-semibold">
+                  {format(new Date(llamada.fecha_agendada), "PPP", { locale: es })}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {format(new Date(llamada.fecha_agendada), "p", { locale: es })}
+                </p>
+              </div>
             </div>
           )}
           {llamada.duracion_minutos && (
-            <div>
-              <span className="font-medium">Duración:</span> {llamada.duracion_minutos} min
+            <div className="flex items-start gap-2 p-2 rounded-md bg-muted/50">
+              <Phone className="h-4 w-4 text-success mt-0.5" />
+              <div className="flex-1">
+                <p className="text-xs font-medium text-muted-foreground">Duración</p>
+                <p className="text-sm font-semibold">{llamada.duracion_minutos} minutos</p>
+              </div>
             </div>
           )}
         </div>
         {llamada.motivo && (
-          <p className="text-sm">
-            <span className="font-medium">Motivo:</span> {llamada.motivo}
-          </p>
+          <div className="pt-2 border-t">
+            <p className="text-sm">
+              <span className="font-medium text-muted-foreground">Motivo:</span>{' '}
+              <span className="text-foreground">{llamada.motivo}</span>
+            </p>
+          </div>
         )}
         {llamada.requiere_seguimiento && (
           <Badge variant="destructive" className="mt-2">
