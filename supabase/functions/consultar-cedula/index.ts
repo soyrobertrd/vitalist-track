@@ -42,8 +42,21 @@ serve(async (req) => {
     const data = await response.json();
     console.log('Datos obtenidos de JCE:', data);
 
+    // Extraer y formatear los datos relevantes
+    const citizenInfo = data.citizenInfo || {};
+    const formattedData = {
+      success: data.success,
+      message: data.message,
+      nombres: citizenInfo.nombres || '',
+      apellido1: citizenInfo.apellido1 || '',
+      apellido2: citizenInfo.apellido2 || '',
+      fecha_nac: citizenInfo.fecha_nac || '',
+      sexo: citizenInfo.sexo || '',
+      foto_encoded: citizenInfo.foto_encoded || ''
+    };
+
     return new Response(
-      JSON.stringify(data),
+      JSON.stringify(formattedData),
       { 
         status: 200, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Phone, Plus, Calendar, Filter, TrendingUp, Clock, User } from "lucide-react";
@@ -62,7 +63,7 @@ const Llamadas = () => {
       const todasLlamadas = llamadasRes.data as any[];
       setLlamadas(todasLlamadas);
       
-      // Separar agendadas de historial
+      // Separar agendadas de historial - excluir realizadas
       const agendadas = todasLlamadas.filter(
         l => l.estado === 'agendada' || l.estado === 'pendiente'
       );

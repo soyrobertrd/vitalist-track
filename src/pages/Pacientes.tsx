@@ -34,6 +34,14 @@ const Pacientes = () => {
   const [importOpen, setImportOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingCedula, setLoadingCedula] = useState(false);
+  const [cedulaData, setCedulaData] = useState<{
+    nombres?: string;
+    apellido1?: string;
+    apellido2?: string;
+    fecha_nac?: string;
+    sexo?: string;
+    foto_encoded?: string;
+  } | null>(null);
   const [medicamentos, setMedicamentos] = useState<string[]>([""]);
   const [filters, setFilters] = useState({
     status: "todos",
@@ -85,20 +93,18 @@ const Pacientes = () => {
 
       if (error) throw error;
 
-      if (data) {
-        // Rellenar campos del formulario
-        const nombreInput = document.getElementById("nombre") as HTMLInputElement;
-        const apellidoInput = document.getElementById("apellido") as HTMLInputElement;
-        const fechaNacimientoInput = document.getElementById("fecha_nacimiento") as HTMLInputElement;
+      if (data && data.success) {
+        // Convertir formato de fecha de "9/20/1984 12:00:00 AM" a "1984-09-20"
+        let formattedDate = '';
+        if (data.fecha_nac) {
+          const dateParts = data.fecha_nac.split(' ')[0].split('/');
+          formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+        }
         
-        if (nombreInput && data.nombres) nombreInput.value = data.nombres;
-        if (apellidoInput && data.apellido1) {
-          apellidoInput.value = data.apellido2 ? `${data.apellido1} ${data.apellido2}` : data.apellido1;
-        }
-        if (fechaNacimientoInput && data.fechaNacimiento) {
-          // Convertir formato de fecha si es necesario
-          fechaNacimientoInput.value = data.fechaNacimiento;
-        }
+        setCedulaData({
+          ...data,
+          fecha_nac: formattedDate
+        });
         
         toast.success("Datos cargados desde JCE");
       }
@@ -131,6 +137,8 @@ const Pacientes = () => {
       nombre: formData.get("nombre") as string,
       apellido: formData.get("apellido") as string,
       fecha_nacimiento: formData.get("fecha_nacimiento") as string,
+      sexo: cedulaData?.sexo || null,
+      foto_url: cedulaData?.foto_encoded ? `data:image/jpeg;base64,${cedulaData.foto_encoded}` : null,
       contacto_px: formData.get("contacto_px") as string,
       nombre_cuidador: formData.get("nombre_cuidador") as string,
       contacto_cuidador: formData.get("contacto_cuidador") as string,
@@ -266,18 +274,39 @@ const Pacientes = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="fecha_nacimiento">Fecha Nacimiento</Label>
-                    <Input id="fecha_nacimiento" name="fecha_nacimiento" type="date" />
+                    <Input 
+                      id="fecha_nacimiento" 
+                      name="fecha_nacimiento" 
+                      type="date" 
+                      value={cedulaData?.fecha_nac || ''}
+                      readOnly={!!cedulaData}
+                      className={cedulaData ? 'bg-muted' : ''}
+                    />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="nombre">Nombre *</Label>
-                    <Input id="nombre" name="nombre" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="apellido">Apellido *</Label>
-                    <Input id="apellido" name="apellido" required />
-                  </div>
+              <div className="space-y-2">
+                <Label htmlFor="nombre">Nombre *</Label>
+                <Input 
+                  id="nombre" 
+                  name="nombre" 
+                  required 
+                  value={cedulaData?.nombres || ''}
+                  readOnly={!!cedulaData}
+                  className={cedulaData ? 'bg-muted' : ''}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="apellido">Apellido *</Label>
+                <Input 
+                  id="apellido" 
+                  name="apellido" 
+                  required 
+                  value={cedulaData ? `${cedulaData.apellido1} ${cedulaData.apellido2}`.trim() : ''}
+                  readOnly={!!cedulaData}
+                  className={cedulaData ? 'bg-muted' : ''}
+                />
+              </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">

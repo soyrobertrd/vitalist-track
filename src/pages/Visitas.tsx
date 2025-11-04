@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Plus } from "lucide-react";
+import { Calendar, Plus, Clock, User } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -175,51 +176,54 @@ const Visitas = () => {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
-        {visitas.map((visita) => (
-          <Card key={visita.id}>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">{getTipoIcon(visita.tipo_visita)}</span>
-                  <div>
-                    <CardTitle className="text-lg">
-                      {visita.pacientes?.nombre || 'N/A'} {visita.pacientes?.apellido || ''}
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground capitalize">
-                      Visita {visita.tipo_visita}
-                    </p>
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {visitas
+          .filter(v => v.estado !== "realizada")
+          .map((visita) => {
+          const formatearTexto = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase().replace("_", " ");
+          
+          return (
+            <GlassCard key={visita.id} className="aspect-square p-6 flex flex-col justify-between">
+              <div>
+                <h3 className="font-bold text-lg mb-2">
+                  {visita.pacientes?.nombre} {visita.pacientes?.apellido}
+                </h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {new Date(visita.fecha_hora_visita).toLocaleDateString('es-DO', { 
+                      day: '2-digit', 
+                      month: 'short', 
+                      year: 'numeric' 
+                    })}
                   </div>
+                  <div className="flex items-center">
+                    <Clock className="mr-2 h-4 w-4" />
+                    {new Date(visita.fecha_hora_visita).toLocaleTimeString('es-DO', { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })}
+                  </div>
+                  {visita.personal_salud && (
+                    <div className="flex items-center">
+                      <User className="mr-2 h-4 w-4" />
+                      {visita.personal_salud.nombre}
+                    </div>
+                  )}
                 </div>
-                <Badge className={getEstadoColor(visita.estado)}>
-                  {visita.estado.replace("_", " ")}
+              </div>
+              <div className="flex items-center justify-between mt-4">
+                <Badge variant={
+                  visita.estado === "realizada" ? "default" :
+                  visita.estado === "cancelada" ? "destructive" : "secondary"
+                }>
+                  {formatearTexto(visita.estado)}
                 </Badge>
+                <Badge variant="outline">{formatearTexto(visita.tipo_visita)}</Badge>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Calendar className="mr-2 h-4 w-4" />
-                {new Date(visita.fecha_hora_visita).toLocaleString()}
-              </div>
-              {visita.personal_salud && (
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-medium">Profesional:</span>{" "}
-                  {visita.personal_salud.nombre} {visita.personal_salud.apellido}
-                </p>
-              )}
-              {visita.motivo_visita && (
-                <p className="text-sm">
-                  <span className="font-medium">Motivo:</span> {visita.motivo_visita}
-                </p>
-              )}
-              {visita.notas_visita && (
-                <p className="text-sm">
-                  <span className="font-medium">Notas:</span> {visita.notas_visita}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+            </GlassCard>
+          );
+        })}
       </div>
 
       {visitas.length === 0 && (

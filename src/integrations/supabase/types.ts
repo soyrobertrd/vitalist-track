@@ -153,6 +153,7 @@ export type Database = {
           created_at: string | null
           direccion_domicilio: string | null
           fecha_nacimiento: string | null
+          foto_url: string | null
           grado_dificultad:
             | Database["public"]["Enums"]["grado_dificultad"]
             | null
@@ -161,6 +162,7 @@ export type Database = {
           nombre: string
           nombre_cuidador: string | null
           profesional_asignado_id: string | null
+          sexo: string | null
           status_px: Database["public"]["Enums"]["status_paciente"] | null
           updated_at: string | null
           zona: Database["public"]["Enums"]["zona_distrito"] | null
@@ -173,6 +175,7 @@ export type Database = {
           created_at?: string | null
           direccion_domicilio?: string | null
           fecha_nacimiento?: string | null
+          foto_url?: string | null
           grado_dificultad?:
             | Database["public"]["Enums"]["grado_dificultad"]
             | null
@@ -181,6 +184,7 @@ export type Database = {
           nombre: string
           nombre_cuidador?: string | null
           profesional_asignado_id?: string | null
+          sexo?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
           updated_at?: string | null
           zona?: Database["public"]["Enums"]["zona_distrito"] | null
@@ -193,6 +197,7 @@ export type Database = {
           created_at?: string | null
           direccion_domicilio?: string | null
           fecha_nacimiento?: string | null
+          foto_url?: string | null
           grado_dificultad?:
             | Database["public"]["Enums"]["grado_dificultad"]
             | null
@@ -201,6 +206,7 @@ export type Database = {
           nombre?: string
           nombre_cuidador?: string | null
           profesional_asignado_id?: string | null
+          sexo?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
           updated_at?: string | null
           zona?: Database["public"]["Enums"]["zona_distrito"] | null
@@ -344,6 +350,7 @@ export type Database = {
           created_at: string | null
           email: string
           especialidad: string | null
+          foto_url: string | null
           id: string
           nombre: string
           rol: Database["public"]["Enums"]["user_role"]
@@ -357,6 +364,7 @@ export type Database = {
           created_at?: string | null
           email: string
           especialidad?: string | null
+          foto_url?: string | null
           id: string
           nombre: string
           rol?: Database["public"]["Enums"]["user_role"]
@@ -370,6 +378,7 @@ export type Database = {
           created_at?: string | null
           email?: string
           especialidad?: string | null
+          foto_url?: string | null
           id?: string
           nombre?: string
           rol?: Database["public"]["Enums"]["user_role"]

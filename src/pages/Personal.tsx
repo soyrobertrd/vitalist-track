@@ -26,6 +26,12 @@ const Personal = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingCedula, setLoadingCedula] = useState(false);
+  const [cedulaData, setCedulaData] = useState<{
+    nombres?: string;
+    apellido1?: string;
+    apellido2?: string;
+    foto_encoded?: string;
+  } | null>(null);
   const [selectedPersonal, setSelectedPersonal] = useState<Personal | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
@@ -59,15 +65,8 @@ const Personal = () => {
 
       if (error) throw error;
 
-      if (data) {
-        const nombreInput = document.getElementById("nombre") as HTMLInputElement;
-        const apellidoInput = document.getElementById("apellido") as HTMLInputElement;
-        
-        if (nombreInput && data.nombres) nombreInput.value = data.nombres;
-        if (apellidoInput && data.apellido1) {
-          apellidoInput.value = data.apellido2 ? `${data.apellido1} ${data.apellido2}` : data.apellido1;
-        }
-        
+      if (data && data.success) {
+        setCedulaData(data);
         toast.success("Datos cargados desde JCE");
       }
     } catch (error) {
@@ -171,11 +170,25 @@ const Personal = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="nombre">Nombre *</Label>
-                  <Input id="nombre" name="nombre" required />
+                  <Input 
+                    id="nombre" 
+                    name="nombre" 
+                    required 
+                    value={cedulaData?.nombres || ''}
+                    readOnly={!!cedulaData}
+                    className={cedulaData ? 'bg-muted' : ''}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="apellido">Apellido *</Label>
-                  <Input id="apellido" name="apellido" required />
+                  <Input 
+                    id="apellido" 
+                    name="apellido" 
+                    required 
+                    value={cedulaData ? `${cedulaData.apellido1} ${cedulaData.apellido2}`.trim() : ''}
+                    readOnly={!!cedulaData}
+                    className={cedulaData ? 'bg-muted' : ''}
+                  />
                 </div>
               </div>
               <div className="space-y-2">
