@@ -47,14 +47,19 @@ const Personal = () => {
   }, []);
 
   const fetchCedulaData = async (cedula: string) => {
-    if (cedula.length < 11) return;
+    // Validar que solo contenga números y tenga 11 dígitos
+    const cedulaLimpia = cedula.replace(/\D/g, '');
+    if (cedulaLimpia.length !== 11) return;
     
     setLoadingCedula(true);
     try {
-      const response = await fetch(`http://190.122.98.11:11080/jce/api/citizen/${cedula}`);
-      if (response.ok) {
-        const data = await response.json();
-        
+      const { data, error } = await supabase.functions.invoke('consultar-cedula', {
+        body: { cedula: cedulaLimpia }
+      });
+
+      if (error) throw error;
+
+      if (data) {
         const nombreInput = document.getElementById("nombre") as HTMLInputElement;
         const apellidoInput = document.getElementById("apellido") as HTMLInputElement;
         
@@ -67,6 +72,7 @@ const Personal = () => {
       }
     } catch (error) {
       console.error("Error fetching cedula data:", error);
+      toast.error("No se pudo consultar la cédula");
     } finally {
       setLoadingCedula(false);
     }
@@ -150,9 +156,16 @@ const Personal = () => {
                   id="cedula" 
                   name="cedula" 
                   required 
+                  maxLength={11}
+                  pattern="\d{11}"
                   onBlur={(e) => fetchCedulaData(e.target.value)}
                   disabled={loadingCedula}
+                  onChange={(e) => {
+                    // Solo permitir números
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                  }}
                 />
+                <p className="text-xs text-muted-foreground">Digitar cédula sin guiones (11 dígitos)</p>
                 {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
               </div>
               <div className="grid grid-cols-2 gap-4">
