@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { VisitaDetailDialog } from "@/components/VisitaDetailDialog";
 
 interface Visita {
   id: string;
@@ -29,6 +30,8 @@ const Visitas = () => {
   const [personal, setPersonal] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedVisita, setSelectedVisita] = useState<Visita | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   const fetchData = async () => {
     const [visitasRes, pacientesRes, personalRes] = await Promise.all([
@@ -183,7 +186,14 @@ const Visitas = () => {
           const formatearTexto = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase().replace("_", " ");
           
           return (
-            <GlassCard key={visita.id} className="aspect-square p-6 flex flex-col justify-between">
+            <GlassCard 
+              key={visita.id} 
+              className="aspect-square p-6 flex flex-col justify-between cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => {
+                setSelectedVisita(visita);
+                setDetailOpen(true);
+              }}
+            >
               <div>
                 <h3 className="font-bold text-lg mb-2">
                   {visita.pacientes?.nombre} {visita.pacientes?.apellido}
@@ -225,6 +235,15 @@ const Visitas = () => {
           );
         })}
       </div>
+
+      <VisitaDetailDialog
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+        visita={selectedVisita}
+        onSuccess={fetchData}
+        pacientes={pacientes}
+        personal={personal}
+      />
 
       {visitas.length === 0 && (
         <Card>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,15 +9,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Upload, Lock, User, HelpCircle } from "lucide-react";
+import { ArrowLeft, Upload, Lock, User, HelpCircle, Bell, Eye, Shield } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useUserRole } from "@/hooks/useUserRole";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 
 const Configuracion = () => {
   const navigate = useNavigate();
   const { profile, updateProfile } = useUserProfile();
   const { theme, setTheme } = useTheme();
+  const { isAdmin } = useUserRole();
   const [uploading, setUploading] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
+  const [notificaciones, setNotificaciones] = useState({
+    email: true,
+    push: true,
+    llamadas: true,
+    visitas: true,
+  });
 
   const [formData, setFormData] = useState({
     telefono: profile?.telefono || "",
@@ -121,16 +131,40 @@ const Configuracion = () => {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">Configuración</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold">Configuración</h1>
+            {isAdmin && (
+              <Badge variant="destructive" className="bg-gradient-to-r from-[hsl(var(--admin-primary))] to-[hsl(var(--admin-secondary))]">
+                Admin
+              </Badge>
+            )}
+          </div>
           <p className="text-muted-foreground">Administra tu perfil y preferencias</p>
         </div>
+        {isAdmin && (
+          <Button 
+            className="ml-auto bg-gradient-to-r from-[hsl(var(--admin-primary))] to-[hsl(var(--admin-secondary))]"
+            onClick={() => navigate("/configuracion-admin")}
+          >
+            <Shield className="mr-2 h-4 w-4" />
+            Panel de Administración
+          </Button>
+        )}
       </div>
 
       <Tabs defaultValue="perfil" className="space-y-6">
-        <TabsList>
+        <TabsList className="grid grid-cols-5 gap-2">
           <TabsTrigger value="perfil">
             <User className="mr-2 h-4 w-4" />
             Perfil
+          </TabsTrigger>
+          <TabsTrigger value="interfaz">
+            <Eye className="mr-2 h-4 w-4" />
+            Interfaz
+          </TabsTrigger>
+          <TabsTrigger value="notificaciones">
+            <Bell className="mr-2 h-4 w-4" />
+            Notificaciones
           </TabsTrigger>
           <TabsTrigger value="seguridad">
             <Lock className="mr-2 h-4 w-4" />
@@ -143,14 +177,14 @@ const Configuracion = () => {
         </TabsList>
 
         <TabsContent value="perfil" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Información del Perfil</CardTitle>
-              <CardDescription>
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Información del Perfil</h2>
+              <p className="text-muted-foreground">
                 Actualiza tu información personal y foto de perfil
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+              </p>
+            </div>
+            <div className="space-y-6">
               {/* Avatar Upload */}
               <div className="flex items-center gap-6">
                 <Avatar className="h-24 w-24">
@@ -224,16 +258,19 @@ const Configuracion = () => {
                 </div>
                 <Button type="submit">Guardar Cambios</Button>
               </form>
-            </CardContent>
-          </Card>
+            </div>
+          </GlassCard>
 
-          {/* Theme Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Apariencia</CardTitle>
-              <CardDescription>Personaliza el tema de la aplicación</CardDescription>
-            </CardHeader>
-            <CardContent>
+        </TabsContent>
+
+        <TabsContent value="interfaz">
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Interfaz y Productividad</h2>
+              <p className="text-muted-foreground">Personaliza tu experiencia de trabajo</p>
+            </div>
+            <div>
+              <h3 className="font-medium mb-4">Tema de la Aplicación</h3>
               <div className="grid grid-cols-3 gap-4">
                 <button
                   onClick={() => setTheme("light")}
@@ -283,19 +320,75 @@ const Configuracion = () => {
                   <p className="text-sm font-medium">Estándar</p>
                 </button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </GlassCard>
+        </TabsContent>
+
+        <TabsContent value="notificaciones">
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Notificaciones y Alertas</h2>
+              <p className="text-muted-foreground">Configura cómo y cuándo recibir notificaciones</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg glass-bg">
+                <div>
+                  <Label className="text-base">Notificaciones por Email</Label>
+                  <p className="text-sm text-muted-foreground">Recibir alertas en tu correo electrónico</p>
+                </div>
+                <Switch 
+                  checked={notificaciones.email}
+                  onCheckedChange={(checked) => setNotificaciones({...notificaciones, email: checked})}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg glass-bg">
+                <div>
+                  <Label className="text-base">Notificaciones Push</Label>
+                  <p className="text-sm text-muted-foreground">Alertas en tiempo real en la aplicación</p>
+                </div>
+                <Switch 
+                  checked={notificaciones.push}
+                  onCheckedChange={(checked) => setNotificaciones({...notificaciones, push: checked})}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg glass-bg">
+                <div>
+                  <Label className="text-base">Recordatorios de Llamadas</Label>
+                  <p className="text-sm text-muted-foreground">Avisos de llamadas programadas</p>
+                </div>
+                <Switch 
+                  checked={notificaciones.llamadas}
+                  onCheckedChange={(checked) => setNotificaciones({...notificaciones, llamadas: checked})}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg glass-bg">
+                <div>
+                  <Label className="text-base">Recordatorios de Visitas</Label>
+                  <p className="text-sm text-muted-foreground">Avisos de visitas programadas</p>
+                </div>
+                <Switch 
+                  checked={notificaciones.visitas}
+                  onCheckedChange={(checked) => setNotificaciones({...notificaciones, visitas: checked})}
+                />
+              </div>
+
+              <Button>Guardar Preferencias</Button>
+            </div>
+          </GlassCard>
         </TabsContent>
 
         <TabsContent value="seguridad">
-          <Card>
-            <CardHeader>
-              <CardTitle>Cambiar Contraseña</CardTitle>
-              <CardDescription>
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Seguridad</h2>
+              <p className="text-muted-foreground">
                 Actualiza tu contraseña para mantener tu cuenta segura
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+              </p>
+            </div>
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">Nueva Contraseña</Label>
@@ -327,19 +420,18 @@ const Configuracion = () => {
                   {changingPassword ? "Actualizando..." : "Cambiar Contraseña"}
                 </Button>
               </form>
-            </CardContent>
-          </Card>
+          </GlassCard>
         </TabsContent>
 
         <TabsContent value="soporte">
-          <Card>
-            <CardHeader>
-              <CardTitle>Centro de Soporte</CardTitle>
-              <CardDescription>
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Centro de Soporte</h2>
+              <p className="text-muted-foreground">
                 ¿Necesitas ayuda? Contacta con nuestro equipo de soporte
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </p>
+            </div>
+            <div className="space-y-4">
               <div className="space-y-2">
                 <h3 className="font-medium">Correo de Soporte</h3>
                 <p className="text-sm text-muted-foreground">soporte@healthcrm.com</p>
@@ -358,8 +450,8 @@ const Configuracion = () => {
                 </p>
               </div>
               <Button className="w-full">Enviar Ticket de Soporte</Button>
-            </CardContent>
-          </Card>
+            </div>
+          </GlassCard>
         </TabsContent>
       </Tabs>
     </div>

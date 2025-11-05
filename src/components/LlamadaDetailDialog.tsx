@@ -43,13 +43,15 @@ export function LlamadaDetailDialog({
     const formData = new FormData(e.currentTarget);
     const fechaAgendada = formData.get("nueva_fecha") as string;
     const horaAgendada = formData.get("nueva_hora") as string;
+    const profesionalId = formData.get("profesional_id") as string;
     const fechaHoraAgendada = `${fechaAgendada}T${horaAgendada}:00`;
 
     const { error } = await supabase
       .from("registro_llamadas")
       .update({
         fecha_agendada: fechaHoraAgendada,
-        estado: "reagendada",
+        profesional_id: profesionalId,
+        estado: "agendada",
       })
       .eq("id", llamada.id);
 
@@ -354,6 +356,21 @@ export function LlamadaDetailDialog({
 
               <TabsContent value="reagendar" className="space-y-4">
                 <form onSubmit={handleReagendar} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="profesional_id">Profesional *</Label>
+                    <Select name="profesional_id" required defaultValue={llamada.profesional_id}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar profesional" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {personal.map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.nombre} {p.apellido}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="nueva_fecha">Nueva Fecha *</Label>

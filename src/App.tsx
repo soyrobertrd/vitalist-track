@@ -15,6 +15,7 @@ import Personal from "./pages/Personal";
 import Llamadas from "./pages/Llamadas";
 import Visitas from "./pages/Visitas";
 import Configuracion from "./pages/Configuracion";
+import ConfiguracionAdmin from "./pages/ConfiguracionAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -75,6 +76,10 @@ const App = () => {
               <Route
                 path="/configuracion"
                 element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/configuracion-admin"
+                element={session ? <Layout><ConfiguracionAdmin /></Layout> : <Navigate to="/auth" />}
               />
               <Route path="*" element={<NotFound />} />
             </Routes>
