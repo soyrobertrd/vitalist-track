@@ -32,6 +32,17 @@ const Visitas = () => {
   const [loading, setLoading] = useState(false);
   const [selectedVisita, setSelectedVisita] = useState<Visita | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    estado: "",
+    profesional: "",
+    tipo: "",
+  });
+  const [stats, setStats] = useState({
+    totalVisitas: 0,
+    pendientes: 0,
+    realizadas: 0,
+    canceladas: 0,
+  });
 
   const fetchData = async () => {
     const [visitasRes, pacientesRes, personalRes] = await Promise.all([

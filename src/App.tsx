@@ -16,6 +16,10 @@ import Llamadas from "./pages/Llamadas";
 import Visitas from "./pages/Visitas";
 import Configuracion from "./pages/Configuracion";
 import ConfiguracionAdmin from "./pages/ConfiguracionAdmin";
+import PlantillasCorreo from "./pages/PlantillasCorreo";
+import Automatizaciones from "./pages/Automatizaciones";
+import Encuestas from "./pages/Encuestas";
+import AtencionPaciente from "./pages/AtencionPaciente";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -80,6 +84,22 @@ const App = () => {
               <Route
                 path="/configuracion-admin"
                 element={session ? <Layout><ConfiguracionAdmin /></Layout> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/plantillas-correo"
+                element={session ? <Layout><PlantillasCorreo /></Layout> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/automatizaciones"
+                element={session ? <Layout><Automatizaciones /></Layout> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/encuestas"
+                element={session ? <Layout><Encuestas /></Layout> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/atencion-paciente"
+                element={session ? <Layout><AtencionPaciente /></Layout> : <Navigate to="/auth" />}
               />
               <Route path="*" element={<NotFound />} />
             </Routes>

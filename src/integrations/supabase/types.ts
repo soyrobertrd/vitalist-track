@@ -14,6 +14,152 @@ export type Database = {
   }
   public: {
     Tables: {
+      atencion_paciente: {
+        Row: {
+          archivos: Json | null
+          created_at: string | null
+          descripcion: string
+          estado: string | null
+          fecha_programada: string | null
+          fecha_realizada: string | null
+          id: string
+          notas: string | null
+          paciente_id: string | null
+          periodicidad: string | null
+          profesional_id: string | null
+          proxima_fecha: string | null
+          tipo: string
+          updated_at: string | null
+        }
+        Insert: {
+          archivos?: Json | null
+          created_at?: string | null
+          descripcion: string
+          estado?: string | null
+          fecha_programada?: string | null
+          fecha_realizada?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string | null
+          periodicidad?: string | null
+          profesional_id?: string | null
+          proxima_fecha?: string | null
+          tipo: string
+          updated_at?: string | null
+        }
+        Update: {
+          archivos?: Json | null
+          created_at?: string | null
+          descripcion?: string
+          estado?: string | null
+          fecha_programada?: string | null
+          fecha_realizada?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string | null
+          periodicidad?: string | null
+          profesional_id?: string | null
+          proxima_fecha?: string | null
+          tipo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atencion_paciente_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atencion_paciente_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automatizaciones: {
+        Row: {
+          accion: string
+          activo: boolean | null
+          condiciones: Json | null
+          created_at: string | null
+          descripcion: string | null
+          encuesta_id: string | null
+          id: string
+          nombre: string
+          parametros: Json | null
+          plantilla_correo_id: string | null
+          trigger_evento: string
+          updated_at: string | null
+        }
+        Insert: {
+          accion: string
+          activo?: boolean | null
+          condiciones?: Json | null
+          created_at?: string | null
+          descripcion?: string | null
+          encuesta_id?: string | null
+          id?: string
+          nombre: string
+          parametros?: Json | null
+          plantilla_correo_id?: string | null
+          trigger_evento: string
+          updated_at?: string | null
+        }
+        Update: {
+          accion?: string
+          activo?: boolean | null
+          condiciones?: Json | null
+          created_at?: string | null
+          descripcion?: string | null
+          encuesta_id?: string | null
+          id?: string
+          nombre?: string
+          parametros?: Json | null
+          plantilla_correo_id?: string | null
+          trigger_evento?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automatizaciones_plantilla_correo_id_fkey"
+            columns: ["plantilla_correo_id"]
+            isOneToOne: false
+            referencedRelation: "plantillas_correo"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      configuracion_sistema: {
+        Row: {
+          clave: string
+          created_at: string | null
+          descripcion: string | null
+          id: string
+          updated_at: string | null
+          valor: Json
+        }
+        Insert: {
+          clave: string
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          updated_at?: string | null
+          valor: Json
+        }
+        Update: {
+          clave?: string
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          updated_at?: string | null
+          valor?: Json
+        }
+        Relationships: []
+      }
       control_visitas: {
         Row: {
           created_at: string | null
@@ -96,6 +242,115 @@ export type Database = {
           fecha?: string
         }
         Relationships: []
+      }
+      encuestas: {
+        Row: {
+          activo: boolean | null
+          anonima: boolean | null
+          created_at: string | null
+          created_by: string | null
+          descripcion: string | null
+          estructura: Json
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          id: string
+          nombre: string
+          profesional_id: string | null
+          servicio_asociado: string | null
+          tipo: string
+          updated_at: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          anonima?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          descripcion?: string | null
+          estructura?: Json
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          nombre: string
+          profesional_id?: string | null
+          servicio_asociado?: string | null
+          tipo: string
+          updated_at?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          anonima?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          descripcion?: string | null
+          estructura?: Json
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          nombre?: string
+          profesional_id?: string | null
+          servicio_asociado?: string | null
+          tipo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encuestas_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      horarios_profesionales: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          dia_semana: number
+          fecha_especifica: string | null
+          hora_fin: string
+          hora_inicio: string
+          id: string
+          notas: string | null
+          profesional_id: string | null
+          tipo: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          dia_semana: number
+          fecha_especifica?: string | null
+          hora_fin: string
+          hora_inicio: string
+          id?: string
+          notas?: string | null
+          profesional_id?: string | null
+          tipo?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          dia_semana?: number
+          fecha_especifica?: string | null
+          hora_fin?: string
+          hora_inicio?: string
+          id?: string
+          notas?: string | null
+          profesional_id?: string | null
+          tipo?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horarios_profesionales_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       medicamentos_paciente: {
         Row: {
@@ -342,6 +597,51 @@ export type Database = {
         }
         Relationships: []
       }
+      plantillas_correo: {
+        Row: {
+          activo: boolean | null
+          asunto: string
+          categoria: string | null
+          contenido_html: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          nombre: string
+          tipo: string
+          updated_at: string | null
+          variables: Json | null
+          version: number | null
+        }
+        Insert: {
+          activo?: boolean | null
+          asunto: string
+          categoria?: string | null
+          contenido_html: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          nombre: string
+          tipo: string
+          updated_at?: string | null
+          variables?: Json | null
+          version?: number | null
+        }
+        Update: {
+          activo?: boolean | null
+          asunto?: string
+          categoria?: string | null
+          contenido_html?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          nombre?: string
+          tipo?: string
+          updated_at?: string | null
+          variables?: Json | null
+          version?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           apellido: string
@@ -398,10 +698,12 @@ export type Database = {
           fecha_agendada: string | null
           fecha_hora_realizada: string | null
           id: string
+          llamada_origen_id: string | null
           motivo: string | null
           notas_adicionales: string | null
           paciente_id: string | null
           profesional_id: string | null
+          reagendada: boolean | null
           recordatorio_enviado: boolean | null
           requiere_seguimiento: boolean | null
           resultado_seguimiento:
@@ -418,10 +720,12 @@ export type Database = {
           fecha_agendada?: string | null
           fecha_hora_realizada?: string | null
           id?: string
+          llamada_origen_id?: string | null
           motivo?: string | null
           notas_adicionales?: string | null
           paciente_id?: string | null
           profesional_id?: string | null
+          reagendada?: boolean | null
           recordatorio_enviado?: boolean | null
           requiere_seguimiento?: boolean | null
           resultado_seguimiento?:
@@ -438,10 +742,12 @@ export type Database = {
           fecha_agendada?: string | null
           fecha_hora_realizada?: string | null
           id?: string
+          llamada_origen_id?: string | null
           motivo?: string | null
           notas_adicionales?: string | null
           paciente_id?: string | null
           profesional_id?: string | null
+          reagendada?: boolean | null
           recordatorio_enviado?: boolean | null
           requiere_seguimiento?: boolean | null
           resultado_seguimiento?:
@@ -464,6 +770,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "registro_llamadas_llamada_origen_id_fkey"
+            columns: ["llamada_origen_id"]
+            isOneToOne: false
+            referencedRelation: "registro_llamadas"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "registro_llamadas_paciente_id_fkey"
             columns: ["paciente_id"]
             isOneToOne: false
@@ -475,6 +788,57 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      respuestas_encuestas: {
+        Row: {
+          completada: boolean | null
+          created_at: string | null
+          encuesta_id: string | null
+          id: string
+          paciente_id: string | null
+          puntuacion_general: number | null
+          respuestas: Json
+          token: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          completada?: boolean | null
+          created_at?: string | null
+          encuesta_id?: string | null
+          id?: string
+          paciente_id?: string | null
+          puntuacion_general?: number | null
+          respuestas?: Json
+          token?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          completada?: boolean | null
+          created_at?: string | null
+          encuesta_id?: string | null
+          id?: string
+          paciente_id?: string | null
+          puntuacion_general?: number | null
+          respuestas?: Json
+          token?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "respuestas_encuestas_encuesta_id_fkey"
+            columns: ["encuesta_id"]
+            isOneToOne: false
+            referencedRelation: "encuestas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "respuestas_encuestas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
             referencedColumns: ["id"]
           },
         ]
@@ -529,6 +893,42 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      visitas_profesionales: {
+        Row: {
+          created_at: string | null
+          id: string
+          profesional_id: string | null
+          visita_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          profesional_id?: string | null
+          visita_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          profesional_id?: string | null
+          visita_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visitas_profesionales_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visitas_profesionales_visita_id_fkey"
+            columns: ["visita_id"]
+            isOneToOne: false
+            referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
