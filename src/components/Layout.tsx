@@ -59,7 +59,14 @@ const Layout = ({ children }: LayoutProps) => {
 
   const menuItems = [
     { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/pacientes", icon: Users, label: "Pacientes" },
+    { 
+      path: "/pacientes", 
+      icon: Users, 
+      label: "Pacientes",
+      submenu: [
+        { path: "/atencion-paciente", label: "Atención al Paciente" }
+      ]
+    },
     { path: "/personal", icon: UserCog, label: "Personal" },
     { path: "/llamadas", icon: Phone, label: "Llamadas" },
     { path: "/visitas", icon: Calendar, label: "Visitas" },
@@ -112,23 +119,45 @@ const Layout = ({ children }: LayoutProps) => {
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
+              const hasSubmenu = 'submenu' in item && item.submenu;
               return (
-                <Link key={item.path} to={item.path}>
-                  <Button
-                    variant={isActive ? "default" : "ghost"}
-                    className={`w-full ${
-                      sidebarCollapsed ? "justify-center px-2" : "justify-start"
-                    } ${
-                      isActive
-                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent"
-                    }`}
-                    title={sidebarCollapsed ? item.label : undefined}
-                  >
-                    <Icon className={sidebarCollapsed ? "h-5 w-5" : "mr-2 h-4 w-4"} />
-                    {!sidebarCollapsed && <span>{item.label}</span>}
-                  </Button>
-                </Link>
+                <div key={item.path}>
+                  <Link to={item.path}>
+                    <Button
+                      variant={isActive ? "default" : "ghost"}
+                      className={`w-full ${
+                        sidebarCollapsed ? "justify-center px-2" : "justify-start"
+                      } ${
+                        isActive
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent"
+                      }`}
+                      title={sidebarCollapsed ? item.label : undefined}
+                    >
+                      <Icon className={sidebarCollapsed ? "h-5 w-5" : "mr-2 h-4 w-4"} />
+                      {!sidebarCollapsed && <span>{item.label}</span>}
+                    </Button>
+                  </Link>
+                  {hasSubmenu && !sidebarCollapsed && (
+                    <div className="ml-4 mt-1 space-y-1">
+                      {item.submenu!.map((sub) => (
+                        <Link key={sub.path} to={sub.path}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={`w-full justify-start text-sm ${
+                              location.pathname === sub.path
+                                ? "bg-sidebar-accent text-foreground"
+                                : "text-sidebar-foreground/80 hover:bg-sidebar-accent"
+                            }`}
+                          >
+                            {sub.label}
+                          </Button>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </nav>

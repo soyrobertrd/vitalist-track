@@ -90,6 +90,25 @@ export function LlamadaDetailDialog({
     const formData = new FormData(e.currentTarget);
     const resultado = formData.get("resultado_seguimiento") as string;
     
+    // Si el resultado es "no_contesta", preguntar si desea intentar en X tiempo o reagendar
+    if (resultado === "no_contesta") {
+      const intentarEnTiempo = formData.get("intentar_en") as string;
+      if (intentarEnTiempo) {
+        // Crear nueva llamada para intentar más tarde
+        const minutosEspera = parseInt(intentarEnTiempo);
+        const nuevaFecha = new Date(Date.now() + minutosEspera * 60 * 1000);
+        
+        await supabase.from("registro_llamadas").insert({
+          paciente_id: llamada.paciente_id,
+          profesional_id: llamada.profesional_id,
+          fecha_agendada: nuevaFecha.toISOString(),
+          estado: "agendada" as any,
+          motivo: "Reintento - No contestó anteriormente",
+          duracion_estimada: llamada.duracion_estimada,
+        });
+      }
+    }
+    
     const updateData = {
       estado: "realizada" as const,
       fecha_hora_realizada: new Date().toISOString(),
@@ -288,7 +307,17 @@ export function LlamadaDetailDialog({
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="resultado_seguimiento">Resultado *</Label>
-                      <Select name="resultado_seguimiento" required>
+                      <Select 
+                        name="resultado_seguimiento" 
+                        required
+                        onValueChange={(val) => {
+                          const form = document.querySelector('form');
+                          const intentarEnDiv = form?.querySelector('#intentar-en-wrapper');
+                          if (intentarEnDiv) {
+                            (intentarEnDiv as HTMLElement).style.display = val === 'no_contesta' ? 'block' : 'none';
+                          }
+                        }}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Seleccionar resultado" />
                         </SelectTrigger>
@@ -313,6 +342,30 @@ export function LlamadaDetailDialog({
                         min="1"
                       />
                     </div>
+                  </div>
+
+                  {/* Campo condicional para reintentar cuando no contesta */}
+                  <div id="intentar-en-wrapper" style={{ display: 'none' }} className="space-y-2">
+                    <Label htmlFor="intentar_en">¿Intentar llamar nuevamente en?</Label>
+                    <Select name="intentar_en">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar tiempo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="30">30 minutos</SelectItem>
+                        <SelectItem value="60">1 hora</SelectItem>
+                        <SelectItem value="90">1.5 horas</SelectItem>
+                        <SelectItem value="120">2 horas</SelectItem>
+                        <SelectItem value="150">2.5 horas</SelectItem>
+                        <SelectItem value="180">3 horas</SelectItem>
+                        <SelectItem value="210">3.5 horas</SelectItem>
+                        <SelectItem value="240">4 horas</SelectItem>
+                        <SelectItem value="270">4.5 horas</SelectItem>
+                        <SelectItem value="300">5 horas</SelectItem>
+                        <SelectItem value="330">5.5 horas</SelectItem>
+                        <SelectItem value="360">6 horas</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div className="space-y-2">

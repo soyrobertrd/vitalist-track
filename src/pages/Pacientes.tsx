@@ -12,7 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { PacienteDetailDialog } from "@/components/PacienteDetailDialog";
 import { ImportPacientesDialog } from "@/components/ImportPacientesDialog";
+import { EditPacienteDialog } from "@/components/EditPacienteDialog";
 import { addDays, format, isWeekend } from "date-fns";
+import { Pencil } from "lucide-react";
 
 interface Paciente {
   id: string;
@@ -29,7 +31,9 @@ interface Paciente {
 const Pacientes = () => {
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [selectedPacienteId, setSelectedPacienteId] = useState<string | null>(null);
+  const [selectedPaciente, setSelectedPaciente] = useState<any>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -214,6 +218,10 @@ const Pacientes = () => {
       default:
         return "bg-destructive text-destructive-foreground";
     }
+  };
+
+  const capitalizeStatus = (status: string) => {
+    return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
   const getDificultadColor = (dificultad: string) => {
@@ -496,20 +504,35 @@ const Pacientes = () => {
         {filteredPacientes.map((paciente) => (
           <Card 
             key={paciente.id} 
-            className="cursor-pointer hover:bg-accent transition-colors"
-            onClick={() => {
-              setSelectedPacienteId(paciente.id);
-              setDetailOpen(true);
-            }}
+            className="hover:bg-accent transition-colors"
           >
             <CardHeader>
               <div className="flex justify-between items-start">
-                <CardTitle className="text-lg">
+                <CardTitle 
+                  className="text-lg cursor-pointer flex-1"
+                  onClick={() => {
+                    setSelectedPacienteId(paciente.id);
+                    setDetailOpen(true);
+                  }}
+                >
                   {paciente.nombre} {paciente.apellido}
                 </CardTitle>
-                <Badge className={getStatusColor(paciente.status_px)}>
-                  {paciente.status_px}
-                </Badge>
+                <div className="flex gap-2 items-center">
+                  <Badge className={getStatusColor(paciente.status_px)}>
+                    {capitalizeStatus(paciente.status_px)}
+                  </Badge>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPaciente(paciente);
+                      setEditOpen(true);
+                    }}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -548,6 +571,13 @@ const Pacientes = () => {
         pacienteId={selectedPacienteId}
         open={detailOpen}
         onOpenChange={setDetailOpen}
+      />
+
+      <EditPacienteDialog
+        paciente={selectedPaciente}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSuccess={fetchPacientes}
       />
 
       <ImportPacientesDialog

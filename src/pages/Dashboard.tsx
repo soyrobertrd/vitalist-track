@@ -42,7 +42,7 @@ const Dashboard = () => {
       const [pacientes, activos, llamadas, visitas] = await Promise.all([
         supabase.from("pacientes").select("id", { count: "exact", head: true }),
         supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("status_px", "activo"),
-        supabase.from("parametros_seguimiento").select("id", { count: "exact", head: true }).lte("fecha_proxima_llamada_prog", new Date().toISOString().split("T")[0]),
+        supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]),
         supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").gte("fecha_hora_visita", new Date().toISOString().split("T")[0]).lte("fecha_hora_visita", new Date(new Date().setHours(23, 59, 59)).toISOString()),
       ]);
 

@@ -42,6 +42,7 @@ const Llamadas = () => {
   const [selectedLlamada, setSelectedLlamada] = useState<Llamada | null>(null);
   
   // Filtros
+  const [filtrosVisible, setFiltrosVisible] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState<string>("todos");
   const [filtroResultado, setFiltroResultado] = useState<string>("todos");
   const [filtroProfesional, setFiltroProfesional] = useState<string>("todos");
@@ -336,8 +337,20 @@ const Llamadas = () => {
       {/* Indicadores de Rendimiento */}
       <IndicadoresLlamadas />
 
+      {/* Toggle Filtros */}
+      <div className="flex justify-between items-center">
+        <Button 
+          variant="outline" 
+          onClick={() => setFiltrosVisible(!filtrosVisible)}
+        >
+          <Filter className="mr-2 h-4 w-4" />
+          {filtrosVisible ? "Ocultar Filtros" : "Mostrar Filtros"}
+        </Button>
+      </div>
+
       {/* Filtros */}
-      <Card>
+      {filtrosVisible && (
+        <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
@@ -423,6 +436,7 @@ const Llamadas = () => {
           </div>
         </CardContent>
       </Card>
+      )}
 
       {/* Tabs de Agendadas vs Historial */}
       <Tabs defaultValue="agendadas">
