@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { PacienteCombobox } from "@/components/PacienteCombobox";
+import { ProfesionalCombobox } from "@/components/ProfesionalCombobox";
 
 interface AgendarLlamadaDialogProps {
   open: boolean;
@@ -24,6 +25,8 @@ export function AgendarLlamadaDialog({
   onSuccess,
 }: AgendarLlamadaDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [pacienteId, setPacienteId] = useState<string>("");
+  const [profesionalId, setProfesionalId] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,9 +38,22 @@ export function AgendarLlamadaDialog({
     const horaAgendada = formData.get("hora_agendada") as string;
     const fechaHoraAgendada = `${fechaAgendada}T${horaAgendada}:00`;
 
+    // Validar si ya existe una llamada agendada para este paciente
+    const { data: existingLlamadas } = await supabase
+      .from("registro_llamadas")
+      .select("id")
+      .eq("paciente_id", pacienteId)
+      .in("estado", ["agendada", "pendiente"]);
+
+    if (existingLlamadas && existingLlamadas.length > 0) {
+      toast.error("Este paciente ya tiene una llamada agendada o pendiente");
+      setLoading(false);
+      return;
+    }
+
     const data = {
-      paciente_id: formData.get("paciente_id") as string,
-      profesional_id: formData.get("profesional_id") as string,
+      paciente_id: pacienteId,
+      profesional_id: profesionalId,
       motivo: formData.get("motivo") as string,
       duracion_estimada: parseInt(formData.get("duracion_estimada") as string) || null,
       fecha_agendada: fechaHoraAgendada,
@@ -52,6 +68,8 @@ export function AgendarLlamadaDialog({
       toast.error("Error al agendar la llamada");
     } else {
       toast.success("Llamada agendada exitosamente");
+      setPacienteId("");
+      setProfesionalId("");
       onOpenChange(false);
       onSuccess();
       (e.target as HTMLFormElement).reset();
@@ -69,33 +87,21 @@ export function AgendarLlamadaDialog({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="paciente_id">Paciente *</Label>
-              <Select name="paciente_id" required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar paciente" />
-                </SelectTrigger>
-                <SelectContent>
-                  {pacientes.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.nombre} {p.apellido} - {p.cedula}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <PacienteCombobox
+                pacientes={pacientes}
+                value={pacienteId}
+                onValueChange={setPacienteId}
+                required
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="profesional_id">Profesional Asignado *</Label>
-              <Select name="profesional_id" required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar profesional" />
-                </SelectTrigger>
-                <SelectContent>
-                  {personal.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.nombre} {p.apellido}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ProfesionalCombobox
+                profesionales={personal}
+                value={profesionalId}
+                onValueChange={setProfesionalId}
+                required
+              />
             </div>
           </div>
 

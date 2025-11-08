@@ -21,6 +21,7 @@ import Automatizaciones from "./pages/Automatizaciones";
 import Encuestas from "./pages/Encuestas";
 import AtencionPaciente from "./pages/AtencionPaciente";
 import Reportes from "./pages/Reportes";
+import Soporte from "./pages/Soporte";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -105,6 +106,10 @@ const App = () => {
               <Route
                 path="/reportes"
                 element={session ? <Layout><Reportes /></Layout> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/soporte"
+                element={session ? <Layout><Soporte /></Layout> : <Navigate to="/auth" />}
               />
               <Route path="*" element={<NotFound />} />
             </Routes>

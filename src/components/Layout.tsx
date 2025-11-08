@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,11 +15,18 @@ import {
   Sun,
   Moon,
   Monitor,
+  Mail,
+  Stethoscope,
+  HelpCircle,
+  BarChart3,
+  MessageSquare,
+  Cog,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useUserRole } from "@/hooks/useUserRole";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -29,6 +36,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
 
 interface LayoutProps {
   children: ReactNode;
@@ -39,6 +48,8 @@ const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const { theme, setTheme, sidebarCollapsed, setSidebarCollapsed } = useTheme();
   const { profile } = useUserProfile();
+  const { isAdmin } = useUserRole();
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -47,6 +58,10 @@ const Layout = ({ children }: LayoutProps) => {
     } else {
       navigate("/auth");
     }
+  };
+
+  const toggleSubmenu = (path: string) => {
+    setOpenSubmenu(openSubmenu === path ? null : path);
   };
 
   const themeIcons = {
@@ -59,31 +74,37 @@ const Layout = ({ children }: LayoutProps) => {
 
   const menuItems = [
     { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-    { 
-      path: "/pacientes", 
-      icon: Users, 
-      label: "Pacientes",
-      submenu: [
-        { path: "/atencion-paciente", label: "Atención al Paciente" }
-      ]
-    },
-    { path: "/personal", icon: UserCog, label: "Personal" },
     { path: "/llamadas", icon: Phone, label: "Llamadas" },
     { path: "/visitas", icon: Calendar, label: "Visitas" },
-    { 
-      path: "/configuracion", 
-      icon: Settings, 
-      label: "Configuración",
-      submenu: [
-        { path: "/plantillas-correo", label: "Plantillas de Correo" }
+    {
+      path: "/pacientes",
+      icon: Users,
+      label: "Pacientes",
+      subItems: [
+        { path: "/pacientes", label: "Lista de Pacientes" },
+        { path: "/atencion-paciente", label: "Atención al Paciente", icon: Stethoscope }
       ]
     },
+    { path: "/personal", icon: UserCog, label: "Personal", adminOnly: true },
+    { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
+    { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
+    { path: "/reportes", icon: BarChart3, label: "Reportes" },
+    {
+      path: "/configuracion",
+      icon: Settings,
+      label: "Configuración",
+      subItems: [
+        { path: "/configuracion", label: "Mi Perfil" },
+        { path: "/plantillas-correo", label: "Plantillas de Correo", icon: Mail }
+      ]
+    },
+    { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
 
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`${
           sidebarCollapsed ? "w-16" : "w-64"
         } bg-sidebar border-r border-sidebar-border transition-all duration-300`}
@@ -123,51 +144,68 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-2 space-y-1">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              const hasSubmenu = 'submenu' in item && item.submenu;
-              return (
-                <div key={item.path}>
-                  <Link to={item.path}>
-                    <Button
-                      variant={isActive ? "default" : "ghost"}
-                      className={`w-full ${
-                        sidebarCollapsed ? "justify-center px-2" : "justify-start"
-                      } ${
-                        isActive
-                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                          : "text-sidebar-foreground hover:bg-sidebar-accent"
-                      }`}
-                      title={sidebarCollapsed ? item.label : undefined}
-                    >
-                      <Icon className={sidebarCollapsed ? "h-5 w-5" : "mr-2 h-4 w-4"} />
-                      {!sidebarCollapsed && <span>{item.label}</span>}
-                    </Button>
-                  </Link>
-                  {hasSubmenu && !sidebarCollapsed && (
-                    <div className="ml-4 mt-1 space-y-1">
-                      {item.submenu!.map((sub) => (
-                        <Link key={sub.path} to={sub.path}>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className={`w-full justify-start text-sm ${
-                              location.pathname === sub.path
-                                ? "bg-sidebar-accent text-foreground"
-                                : "text-sidebar-foreground/80 hover:bg-sidebar-accent"
-                            }`}
-                          >
-                            {sub.label}
-                          </Button>
+          <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
+            {menuItems.filter(item => !item.adminOnly || (item.adminOnly && isAdmin)).map((item) => (
+              <div key={item.path}>
+                {'subItems' in item && item.subItems ? (
+                  <Collapsible open={openSubmenu === item.path} onOpenChange={() => toggleSubmenu(item.path)}>
+                    <CollapsibleTrigger asChild>
+                      <button
+                        className={cn(
+                          "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                          "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                          "focus:outline-none focus:ring-2 focus:ring-primary/20",
+                          "text-sidebar-foreground"
+                        )}
+                      >
+                        <item.icon className="h-4 w-4 shrink-0" />
+                        {!sidebarCollapsed && (
+                          <>
+                            <span className="flex-1 text-left">{item.label}</span>
+                            <ChevronRight
+                              className={cn(
+                                "h-4 w-4 transition-transform duration-200",
+                                openSubmenu === item.path && "rotate-90"
+                              )}
+                            />
+                          </>
+                        )}
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="space-y-1 mt-1">
+                      {item.subItems.map((subItem) => (
+                        <Link
+                          key={subItem.path}
+                          to={subItem.path}
+                          className={cn(
+                            "flex items-center gap-3 px-3 py-2 ml-6 rounded-lg text-sm font-medium transition-all duration-200",
+                            location.pathname === subItem.path
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                          )}
+                        >
+                          {subItem.icon && <subItem.icon className="h-4 w-4 shrink-0" />}
+                          {!sidebarCollapsed && subItem.label}
                         </Link>
                       ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                    </CollapsibleContent>
+                  </Collapsible>
+                ) : (
+                  <Link
+                    to={item.path}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                      location.pathname === item.path
+                        ? "bg-primary/10 text-primary"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    {!sidebarCollapsed && <span>{item.label}</span>}
+                  </Link>
+                )}
+              </div>
+            ))}
           </nav>
 
           {/* User Profile & Theme Selector */}
@@ -252,7 +290,7 @@ const Layout = ({ children }: LayoutProps) => {
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
-        <div className="p-8">{children}</div>
+        <div className="p-4 sm:p-6 lg:p-8">{children}</div>
       </main>
     </div>
   );

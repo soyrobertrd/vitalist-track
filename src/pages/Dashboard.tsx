@@ -4,6 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, Phone, Calendar, AlertCircle, TrendingUp, Activity, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StatsCard } from "@/components/StatsCard";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { toZonedTime } from "date-fns-tz";
 import {
   LineChart,
   Line,
@@ -23,6 +26,7 @@ import {
 } from "recharts";
 
 const Dashboard = () => {
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [stats, setStats] = useState({
     totalPacientes: 0,
     pacientesActivos: 0,
@@ -36,6 +40,15 @@ const Dashboard = () => {
     visitsStatus: [] as any[],
     monthlyTrend: [] as any[],
   });
+
+  useEffect(() => {
+    // Update time every second
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -86,12 +99,26 @@ const Dashboard = () => {
   }, []);
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--warning))"];
+  const dominicanTime = toZonedTime(currentTime, "America/Santo_Domingo");
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">Resumen completo del seguimiento de pacientes</p>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground">Resumen completo del seguimiento de pacientes</p>
+        </div>
+        <div className="flex items-center gap-2 text-muted-foreground bg-card p-3 rounded-lg border">
+          <Clock className="h-5 w-5" />
+          <div className="text-right">
+            <div className="text-sm font-medium text-foreground">
+              {format(dominicanTime, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
+            </div>
+            <div className="text-lg font-bold text-primary">
+              {format(dominicanTime, "hh:mm:ss a", { locale: es })}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Stats Grid */}
