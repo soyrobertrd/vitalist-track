@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Check, ChevronsUpDown, Search } from "lucide-react";
+import { useState } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +37,7 @@ export function PacienteCombobox({
   placeholder = "Seleccionar paciente...",
   required = false,
 }: PacienteComboboxProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const selectedPaciente = pacientes.find((p) => p.id === value);
 
