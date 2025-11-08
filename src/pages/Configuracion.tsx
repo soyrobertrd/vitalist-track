@@ -9,11 +9,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Upload, Lock, User, HelpCircle, Bell, Eye, Shield } from "lucide-react";
+import { 
+  ArrowLeft, Upload, Lock, User, HelpCircle, Bell, Eye, Shield, 
+  Briefcase, Calendar, FileText, TrendingUp, MessageSquare, 
+  Clock, Settings, Zap
+} from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 
 const Configuracion = () => {
   const navigate = useNavigate();
@@ -40,13 +45,6 @@ const Configuracion = () => {
     confirmPassword: "",
   });
 
-  const [newProfile, setNewProfile] = useState({
-    cedula: "",
-    nombre: "",
-    apellido: "",
-    telefono: "",
-    especialidad: "",
-  });
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -124,34 +122,6 @@ const Configuracion = () => {
     }
   };
 
-  const handleCreateProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("No hay usuario autenticado");
-        return;
-      }
-      const { error } = await supabase
-        .from("profiles")
-        .insert([{
-          id: user.id,
-          cedula: newProfile.cedula,
-          nombre: newProfile.nombre,
-          apellido: newProfile.apellido,
-          email: user.email,
-          telefono: newProfile.telefono,
-          especialidad: newProfile.especialidad,
-          avatar_url: null,
-          foto_url: null,
-        }]);
-      if (error) throw error;
-      toast.success("Perfil creado");
-      window.location.reload();
-    } catch (err: any) {
-      toast.error(err.message || "No se pudo crear el perfil");
-    }
-  };
 
   // Update form data cuando el perfil carga
   useState(() => {
@@ -176,41 +146,15 @@ const Configuracion = () => {
 
   if (!profile) {
     return (
-      <div className="max-w-2xl mx-auto w-full space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Mi Perfil</h1>
-          <p className="text-muted-foreground">Completa tu información para continuar</p>
-        </div>
-        <GlassCard className="p-6 space-y-6">
-          <form onSubmit={handleCreateProfile} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="nombre">Nombre</Label>
-                <Input id="nombre" value={newProfile.nombre} onChange={(e) => setNewProfile({ ...newProfile, nombre: e.target.value })} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="apellido">Apellido</Label>
-                <Input id="apellido" value={newProfile.apellido} onChange={(e) => setNewProfile({ ...newProfile, apellido: e.target.value })} required />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="cedula">Cédula</Label>
-                <Input id="cedula" value={newProfile.cedula} onChange={(e) => setNewProfile({ ...newProfile, cedula: e.target.value })} placeholder="00000000000" maxLength={11} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="telefono">Teléfono</Label>
-                <Input id="telefono" value={newProfile.telefono} onChange={(e) => setNewProfile({ ...newProfile, telefono: e.target.value })} placeholder="809-000-0000" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="especialidad">Especialidad</Label>
-              <Input id="especialidad" value={newProfile.especialidad} onChange={(e) => setNewProfile({ ...newProfile, especialidad: e.target.value })} placeholder="Ej: Cardiología" />
-            </div>
-            <div className="flex justify-end">
-              <Button type="submit">Crear Perfil</Button>
-            </div>
-          </form>
+      <div className="flex items-center justify-center h-full">
+        <GlassCard className="p-8 text-center space-y-4">
+          <h2 className="text-2xl font-bold text-destructive">No se pudo cargar el perfil</h2>
+          <p className="text-muted-foreground">
+            Tu perfil aún no está configurado en el sistema. Por favor contacta al administrador.
+          </p>
+          <Button onClick={() => navigate("/soporte")}>
+            Contactar Soporte
+          </Button>
         </GlassCard>
       </div>
     );
@@ -224,14 +168,14 @@ const Configuracion = () => {
         </Button>
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold">Configuración</h1>
+            <h1 className="text-3xl font-bold">Mi Perfil</h1>
             {isAdmin && (
               <Badge variant="destructive" className="bg-gradient-to-r from-[hsl(var(--admin-primary))] to-[hsl(var(--admin-secondary))]">
                 Admin
               </Badge>
             )}
           </div>
-          <p className="text-muted-foreground">Administra tu perfil y preferencias</p>
+          <p className="text-muted-foreground">Administra tu información personal y preferencias</p>
         </div>
         {isAdmin && (
           <Button 
@@ -244,36 +188,57 @@ const Configuracion = () => {
         )}
       </div>
 
-      <Tabs defaultValue="perfil" className="space-y-6">
-        <TabsList className="grid grid-cols-5 gap-2">
-          <TabsTrigger value="perfil">
+      <Tabs defaultValue="personal" className="space-y-6">
+        <TabsList className="grid grid-cols-5 lg:grid-cols-10 gap-2">
+          <TabsTrigger value="personal">
             <User className="mr-2 h-4 w-4" />
-            Perfil
+            <span className="hidden lg:inline">Personal</span>
+          </TabsTrigger>
+          <TabsTrigger value="cuenta">
+            <Settings className="mr-2 h-4 w-4" />
+            <span className="hidden lg:inline">Cuenta</span>
+          </TabsTrigger>
+          <TabsTrigger value="actividad">
+            <TrendingUp className="mr-2 h-4 w-4" />
+            <span className="hidden lg:inline">Actividad</span>
+          </TabsTrigger>
+          <TabsTrigger value="agenda">
+            <Calendar className="mr-2 h-4 w-4" />
+            <span className="hidden lg:inline">Agenda</span>
+          </TabsTrigger>
+          <TabsTrigger value="documentos">
+            <FileText className="mr-2 h-4 w-4" />
+            <span className="hidden lg:inline">Documentos</span>
           </TabsTrigger>
           <TabsTrigger value="interfaz">
             <Eye className="mr-2 h-4 w-4" />
-            Interfaz
+            <span className="hidden lg:inline">Interfaz</span>
           </TabsTrigger>
           <TabsTrigger value="notificaciones">
             <Bell className="mr-2 h-4 w-4" />
-            Notificaciones
+            <span className="hidden lg:inline">Notificaciones</span>
           </TabsTrigger>
           <TabsTrigger value="seguridad">
             <Lock className="mr-2 h-4 w-4" />
-            Seguridad
+            <span className="hidden lg:inline">Seguridad</span>
+          </TabsTrigger>
+          <TabsTrigger value="integraciones">
+            <Zap className="mr-2 h-4 w-4" />
+            <span className="hidden lg:inline">Integraciones</span>
           </TabsTrigger>
           <TabsTrigger value="soporte">
             <HelpCircle className="mr-2 h-4 w-4" />
-            Soporte
+            <span className="hidden lg:inline">Soporte</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="perfil" className="space-y-6">
+        {/* 1. Información Personal y Profesional */}
+        <TabsContent value="personal" className="space-y-6">
           <GlassCard className="p-6 space-y-6">
             <div>
-              <h2 className="text-2xl font-bold mb-2">Información del Perfil</h2>
+              <h2 className="text-2xl font-bold mb-2">Información Personal y Profesional</h2>
               <p className="text-muted-foreground">
-                Actualiza tu información personal y foto de perfil
+                Datos identificativos y laborales básicos
               </p>
             </div>
             <div className="space-y-6">
@@ -306,29 +271,41 @@ const Configuracion = () => {
                 </div>
               </div>
 
-              {/* Read-only fields from API */}
-              <div className="grid grid-cols-2 gap-4">
+              <Separator />
+
+              {/* Información básica */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Cédula</Label>
-                  <Input value={profile.cedula} disabled />
+                  <Label className="text-muted-foreground">Nombre Completo</Label>
+                  <p className="text-lg font-medium">{profile.nombre} {profile.apellido}</p>
                 </div>
                 <div className="space-y-2">
-                  <Label>Email</Label>
-                  <Input value={profile.email} disabled />
+                  <Label className="text-muted-foreground">Cargo</Label>
+                  <p className="text-lg font-medium">{profile.especialidad || "No especificado"}</p>
                 </div>
                 <div className="space-y-2">
-                  <Label>Nombre</Label>
-                  <Input value={profile.nombre} disabled />
+                  <Label className="text-muted-foreground">Cédula</Label>
+                  <p className="text-lg font-medium">{profile.cedula}</p>
                 </div>
                 <div className="space-y-2">
-                  <Label>Apellido</Label>
-                  <Input value={profile.apellido} disabled />
+                  <Label className="text-muted-foreground">Rol en el Sistema</Label>
+                  <Badge variant="outline">{profile.rol}</Badge>
                 </div>
               </div>
 
-              {/* Editable fields */}
-              <form onSubmit={handleProfileUpdate} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <Separator />
+
+              {/* Información de contacto */}
+              <div>
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                  <Briefcase className="h-4 w-4" />
+                  Información de Contacto
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-muted-foreground">Email Corporativo</Label>
+                    <p className="text-lg font-medium">{profile.email}</p>
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="telefono">Teléfono</Label>
                     <Input
@@ -338,15 +315,19 @@ const Configuracion = () => {
                       placeholder="809-123-4567"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="especialidad">Especialidad</Label>
-                    <Input
-                      id="especialidad"
-                      value={formData.especialidad}
-                      onChange={(e) => setFormData({ ...formData, especialidad: e.target.value })}
-                      placeholder="Ej: Cardiología"
-                    />
-                  </div>
+                </div>
+              </div>
+
+              {/* Información profesional editable */}
+              <form onSubmit={handleProfileUpdate} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="especialidad">Especialidad / Área</Label>
+                  <Input
+                    id="especialidad"
+                    value={formData.especialidad}
+                    onChange={(e) => setFormData({ ...formData, especialidad: e.target.value })}
+                    placeholder="Ej: Cardiología, Enfermería, Administración"
+                  />
                 </div>
                 <Button type="submit">Guardar Cambios</Button>
               </form>
@@ -355,6 +336,139 @@ const Configuracion = () => {
 
         </TabsContent>
 
+        {/* 2. Configuración de Cuenta */}
+        <TabsContent value="cuenta" className="space-y-6">
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Configuración de Cuenta</h2>
+              <p className="text-muted-foreground">Opciones de seguridad y preferencias</p>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold mb-4">Preferencias de Usuario</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <Label className="text-base">Idioma</Label>
+                      <p className="text-sm text-muted-foreground">Español</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <Label className="text-base">Zona Horaria</Label>
+                      <p className="text-sm text-muted-foreground">America/Santo_Domingo (AST)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
+                <h3 className="font-semibold mb-4">Permisos y Roles</h3>
+                <div className="p-4 border rounded-lg space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>Rol Actual</Label>
+                    <Badge>{profile.rol}</Badge>
+                  </div>
+                  {isAdmin && (
+                    <p className="text-sm text-muted-foreground">
+                      Tienes acceso completo al sistema como administrador
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        </TabsContent>
+
+        {/* 3. Resumen de Actividad */}
+        <TabsContent value="actividad" className="space-y-6">
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Resumen de Actividad y Desempeño</h2>
+              <p className="text-muted-foreground">Estadísticas personalizadas y actividades recientes</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 border rounded-lg space-y-2">
+                <Label className="text-muted-foreground">Llamadas Este Mes</Label>
+                <p className="text-3xl font-bold">0</p>
+              </div>
+              <div className="p-4 border rounded-lg space-y-2">
+                <Label className="text-muted-foreground">Visitas Programadas</Label>
+                <p className="text-3xl font-bold">0</p>
+              </div>
+              <div className="p-4 border rounded-lg space-y-2">
+                <Label className="text-muted-foreground">Pacientes Asignados</Label>
+                <p className="text-3xl font-bold">0</p>
+              </div>
+            </div>
+
+            <Separator />
+
+            <div>
+              <h3 className="font-semibold mb-4">Actividades Recientes</h3>
+              <div className="space-y-2">
+                <p className="text-muted-foreground text-sm">No hay actividades recientes</p>
+              </div>
+            </div>
+          </GlassCard>
+        </TabsContent>
+
+        {/* 4. Agenda y Recordatorios */}
+        <TabsContent value="agenda" className="space-y-6">
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Agenda y Recordatorios</h2>
+              <p className="text-muted-foreground">Calendario personal y tareas pendientes</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Próximas Citas
+                </h3>
+                <p className="text-muted-foreground text-sm">No hay citas programadas</p>
+              </div>
+
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Tareas Pendientes
+                </h3>
+                <p className="text-muted-foreground text-sm">No hay tareas pendientes</p>
+              </div>
+            </div>
+          </GlassCard>
+        </TabsContent>
+
+        {/* 5. Documentos */}
+        <TabsContent value="documentos" className="space-y-6">
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Documentos y Archivos</h2>
+              <p className="text-muted-foreground">Contratos, constancias y documentos asociados</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 border rounded-lg flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">Documentos Personales</p>
+                    <p className="text-sm text-muted-foreground">0 archivos</p>
+                  </div>
+                </div>
+                <Button variant="outline">Ver Todos</Button>
+              </div>
+            </div>
+          </GlassCard>
+        </TabsContent>
+
+        {/* 6. Interfaz */}
         <TabsContent value="interfaz">
           <GlassCard className="p-6 space-y-6">
             <div>
@@ -416,6 +530,7 @@ const Configuracion = () => {
           </GlassCard>
         </TabsContent>
 
+        {/* 7. Notificaciones */}
         <TabsContent value="notificaciones">
           <GlassCard className="p-6 space-y-6">
             <div>
@@ -473,14 +588,19 @@ const Configuracion = () => {
           </GlassCard>
         </TabsContent>
 
+        {/* 8. Seguridad */}
         <TabsContent value="seguridad">
           <GlassCard className="p-6 space-y-6">
             <div>
               <h2 className="text-2xl font-bold mb-2">Seguridad</h2>
               <p className="text-muted-foreground">
-                Actualiza tu contraseña para mantener tu cuenta segura
+                Actualiza tu contraseña y gestiona la seguridad de tu cuenta
               </p>
             </div>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold mb-4">Cambiar Contraseña</h3>
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">Nueva Contraseña</Label>
@@ -512,9 +632,58 @@ const Configuracion = () => {
                   {changingPassword ? "Actualizando..." : "Cambiar Contraseña"}
                 </Button>
               </form>
+              </div>
+
+              <Separator />
+
+              <div>
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Historial de Acceso
+                </h3>
+                <div className="p-4 border rounded-lg">
+                  <p className="text-muted-foreground text-sm">Último acceso: Hoy</p>
+                </div>
+              </div>
+            </div>
           </GlassCard>
         </TabsContent>
 
+        {/* 9. Integraciones */}
+        <TabsContent value="integraciones">
+          <GlassCard className="p-6 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Integraciones y Herramientas</h2>
+              <p className="text-muted-foreground">Conecta con herramientas externas</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 border rounded-lg flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">Calendario Google</p>
+                    <p className="text-sm text-muted-foreground">Sincroniza tus citas</p>
+                  </div>
+                </div>
+                <Button variant="outline">Conectar</Button>
+              </div>
+
+              <div className="p-4 border rounded-lg flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">Correo Corporativo</p>
+                    <p className="text-sm text-muted-foreground">Integración con email</p>
+                  </div>
+                </div>
+                <Button variant="outline">Conectar</Button>
+              </div>
+            </div>
+          </GlassCard>
+        </TabsContent>
+
+        {/* 10. Soporte */}
         <TabsContent value="soporte">
           <GlassCard className="p-6 space-y-6">
             <div>
@@ -541,7 +710,9 @@ const Configuracion = () => {
                   Sábados: 9:00 AM - 1:00 PM
                 </p>
               </div>
-              <Button className="w-full">Enviar Ticket de Soporte</Button>
+              <Button className="w-full" onClick={() => navigate("/soporte")}>
+                Enviar Ticket de Soporte
+              </Button>
             </div>
           </GlassCard>
         </TabsContent>
