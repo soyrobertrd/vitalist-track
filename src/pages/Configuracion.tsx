@@ -40,6 +40,14 @@ const Configuracion = () => {
     confirmPassword: "",
   });
 
+  const [newProfile, setNewProfile] = useState({
+    cedula: "",
+    nombre: "",
+    apellido: "",
+    telefono: "",
+    especialidad: "",
+  });
+
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !profile) return;
@@ -116,7 +124,36 @@ const Configuracion = () => {
     }
   };
 
-  // Update form data when profile loads
+  const handleCreateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("No hay usuario autenticado");
+        return;
+      }
+      const { error } = await supabase
+        .from("profiles")
+        .insert([{
+          id: user.id,
+          cedula: newProfile.cedula,
+          nombre: newProfile.nombre,
+          apellido: newProfile.apellido,
+          email: user.email,
+          telefono: newProfile.telefono,
+          especialidad: newProfile.especialidad,
+          avatar_url: null,
+          foto_url: null,
+        }]);
+      if (error) throw error;
+      toast.success("Perfil creado");
+      window.location.reload();
+    } catch (err: any) {
+      toast.error(err.message || "No se pudo crear el perfil");
+    }
+  };
+
+  // Update form data cuando el perfil carga
   useState(() => {
     if (profile) {
       setFormData({
@@ -139,11 +176,42 @@ const Configuracion = () => {
 
   if (!profile) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center space-y-4">
-          <p className="text-destructive">Error al cargar el perfil</p>
-          <Button onClick={() => window.location.reload()}>Reintentar</Button>
+      <div className="max-w-2xl mx-auto w-full space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">Mi Perfil</h1>
+          <p className="text-muted-foreground">Completa tu información para continuar</p>
         </div>
+        <GlassCard className="p-6 space-y-6">
+          <form onSubmit={handleCreateProfile} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="nombre">Nombre</Label>
+                <Input id="nombre" value={newProfile.nombre} onChange={(e) => setNewProfile({ ...newProfile, nombre: e.target.value })} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="apellido">Apellido</Label>
+                <Input id="apellido" value={newProfile.apellido} onChange={(e) => setNewProfile({ ...newProfile, apellido: e.target.value })} required />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="cedula">Cédula</Label>
+                <Input id="cedula" value={newProfile.cedula} onChange={(e) => setNewProfile({ ...newProfile, cedula: e.target.value })} placeholder="00000000000" maxLength={11} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="telefono">Teléfono</Label>
+                <Input id="telefono" value={newProfile.telefono} onChange={(e) => setNewProfile({ ...newProfile, telefono: e.target.value })} placeholder="809-000-0000" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="especialidad">Especialidad</Label>
+              <Input id="especialidad" value={newProfile.especialidad} onChange={(e) => setNewProfile({ ...newProfile, especialidad: e.target.value })} placeholder="Ej: Cardiología" />
+            </div>
+            <div className="flex justify-end">
+              <Button type="submit">Crear Perfil</Button>
+            </div>
+          </form>
+        </GlassCard>
       </div>
     );
   }
