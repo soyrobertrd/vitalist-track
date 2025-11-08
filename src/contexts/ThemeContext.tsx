@@ -14,6 +14,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  console.log("ThemeProvider: mounting");
   const [theme, setThemeState] = useState<Theme>("standard");
   const [sidebarCollapsed, setSidebarCollapsedState] = useState(false);
   const { toast } = useToast();
