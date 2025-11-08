@@ -87,11 +87,13 @@ export type Database = {
           condiciones: Json | null
           created_at: string | null
           descripcion: string | null
+          destinatarios: string[] | null
           encuesta_id: string | null
           id: string
           nombre: string
           parametros: Json | null
           plantilla_correo_id: string | null
+          tiempo_ejecucion: string | null
           trigger_evento: string
           updated_at: string | null
         }
@@ -101,11 +103,13 @@ export type Database = {
           condiciones?: Json | null
           created_at?: string | null
           descripcion?: string | null
+          destinatarios?: string[] | null
           encuesta_id?: string | null
           id?: string
           nombre: string
           parametros?: Json | null
           plantilla_correo_id?: string | null
+          tiempo_ejecucion?: string | null
           trigger_evento: string
           updated_at?: string | null
         }
@@ -115,11 +119,13 @@ export type Database = {
           condiciones?: Json | null
           created_at?: string | null
           descripcion?: string | null
+          destinatarios?: string[] | null
           encuesta_id?: string | null
           id?: string
           nombre?: string
           parametros?: Json | null
           plantilla_correo_id?: string | null
+          tiempo_ejecucion?: string | null
           trigger_evento?: string
           updated_at?: string | null
         }

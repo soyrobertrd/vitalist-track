@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Zap, Settings, Trash2 } from "lucide-react";
+import { Plus, Zap, Trash2, Clock, Users } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
 interface Automatizacion {
@@ -19,6 +20,8 @@ interface Automatizacion {
   trigger_evento: string;
   accion: string;
   activo: boolean;
+  tiempo_ejecucion: string;
+  destinatarios: string[];
   created_at: string;
 }
 
@@ -32,6 +35,8 @@ const Automatizaciones = () => {
     trigger_evento: "cita_cerrada",
     accion: "enviar_correo",
     activo: true,
+    tiempo_ejecucion: "0_minutos",
+    destinatarios: ["paciente"],
   });
 
   useEffect(() => {
@@ -67,6 +72,8 @@ const Automatizaciones = () => {
         trigger_evento: "cita_cerrada",
         accion: "enviar_correo",
         activo: true,
+        tiempo_ejecucion: "0_minutos",
+        destinatarios: ["paciente"],
       });
       fetchAutomatizaciones();
     }
@@ -104,6 +111,7 @@ const Automatizaciones = () => {
       encuesta_baja: "Encuesta con baja puntuación",
       llamada_no_contestada: "Llamada no contestada",
       visita_completada: "Al completar visita",
+      receta_proxima_vencer: "Receta próxima a vencer",
     };
     return labels[trigger] || trigger;
   };
@@ -117,6 +125,40 @@ const Automatizaciones = () => {
       asignar_profesional: "Asignar profesional",
     };
     return labels[accion] || accion;
+  };
+
+  const getTiempoLabel = (tiempo: string) => {
+    const labels: Record<string, string> = {
+      "0_minutos": "Inmediatamente",
+      "15_minutos": "15 minutos después",
+      "30_minutos": "30 minutos después",
+      "1_hora": "1 hora después",
+      "2_horas": "2 horas después",
+      "1_dia": "1 día después",
+      "2_dias": "2 días después",
+      "1_dia_antes": "1 día antes",
+      "2_dias_antes": "2 días antes",
+      "1_semana_antes": "1 semana antes",
+    };
+    return labels[tiempo] || tiempo;
+  };
+
+  const getDestinatariosLabel = (destinatarios: string[]) => {
+    const labels: Record<string, string> = {
+      paciente: "Paciente",
+      profesional: "Profesional",
+      cuidador: "Cuidador",
+    };
+    return destinatarios.map(d => labels[d] || d).join(", ");
+  };
+
+  const handleDestinatarioChange = (destinatario: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      destinatarios: checked
+        ? [...prev.destinatarios, destinatario]
+        : prev.destinatarios.filter(d => d !== destinatario)
+    }));
   };
 
   return (
@@ -133,7 +175,7 @@ const Automatizaciones = () => {
               Nueva Automatización
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Nueva Automatización</DialogTitle>
             </DialogHeader>
@@ -167,12 +209,13 @@ const Automatizaciones = () => {
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="cita_cerrada">Al cerrar cita</SelectItem>
                       <SelectItem value="cita_agendada">Al agendar cita</SelectItem>
                       <SelectItem value="encuesta_baja">Encuesta con baja puntuación</SelectItem>
                       <SelectItem value="llamada_no_contestada">Llamada no contestada</SelectItem>
                       <SelectItem value="visita_completada">Al completar visita</SelectItem>
+                      <SelectItem value="receta_proxima_vencer">Receta próxima a vencer</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -186,7 +229,7 @@ const Automatizaciones = () => {
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="enviar_correo">Enviar correo</SelectItem>
                       <SelectItem value="enviar_encuesta">Enviar encuesta</SelectItem>
                       <SelectItem value="crear_tarea">Crear tarea</SelectItem>
@@ -194,6 +237,72 @@ const Automatizaciones = () => {
                       <SelectItem value="asignar_profesional">Asignar profesional</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Tiempo de Ejecución
+                </Label>
+                <Select
+                  value={formData.tiempo_ejecucion}
+                  onValueChange={(value) => setFormData({ ...formData, tiempo_ejecucion: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="0_minutos">Inmediatamente</SelectItem>
+                    <SelectItem value="15_minutos">15 minutos después</SelectItem>
+                    <SelectItem value="30_minutos">30 minutos después</SelectItem>
+                    <SelectItem value="1_hora">1 hora después</SelectItem>
+                    <SelectItem value="2_horas">2 horas después</SelectItem>
+                    <SelectItem value="1_dia">1 día después</SelectItem>
+                    <SelectItem value="2_dias">2 días después</SelectItem>
+                    <SelectItem value="1_dia_antes">1 día antes</SelectItem>
+                    <SelectItem value="2_dias_antes">2 días antes</SelectItem>
+                    <SelectItem value="1_semana_antes">1 semana antes</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Destinatarios
+                </Label>
+                <div className="space-y-2 border rounded-lg p-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="paciente"
+                      checked={formData.destinatarios.includes("paciente")}
+                      onCheckedChange={(checked) => handleDestinatarioChange("paciente", checked as boolean)}
+                    />
+                    <label htmlFor="paciente" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Paciente
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="profesional"
+                      checked={formData.destinatarios.includes("profesional")}
+                      onCheckedChange={(checked) => handleDestinatarioChange("profesional", checked as boolean)}
+                    />
+                    <label htmlFor="profesional" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Profesional
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="cuidador"
+                      checked={formData.destinatarios.includes("cuidador")}
+                      onCheckedChange={(checked) => handleDestinatarioChange("cuidador", checked as boolean)}
+                    />
+                    <label htmlFor="cuidador" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Cuidador
+                    </label>
+                  </div>
                 </div>
               </div>
 
@@ -217,7 +326,12 @@ const Automatizaciones = () => {
       </div>
 
       {loading ? (
-        <p className="text-muted-foreground text-center">Cargando automatizaciones...</p>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center space-y-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="text-muted-foreground">Cargando automatizaciones...</p>
+          </div>
+        </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {automatizaciones.map((auto) => (
@@ -238,6 +352,14 @@ const Automatizaciones = () => {
                       <Badge variant="default" className="text-xs">
                         {getAccionLabel(auto.accion)}
                       </Badge>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Clock className="h-3 w-3" />
+                      <span>{getTiempoLabel(auto.tiempo_ejecucion)}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Users className="h-3 w-3" />
+                      <span>{getDestinatariosLabel(auto.destinatarios)}</span>
                     </div>
                   </div>
                 </div>

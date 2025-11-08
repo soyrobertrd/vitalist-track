@@ -19,34 +19,44 @@ export function useUserProfile() {
 
   useEffect(() => {
     const loadProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+
+        // Get profile
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+
+        if (profileError) {
+          console.error("Error loading profile:", profileError);
+          setLoading(false);
+          return;
+        }
+
+        // Get role
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .single();
+
+        if (profileData) {
+          setProfile({
+            ...profileData,
+            rol: roleData?.role || "medico"
+          });
+        }
+      } catch (error) {
+        console.error("Error in loadProfile:", error);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      // Get profile
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      // Get role
-      const { data: roleData } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .single();
-
-      if (profileData) {
-        setProfile({
-          ...profileData,
-          rol: roleData?.role || "medico"
-        });
-      }
-
-      setLoading(false);
     };
 
     loadProfile();

@@ -17,7 +17,7 @@ import { Switch } from "@/components/ui/switch";
 
 const Configuracion = () => {
   const navigate = useNavigate();
-  const { profile, updateProfile } = useUserProfile();
+  const { profile, loading: profileLoading, updateProfile } = useUserProfile();
   const { theme, setTheme } = useTheme();
   const { isAdmin } = useUserRole();
   const [uploading, setUploading] = useState(false);
@@ -30,8 +30,8 @@ const Configuracion = () => {
   });
 
   const [formData, setFormData] = useState({
-    telefono: profile?.telefono || "",
-    especialidad: profile?.especialidad || "",
+    telefono: "",
+    especialidad: "",
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -116,10 +116,34 @@ const Configuracion = () => {
     }
   };
 
+  // Update form data when profile loads
+  useState(() => {
+    if (profile) {
+      setFormData({
+        telefono: profile.telefono || "",
+        especialidad: profile.especialidad || "",
+      });
+    }
+  });
+
+  if (profileLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-muted-foreground">Cargando perfil...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!profile) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p>Cargando...</p>
+        <div className="text-center space-y-4">
+          <p className="text-destructive">Error al cargar el perfil</p>
+          <Button onClick={() => window.location.reload()}>Reintentar</Button>
+        </div>
       </div>
     );
   }
