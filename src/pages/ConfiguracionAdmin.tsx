@@ -73,6 +73,20 @@ const ConfiguracionAdmin = () => {
     setLoading(false);
   };
 
+  const handlePasswordReset = async (email: string) => {
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    if (error) {
+      toast.error("Error al enviar el enlace de restablecimiento");
+    } else {
+      toast.success(`Enlace de restablecimiento enviado a ${email}`);
+    }
+    setLoading(false);
+  };
+
   if (roleLoading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -199,13 +213,13 @@ const ConfiguracionAdmin = () => {
 
             <div className="space-y-4">
               {usuarios.map((usuario) => (
-                <div key={usuario.id} className="flex items-center justify-between p-4 border rounded-lg glass-bg">
-                  <div>
+                <div key={usuario.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg glass-bg gap-4">
+                  <div className="flex-1">
                     <p className="font-medium">{usuario.nombre} {usuario.apellido}</p>
                     <p className="text-sm text-muted-foreground">{usuario.email}</p>
                     <p className="text-xs text-muted-foreground">{usuario.cedula}</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                     <Badge variant="outline">
                       {usuario.user_roles?.[0]?.role || "user"}
                     </Badge>
@@ -214,7 +228,7 @@ const ConfiguracionAdmin = () => {
                       onValueChange={(value) => handleRoleChange(usuario.id, value)}
                       disabled={loading}
                     >
-                      <SelectTrigger className="w-32">
+                      <SelectTrigger className="w-full sm:w-32">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -223,6 +237,15 @@ const ConfiguracionAdmin = () => {
                         <SelectItem value="user">Usuario</SelectItem>
                       </SelectContent>
                     </Select>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handlePasswordReset(usuario.email)}
+                      disabled={loading}
+                    >
+                      <Lock className="mr-2 h-4 w-4" />
+                      Restablecer Contraseña
+                    </Button>
                   </div>
                 </div>
               ))}

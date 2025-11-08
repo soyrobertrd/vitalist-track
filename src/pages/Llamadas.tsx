@@ -338,7 +338,20 @@ const Llamadas = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      {/* Mobile Layout */}
+      <div className="md:hidden space-y-4">
+        <div>
+          <h1 className="text-3xl font-bold">Gestión de Llamadas</h1>
+          <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
+        </div>
+        <Button onClick={() => setOpenAgendar(true)} className="w-full">
+          <Plus className="mr-2 h-4 w-4" />
+          Agendar Llamada
+        </Button>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Gestión de Llamadas</h1>
           <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
@@ -352,11 +365,13 @@ const Llamadas = () => {
         </div>
       </div>
 
-      {/* Indicadores de Rendimiento */}
-      <IndicadoresLlamadas />
+      {/* Indicadores de Rendimiento - Hidden on Mobile */}
+      <div className="hidden md:block">
+        <IndicadoresLlamadas />
+      </div>
 
-      {/* Toggle Filtros */}
-      <div className="flex justify-between items-center">
+      {/* Toggle Filtros - Hidden on Mobile */}
+      <div className="hidden md:flex justify-between items-center">
         <Button 
           variant="outline" 
           onClick={() => setFiltrosVisible(!filtrosVisible)}
