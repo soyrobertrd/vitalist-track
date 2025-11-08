@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { VisitaDetailDialog } from "@/components/VisitaDetailDialog";
+import { ImportVisitasDialog } from "@/components/ImportVisitasDialog";
 
 interface Visita {
   id: string;
@@ -216,6 +217,7 @@ const Visitas = () => {
           <p className="text-muted-foreground">Citas ambulatorias y domiciliarias</p>
         </div>
         <div className="flex gap-2">
+          <ImportVisitasDialog onSuccess={fetchData} />
           <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
             <Filter className="mr-2 h-4 w-4" />
             {showFilters ? "Ocultar Filtros" : "Filtros"}

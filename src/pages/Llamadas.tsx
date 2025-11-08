@@ -14,6 +14,7 @@ import { es } from "date-fns/locale";
 import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
 import { LlamadaDetailDialog } from "@/components/LlamadaDetailDialog";
 import { IndicadoresLlamadas } from "@/components/IndicadoresLlamadas";
+import { ImportLlamadasDialog } from "@/components/ImportLlamadasDialog";
 
 interface Llamada {
   id: string;
@@ -342,10 +343,13 @@ const Llamadas = () => {
           <h1 className="text-3xl font-bold">Gestión de Llamadas</h1>
           <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
         </div>
-        <Button onClick={() => setOpenAgendar(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Agendar Llamada
-        </Button>
+        <div className="flex gap-2">
+          <ImportLlamadasDialog onSuccess={fetchData} />
+          <Button onClick={() => setOpenAgendar(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Agendar Llamada
+          </Button>
+        </div>
       </div>
 
       {/* Indicadores de Rendimiento */}

@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { Plus, ClipboardList, BarChart3, Trash2, Eye } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { EncuestaBuilder } from "@/components/EncuestaBuilder";
 import {
   BarChart,
   Bar,
@@ -182,6 +183,14 @@ const Encuestas = () => {
                     <SelectItem value="autoconsulta">Autoconsulta</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="space-y-4 border-t pt-4">
+                <h3 className="font-semibold">Preguntas de la Encuesta</h3>
+                <EncuestaBuilder
+                  preguntas={formData.estructura}
+                  onChange={(preguntas) => setFormData({ ...formData, estructura: preguntas })}
+                />
               </div>
 
               <div className="flex items-center justify-between">
