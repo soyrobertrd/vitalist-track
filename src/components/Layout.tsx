@@ -94,15 +94,6 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
     { path: "/reportes", icon: BarChart3, label: "Reportes" },
-    {
-      path: "/configuracion",
-      icon: Settings,
-      label: "Configuración",
-      subItems: [
-        { path: "/configuracion", label: "Mi Perfil" },
-        { path: "/plantillas-correo", label: "Plantillas de Correo", icon: Mail }
-      ]
-    },
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
 
@@ -281,6 +272,22 @@ const Layout = ({ children }: LayoutProps) => {
                 <Settings className="mr-2 h-4 w-4" />
                 Mi Perfil
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {
+                navigate("/plantillas-correo");
+                setMobileMenuOpen(false);
+              }}>
+                <Mail className="mr-2 h-4 w-4" />
+                Plantillas de Correo
+              </DropdownMenuItem>
+              {isAdmin && (
+                <DropdownMenuItem onClick={() => {
+                  navigate("/configuracion-admin");
+                  setMobileMenuOpen(false);
+                }}>
+                  <Cog className="mr-2 h-4 w-4" />
+                  Configuración del Sistema
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => {
                 handleLogout();

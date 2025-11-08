@@ -8,7 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Layout from "./components/Layout";
+import { NotificationsProvider } from "./components/NotificationsProvider";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Pacientes from "./pages/Pacientes";
 import Personal from "./pages/Personal";
@@ -56,9 +58,11 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          {session && <NotificationsProvider />}
           <BrowserRouter>
             <Routes>
               <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/" />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route
                 path="/"
                 element={session ? <Layout><Dashboard /></Layout> : <Navigate to="/auth" />}

@@ -650,6 +650,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          activo: boolean | null
           apellido: string
           avatar_url: string | null
           cedula: string
@@ -664,6 +665,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          activo?: boolean | null
           apellido: string
           avatar_url?: string | null
           cedula: string
@@ -678,6 +680,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          activo?: boolean | null
           apellido?: string
           avatar_url?: string | null
           cedula?: string
@@ -845,6 +848,48 @@ export type Database = {
             columns: ["paciente_id"]
             isOneToOne: false
             referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_activity: {
+        Row: {
+          accion: string
+          created_at: string | null
+          descripcion: string | null
+          id: string
+          realizado_por: string | null
+          user_id: string | null
+        }
+        Insert: {
+          accion: string
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          realizado_por?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          accion?: string
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          realizado_por?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_activity_realizado_por_fkey"
+            columns: ["realizado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_activity_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

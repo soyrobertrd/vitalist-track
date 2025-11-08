@@ -13,6 +13,7 @@ import {
   BarChart, Lock, Palette, Database, Workflow, Plus 
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
@@ -50,6 +51,8 @@ const ConfiguracionAdmin = () => {
     }
   };
 
+  const { profile } = useUserProfile();
+
   const handleRoleChange = async (userId: string, newRole: string) => {
     setLoading(true);
     
@@ -83,6 +86,32 @@ const ConfiguracionAdmin = () => {
       toast.error("Error al enviar el enlace de restablecimiento");
     } else {
       toast.success(`Enlace de restablecimiento enviado a ${email}`);
+    }
+    setLoading(false);
+  };
+
+  const handleToggleUserStatus = async (userId: string, currentStatus: boolean) => {
+    setLoading(true);
+    
+    const { error } = await supabase
+      .from("profiles")
+      .update({ activo: !currentStatus })
+      .eq("id", userId);
+
+    if (error) {
+      toast.error("Error al cambiar el estado del usuario");
+    } else {
+      toast.success(`Usuario ${!currentStatus ? 'activado' : 'suspendido'} exitosamente`);
+      
+      // Registrar actividad
+      await supabase.from("user_activity").insert({
+        user_id: userId,
+        accion: !currentStatus ? 'activar_usuario' : 'suspender_usuario',
+        descripcion: `Usuario ${!currentStatus ? 'activado' : 'suspendido'} por administrador`,
+        realizado_por: profile?.id
+      });
+      
+      fetchUsuarios();
     }
     setLoading(false);
   };
@@ -215,7 +244,12 @@ const ConfiguracionAdmin = () => {
               {usuarios.map((usuario) => (
                 <div key={usuario.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg glass-bg gap-4">
                   <div className="flex-1">
-                    <p className="font-medium">{usuario.nombre} {usuario.apellido}</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-medium">{usuario.nombre} {usuario.apellido}</p>
+                      <Badge variant={usuario.activo ? "default" : "destructive"} className="text-xs">
+                        {usuario.activo ? "Activo" : "Suspendido"}
+                      </Badge>
+                    </div>
                     <p className="text-sm text-muted-foreground">{usuario.email}</p>
                     <p className="text-xs text-muted-foreground">{usuario.cedula}</p>
                   </div>
@@ -244,7 +278,15 @@ const ConfiguracionAdmin = () => {
                       disabled={loading}
                     >
                       <Lock className="mr-2 h-4 w-4" />
-                      Restablecer Contraseña
+                      Restablecer
+                    </Button>
+                    <Button 
+                      variant={usuario.activo ? "destructive" : "default"}
+                      size="sm"
+                      onClick={() => handleToggleUserStatus(usuario.id, usuario.activo)}
+                      disabled={loading}
+                    >
+                      {usuario.activo ? "Suspender" : "Activar"}
                     </Button>
                   </div>
                 </div>
