@@ -22,11 +22,15 @@ interface Automatizacion {
   activo: boolean;
   tiempo_ejecucion: string;
   destinatarios: string[];
+  plantilla_correo_id?: string;
+  encuesta_id?: string;
   created_at: string;
 }
 
 const Automatizaciones = () => {
   const [automatizaciones, setAutomatizaciones] = useState<Automatizacion[]>([]);
+  const [plantillas, setPlantillas] = useState<any[]>([]);
+  const [encuestas, setEncuestas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -37,10 +41,14 @@ const Automatizaciones = () => {
     activo: true,
     tiempo_ejecucion: "0_minutos",
     destinatarios: ["paciente"],
+    plantilla_correo_id: "",
+    encuesta_id: "",
   });
 
   useEffect(() => {
     fetchAutomatizaciones();
+    fetchPlantillas();
+    fetchEncuestas();
   }, []);
 
   const fetchAutomatizaciones = async () => {
@@ -56,6 +64,22 @@ const Automatizaciones = () => {
       setAutomatizaciones(data || []);
     }
     setLoading(false);
+  };
+
+  const fetchPlantillas = async () => {
+    const { data } = await supabase
+      .from("plantillas_correo")
+      .select("id, nombre")
+      .eq("activo", true);
+    setPlantillas(data || []);
+  };
+
+  const fetchEncuestas = async () => {
+    const { data } = await supabase
+      .from("encuestas")
+      .select("id, nombre")
+      .eq("activo", true);
+    setEncuestas(data || []);
   };
 
   const handleSubmit = async () => {
@@ -74,6 +98,8 @@ const Automatizaciones = () => {
         activo: true,
         tiempo_ejecucion: "0_minutos",
         destinatarios: ["paciente"],
+        plantilla_correo_id: "",
+        encuesta_id: "",
       });
       fetchAutomatizaciones();
     }
@@ -305,6 +331,48 @@ const Automatizaciones = () => {
                   </div>
                 </div>
               </div>
+
+              {formData.accion === "enviar_correo" && (
+                <div className="space-y-2">
+                  <Label>Plantilla de Correo</Label>
+                  <Select
+                    value={formData.plantilla_correo_id}
+                    onValueChange={(value) => setFormData({ ...formData, plantilla_correo_id: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar plantilla" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {plantillas.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.nombre}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {formData.accion === "enviar_encuesta" && (
+                <div className="space-y-2">
+                  <Label>Encuesta</Label>
+                  <Select
+                    value={formData.encuesta_id}
+                    onValueChange={(value) => setFormData({ ...formData, encuesta_id: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar encuesta" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {encuestas.map((e) => (
+                        <SelectItem key={e.id} value={e.id}>
+                          {e.nombre}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="flex items-center justify-between">
                 <Label>Activar automatización</Label>

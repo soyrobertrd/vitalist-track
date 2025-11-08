@@ -24,6 +24,9 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
 
     const formData = new FormData(e.currentTarget);
     const updateData = {
+      cedula: formData.get("cedula") as string,
+      nombre: formData.get("nombre") as string,
+      apellido: formData.get("apellido") as string,
       contacto_px: formData.get("contacto_px") as string,
       nombre_cuidador: formData.get("nombre_cuidador") as string,
       contacto_cuidador: formData.get("contacto_cuidador") as string,
@@ -60,13 +63,31 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Cédula</Label>
-              <Input value={paciente.cedula} disabled className="bg-muted" />
+              <Label htmlFor="cedula">Cédula</Label>
+              <Input 
+                id="cedula" 
+                name="cedula" 
+                defaultValue={paciente.cedula} 
+                maxLength={11}
+              />
             </div>
             <div className="space-y-2">
-              <Label>Nombre Completo</Label>
-              <Input value={`${paciente.nombre} ${paciente.apellido}`} disabled className="bg-muted" />
+              <Label htmlFor="nombre">Nombre</Label>
+              <Input 
+                id="nombre" 
+                name="nombre" 
+                defaultValue={paciente.nombre} 
+              />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="apellido">Apellido</Label>
+            <Input 
+              id="apellido" 
+              name="apellido" 
+              defaultValue={paciente.apellido} 
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">

@@ -26,18 +26,26 @@ export function useUserProfile() {
           return;
         }
 
-        // Get profile
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .single();
+      // Get profile (without .single() to avoid error when no profile exists)
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id);
 
-        if (profileError) {
-          console.error("Error loading profile:", profileError);
-          setLoading(false);
-          return;
-        }
+      if (profileError) {
+        console.error("Error loading profile:", profileError);
+        setLoading(false);
+        return;
+      }
+
+      // If no profile exists, return
+      if (!profileData || profileData.length === 0) {
+        console.error("No profile found for user");
+        setLoading(false);
+        return;
+      }
+
+      const profile = profileData[0];
 
         // Get role
         const { data: roleData } = await supabase
@@ -46,12 +54,12 @@ export function useUserProfile() {
           .eq("user_id", user.id)
           .single();
 
-        if (profileData) {
-          setProfile({
-            ...profileData,
-            rol: roleData?.role || "medico"
-          });
-        }
+      if (profile) {
+        setProfile({
+          ...profile,
+          rol: roleData?.role || "medico"
+        });
+      }
       } catch (error) {
         console.error("Error in loadProfile:", error);
       } finally {

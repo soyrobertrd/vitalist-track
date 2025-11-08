@@ -89,6 +89,64 @@ const AtencionPaciente = () => {
     if (error) {
       toast({ title: "Error al crear atención", variant: "destructive" });
     } else {
+      // Si el tipo requiere visita (cura, medicación, toma_muestra), crear visita automáticamente
+      if (["cura", "medicacion", "toma_muestra"].includes(formData.tipo)) {
+        const visitaData = {
+          paciente_id: formData.paciente_id,
+          profesional_id: formData.profesional_id,
+          fecha_hora_visita: formData.fecha_programada,
+          tipo_visita: "domicilio" as any,
+          motivo_visita: `${getTipoLabel(formData.tipo)} - ${formData.descripcion}`,
+          estado: "pendiente" as any,
+        };
+
+        const { error: visitaError } = await supabase
+          .from("control_visitas")
+          .insert([visitaData]);
+
+        if (visitaError) {
+          console.error("Error creating visit:", visitaError);
+        }
+
+        // Si es recurrente, crear visitas adicionales
+        if (formData.periodicidad !== "unica") {
+          const visitasRecurrentes = [];
+          const fechaBase = new Date(formData.fecha_programada);
+          
+          let intervalo = 0;
+          switch (formData.periodicidad) {
+            case "diaria":
+              intervalo = 1;
+              break;
+            case "semanal":
+              intervalo = 7;
+              break;
+            case "mensual":
+              intervalo = 30;
+              break;
+          }
+
+          // Crear 12 visitas recurrentes
+          for (let i = 1; i <= 12; i++) {
+            const nuevaFecha = new Date(fechaBase);
+            nuevaFecha.setDate(nuevaFecha.getDate() + (intervalo * i));
+            
+            visitasRecurrentes.push({
+              paciente_id: formData.paciente_id,
+              profesional_id: formData.profesional_id,
+              fecha_hora_visita: nuevaFecha.toISOString(),
+              tipo_visita: "domicilio" as any,
+              motivo_visita: `${getTipoLabel(formData.tipo)} - ${formData.descripcion} (Recurrente)`,
+              estado: "pendiente" as any,
+            });
+          }
+
+          if (visitasRecurrentes.length > 0) {
+            await supabase.from("control_visitas").insert(visitasRecurrentes);
+          }
+        }
+      }
+
       toast({ title: "Atención programada exitosamente" });
       setDialogOpen(false);
       setFormData({
@@ -145,6 +203,7 @@ const AtencionPaciente = () => {
       receta: "Receta",
       laboratorio: "Laboratorio",
       muestra_medica: "Muestra Médica",
+      toma_muestra: "Toma de Muestra",
     };
     return labels[tipo] || tipo;
   };
@@ -248,6 +307,7 @@ const AtencionPaciente = () => {
                       <SelectItem value="receta">Receta</SelectItem>
                       <SelectItem value="laboratorio">Laboratorio</SelectItem>
                       <SelectItem value="muestra_medica">Muestra Médica</SelectItem>
+                      <SelectItem value="toma_muestra">Toma de Muestra</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

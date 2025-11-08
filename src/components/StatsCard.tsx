@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlassCard } from "@/components/GlassCard";
 import { LucideIcon } from "lucide-react";
 
 interface StatsCardProps {
@@ -14,14 +14,14 @@ interface StatsCardProps {
 
 export function StatsCard({ title, value, description, icon: Icon, trend }: StatsCardProps) {
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
-        <div className="flex items-center gap-2">
+    <GlassCard className="p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
+      <div className="flex flex-row items-center justify-between space-y-0 mb-4">
+        <h3 className="text-sm font-medium text-foreground">{title}</h3>
+        <Icon className="h-5 w-5 text-primary" />
+      </div>
+      <div>
+        <div className="text-2xl font-bold text-foreground">{value}</div>
+        <div className="flex items-center gap-2 mt-1">
           <p className="text-xs text-muted-foreground">{description}</p>
           {trend && (
             <span
@@ -34,7 +34,7 @@ export function StatsCard({ title, value, description, icon: Icon, trend }: Stat
             </span>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </GlassCard>
   );
 }

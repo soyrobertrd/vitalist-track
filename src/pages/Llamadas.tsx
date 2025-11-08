@@ -169,68 +169,82 @@ const Llamadas = () => {
     setOpenDetail(true);
   };
 
-  const renderLlamadaCardAgendada = (llamada: Llamada) => (
-    <Card 
-      key={llamada.id}
-      className="cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full"
-      onClick={() => handleLlamadaClick(llamada)}
-    >
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-2">
-          <CardTitle className="text-base line-clamp-2 flex-1">
-            {llamada.pacientes?.nombre} {llamada.pacientes?.apellido}
-          </CardTitle>
-          <Badge className={getEstadoBadgeColor(llamada.estado)} variant="secondary">
-            {formatearTexto(llamada.estado)}
-          </Badge>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-3 flex-1 flex flex-col">
-        {llamada.fecha_agendada && (
-          <div className="bg-primary/5 p-3 rounded-lg">
-            <p className="text-xs text-muted-foreground mb-1">Fecha y Hora</p>
-            <p className="font-semibold flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-primary" />
-              {format(new Date(llamada.fecha_agendada), "dd/MM/yyyy")}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {format(new Date(llamada.fecha_agendada), "HH:mm")}
-            </p>
+  const isCallOverdue = (llamada: Llamada) => {
+    if (llamada.fecha_agendada && (llamada.estado === 'agendada' || llamada.estado === 'pendiente')) {
+      return new Date(llamada.fecha_agendada) < new Date();
+    }
+    return false;
+  };
+
+  const renderLlamadaCardAgendada = (llamada: Llamada) => {
+    const overdue = isCallOverdue(llamada);
+    
+    return (
+      <Card 
+        key={llamada.id}
+        className={`cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full ${
+          overdue ? 'border-destructive border-2 bg-destructive/5' : ''
+        }`}
+        onClick={() => handleLlamadaClick(llamada)}
+      >
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between gap-2">
+            <CardTitle className="text-base line-clamp-2 flex-1">
+              {llamada.pacientes?.nombre} {llamada.pacientes?.apellido}
+              {overdue && <span className="text-destructive ml-2">⚠️ Retrasada</span>}
+            </CardTitle>
+            <Badge className={getEstadoBadgeColor(llamada.estado)} variant="secondary">
+              {formatearTexto(llamada.estado)}
+            </Badge>
           </div>
-        )}
+        </CardHeader>
         
-        {llamada.personal_salud && (
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Profesional Asignado</p>
-            <p className="text-sm font-medium flex items-center gap-2">
-              <User className="h-4 w-4" />
-              {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
+        <CardContent className="space-y-3 flex-1 flex flex-col">
+          {llamada.fecha_agendada && (
+            <div className="bg-primary/5 p-3 rounded-lg">
+              <p className="text-xs text-muted-foreground mb-1">Fecha y Hora</p>
+              <p className="font-semibold flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-primary" />
+                {format(new Date(llamada.fecha_agendada), "dd/MM/yyyy")}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {format(new Date(llamada.fecha_agendada), "HH:mm")}
+              </p>
+            </div>
+          )}
+          
+          {llamada.personal_salud && (
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground">Profesional Asignado</p>
+              <p className="text-sm font-medium flex items-center gap-2">
+                <User className="h-4 w-4" />
+                {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
+              </p>
+            </div>
+          )}
+          
+          {llamada.duracion_estimada && (
+            <p className="text-xs text-muted-foreground flex items-center gap-2">
+              <Clock className="h-3 w-3" />
+              Duración: {llamada.duracion_estimada} min
             </p>
-          </div>
-        )}
-        
-        {llamada.duracion_estimada && (
-          <p className="text-xs text-muted-foreground flex items-center gap-2">
-            <Clock className="h-3 w-3" />
-            Duración: {llamada.duracion_estimada} min
-          </p>
-        )}
-        
-        {llamada.resultado_seguimiento && (
-          <Badge variant="outline" className={`${getResultadoBadgeColor(llamada.resultado_seguimiento)} w-full justify-center`}>
-            {formatearTexto(llamada.resultado_seguimiento)}
-          </Badge>
-        )}
-        
-        {llamada.motivo && (
-          <p className="text-xs text-muted-foreground line-clamp-2 pt-2 border-t mt-auto">
-            {llamada.motivo}
-          </p>
-        )}
-      </CardContent>
-    </Card>
-  );
+          )}
+          
+          {llamada.resultado_seguimiento && (
+            <Badge variant="outline" className={`${getResultadoBadgeColor(llamada.resultado_seguimiento)} w-full justify-center`}>
+              {formatearTexto(llamada.resultado_seguimiento)}
+            </Badge>
+          )}
+          
+          {llamada.motivo && (
+            <p className="text-xs text-muted-foreground line-clamp-2 pt-2 border-t mt-auto">
+              {llamada.motivo}
+            </p>
+          )}
+        </CardContent>
+      </Card>
+    );
+  };
 
   const renderLlamadaCardHistorial = (llamada: Llamada) => (
     <Card 
