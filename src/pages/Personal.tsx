@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { PersonalDetailDialog } from "@/components/PersonalDetailDialog";
+import { EditPersonalDialog } from "@/components/EditPersonalDialog";
+import { Edit } from "lucide-react";
 
 interface Personal {
   id: string;
@@ -34,6 +36,7 @@ const Personal = () => {
   } | null>(null);
   const [selectedPersonal, setSelectedPersonal] = useState<Personal | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const fetchPersonal = async () => {
     const { data, error } = await supabase
@@ -217,25 +220,37 @@ const Personal = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {personal.map((p) => (
-          <Card 
-            key={p.id} 
-            className="cursor-pointer hover:shadow-lg transition-shadow"
-            onClick={() => {
-              setSelectedPersonal(p);
-              setDetailOpen(true);
-            }}
-          >
+          <Card key={p.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex justify-between items-start">
                 <CardTitle className="text-lg">
                   {p.nombre} {p.apellido}
                 </CardTitle>
-                <Badge variant={p.activo ? "default" : "secondary"}>
-                  {p.activo ? "Activo" : "Inactivo"}
-                </Badge>
+                <div className="flex gap-2">
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPersonal(p);
+                      setEditOpen(true);
+                    }}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Badge variant={p.activo ? "default" : "secondary"}>
+                    {p.activo ? "Activo" : "Inactivo"}
+                  </Badge>
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent 
+              className="space-y-3 cursor-pointer"
+              onClick={() => {
+                setSelectedPersonal(p);
+                setDetailOpen(true);
+              }}
+            >
               <p className="text-sm text-muted-foreground">
                 <span className="font-medium">Cédula:</span> {p.cedula}
               </p>
@@ -274,6 +289,13 @@ const Personal = () => {
         personal={selectedPersonal}
         open={detailOpen}
         onOpenChange={setDetailOpen}
+      />
+      
+      <EditPersonalDialog
+        personal={selectedPersonal}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSuccess={fetchPersonal}
       />
     </div>
   );

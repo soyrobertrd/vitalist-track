@@ -70,6 +70,14 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/personal", icon: UserCog, label: "Personal" },
     { path: "/llamadas", icon: Phone, label: "Llamadas" },
     { path: "/visitas", icon: Calendar, label: "Visitas" },
+    { 
+      path: "/configuracion", 
+      icon: Settings, 
+      label: "Configuración",
+      submenu: [
+        { path: "/plantillas-correo", label: "Plantillas de Correo" }
+      ]
+    },
   ];
 
   return (
@@ -193,53 +201,51 @@ const Layout = ({ children }: LayoutProps) => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Settings */}
-            <Button
-              variant="ghost"
-              className={`w-full ${
-                sidebarCollapsed ? "justify-center px-2" : "justify-start"
-              } text-sidebar-foreground hover:bg-sidebar-accent`}
-              onClick={() => navigate("/configuracion")}
-            >
-              <Settings className={sidebarCollapsed ? "h-5 w-5" : "mr-2 h-4 w-4"} />
-              {!sidebarCollapsed && <span>Configuración</span>}
-            </Button>
-
-            {/* User Profile */}
+            {/* User Profile Dropdown */}
             {profile && (
-              <div className={`p-2 rounded-lg bg-sidebar-accent ${sidebarCollapsed ? "flex justify-center" : ""}`}>
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={profile.avatar_url || undefined} />
-                    <AvatarFallback>
-                      {profile.nombre[0]}{profile.apellido[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  {!sidebarCollapsed && (
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-sidebar-foreground truncate">
-                        {profile.nombre} {profile.apellido}
-                      </p>
-                      <p className="text-xs text-sidebar-foreground/60 truncate capitalize">
-                        {profile.rol}
-                      </p>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className={`w-full ${
+                      sidebarCollapsed ? "justify-center px-2 h-auto py-2" : "justify-start h-auto py-2"
+                    } text-sidebar-foreground hover:bg-sidebar-accent`}
+                  >
+                    <div className={`flex items-center gap-2 ${sidebarCollapsed ? "" : "w-full"}`}>
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={profile.avatar_url || undefined} />
+                        <AvatarFallback>
+                          {profile.nombre[0]}{profile.apellido[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      {!sidebarCollapsed && (
+                        <div className="flex-1 min-w-0 text-left">
+                          <p className="text-sm font-medium truncate">
+                            {profile.nombre} {profile.apellido}
+                          </p>
+                          <p className="text-xs text-sidebar-foreground/60 truncate capitalize">
+                            {profile.rol}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate("/configuracion")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Mi Perfil
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Cerrar Sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
-
-            {/* Logout */}
-            <Button
-              variant="ghost"
-              className={`w-full ${
-                sidebarCollapsed ? "justify-center px-2" : "justify-start"
-              } text-sidebar-foreground hover:bg-sidebar-accent`}
-              onClick={handleLogout}
-            >
-              <LogOut className={sidebarCollapsed ? "h-5 w-5" : "mr-2 h-4 w-4"} />
-              {!sidebarCollapsed && <span>Cerrar Sesión</span>}
-            </Button>
           </div>
         </div>
       </aside>
