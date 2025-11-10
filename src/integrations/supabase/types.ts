@@ -422,10 +422,13 @@ export type Database = {
           id: string
           nombre: string
           nombre_cuidador: string | null
+          numero_principal: string | null
           profesional_asignado_id: string | null
           sexo: string | null
           status_px: Database["public"]["Enums"]["status_paciente"] | null
           updated_at: string | null
+          whatsapp_cuidador: boolean | null
+          whatsapp_px: boolean | null
           zona: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Insert: {
@@ -444,10 +447,13 @@ export type Database = {
           id?: string
           nombre: string
           nombre_cuidador?: string | null
+          numero_principal?: string | null
           profesional_asignado_id?: string | null
           sexo?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
           updated_at?: string | null
+          whatsapp_cuidador?: boolean | null
+          whatsapp_px?: boolean | null
           zona?: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Update: {
@@ -466,10 +472,13 @@ export type Database = {
           id?: string
           nombre?: string
           nombre_cuidador?: string | null
+          numero_principal?: string | null
           profesional_asignado_id?: string | null
           sexo?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
           updated_at?: string | null
+          whatsapp_cuidador?: boolean | null
+          whatsapp_px?: boolean | null
           zona?: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Relationships: [
@@ -652,9 +661,11 @@ export type Database = {
         Row: {
           activo: boolean | null
           apellido: string
+          approved: boolean | null
           avatar_url: string | null
           cedula: string
           created_at: string | null
+          created_by: string | null
           email: string
           especialidad: string | null
           foto_url: string | null
@@ -667,9 +678,11 @@ export type Database = {
         Insert: {
           activo?: boolean | null
           apellido: string
+          approved?: boolean | null
           avatar_url?: string | null
           cedula: string
           created_at?: string | null
+          created_by?: string | null
           email: string
           especialidad?: string | null
           foto_url?: string | null
@@ -682,9 +695,11 @@ export type Database = {
         Update: {
           activo?: boolean | null
           apellido?: string
+          approved?: boolean | null
           avatar_url?: string | null
           cedula?: string
           created_at?: string | null
+          created_by?: string | null
           email?: string
           especialidad?: string | null
           foto_url?: string | null

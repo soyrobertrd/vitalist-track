@@ -305,7 +305,10 @@ const Configuracion = () => {
                   <div className="space-y-2">
                     <Label className="text-muted-foreground">Email Corporativo</Label>
                     <p className="text-lg font-medium">
-                      <a href={`mailto:${profile.email}`} className="underline underline-offset-2">
+                      <a 
+                        href={`mailto:${profile.email}`}
+                        className="no-underline text-foreground hover:text-primary"
+                      >
                         {profile.email}
                       </a>
                     </p>

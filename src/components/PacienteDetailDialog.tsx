@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Phone, User, MapPin, Heart, Pill } from "lucide-react";
+import { Calendar, Phone, User, MapPin, Heart, Pill, MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -76,20 +76,23 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                   <div className="font-medium flex items-center gap-2">
                     <a
                       href={`tel:${(paciente.contacto_px || '').replace(/\D/g, '')}`}
-                      className="underline underline-offset-2"
+                      className="no-underline hover:text-primary"
                       aria-label={`Llamar a ${paciente.nombre} ${paciente.apellido}`}
                     >
                       {paciente.contacto_px}
                     </a>
-                    <a
-                      href={`https://wa.me/${(paciente.contacto_px || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center px-2 py-0.5 rounded border text-xs hover:bg-accent"
-                      aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
-                    >
-                      WhatsApp
-                    </a>
+                    {paciente.whatsapp_px && (
+                      <a
+                        href={`https://wa.me/${(paciente.contacto_px || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center p-1 rounded hover:bg-accent"
+                        aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
+                        title="Enviar mensaje por WhatsApp"
+                      >
+                        <MessageSquare className="h-4 w-4 text-green-600" />
+                      </a>
+                    )}
                   </div>
                 ) : (
                   <p className="font-medium">N/A</p>
@@ -128,20 +131,23 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                     <div className="font-medium flex items-center gap-2">
                       <a
                         href={`tel:${(paciente.contacto_cuidador || '').replace(/\D/g, '')}`}
-                        className="underline underline-offset-2"
+                        className="no-underline hover:text-primary"
                         aria-label={`Llamar a cuidador de ${paciente.nombre} ${paciente.apellido}`}
                       >
                         {paciente.contacto_cuidador}
                       </a>
-                      <a
-                        href={`https://wa.me/${(paciente.contacto_cuidador || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-2 py-0.5 rounded border text-xs hover:bg-accent"
-                        aria-label={`Enviar WhatsApp al cuidador de ${paciente.nombre} ${paciente.apellido}`}
-                      >
-                        WhatsApp
-                      </a>
+                      {paciente.whatsapp_cuidador && (
+                        <a
+                          href={`https://wa.me/${(paciente.contacto_cuidador || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center p-1 rounded hover:bg-accent"
+                          aria-label={`Enviar WhatsApp al cuidador de ${paciente.nombre} ${paciente.apellido}`}
+                          title="Enviar mensaje por WhatsApp"
+                        >
+                          <MessageSquare className="h-4 w-4 text-green-600" />
+                        </a>
+                      )}
                     </div>
                   ) : (
                     <p className="font-medium">N/A</p>

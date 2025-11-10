@@ -146,8 +146,11 @@ const Pacientes = () => {
       sexo: cedulaData?.sexo || null,
       foto_url: cedulaData?.foto_encoded ? `data:image/jpeg;base64,${cedulaData.foto_encoded}` : null,
       contacto_px: formData.get("contacto_px") as string,
+      whatsapp_px: formData.get("whatsapp_px") === "on",
       nombre_cuidador: formData.get("nombre_cuidador") as string,
       contacto_cuidador: formData.get("contacto_cuidador") as string,
+      whatsapp_cuidador: formData.get("whatsapp_cuidador") === "on",
+      numero_principal: formData.get("numero_principal") as any,
       direccion_domicilio: formData.get("direccion_domicilio") as string,
       historia_medica_basica: formData.get("historia_medica") as string,
       zona: formData.get("zona") as any,
@@ -326,6 +329,48 @@ const Pacientes = () => {
                     <Input id="contacto_px" name="contacto_px" type="tel" />
                   </div>
                   <div className="space-y-2">
+                    <Label htmlFor="whatsapp_px" className="flex items-center gap-2">
+                      <Input 
+                        id="whatsapp_px" 
+                        name="whatsapp_px" 
+                        type="checkbox" 
+                        className="w-4 h-4"
+                      />
+                      Tiene WhatsApp
+                    </Label>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="contacto_cuidador">Contacto Cuidador</Label>
+                    <Input id="contacto_cuidador" name="contacto_cuidador" type="tel" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2">
+                      <Input 
+                        id="whatsapp_cuidador" 
+                        name="whatsapp_cuidador" 
+                        type="checkbox" 
+                        className="w-4 h-4"
+                      />
+                      Tiene WhatsApp
+                    </Label>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="numero_principal">Número Principal de Contacto</Label>
+                  <Select name="numero_principal">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar número principal" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="paciente">Paciente</SelectItem>
+                      <SelectItem value="cuidador">Cuidador</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
                     <Label htmlFor="zona">Zona</Label>
                     <Select name="zona">
                       <SelectTrigger>
@@ -339,8 +384,6 @@ const Pacientes = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="grado_dificultad">Grado Dificultad</Label>
                     <Select name="grado_dificultad" defaultValue="medio">
@@ -354,14 +397,10 @@ const Pacientes = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="nombre_cuidador">Nombre Cuidador</Label>
-                    <Input id="nombre_cuidador" name="nombre_cuidador" />
-                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="contacto_cuidador">Contacto Cuidador</Label>
-                  <Input id="contacto_cuidador" name="contacto_cuidador" type="tel" />
+                  <Label htmlFor="nombre_cuidador">Nombre Cuidador</Label>
+                  <Input id="nombre_cuidador" name="nombre_cuidador" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="direccion_domicilio">Dirección</Label>
@@ -548,7 +587,7 @@ const Pacientes = () => {
                   <Phone className="h-3 w-3" />
                   <a
                     href={`tel:${(paciente.contacto_px || '').replace(/\D/g, '')}`}
-                    className="underline underline-offset-2"
+                    className="no-underline hover:text-foreground"
                     onClick={(e) => e.stopPropagation()}
                     aria-label={`Llamar a ${paciente.nombre} ${paciente.apellido}`}
                   >
@@ -559,10 +598,11 @@ const Pacientes = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center px-2 py-0.5 rounded border text-xs hover:bg-accent"
+                    className="inline-flex items-center p-1 rounded hover:bg-accent"
                     aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
+                    title="Enviar mensaje por WhatsApp"
                   >
-                    <MessageSquare className="h-3 w-3 mr-1" /> WhatsApp
+                    <MessageSquare className="h-4 w-4 text-green-600" />
                   </a>
                 </div>
               )}

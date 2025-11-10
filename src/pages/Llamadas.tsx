@@ -181,6 +181,29 @@ const Llamadas = () => {
 
   const renderLlamadaCardAgendada = (llamada: Llamada) => {
     const overdue = isCallOverdue(llamada);
+    const [pacienteData, setPacienteData] = useState<any>(null);
+
+    useEffect(() => {
+      if (llamada.pacientes) {
+        supabase
+          .from("pacientes")
+          .select("contacto_px, whatsapp_px, contacto_cuidador, whatsapp_cuidador, numero_principal")
+          .eq("nombre", llamada.pacientes.nombre)
+          .eq("apellido", llamada.pacientes.apellido)
+          .single()
+          .then(({ data }) => setPacienteData(data));
+      }
+    }, [llamada]);
+
+    const getMainPhone = () => {
+      if (!pacienteData) return null;
+      if (pacienteData.numero_principal === 'cuidador' && pacienteData.contacto_cuidador) {
+        return pacienteData.contacto_cuidador;
+      }
+      return pacienteData.contacto_px;
+    };
+
+    const mainPhone = getMainPhone();
     
     return (
       <Card 
@@ -196,9 +219,22 @@ const Llamadas = () => {
               {llamada.pacientes?.nombre} {llamada.pacientes?.apellido}
               {overdue && <span className="text-destructive ml-2">⚠️ Retrasada</span>}
             </CardTitle>
-            <Badge className={getEstadoBadgeColor(llamada.estado)} variant="secondary">
-              {formatearTexto(llamada.estado)}
-            </Badge>
+            <div className="flex gap-2 items-center">
+              {mainPhone && (
+                <a
+                  href={`tel:${mainPhone.replace(/\D/g, '')}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                  aria-label="Llamar al paciente"
+                  title="Llamar"
+                >
+                  <Phone className="h-4 w-4" />
+                </a>
+              )}
+              <Badge className={getEstadoBadgeColor(llamada.estado)} variant="secondary">
+                {formatearTexto(llamada.estado)}
+              </Badge>
+            </div>
           </div>
         </CardHeader>
         
@@ -346,10 +382,12 @@ const Llamadas = () => {
           <h1 className="text-3xl font-bold">Gestión de Llamadas</h1>
           <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
         </div>
-        <Button onClick={() => setOpenAgendar(true)} className="w-full">
-          <Plus className="mr-2 h-4 w-4" />
-          Agendar Llamada
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setOpenAgendar(true)} className="flex-1">
+            <Plus className="mr-2 h-4 w-4" />
+            Agendar Llamada
+          </Button>
+        </div>
       </div>
 
       {/* Desktop Layout */}

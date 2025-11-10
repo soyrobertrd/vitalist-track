@@ -113,27 +113,49 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
             estado: d.estado || "agendada",
             notas_adicionales: d.notas_adicionales || null,
           }));
-      } else if ("telefono" in firstItem) {
-        // FORMATO LEGADO (como el ejemplo del usuario)
+      } else if ("telefono" in firstItem || "nombre" in firstItem) {
+        // FORMATO LEGADO (matcheo por teléfono y/o nombre)
         const sanitize = (t: string = "") => t.replace(/\D/g, "");
-        const phonesRaw = [...new Set(data.map((d: any) => d.telefono).filter(Boolean))];
-
-        // Intentar coincidencia directa por contacto_px
-        const { data: pacientesByPhone } = await supabase
+        
+        // Obtener todos los pacientes para matcheo flexible
+        const { data: todosPacientes } = await supabase
           .from("pacientes")
-          .select("id, contacto_px, nombre, apellido");
+          .select("id, contacto_px, contacto_cuidador, nombre, apellido");
 
-        const phoneToPaciente = new Map<string, string>();
-        (pacientesByPhone || []).forEach((p: any) => {
-          if (!p.contacto_px) return;
-          phoneToPaciente.set(sanitize(p.contacto_px), p.id);
+        const pacienteMap = new Map<string, string>();
+        
+        // Crear mapas por teléfono y por nombre
+        (todosPacientes || []).forEach((p: any) => {
+          // Mapear por teléfono del paciente
+          if (p.contacto_px) {
+            pacienteMap.set(sanitize(p.contacto_px), p.id);
+          }
+          // Mapear por teléfono del cuidador
+          if (p.contacto_cuidador) {
+            pacienteMap.set(sanitize(p.contacto_cuidador), p.id);
+          }
+          // Mapear por nombre completo (normalizado)
+          const nombreCompleto = `${p.nombre} ${p.apellido}`.toLowerCase().trim();
+          pacienteMap.set(nombreCompleto, p.id);
         });
 
         llamadasToInsert = data
           .map((d: any) => {
-            const phone = sanitize(d.telefono);
-            const pacienteId = phoneToPaciente.get(phone);
-            if (!pacienteId) return null;
+            let pacienteId = null;
+            
+            // Intentar matchear por teléfono primero
+            if (d.telefono) {
+              const phone = sanitize(d.telefono);
+              pacienteId = pacienteMap.get(phone);
+            }
+            
+            // Si no se encontró por teléfono, intentar por nombre
+            if (!pacienteId && d.nombre) {
+              const nombreBuscado = String(d.nombre).toLowerCase().trim();
+              pacienteId = pacienteMap.get(nombreBuscado);
+            }
+            
+            if (!pacienteId) return null; // No se pudo hacer match
 
             const realizada = Boolean(d.llamadaRealizada);
             const fechaAgendada = d.fechaProximaLlamada || d.fecha_agendada || null;
@@ -141,7 +163,7 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
 
             return {
               paciente_id: pacienteId,
-              profesional_id: null, // no viene en el JSON legado
+              profesional_id: null,
               fecha_agendada: fechaAgendada ? `${String(fechaAgendada).trim()}${String(fechaAgendada).length <= 10 ? " 00:00:00" : ""}` : null,
               fecha_hora_realizada: realizada && fechaRealizada ? `${String(fechaRealizada).trim()}${String(fechaRealizada).length <= 10 ? " 00:00:00" : ""}` : null,
               estado: realizada ? "realizada" : "agendada",

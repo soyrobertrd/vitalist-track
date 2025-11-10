@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -28,8 +29,11 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       nombre: formData.get("nombre") as string,
       apellido: formData.get("apellido") as string,
       contacto_px: formData.get("contacto_px") as string,
+      whatsapp_px: formData.get("whatsapp_px") === "on",
       nombre_cuidador: formData.get("nombre_cuidador") as string,
       contacto_cuidador: formData.get("contacto_cuidador") as string,
+      whatsapp_cuidador: formData.get("whatsapp_cuidador") === "on",
+      numero_principal: formData.get("numero_principal") as any,
       direccion_domicilio: formData.get("direccion_domicilio") as string,
       historia_medica_basica: formData.get("historia_medica") as string,
       zona: formData.get("zona") as any,
@@ -100,6 +104,54 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 type="tel" 
               />
             </div>
+            <div className="space-y-2 flex items-end pb-2">
+              <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer">
+                <Checkbox 
+                  id="whatsapp_px" 
+                  name="whatsapp_px" 
+                  defaultChecked={paciente.whatsapp_px}
+                />
+                Tiene WhatsApp
+              </Label>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="contacto_cuidador">Contacto Cuidador</Label>
+              <Input 
+                id="contacto_cuidador" 
+                name="contacto_cuidador" 
+                defaultValue={paciente.contacto_cuidador || ''} 
+                type="tel" 
+              />
+            </div>
+            <div className="space-y-2 flex items-end pb-2">
+              <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer">
+                <Checkbox 
+                  id="whatsapp_cuidador" 
+                  name="whatsapp_cuidador" 
+                  defaultChecked={paciente.whatsapp_cuidador}
+                />
+                Tiene WhatsApp
+              </Label>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="numero_principal">Número Principal de Contacto</Label>
+            <Select name="numero_principal" defaultValue={paciente.numero_principal || ''}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar número principal" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="paciente">Paciente</SelectItem>
+                <SelectItem value="cuidador">Cuidador</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="status_px">Estado</Label>
               <Select name="status_px" defaultValue={paciente.status_px}>
@@ -112,9 +164,6 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="zona">Zona</Label>
               <Select name="zona" defaultValue={paciente.zona || ''}>
@@ -129,19 +178,20 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="grado_dificultad">Grado Dificultad</Label>
-              <Select name="grado_dificultad" defaultValue={paciente.grado_dificultad}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bajo">Bajo</SelectItem>
-                  <SelectItem value="medio">Medio</SelectItem>
-                  <SelectItem value="alto">Alto</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="grado_dificultad">Grado Dificultad</Label>
+            <Select name="grado_dificultad" defaultValue={paciente.grado_dificultad}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="bajo">Bajo</SelectItem>
+                <SelectItem value="medio">Medio</SelectItem>
+                <SelectItem value="alto">Alto</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
@@ -150,16 +200,6 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
               id="nombre_cuidador" 
               name="nombre_cuidador" 
               defaultValue={paciente.nombre_cuidador || ''} 
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="contacto_cuidador">Contacto Cuidador</Label>
-            <Input 
-              id="contacto_cuidador" 
-              name="contacto_cuidador" 
-              defaultValue={paciente.contacto_cuidador || ''} 
-              type="tel" 
             />
           </div>
 
