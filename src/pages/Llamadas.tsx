@@ -15,6 +15,7 @@ import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
 import { LlamadaDetailDialog } from "@/components/LlamadaDetailDialog";
 import { IndicadoresLlamadas } from "@/components/IndicadoresLlamadas";
 import { ImportLlamadasDialog } from "@/components/ImportLlamadasDialog";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface Llamada {
   id: string;
@@ -41,6 +42,7 @@ const Llamadas = () => {
   const [openAgendar, setOpenAgendar] = useState(false);
   const [openDetail, setOpenDetail] = useState(false);
   const [selectedLlamada, setSelectedLlamada] = useState<Llamada | null>(null);
+  const { isAdmin } = useUserRole();
   
   // Filtros
   const [filtrosVisible, setFiltrosVisible] = useState(false);
@@ -357,7 +359,7 @@ const Llamadas = () => {
           <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
         </div>
         <div className="flex gap-2">
-          <ImportLlamadasDialog onSuccess={fetchData} />
+          {isAdmin && <ImportLlamadasDialog onSuccess={fetchData} />}
           <Button onClick={() => setOpenAgendar(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Agendar Llamada

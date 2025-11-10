@@ -304,7 +304,11 @@ const Configuracion = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="text-muted-foreground">Email Corporativo</Label>
-                    <p className="text-lg font-medium">{profile.email}</p>
+                    <p className="text-lg font-medium">
+                      <a href={`mailto:${profile.email}`} className="underline underline-offset-2">
+                        {profile.email}
+                      </a>
+                    </p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="telefono">Teléfono</Label>

@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { VisitaDetailDialog } from "@/components/VisitaDetailDialog";
 import { ImportVisitasDialog } from "@/components/ImportVisitasDialog";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface Visita {
   id: string;
@@ -36,6 +37,7 @@ const Visitas = () => {
   const [selectedVisita, setSelectedVisita] = useState<Visita | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const { isAdmin } = useUserRole();
   const [filters, setFilters] = useState({
     estado: "",
     profesional: "",
@@ -217,7 +219,7 @@ const Visitas = () => {
           <p className="text-muted-foreground">Citas ambulatorias y domiciliarias</p>
         </div>
         <div className="flex gap-2">
-          <ImportVisitasDialog onSuccess={fetchData} />
+          {isAdmin && <ImportVisitasDialog onSuccess={fetchData} />}
           <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
             <Filter className="mr-2 h-4 w-4" />
             {showFilters ? "Ocultar Filtros" : "Filtros"}

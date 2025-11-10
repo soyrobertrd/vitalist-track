@@ -72,7 +72,28 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Contacto</p>
-                <p className="font-medium">{paciente.contacto_px || 'N/A'}</p>
+                {paciente.contacto_px ? (
+                  <div className="font-medium flex items-center gap-2">
+                    <a
+                      href={`tel:${(paciente.contacto_px || '').replace(/\D/g, '')}`}
+                      className="underline underline-offset-2"
+                      aria-label={`Llamar a ${paciente.nombre} ${paciente.apellido}`}
+                    >
+                      {paciente.contacto_px}
+                    </a>
+                    <a
+                      href={`https://wa.me/${(paciente.contacto_px || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-2 py-0.5 rounded border text-xs hover:bg-accent"
+                      aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
+                    >
+                      WhatsApp
+                    </a>
+                  </div>
+                ) : (
+                  <p className="font-medium">N/A</p>
+                )}
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Estado</p>
@@ -103,7 +124,28 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Contacto</p>
-                  <p className="font-medium">{paciente.contacto_cuidador || 'N/A'}</p>
+                  {paciente.contacto_cuidador ? (
+                    <div className="font-medium flex items-center gap-2">
+                      <a
+                        href={`tel:${(paciente.contacto_cuidador || '').replace(/\D/g, '')}`}
+                        className="underline underline-offset-2"
+                        aria-label={`Llamar a cuidador de ${paciente.nombre} ${paciente.apellido}`}
+                      >
+                        {paciente.contacto_cuidador}
+                      </a>
+                      <a
+                        href={`https://wa.me/${(paciente.contacto_cuidador || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-2 py-0.5 rounded border text-xs hover:bg-accent"
+                        aria-label={`Enviar WhatsApp al cuidador de ${paciente.nombre} ${paciente.apellido}`}
+                      >
+                        WhatsApp
+                      </a>
+                    </div>
+                  ) : (
+                    <p className="font-medium">N/A</p>
+                  )}
                 </div>
               </CardContent>
             </Card>

@@ -77,54 +77,83 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
         throw new Error("No se encontraron datos para importar");
       }
 
-      // Validar que los datos tengan las columnas requeridas
+      // Validar formato estándar o intentar mapa de formato legado
       const requiredFields = ["paciente_cedula", "profesional_cedula", "fecha_agendada"];
       const firstItem = data[0];
       const missingFields = requiredFields.filter(field => !(field in firstItem));
-      
-      if (missingFields.length > 0) {
+
+      let llamadasToInsert: any[] = [];
+
+      if (missingFields.length === 0) {
+        // FORMATO ESTÁNDAR: resolver IDs por cédula
+        const pacientesCedulas = [...new Set(data.map(d => d.paciente_cedula))];
+        const profesionalesCedulas = [...new Set(data.map(d => d.profesional_cedula))];
+
+        const { data: pacientes } = await supabase
+          .from("pacientes")
+          .select("id, cedula")
+          .in("cedula", pacientesCedulas);
+
+        const { data: profesionales } = await supabase
+          .from("personal_salud")
+          .select("id, cedula")
+          .in("cedula", profesionalesCedulas);
+
+        const pacientesMap = new Map(pacientes?.map(p => [p.cedula, p.id]));
+        const profesionalesMap = new Map(profesionales?.map(p => [p.cedula, p.id]));
+
+        llamadasToInsert = data
+          .filter(d => pacientesMap.has(d.paciente_cedula))
+          .map(d => ({
+            paciente_id: pacientesMap.get(d.paciente_cedula),
+            profesional_id: profesionalesMap.get(d.profesional_cedula) || null,
+            fecha_agendada: d.fecha_agendada,
+            motivo: d.motivo || null,
+            duracion_estimada: d.duracion_estimada ? parseInt(d.duracion_estimada) : null,
+            estado: d.estado || "agendada",
+            notas_adicionales: d.notas_adicionales || null,
+          }));
+      } else if ("telefono" in firstItem) {
+        // FORMATO LEGADO (como el ejemplo del usuario)
+        const sanitize = (t: string = "") => t.replace(/\D/g, "");
+        const phonesRaw = [...new Set(data.map((d: any) => d.telefono).filter(Boolean))];
+
+        // Intentar coincidencia directa por contacto_px
+        const { data: pacientesByPhone } = await supabase
+          .from("pacientes")
+          .select("id, contacto_px, nombre, apellido");
+
+        const phoneToPaciente = new Map<string, string>();
+        (pacientesByPhone || []).forEach((p: any) => {
+          if (!p.contacto_px) return;
+          phoneToPaciente.set(sanitize(p.contacto_px), p.id);
+        });
+
+        llamadasToInsert = data
+          .map((d: any) => {
+            const phone = sanitize(d.telefono);
+            const pacienteId = phoneToPaciente.get(phone);
+            if (!pacienteId) return null;
+
+            const realizada = Boolean(d.llamadaRealizada);
+            const fechaAgendada = d.fechaProximaLlamada || d.fecha_agendada || null;
+            const fechaRealizada = d.ultimaLlamada || null;
+
+            return {
+              paciente_id: pacienteId,
+              profesional_id: null, // no viene en el JSON legado
+              fecha_agendada: fechaAgendada ? `${String(fechaAgendada).trim()}${String(fechaAgendada).length <= 10 ? " 00:00:00" : ""}` : null,
+              fecha_hora_realizada: realizada && fechaRealizada ? `${String(fechaRealizada).trim()}${String(fechaRealizada).length <= 10 ? " 00:00:00" : ""}` : null,
+              estado: realizada ? "realizada" : "agendada",
+              motivo: d.motivo || null,
+              duracion_estimada: d.duracion_estimada ? parseInt(d.duracion_estimada) : null,
+              notas_adicionales: null,
+            };
+          })
+          .filter(Boolean) as any[];
+      } else {
         throw new Error(`Faltan campos requeridos: ${missingFields.join(", ")}`);
       }
-
-      // Obtener IDs de pacientes y profesionales por cédula
-      const pacientesCedulas = [...new Set(data.map(d => d.paciente_cedula))];
-      const profesionalesCedulas = [...new Set(data.map(d => d.profesional_cedula))];
-
-      const { data: pacientes } = await supabase
-        .from("pacientes")
-        .select("id, cedula")
-        .in("cedula", pacientesCedulas);
-
-      const { data: profesionales } = await supabase
-        .from("personal_salud")
-        .select("id, cedula")
-        .in("cedula", profesionalesCedulas);
-
-      const pacientesMap = new Map(pacientes?.map(p => [p.cedula, p.id]));
-      const profesionalesMap = new Map(profesionales?.map(p => [p.cedula, p.id]));
-
-      // Preparar datos para inserción
-      const llamadasToInsert = data
-        .filter(d => {
-          const hasPaciente = pacientesMap.has(d.paciente_cedula);
-          const hasProfesional = profesionalesMap.has(d.profesional_cedula);
-          if (!hasPaciente) {
-            console.warn(`Paciente con cédula ${d.paciente_cedula} no encontrado`);
-          }
-          if (!hasProfesional) {
-            console.warn(`Profesional con cédula ${d.profesional_cedula} no encontrado`);
-          }
-          return hasPaciente && hasProfesional;
-        })
-        .map(d => ({
-          paciente_id: pacientesMap.get(d.paciente_cedula),
-          profesional_id: profesionalesMap.get(d.profesional_cedula),
-          fecha_agendada: d.fecha_agendada,
-          motivo: d.motivo || null,
-          duracion_estimada: d.duracion_estimada ? parseInt(d.duracion_estimada) : null,
-          estado: d.estado || "agendada",
-          notas_adicionales: d.notas_adicionales || null,
-        }));
 
       if (llamadasToInsert.length === 0) {
         throw new Error("No se encontraron registros válidos para importar");

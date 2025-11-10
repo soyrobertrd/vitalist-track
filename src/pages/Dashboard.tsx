@@ -7,6 +7,7 @@ import { StatsCard } from "@/components/StatsCard";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
+import { useNavigate } from "react-router-dom";
 import {
   LineChart,
   Line,
@@ -26,6 +27,7 @@ import {
 } from "recharts";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [stats, setStats] = useState({
     totalPacientes: 0,
@@ -129,6 +131,7 @@ const Dashboard = () => {
           description={`${stats.pacientesActivos} activos`}
           icon={Users}
           trend={{ value: 12, isPositive: true }}
+          onClick={() => navigate('/pacientes')}
         />
         <StatsCard
           title="Llamadas Pendientes"
@@ -136,6 +139,7 @@ const Dashboard = () => {
           description="Por realizar hoy"
           icon={Phone}
           trend={{ value: 5, isPositive: false }}
+          onClick={() => navigate('/llamadas')}
         />
         <StatsCard
           title="Visitas Hoy"
@@ -143,6 +147,7 @@ const Dashboard = () => {
           description="Programadas"
           icon={Calendar}
           trend={{ value: 8, isPositive: true }}
+          onClick={() => navigate('/visitas')}
         />
         <StatsCard
           title="Tasa de Respuesta"

@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Phone, MapPin, Upload, Filter } from "lucide-react";
+import { Plus, Phone, MapPin, Upload, Filter, MessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,7 @@ import { ImportPacientesDialog } from "@/components/ImportPacientesDialog";
 import { EditPacienteDialog } from "@/components/EditPacienteDialog";
 import { addDays, format, isWeekend } from "date-fns";
 import { Pencil } from "lucide-react";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface Paciente {
   id: string;
@@ -53,6 +54,7 @@ const Pacientes = () => {
     grado: "todos",
     busqueda: ""
   });
+  const { isAdmin } = useUserRole();
 
   const fetchPacientes = async () => {
     const { data, error } = await supabase
@@ -245,10 +247,12 @@ const Pacientes = () => {
           <p className="text-muted-foreground">Gestión de pacientes del programa</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setImportOpen(true)}>
-            <Upload className="mr-2 h-4 w-4" />
-            Importar
-          </Button>
+          {isAdmin && (
+            <Button variant="outline" onClick={() => setImportOpen(true)}>
+              <Upload className="mr-2 h-4 w-4" />
+              Importar
+            </Button>
+          )}
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button>
@@ -540,10 +544,27 @@ const Pacientes = () => {
                 <span className="font-medium">Cédula:</span> {paciente.cedula}
               </p>
               {paciente.contacto_px && (
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <div className="text-sm text-muted-foreground flex items-center gap-2">
                   <Phone className="h-3 w-3" />
-                  {paciente.contacto_px}
-                </p>
+                  <a
+                    href={`tel:${(paciente.contacto_px || '').replace(/\D/g, '')}`}
+                    className="underline underline-offset-2"
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label={`Llamar a ${paciente.nombre} ${paciente.apellido}`}
+                  >
+                    {paciente.contacto_px}
+                  </a>
+                  <a
+                    href={`https://wa.me/${(paciente.contacto_px || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center px-2 py-0.5 rounded border text-xs hover:bg-accent"
+                    aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
+                  >
+                    <MessageSquare className="h-3 w-3 mr-1" /> WhatsApp
+                  </a>
+                </div>
               )}
               {paciente.zona && (
                 <p className="text-sm text-muted-foreground flex items-center gap-2">

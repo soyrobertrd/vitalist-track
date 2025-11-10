@@ -10,11 +10,12 @@ interface StatsCardProps {
     value: number;
     isPositive: boolean;
   };
+  onClick?: () => void;
 }
 
-export function StatsCard({ title, value, description, icon: Icon, trend }: StatsCardProps) {
+export function StatsCard({ title, value, description, icon: Icon, trend, onClick }: StatsCardProps) {
   return (
-    <GlassCard className="p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
+    <GlassCard onClick={onClick} className="p-6 hover:shadow-lg transition-all hover:scale-[1.02]">
       <div className="flex flex-row items-center justify-between space-y-0 mb-4">
         <h3 className="text-sm font-medium text-foreground">{title}</h3>
         <Icon className="h-5 w-5 text-primary" />
