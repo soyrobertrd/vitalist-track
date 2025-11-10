@@ -52,6 +52,7 @@ const Llamadas = () => {
   const [filtroFechaInicio, setFiltroFechaInicio] = useState<string>("");
   const [filtroFechaFin, setFiltroFechaFin] = useState<string>("");
   const [busquedaPaciente, setBusquedaPaciente] = useState<string>("");
+  const [showAllLlamadas, setShowAllLlamadas] = useState(false);
 
   const fetchData = async () => {
     const [llamadasRes, pacientesRes, personalRes] = await Promise.all([
@@ -67,12 +68,37 @@ const Llamadas = () => {
       const todasLlamadas = llamadasRes.data as any[];
       setLlamadas(todasLlamadas);
       
-      // Separar agendadas de historial - excluir realizadas
+      // Separar agendadas de historial
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      
       const agendadas = todasLlamadas.filter(
-        l => l.estado === 'agendada' || l.estado === 'pendiente'
+        l => {
+          if (l.estado === 'agendada' || l.estado === 'pendiente') {
+            return true;
+          }
+          // Include today's completed calls
+          if ((l.estado === 'realizada' || l.estado === 'cancelada' || l.estado === 'no_contesta') && l.fecha_hora_realizada) {
+            const fechaLlamada = new Date(l.fecha_hora_realizada);
+            fechaLlamada.setHours(0, 0, 0, 0);
+            return fechaLlamada.getTime() === hoy.getTime();
+          }
+          return false;
+        }
       );
+      
       const historial = todasLlamadas.filter(
-        l => l.estado === 'realizada' || l.estado === 'cancelada' || l.estado === 'no_contesta'
+        l => {
+          if (l.estado === 'realizada' || l.estado === 'cancelada' || l.estado === 'no_contesta') {
+            if (l.fecha_hora_realizada) {
+              const fechaLlamada = new Date(l.fecha_hora_realizada);
+              fechaLlamada.setHours(0, 0, 0, 0);
+              return fechaLlamada.getTime() !== hoy.getTime();
+            }
+            return true;
+          }
+          return false;
+        }
       );
       
       setLlamadasAgendadas(agendadas);
@@ -372,7 +398,9 @@ const Llamadas = () => {
   );
 
   const llamadasAgendadasFiltradas = aplicarFiltros(llamadasAgendadas);
-  const llamadasHistorialFiltradas = aplicarFiltros(llamadasHistorial);
+  const llamadasHistorialFiltradas = showAllLlamadas 
+    ? aplicarFiltros(llamadasHistorial) 
+    : [];
 
   return (
     <div className="space-y-6">
@@ -539,16 +567,33 @@ const Llamadas = () => {
         </TabsContent>
 
         <TabsContent value="historial" className="space-y-4 mt-4">
-          {llamadasHistorialFiltradas.length === 0 ? (
+          {!showAllLlamadas ? (
+            <div className="text-center py-12">
+              <Phone className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground mb-4">
+                Mostrando solo llamadas pendientes y del día de hoy
+              </p>
+              <Button onClick={() => setShowAllLlamadas(true)} variant="outline">
+                Ver Más Llamadas
+              </Button>
+            </div>
+          ) : llamadasHistorialFiltradas.length === 0 ? (
             <Card>
               <CardContent className="text-center py-12 text-muted-foreground">
                 No hay llamadas en el historial
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4">
-              {llamadasHistorialFiltradas.map(renderLlamadaCardHistorial)}
-            </div>
+            <>
+              <div className="flex justify-end mb-4">
+                <Button onClick={() => setShowAllLlamadas(false)} variant="outline">
+                  Ocultar Historial
+                </Button>
+              </div>
+              <div className="grid gap-4 md:grid-cols-1">
+                {llamadasHistorialFiltradas.map(renderLlamadaCardHistorial)}
+              </div>
+            </>
           )}
         </TabsContent>
       </Tabs>

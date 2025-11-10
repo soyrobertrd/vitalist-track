@@ -2,7 +2,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Phone, User, MapPin, Heart, Pill, MessageSquare } from "lucide-react";
+import { Calendar, Phone, User, MapPin, Heart, Pill } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -90,7 +92,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                         aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
                         title="Enviar mensaje por WhatsApp"
                       >
-                        <MessageSquare className="h-4 w-4 text-green-600" />
+                        <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-green-600" />
                       </a>
                     )}
                   </div>
@@ -136,7 +138,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                       >
                         {paciente.contacto_cuidador}
                       </a>
-                      {paciente.whatsapp_cuidador && (
+                       {paciente.whatsapp_cuidador && (
                         <a
                           href={`https://wa.me/${(paciente.contacto_cuidador || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
                           target="_blank"
@@ -145,7 +147,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                           aria-label={`Enviar WhatsApp al cuidador de ${paciente.nombre} ${paciente.apellido}`}
                           title="Enviar mensaje por WhatsApp"
                         >
-                          <MessageSquare className="h-4 w-4 text-green-600" />
+                          <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-green-600" />
                         </a>
                       )}
                     </div>

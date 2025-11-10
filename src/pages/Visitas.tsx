@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Plus, Clock, User, Filter, TrendingUp, Activity, CheckSquare } from "lucide-react";
+import { Calendar, Plus, Clock, User, Filter, TrendingUp, Activity, CheckSquare, Phone } from "lucide-react";
 import { differenceInDays } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -43,6 +43,7 @@ const Visitas = () => {
     profesional: "",
     tipo: "",
   });
+  const [showAllVisitas, setShowAllVisitas] = useState(false);
   const [stats, setStats] = useState({
     totalVisitas: 0,
     pendientes: 0,
@@ -57,7 +58,15 @@ const Visitas = () => {
         .from("control_visitas")
         .select(`
           *,
-          pacientes!control_visitas_paciente_id_fkey(nombre, apellido),
+          pacientes!control_visitas_paciente_id_fkey(
+            nombre, 
+            apellido, 
+            contacto_px, 
+            contacto_cuidador, 
+            whatsapp_px, 
+            whatsapp_cuidador, 
+            numero_principal
+          ),
           personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)
         `)
         .order("fecha_hora_visita", { ascending: false }),
@@ -198,6 +207,36 @@ const Visitas = () => {
     if (filters.tipo && v.tipo_visita !== filters.tipo) return false;
     return true;
   });
+
+  // Filter for pending + today's visits
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  
+  const visitasPendientesYHoy = filteredVisitas.filter((v: any) => {
+    if (v.estado === 'pendiente') return true;
+    
+    if ((v.estado === 'realizada' || v.estado === 'cancelada') && v.fecha_hora_visita) {
+      const fechaVisita = new Date(v.fecha_hora_visita);
+      fechaVisita.setHours(0, 0, 0, 0);
+      return fechaVisita.getTime() === hoy.getTime();
+    }
+    
+    return false;
+  });
+
+  const visitasOtras = filteredVisitas.filter((v: any) => {
+    if (v.estado === 'pendiente') return false;
+    
+    if ((v.estado === 'realizada' || v.estado === 'cancelada') && v.fecha_hora_visita) {
+      const fechaVisita = new Date(v.fecha_hora_visita);
+      fechaVisita.setHours(0, 0, 0, 0);
+      return fechaVisita.getTime() !== hoy.getTime();
+    }
+    
+    return false;
+  });
+
+  const visitasToShow = showAllVisitas ? [...visitasPendientesYHoy, ...visitasOtras] : visitasPendientesYHoy;
 
   const getCardColor = (fecha: string, estado: string) => {
     if (estado !== "pendiente") return "";
@@ -492,8 +531,23 @@ const Visitas = () => {
         </GlassCard>
       )}
 
+      {/* Lista de Visitas */}
+      {!showAllVisitas && visitasOtras.length > 0 && (
+        <div className="flex justify-center mb-4">
+          <Button onClick={() => setShowAllVisitas(true)} variant="outline">
+            Ver Más Visitas ({visitasOtras.length})
+          </Button>
+        </div>
+      )}
+      {showAllVisitas && (
+        <div className="flex justify-center mb-4">
+          <Button onClick={() => setShowAllVisitas(false)} variant="outline">
+            Ocultar Historial
+          </Button>
+        </div>
+      )}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredVisitas.map((visita: any) => {
+        {visitasToShow.map((visita: any) => {
           const formatearTexto = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase().replace("_", " ");
           const cardColorClass = getCardColor(visita.fecha_hora_visita, visita.estado);
           
@@ -507,9 +561,27 @@ const Visitas = () => {
               }}
             >
               <div>
-                <h3 className="font-bold text-lg mb-2">
-                  {visita.pacientes?.nombre} {visita.pacientes?.apellido}
-                </h3>
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-bold text-lg">
+                    {visita.pacientes?.nombre} {visita.pacientes?.apellido}
+                  </h3>
+                  {/* Mobile Call Button */}
+                  {visita.pacientes && (
+                    <a
+                      href={`tel:${
+                        visita.pacientes.numero_principal === 'cuidador' && visita.pacientes.contacto_cuidador
+                          ? visita.pacientes.contacto_cuidador.replace(/\D/g, '')
+                          : (visita.pacientes.contacto_px || '').replace(/\D/g, '')
+                      }`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                      aria-label="Llamar al paciente"
+                      title="Llamar"
+                    >
+                      <Phone className="h-4 w-4" />
+                    </a>
+                  )}
+                </div>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center">
                     <Calendar className="mr-2 h-4 w-4" />

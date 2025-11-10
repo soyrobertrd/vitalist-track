@@ -8,8 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { 
-  ArrowLeft, Settings, Users, Shield, Mail, FileText, 
+import { ArrowLeft, Settings, Users, Shield, Mail, FileText, 
   BarChart, Lock, Palette, Database, Workflow, Plus 
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -17,12 +16,15 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const ConfiguracionAdmin = () => {
   const navigate = useNavigate();
   const { isAdmin, loading: roleLoading } = useUserRole();
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [createUserOpen, setCreateUserOpen] = useState(false);
 
   useEffect(() => {
     if (!roleLoading && !isAdmin) {
@@ -32,22 +34,33 @@ const ConfiguracionAdmin = () => {
   }, [isAdmin, roleLoading, navigate]);
 
   useEffect(() => {
-    fetchUsuarios();
-  }, []);
+    if (!roleLoading && isAdmin) {
+      fetchUsuarios();
+    }
+  }, [roleLoading, isAdmin]);
 
   const fetchUsuarios = async () => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select(`
-        *,
-        user_roles (role)
-      `)
-      .order("created_at", { ascending: false });
+    setLoadingUsers(true);
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select(`
+          *,
+          user_roles (role)
+        `)
+        .order("created_at", { ascending: false });
 
-    if (error) {
+      if (error) {
+        console.error("Error fetching users:", error);
+        toast.error("Error al cargar usuarios");
+      } else {
+        setUsuarios(data || []);
+      }
+    } catch (error) {
+      console.error("Error:", error);
       toast.error("Error al cargar usuarios");
-    } else {
-      setUsuarios(data || []);
+    } finally {
+      setLoadingUsers(false);
     }
   };
 
@@ -114,6 +127,48 @@ const ConfiguracionAdmin = () => {
       fetchUsuarios();
     }
     setLoading(false);
+  };
+
+  const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const nombre = formData.get("nombre") as string;
+    const apellido = formData.get("apellido") as string;
+    const cedula = formData.get("cedula") as string;
+    const role = formData.get("role") as string;
+
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            nombre,
+            apellido,
+            cedula,
+            role,
+            created_by_admin: true,
+            created_by: profile?.id
+          }
+        }
+      });
+
+      if (authError) throw authError;
+
+      toast.success("Usuario creado exitosamente");
+      setCreateUserOpen(false);
+      fetchUsuarios();
+      (e.target as HTMLFormElement).reset();
+    } catch (error: any) {
+      console.error("Error creating user:", error);
+      toast.error(error.message || "Error al crear usuario");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (roleLoading) {
@@ -235,13 +290,28 @@ const ConfiguracionAdmin = () => {
         {/* Usuarios y Roles */}
         <TabsContent value="usuarios">
           <GlassCard className="p-6 space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Gestión de Usuarios</h2>
-              <p className="text-muted-foreground">Administrar usuarios del sistema</p>
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Gestión de Usuarios</h2>
+                <p className="text-muted-foreground">Administrar usuarios del sistema</p>
+              </div>
+              <Button onClick={() => setCreateUserOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Crear Usuario
+              </Button>
             </div>
 
-            <div className="space-y-4">
-              {usuarios.map((usuario) => (
+            {loadingUsers ? (
+              <div className="flex items-center justify-center py-8">
+                <p>Cargando usuarios...</p>
+              </div>
+            ) : usuarios.length === 0 ? (
+              <div className="flex items-center justify-center py-8">
+                <p className="text-muted-foreground">No hay usuarios registrados</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {usuarios.map((usuario) => (
                 <div key={usuario.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg glass-bg gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -291,8 +361,58 @@ const ConfiguracionAdmin = () => {
                   </div>
                 </div>
               ))}
-            </div>
+              </div>
+            )}
           </GlassCard>
+
+          {/* Create User Dialog */}
+          <Dialog open={createUserOpen} onOpenChange={setCreateUserOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Crear Nuevo Usuario</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleCreateUser} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nombre">Nombre *</Label>
+                    <Input id="nombre" name="nombre" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="apellido">Apellido *</Label>
+                    <Input id="apellido" name="apellido" required />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cedula">Cédula *</Label>
+                  <Input id="cedula" name="cedula" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Correo Electrónico *</Label>
+                  <Input id="email" name="email" type="email" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Contraseña *</Label>
+                  <Input id="password" name="password" type="password" required minLength={6} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="role">Rol *</Label>
+                  <Select name="role" required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar rol" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="admin">Administrador</SelectItem>
+                      <SelectItem value="moderator">Moderador</SelectItem>
+                      <SelectItem value="user">Usuario</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Creando..." : "Crear Usuario"}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </TabsContent>
 
         {/* Roles */}

@@ -16,6 +16,8 @@ import { EditPacienteDialog } from "@/components/EditPacienteDialog";
 import { addDays, format, isWeekend } from "date-fns";
 import { Pencil } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
 interface Paciente {
   id: string;
@@ -602,7 +604,7 @@ const Pacientes = () => {
                     aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
                     title="Enviar mensaje por WhatsApp"
                   >
-                    <MessageSquare className="h-4 w-4 text-green-600" />
+                    <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-green-600" />
                   </a>
                 </div>
               )}
