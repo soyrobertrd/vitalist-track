@@ -1,0 +1,143 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Phone, Calendar, Clock, User } from "lucide-react";
+import { format } from "date-fns";
+
+interface Llamada {
+  id: string;
+  fecha_agendada: string | null;
+  fecha_hora_realizada: string | null;
+  estado: string;
+  motivo: string | null;
+  comentarios_resultados: string | null;
+  resultado_seguimiento: string | null;
+  duracion_minutos: number | null;
+  duracion_estimada: number | null;
+  requiere_seguimiento: boolean;
+  notas_adicionales: string | null;
+  pacientes: { nombre: string; apellido: string } | null;
+  personal_salud: { nombre: string; apellido: string } | null;
+}
+
+interface LlamadaCardAgendadaProps {
+  llamada: Llamada;
+  onLlamadaClick: (llamada: Llamada) => void;
+  isCallOverdue: (llamada: Llamada) => boolean;
+  getEstadoBadgeColor: (estado: string) => string;
+  getResultadoBadgeColor: (resultado: string | null) => string;
+  formatearTexto: (texto: string | null) => string;
+}
+
+export const LlamadaCardAgendada = ({
+  llamada,
+  onLlamadaClick,
+  isCallOverdue,
+  getEstadoBadgeColor,
+  getResultadoBadgeColor,
+  formatearTexto,
+}: LlamadaCardAgendadaProps) => {
+  const [pacienteData, setPacienteData] = useState<any>(null);
+  const overdue = isCallOverdue(llamada);
+
+  useEffect(() => {
+    if (llamada.pacientes) {
+      supabase
+        .from("pacientes")
+        .select("contacto_px, whatsapp_px, contacto_cuidador, whatsapp_cuidador, numero_principal")
+        .eq("nombre", llamada.pacientes.nombre)
+        .eq("apellido", llamada.pacientes.apellido)
+        .single()
+        .then(({ data }) => setPacienteData(data));
+    }
+  }, [llamada]);
+
+  const getMainPhone = () => {
+    if (!pacienteData) return null;
+    if (pacienteData.numero_principal === 'cuidador' && pacienteData.contacto_cuidador) {
+      return pacienteData.contacto_cuidador;
+    }
+    return pacienteData.contacto_px;
+  };
+
+  const mainPhone = getMainPhone();
+
+  return (
+    <Card 
+      className={`cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full ${
+        overdue ? 'border-destructive border-2 bg-destructive/5' : ''
+      }`}
+      onClick={() => onLlamadaClick(llamada)}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-2">
+          <CardTitle className="text-base line-clamp-2 flex-1">
+            {llamada.pacientes?.nombre} {llamada.pacientes?.apellido}
+            {overdue && <span className="text-destructive ml-2">⚠️ Retrasada</span>}
+          </CardTitle>
+          <div className="flex gap-2 items-center">
+            {mainPhone && (
+              <a
+                href={`tel:${mainPhone.replace(/\D/g, '')}`}
+                onClick={(e) => e.stopPropagation()}
+                className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                aria-label="Llamar al paciente"
+                title="Llamar"
+              >
+                <Phone className="h-4 w-4" />
+              </a>
+            )}
+            <Badge className={getEstadoBadgeColor(llamada.estado)} variant="secondary">
+              {formatearTexto(llamada.estado)}
+            </Badge>
+          </div>
+        </div>
+      </CardHeader>
+      
+      <CardContent className="space-y-3 flex-1 flex flex-col">
+        {llamada.fecha_agendada && (
+          <div className="bg-primary/5 p-3 rounded-lg">
+            <p className="text-xs text-muted-foreground mb-1">Fecha y Hora</p>
+            <p className="font-semibold flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-primary" />
+              {format(new Date(llamada.fecha_agendada), "dd/MM/yyyy")}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {format(new Date(llamada.fecha_agendada), "HH:mm")}
+            </p>
+          </div>
+        )}
+        
+        {llamada.personal_salud && (
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Profesional Asignado</p>
+            <p className="text-sm font-medium flex items-center gap-2">
+              <User className="h-4 w-4" />
+              {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
+            </p>
+          </div>
+        )}
+        
+        {llamada.duracion_estimada && (
+          <p className="text-xs text-muted-foreground flex items-center gap-2">
+            <Clock className="h-3 w-3" />
+            Duración: {llamada.duracion_estimada} min
+          </p>
+        )}
+        
+        {llamada.resultado_seguimiento && (
+          <Badge variant="outline" className={`${getResultadoBadgeColor(llamada.resultado_seguimiento)} w-full justify-center`}>
+            {formatearTexto(llamada.resultado_seguimiento)}
+          </Badge>
+        )}
+        
+        {llamada.motivo && (
+          <p className="text-xs text-muted-foreground line-clamp-2 pt-2 border-t mt-auto">
+            {llamada.motivo}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
