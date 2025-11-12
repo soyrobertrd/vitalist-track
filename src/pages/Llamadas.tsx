@@ -15,6 +15,7 @@ import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
 import { LlamadaDetailDialog } from "@/components/LlamadaDetailDialog";
 import { IndicadoresLlamadas } from "@/components/IndicadoresLlamadas";
 import { ImportLlamadasDialog } from "@/components/ImportLlamadasDialog";
+import { ProcesarLlamadasImportadasDialog } from "@/components/ProcesarLlamadasImportadasDialog";
 import { useUserRole } from "@/hooks/useUserRole";
 import { LlamadaCardAgendada } from "@/components/LlamadaCardAgendada";
 
@@ -321,7 +322,12 @@ const Llamadas = () => {
           <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
         </div>
         <div className="flex gap-2">
-          {isAdmin && <ImportLlamadasDialog onSuccess={fetchData} />}
+          {isAdmin && (
+            <>
+              <ImportLlamadasDialog onSuccess={fetchData} />
+              <ProcesarLlamadasImportadasDialog onSuccess={fetchData} />
+            </>
+          )}
           <Button onClick={() => setOpenAgendar(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Agendar Llamada

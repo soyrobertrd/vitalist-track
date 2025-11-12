@@ -7,6 +7,8 @@ import { Download, FileText, Phone, Calendar, Users, TrendingUp, Activity } from
 import { toast } from "sonner";
 import { format, subDays, startOfDay, endOfDay } from "date-fns";
 import { es } from "date-fns/locale";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -47,6 +49,7 @@ const Reportes = () => {
   const [dataPacientes, setDataPacientes] = useState<any[]>([]);
   const [observaciones, setObservaciones] = useState("");
   const [recomendaciones, setRecomendaciones] = useState("");
+  const [exportingPDF, setExportingPDF] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -183,6 +186,60 @@ const Reportes = () => {
     toast.success("Reporte completo exportado a Excel");
   };
 
+  const exportToPDF = async () => {
+    setExportingPDF(true);
+    try {
+      const reportElement = document.getElementById('reporte-content');
+      if (!reportElement) {
+        toast.error("No se pudo encontrar el contenido del reporte");
+        return;
+      }
+
+      // Capture the element as canvas
+      const canvas = await html2canvas(reportElement, {
+        scale: 2,
+        logging: false,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        windowHeight: reportElement.scrollHeight,
+        height: reportElement.scrollHeight
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = pdfWidth / imgWidth;
+      const scaledHeight = imgHeight * ratio;
+
+      let heightLeft = scaledHeight;
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, scaledHeight);
+      heightLeft -= pdfHeight;
+
+      // Add more pages if needed
+      while (heightLeft > 0) {
+        position = heightLeft - scaledHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, scaledHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      pdf.save(`Reporte_Completo_${format(new Date(), "yyyy-MM-dd")}.pdf`);
+      toast.success("Reporte exportado exitosamente a PDF");
+    } catch (error) {
+      console.error("Error al exportar PDF:", error);
+      toast.error("Error al exportar el reporte a PDF");
+    } finally {
+      setExportingPDF(false);
+    }
+  };
+
   const COLORS = [
     'hsl(var(--chart-1))',
     'hsl(var(--chart-2))',
@@ -202,10 +259,16 @@ const Reportes = () => {
               Período: {dateRange.from && format(dateRange.from, "dd 'de' MMMM yyyy", { locale: es })} - {dateRange.to && format(dateRange.to, "dd 'de' MMMM yyyy", { locale: es })}
             </p>
           </div>
-          <Button onClick={exportToExcel}>
-            <Download className="mr-2 h-4 w-4" />
-            Exportar Reporte Completo
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={exportToExcel} variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              Exportar Excel
+            </Button>
+            <Button onClick={exportToPDF} disabled={exportingPDF}>
+              <FileText className="mr-2 h-4 w-4" />
+              {exportingPDF ? "Generando PDF..." : "Exportar PDF"}
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -255,6 +318,7 @@ const Reportes = () => {
         </Card>
       </div>
 
+      <div id="reporte-content">
       <Tabs defaultValue="resumen" className="w-full">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="resumen">Resumen Ejecutivo</TabsTrigger>
@@ -698,6 +762,7 @@ const Reportes = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 };
