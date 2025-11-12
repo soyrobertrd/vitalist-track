@@ -42,22 +42,33 @@ const ConfiguracionAdmin = () => {
   const fetchUsuarios = async () => {
     setLoadingUsers(true);
     try {
-      const { data, error } = await supabase
+      // Fetch profiles
+      const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
-        .select(`
-          *,
-          user_roles (role)
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching users:", error);
-        toast.error("Error al cargar usuarios");
-      } else {
-        setUsuarios(data || []);
-      }
+      if (profilesError) throw profilesError;
+
+      // Fetch roles separately
+      const { data: rolesData, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("user_id, role");
+
+      if (rolesError) throw rolesError;
+
+      // Combine the data
+      const usuariosConRoles = profilesData?.map(profile => {
+        const userRole = rolesData?.find(r => r.user_id === profile.id);
+        return {
+          ...profile,
+          user_roles: userRole ? [{ role: userRole.role }] : []
+        };
+      });
+
+      setUsuarios(usuariosConRoles || []);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error fetching users:", error);
       toast.error("Error al cargar usuarios");
     } finally {
       setLoadingUsers(false);
@@ -526,7 +537,7 @@ const ConfiguracionAdmin = () => {
                 <h2 className="text-2xl font-bold mb-2">Plantillas de Correo</h2>
                 <p className="text-muted-foreground">Gestionar plantillas de correo electrónico</p>
               </div>
-              <Button>
+              <Button onClick={() => navigate('/plantillas-correo')}>
                 <Plus className="mr-2 h-4 w-4" />
                 Nueva Plantilla
               </Button>
@@ -540,8 +551,8 @@ const ConfiguracionAdmin = () => {
                     <p className="text-sm text-muted-foreground">Última modificación: Hace 2 días</p>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">Editar</Button>
-                    <Button variant="outline" size="sm">Vista Previa</Button>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/plantillas-correo')}>Editar</Button>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/plantillas-correo')}>Vista Previa</Button>
                   </div>
                 </div>
               ))}
@@ -557,7 +568,7 @@ const ConfiguracionAdmin = () => {
                 <h2 className="text-2xl font-bold mb-2">Gestor de Encuestas</h2>
                 <p className="text-muted-foreground">Crear y administrar encuestas</p>
               </div>
-              <Button>
+              <Button onClick={() => navigate('/encuestas')}>
                 <Plus className="mr-2 h-4 w-4" />
                 Nueva Encuesta
               </Button>
@@ -573,9 +584,9 @@ const ConfiguracionAdmin = () => {
                   <Badge variant="outline">82% satisfacción</Badge>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">Editar</Button>
-                  <Button variant="outline" size="sm">Ver Resultados</Button>
-                  <Button variant="outline" size="sm">Desactivar</Button>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/encuestas')}>Editar</Button>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/encuestas')}>Ver Resultados</Button>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/encuestas')}>Desactivar</Button>
                 </div>
               </div>
             </div>

@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { VisitaDetailDialog } from "@/components/VisitaDetailDialog";
 import { ImportVisitasDialog } from "@/components/ImportVisitasDialog";
 import { useUserRole } from "@/hooks/useUserRole";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Visita {
   id: string;
@@ -43,7 +44,6 @@ const Visitas = () => {
     profesional: "",
     tipo: "",
   });
-  const [showAllVisitas, setShowAllVisitas] = useState(false);
   const [stats, setStats] = useState({
     totalVisitas: 0,
     pendientes: 0,
@@ -53,6 +53,9 @@ const Visitas = () => {
   const [selectedProfessionals, setSelectedProfessionals] = useState<string[]>([]);
 
   const fetchData = async () => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
     const [visitasRes, pacientesRes, personalRes] = await Promise.all([
       supabase
         .from("control_visitas")
@@ -92,11 +95,15 @@ const Visitas = () => {
       
       setVisitas(visitasConProfesionales as any);
       
-      // Calculate stats
-      const total = visitasConProfesionales.length;
-      const pendientes = visitasConProfesionales.filter((v: any) => v.estado === "pendiente").length;
-      const realizadas = visitasConProfesionales.filter((v: any) => v.estado === "realizada").length;
-      const canceladas = visitasConProfesionales.filter((v: any) => v.estado === "cancelada").length;
+      // Calculate stats for last 30 days
+      const visitasUltimos30Dias = visitasConProfesionales.filter((v: any) => 
+        new Date(v.fecha_hora_visita) >= thirtyDaysAgo
+      );
+      
+      const total = visitasUltimos30Dias.length;
+      const pendientes = visitasUltimos30Dias.filter((v: any) => v.estado === "pendiente").length;
+      const realizadas = visitasUltimos30Dias.filter((v: any) => v.estado === "realizada").length;
+      const canceladas = visitasUltimos30Dias.filter((v: any) => v.estado === "cancelada").length;
       
       setStats({
         totalVisitas: total,
@@ -208,35 +215,14 @@ const Visitas = () => {
     return true;
   });
 
-  // Filter for pending + today's visits
-  const hoy = new Date();
-  hoy.setHours(0, 0, 0, 0);
-  
-  const visitasPendientesYHoy = filteredVisitas.filter((v: any) => {
-    if (v.estado === 'pendiente') return true;
-    
-    if ((v.estado === 'realizada' || v.estado === 'cancelada') && v.fecha_hora_visita) {
-      const fechaVisita = new Date(v.fecha_hora_visita);
-      fechaVisita.setHours(0, 0, 0, 0);
-      return fechaVisita.getTime() === hoy.getTime();
-    }
-    
-    return false;
-  });
+  // Separate visits into pending (agendadas) and history (historial)
+  const visitasAgendadas = filteredVisitas
+    .filter((v: any) => v.estado === 'pendiente')
+    .sort((a: any, b: any) => new Date(a.fecha_hora_visita).getTime() - new Date(b.fecha_hora_visita).getTime()); // Ascending for pending
 
-  const visitasOtras = filteredVisitas.filter((v: any) => {
-    if (v.estado === 'pendiente') return false;
-    
-    if ((v.estado === 'realizada' || v.estado === 'cancelada') && v.fecha_hora_visita) {
-      const fechaVisita = new Date(v.fecha_hora_visita);
-      fechaVisita.setHours(0, 0, 0, 0);
-      return fechaVisita.getTime() !== hoy.getTime();
-    }
-    
-    return false;
-  });
-
-  const visitasToShow = showAllVisitas ? [...visitasPendientesYHoy, ...visitasOtras] : visitasPendientesYHoy;
+  const visitasHistorial = filteredVisitas
+    .filter((v: any) => v.estado !== 'pendiente')
+    .sort((a: any, b: any) => new Date(b.fecha_hora_visita).getTime() - new Date(a.fecha_hora_visita).getTime()); // Descending for history
 
   const getCardColor = (fecha: string, estado: string) => {
     if (estado !== "pendiente") return "";
@@ -531,99 +517,181 @@ const Visitas = () => {
         </GlassCard>
       )}
 
-      {/* Lista de Visitas */}
-      {!showAllVisitas && visitasOtras.length > 0 && (
-        <div className="flex justify-center mb-4">
-          <Button onClick={() => setShowAllVisitas(true)} variant="outline">
-            Ver Más Visitas ({visitasOtras.length})
-          </Button>
-        </div>
-      )}
-      {showAllVisitas && (
-        <div className="flex justify-center mb-4">
-          <Button onClick={() => setShowAllVisitas(false)} variant="outline">
-            Ocultar Historial
-          </Button>
-        </div>
-      )}
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {visitasToShow.map((visita: any) => {
-          const formatearTexto = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase().replace("_", " ");
-          const cardColorClass = getCardColor(visita.fecha_hora_visita, visita.estado);
-          
-          return (
-            <GlassCard 
-              key={visita.id} 
-              className={`aspect-square p-6 flex flex-col justify-between cursor-pointer hover:scale-105 transition-transform ${cardColorClass}`}
-              onClick={() => {
-                setSelectedVisita(visita);
-                setDetailOpen(true);
-              }}
-            >
-              <div>
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-bold text-lg">
-                    {visita.pacientes?.nombre} {visita.pacientes?.apellido}
-                  </h3>
-                  {/* Mobile Call Button */}
-                  {visita.pacientes && (
-                    <a
-                      href={`tel:${
-                        visita.pacientes.numero_principal === 'cuidador' && visita.pacientes.contacto_cuidador
-                          ? visita.pacientes.contacto_cuidador.replace(/\D/g, '')
-                          : (visita.pacientes.contacto_px || '').replace(/\D/g, '')
-                      }`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-                      aria-label="Llamar al paciente"
-                      title="Llamar"
-                    >
-                      <Phone className="h-4 w-4" />
-                    </a>
-                  )}
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center">
-                    <Calendar className="mr-2 h-4 w-4" />
-                    {new Date(visita.fecha_hora_visita).toLocaleDateString('es-DO', { 
-                      day: '2-digit', 
-                      month: 'short', 
-                      year: 'numeric' 
-                    })}
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="mr-2 h-4 w-4" />
-                    {new Date(visita.fecha_hora_visita).toLocaleTimeString('es-DO', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
-                  </div>
-                  {visita.personal_salud && (
-                    <div className="flex items-center">
-                      <User className="mr-2 h-4 w-4" />
-                      {visita.personal_salud.nombre} {visita.personal_salud.apellido}
+
+      {/* Lista de Visitas con Tabs */}
+      <Tabs defaultValue="agendadas" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="agendadas">
+            Visitas Agendadas ({visitasAgendadas.length})
+          </TabsTrigger>
+          <TabsTrigger value="historial">
+            Historial ({visitasHistorial.length})
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="agendadas" className="mt-6">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {visitasAgendadas.map((visita: any) => {
+              const formatearTexto = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase().replace("_", " ");
+              const cardColorClass = getCardColor(visita.fecha_hora_visita, visita.estado);
+              
+              return (
+                <GlassCard 
+                  key={visita.id} 
+                  className={`aspect-square p-6 flex flex-col justify-between cursor-pointer hover:scale-105 transition-transform ${cardColorClass}`}
+                  onClick={() => {
+                    setSelectedVisita(visita);
+                    setDetailOpen(true);
+                  }}
+                >
+                  <div>
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-bold text-lg">
+                        {visita.pacientes?.nombre} {visita.pacientes?.apellido}
+                      </h3>
+                      {visita.pacientes && (
+                        <a
+                          href={`tel:${
+                            visita.pacientes.numero_principal === 'cuidador' && visita.pacientes.contacto_cuidador
+                              ? visita.pacientes.contacto_cuidador.replace(/\D/g, '')
+                              : (visita.pacientes.contacto_px || '').replace(/\D/g, '')
+                          }`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                          aria-label="Llamar al paciente"
+                          title="Llamar"
+                        >
+                          <Phone className="h-4 w-4" />
+                        </a>
+                      )}
                     </div>
-                  )}
-                  {visita.profesionales_adicionales && visita.profesionales_adicionales.length > 0 && (
-                    <div className="text-xs text-muted-foreground">
-                      +{visita.profesionales_adicionales.length} profesional(es) más
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center">
+                        <Calendar className="mr-2 h-4 w-4" />
+                        {new Date(visita.fecha_hora_visita).toLocaleDateString('es-DO', { 
+                          day: '2-digit', 
+                          month: 'short', 
+                          year: 'numeric' 
+                        })}
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="mr-2 h-4 w-4" />
+                        {new Date(visita.fecha_hora_visita).toLocaleTimeString('es-DO', { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </div>
+                      {visita.personal_salud && (
+                        <div className="flex items-center">
+                          <User className="mr-2 h-4 w-4" />
+                          {visita.personal_salud.nombre} {visita.personal_salud.apellido}
+                        </div>
+                      )}
+                      {visita.profesionales_adicionales && visita.profesionales_adicionales.length > 0 && (
+                        <div className="text-xs text-muted-foreground">
+                          +{visita.profesionales_adicionales.length} profesional(es) más
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
-              <div className="flex items-center justify-between mt-4">
-                <Badge variant={
-                  visita.estado === "realizada" ? "default" :
-                  visita.estado === "cancelada" ? "destructive" : "secondary"
-                }>
-                  {formatearTexto(visita.estado)}
-                </Badge>
-                <Badge variant="outline">{getTipoIcon(visita.tipo_visita)} {formatearTexto(visita.tipo_visita)}</Badge>
-              </div>
-            </GlassCard>
-          );
-        })}
-      </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <Badge className={getEstadoColor(visita.estado)}>
+                      {formatearTexto(visita.estado)}
+                    </Badge>
+                    <span className="text-2xl">{getTipoIcon(visita.tipo_visita)}</span>
+                  </div>
+                </GlassCard>
+              );
+            })}
+          </div>
+          {visitasAgendadas.length === 0 && (
+            <div className="text-center py-12 text-muted-foreground">
+              No hay visitas agendadas
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="historial" className="mt-6">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {visitasHistorial.map((visita: any) => {
+              const formatearTexto = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase().replace("_", " ");
+              
+              return (
+                <GlassCard 
+                  key={visita.id} 
+                  className="aspect-square p-6 flex flex-col justify-between cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => {
+                    setSelectedVisita(visita);
+                    setDetailOpen(true);
+                  }}
+                >
+                  <div>
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-bold text-lg">
+                        {visita.pacientes?.nombre} {visita.pacientes?.apellido}
+                      </h3>
+                      {visita.pacientes && (
+                        <a
+                          href={`tel:${
+                            visita.pacientes.numero_principal === 'cuidador' && visita.pacientes.contacto_cuidador
+                              ? visita.pacientes.contacto_cuidador.replace(/\D/g, '')
+                              : (visita.pacientes.contacto_px || '').replace(/\D/g, '')
+                          }`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                          aria-label="Llamar al paciente"
+                          title="Llamar"
+                        >
+                          <Phone className="h-4 w-4" />
+                        </a>
+                      )}
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center">
+                        <Calendar className="mr-2 h-4 w-4" />
+                        {new Date(visita.fecha_hora_visita).toLocaleDateString('es-DO', { 
+                          day: '2-digit', 
+                          month: 'short', 
+                          year: 'numeric' 
+                        })}
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="mr-2 h-4 w-4" />
+                        {new Date(visita.fecha_hora_visita).toLocaleTimeString('es-DO', { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </div>
+                      {visita.personal_salud && (
+                        <div className="flex items-center">
+                          <User className="mr-2 h-4 w-4" />
+                          {visita.personal_salud.nombre} {visita.personal_salud.apellido}
+                        </div>
+                      )}
+                      {visita.profesionales_adicionales && visita.profesionales_adicionales.length > 0 && (
+                        <div className="text-xs text-muted-foreground">
+                          +{visita.profesionales_adicionales.length} profesional(es) más
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <Badge className={getEstadoColor(visita.estado)}>
+                      {formatearTexto(visita.estado)}
+                    </Badge>
+                    <span className="text-2xl">{getTipoIcon(visita.tipo_visita)}</span>
+                  </div>
+                </GlassCard>
+              );
+            })}
+          </div>
+          {visitasHistorial.length === 0 && (
+            <div className="text-center py-12 text-muted-foreground">
+              No hay visitas en el historial
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
 
       <VisitaDetailDialog
         open={detailOpen}
@@ -633,14 +701,6 @@ const Visitas = () => {
         pacientes={pacientes}
         personal={personal}
       />
-
-      {visitas.length === 0 && (
-        <Card>
-          <CardContent className="text-center py-12 text-muted-foreground">
-            No hay visitas programadas
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };
