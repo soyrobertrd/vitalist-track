@@ -33,9 +33,19 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
     const [pacienteRes, medicamentosRes, llamadasRes, visitasRes, parametrosRes] = await Promise.all([
       supabase.from("pacientes").select("*").eq("id", pacienteId).single(),
       supabase.from("medicamentos_paciente").select("*").eq("paciente_id", pacienteId),
-      supabase.from("registro_llamadas").select("*, personal_salud(nombre, apellido)").eq("paciente_id", pacienteId).order("fecha_hora_realizada", { ascending: false }).limit(5),
-      supabase.from("control_visitas").select("*, personal_salud(nombre, apellido)").eq("paciente_id", pacienteId).order("fecha_hora_visita", { ascending: false }).limit(5),
-      supabase.from("parametros_seguimiento").select("*").eq("paciente_id", pacienteId).single(),
+      supabase.from("registro_llamadas")
+        .select("*, personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
+        .eq("paciente_id", pacienteId)
+        .in("estado", ["agendada", "pendiente"])
+        .order("fecha_agendada", { ascending: true })
+        .limit(5),
+      supabase.from("control_visitas")
+        .select("*, personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)")
+        .eq("paciente_id", pacienteId)
+        .eq("estado", "pendiente")
+        .order("fecha_hora_visita", { ascending: true })
+        .limit(5),
+      supabase.from("parametros_seguimiento").select("*").eq("paciente_id", pacienteId).maybeSingle(),
     ]);
 
     if (pacienteRes.data) setPaciente(pacienteRes.data);
@@ -231,18 +241,31 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                     <div className="flex items-start gap-3">
                       <Phone className="h-5 w-5 text-primary mt-1" />
                       <div className="flex-1">
-                        <div className="flex justify-between">
-                          <p className="font-medium">{new Date(llamada.fecha_hora_realizada).toLocaleString()}</p>
-                          <Badge>{llamada.resultado_seguimiento?.replace('_', ' ')}</Badge>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-medium">
+                              {llamada.fecha_agendada 
+                                ? new Date(llamada.fecha_agendada).toLocaleString('es-DO', {
+                                    dateStyle: 'medium',
+                                    timeStyle: 'short'
+                                  })
+                                : 'Fecha no especificada'}
+                            </p>
+                            <Badge className="mt-1" variant="outline">{llamada.estado}</Badge>
+                          </div>
                         </div>
                         {llamada.personal_salud && (
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-muted-foreground mt-2">
                             Profesional: {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
                           </p>
                         )}
-                        {llamada.motivo && <p className="text-sm mt-1">{llamada.motivo}</p>}
-                        {llamada.comentarios_resultados && (
-                          <p className="text-sm text-muted-foreground mt-1">{llamada.comentarios_resultados}</p>
+                        {llamada.motivo && (
+                          <p className="text-sm mt-1">
+                            <span className="text-muted-foreground">Motivo:</span> {llamada.motivo}
+                          </p>
+                        )}
+                        {llamada.notas_adicionales && (
+                          <p className="text-sm text-muted-foreground mt-1">{llamada.notas_adicionales}</p>
                         )}
                       </div>
                     </div>
@@ -250,7 +273,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                 </Card>
               ))}
               {llamadas.length === 0 && (
-                <p className="text-center text-muted-foreground py-4">No hay llamadas registradas</p>
+                <p className="text-center text-muted-foreground py-4">No hay llamadas agendadas</p>
               )}
             </TabsContent>
 
@@ -261,19 +284,30 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                     <div className="flex items-start gap-3">
                       <Calendar className="h-5 w-5 text-primary mt-1" />
                       <div className="flex-1">
-                        <div className="flex justify-between">
-                          <p className="font-medium">{new Date(visita.fecha_hora_visita).toLocaleString()}</p>
-                          <Badge>{visita.estado}</Badge>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-medium">
+                              {new Date(visita.fecha_hora_visita).toLocaleString('es-DO', {
+                                dateStyle: 'medium',
+                                timeStyle: 'short'
+                              })}
+                            </p>
+                            <Badge className="mt-1">{visita.estado}</Badge>
+                          </div>
                         </div>
-                        <p className="text-sm text-muted-foreground capitalize">
-                          Tipo: {visita.tipo_visita}
+                        <p className="text-sm text-muted-foreground capitalize mt-2">
+                          Tipo: {visita.tipo_visita?.replace('_', ' ')}
                         </p>
                         {visita.personal_salud && (
                           <p className="text-sm text-muted-foreground">
                             Profesional: {visita.personal_salud.nombre} {visita.personal_salud.apellido}
                           </p>
                         )}
-                        {visita.motivo_visita && <p className="text-sm mt-1">{visita.motivo_visita}</p>}
+                        {visita.motivo_visita && (
+                          <p className="text-sm mt-1">
+                            <span className="text-muted-foreground">Motivo:</span> {visita.motivo_visita}
+                          </p>
+                        )}
                         {visita.notas_visita && (
                           <p className="text-sm text-muted-foreground mt-1">{visita.notas_visita}</p>
                         )}
@@ -283,7 +317,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                 </Card>
               ))}
               {visitas.length === 0 && (
-                <p className="text-center text-muted-foreground py-4">No hay visitas registradas</p>
+                <p className="text-center text-muted-foreground py-4">No hay visitas agendadas</p>
               )}
             </TabsContent>
           </Tabs>
