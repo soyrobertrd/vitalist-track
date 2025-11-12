@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { normalizePhoneNumber } from "@/lib/validaciones";
 
 interface DuplicadoEncontrado {
   id: string;
@@ -68,25 +69,25 @@ export function useDetectarDuplicados(
             motivos.push("Mismo nombre completo");
           }
 
-          // Verificar por teléfono del paciente
+          // Verificar por teléfono del paciente (usando normalización)
           if (contactoPx && contactoPx.trim()) {
-            const telefonoLimpio = contactoPx.replace(/\D/g, "");
-            if (
-              paciente.contacto_px &&
-              paciente.contacto_px.replace(/\D/g, "") === telefonoLimpio
-            ) {
-              motivos.push("Mismo teléfono de paciente");
+            const telefonoNormalizado = normalizePhoneNumber(contactoPx);
+            if (paciente.contacto_px) {
+              const telefonoPacienteNormalizado = normalizePhoneNumber(paciente.contacto_px);
+              if (telefonoNormalizado === telefonoPacienteNormalizado && telefonoNormalizado !== "") {
+                motivos.push("Mismo teléfono de paciente");
+              }
             }
           }
 
-          // Verificar por teléfono del cuidador
+          // Verificar por teléfono del cuidador (usando normalización)
           if (contactoCuidador && contactoCuidador.trim()) {
-            const telefonoLimpio = contactoCuidador.replace(/\D/g, "");
-            if (
-              paciente.contacto_cuidador &&
-              paciente.contacto_cuidador.replace(/\D/g, "") === telefonoLimpio
-            ) {
-              motivos.push("Mismo teléfono de cuidador");
+            const telefonoNormalizado = normalizePhoneNumber(contactoCuidador);
+            if (paciente.contacto_cuidador) {
+              const telefonoCuidadorNormalizado = normalizePhoneNumber(paciente.contacto_cuidador);
+              if (telefonoNormalizado === telefonoCuidadorNormalizado && telefonoNormalizado !== "") {
+                motivos.push("Mismo teléfono de cuidador");
+              }
             }
           }
 
