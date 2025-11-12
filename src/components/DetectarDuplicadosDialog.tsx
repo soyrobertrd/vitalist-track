@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserX, Search, AlertTriangle, Users } from "lucide-react";
+import { UserX, Search, AlertTriangle, Users, Edit, Trash2, Merge } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { EditPacienteDialog } from "./EditPacienteDialog";
+import { UnificarPacientesDialog } from "./UnificarPacientesDialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface DuplicateGroup {
   criterion: string;
@@ -21,6 +24,9 @@ export const DetectarDuplicadosDialog = () => {
   const [duplicates, setDuplicates] = useState<DuplicateGroup[]>([]);
   const [manualSearch, setManualSearch] = useState("");
   const [manualResults, setManualResults] = useState<any[]>([]);
+  const [editPaciente, setEditPaciente] = useState<any>(null);
+  const [unificarGrupo, setUnificarGrupo] = useState<any[]>([]);
+  const [pacienteAEliminar, setPacienteAEliminar] = useState<string | null>(null);
 
   const detectarAutomatico = async () => {
     setLoading(true);
@@ -148,12 +154,56 @@ export const DetectarDuplicadosDialog = () => {
     }
   };
 
+  const handleEliminarPaciente = async (pacienteId: string) => {
+    try {
+      const { error } = await supabase
+        .from("pacientes")
+        .update({ status_px: "inactivo" })
+        .eq("id", pacienteId);
+
+      if (error) throw error;
+
+      toast.success("Paciente marcado como inactivo");
+      setPacienteAEliminar(null);
+      detectarAutomatico();
+    } catch (error: any) {
+      console.error("Error al eliminar paciente:", error);
+      toast.error("Error al marcar paciente como inactivo");
+    }
+  };
+
+  const refetchData = () => {
+    detectarAutomatico();
+    setManualResults([]);
+    setManualSearch("");
+  };
+
   const renderPacienteCard = (paciente: any) => (
     <Card key={paciente.id} className="mb-3">
       <CardHeader className="pb-3">
-        <CardTitle className="text-base">
-          {paciente.nombre} {paciente.apellido}
-        </CardTitle>
+        <div className="flex items-start justify-between">
+          <CardTitle className="text-base">
+            {paciente.nombre} {paciente.apellido}
+          </CardTitle>
+          <div className="flex gap-1">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setEditPaciente(paciente)}
+              title="Editar"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setPacienteAEliminar(paciente.id)}
+              title="Marcar como inactivo"
+            >
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-2 text-sm">
         <div className="grid grid-cols-2 gap-2">
@@ -248,11 +298,21 @@ export const DetectarDuplicadosDialog = () => {
                 {duplicates.map((group, idx) => (
                   <Card key={idx}>
                     <CardHeader>
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <AlertTriangle className="h-4 w-4 text-warning" />
-                        {group.criterion}
-                        <Badge>{group.patients.length} pacientes</Badge>
-                      </CardTitle>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4 text-warning" />
+                          {group.criterion}
+                          <Badge>{group.patients.length} pacientes</Badge>
+                        </CardTitle>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setUnificarGrupo(group.patients)}
+                        >
+                          <Merge className="mr-2 h-4 w-4" />
+                          Unificar Grupo
+                        </Button>
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <div className="grid gap-3 md:grid-cols-2">
@@ -303,6 +363,7 @@ export const DetectarDuplicadosDialog = () => {
                       <TableHead>Teléfono</TableHead>
                       <TableHead>Zona</TableHead>
                       <TableHead>Barrio</TableHead>
+                      <TableHead className="w-[100px]">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -317,6 +378,24 @@ export const DetectarDuplicadosDialog = () => {
                         </TableCell>
                         <TableCell>{p.zona || "N/A"}</TableCell>
                         <TableCell>{p.barrio || "N/A"}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setEditPaciente(p)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setPacienteAEliminar(p.id)}
+                            >
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -332,6 +411,42 @@ export const DetectarDuplicadosDialog = () => {
             )}
           </TabsContent>
         </Tabs>
+
+        {editPaciente && (
+          <EditPacienteDialog
+            paciente={editPaciente}
+            open={!!editPaciente}
+            onOpenChange={(open) => !open && setEditPaciente(null)}
+            onSuccess={refetchData}
+          />
+        )}
+
+        {unificarGrupo.length > 0 && (
+          <UnificarPacientesDialog
+            pacientes={unificarGrupo}
+            open={unificarGrupo.length > 0}
+            onOpenChange={(open) => !open && setUnificarGrupo([])}
+            onSuccess={refetchData}
+          />
+        )}
+
+        <AlertDialog open={!!pacienteAEliminar} onOpenChange={(open) => !open && setPacienteAEliminar(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Marcar paciente como inactivo?</AlertDialogTitle>
+              <AlertDialogDescription>
+                El paciente será marcado como inactivo pero no se eliminará del sistema. 
+                Toda la información asociada (llamadas, visitas, etc.) se mantendrá.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={() => pacienteAEliminar && handleEliminarPaciente(pacienteAEliminar)}>
+                Marcar como Inactivo
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </DialogContent>
     </Dialog>
   );
