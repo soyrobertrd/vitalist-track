@@ -80,6 +80,33 @@ export type Database = {
           },
         ]
       }
+      auditoria_unificaciones: {
+        Row: {
+          created_at: string
+          datos_unificados: Json
+          id: string
+          paciente_principal_id: string
+          pacientes_eliminados_ids: string[]
+          realizado_por: string | null
+        }
+        Insert: {
+          created_at?: string
+          datos_unificados?: Json
+          id?: string
+          paciente_principal_id: string
+          pacientes_eliminados_ids: string[]
+          realizado_por?: string | null
+        }
+        Update: {
+          created_at?: string
+          datos_unificados?: Json
+          id?: string
+          paciente_principal_id?: string
+          pacientes_eliminados_ids?: string[]
+          realizado_por?: string | null
+        }
+        Relationships: []
+      }
       automatizaciones: {
         Row: {
           accion: string
@@ -1119,6 +1146,9 @@ export type Database = {
         | "santo_domingo_este"
         | "santo_domingo_norte"
         | "distrito_nacional"
+        | "San Luis"
+        | "Los Alcarrizos"
+        | "Boca Chica"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1294,6 +1324,9 @@ export const Constants = {
         "santo_domingo_este",
         "santo_domingo_norte",
         "distrito_nacional",
+        "San Luis",
+        "Los Alcarrizos",
+        "Boca Chica",
       ],
     },
   },

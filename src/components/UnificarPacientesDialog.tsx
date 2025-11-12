@@ -55,14 +55,27 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
     try {
       const pacienteAMantener = selectedPaciente;
       const pacientesAEliminar = pacientes.filter(p => p.id !== pacienteAMantener).map(p => p.id);
+      const pacientePrincipal = pacientes.find(p => p.id === pacienteAMantener);
       
       // Prepare phone data to update
       const phoneUpdates: any = {};
+      
+      // Lógica de teléfonos
       if (selectedPhones.contacto_px) {
         phoneUpdates.contacto_px = selectedPhones.contacto_px;
       }
+      
+      // Si el paciente no tiene cuidador, asignar el segundo teléfono al cuidador
       if (selectedPhones.contacto_cuidador) {
         phoneUpdates.contacto_cuidador = selectedPhones.contacto_cuidador;
+      } else if (!pacientePrincipal?.nombre_cuidador && phoneNumbers.contacto_px.length > 1) {
+        // Si no hay cuidador y hay múltiples teléfonos de paciente
+        const segundoTelefono = phoneNumbers.contacto_px.find(
+          tel => tel !== selectedPhones.contacto_px
+        );
+        if (segundoTelefono) {
+          phoneUpdates.contacto_cuidador = segundoTelefono;
+        }
       }
 
       // Transferir llamadas
@@ -122,6 +135,34 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
         .in("id", pacientesAEliminar);
 
       if (updateError) throw updateError;
+
+      // Obtener el ID del usuario actual
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // Registrar en auditoría
+      const { error: auditError } = await supabase
+        .from("auditoria_unificaciones")
+        .insert({
+          paciente_principal_id: pacienteAMantener,
+          pacientes_eliminados_ids: pacientesAEliminar,
+          datos_unificados: {
+            telefonos_seleccionados: phoneUpdates,
+            pacientes_originales: pacientes.map(p => ({
+              id: p.id,
+              nombre: p.nombre,
+              apellido: p.apellido,
+              cedula: p.cedula,
+              contacto_px: p.contacto_px,
+              contacto_cuidador: p.contacto_cuidador
+            }))
+          },
+          realizado_por: user?.id
+        });
+
+      if (auditError) {
+        console.error("Error al registrar auditoría:", auditError);
+        // No bloqueamos la operación si falla la auditoría
+      }
 
       toast.success(`Pacientes unificados exitosamente. ${pacientesAEliminar.length} registros marcados como inactivos.`);
       onSuccess();

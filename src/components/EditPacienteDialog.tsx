@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
+import { useDetectarDuplicados } from "@/hooks/useDetectarDuplicados";
+import { AlertaDuplicados } from "@/components/AlertaDuplicados";
 
 // Validation schema
 const editPacienteSchema = z.object({
@@ -71,13 +73,40 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [loading, setLoading] = useState(false);
   const [selectedZona, setSelectedZona] = useState<string | null>(null);
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
+  const [formData, setFormData] = useState({
+    cedula: "",
+    nombre: "",
+    apellido: "",
+    contacto_px: "",
+    contacto_cuidador: ""
+  });
+
+  const { duplicados } = useDetectarDuplicados(
+    formData.cedula,
+    formData.nombre,
+    formData.apellido,
+    formData.contacto_px,
+    formData.contacto_cuidador,
+    paciente?.id
+  );
 
   useEffect(() => {
     if (paciente && open) {
       setSelectedZona(paciente.zona || null);
       setSelectedBarrio(paciente.barrio || "");
+      setFormData({
+        cedula: paciente.cedula || "",
+        nombre: paciente.nombre || "",
+        apellido: paciente.apellido || "",
+        contacto_px: paciente.contacto_px || "",
+        contacto_cuidador: paciente.contacto_cuidador || ""
+      });
     }
   }, [paciente, open]);
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -152,6 +181,9 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
         <DialogHeader>
           <DialogTitle>Editar Paciente</DialogTitle>
         </DialogHeader>
+        
+        <AlertaDuplicados duplicados={duplicados} />
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -162,6 +194,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 defaultValue={paciente.cedula} 
                 maxLength={11}
                 required
+                onChange={(e) => handleInputChange("cedula", e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -172,6 +205,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 defaultValue={paciente.nombre}
                 maxLength={100}
                 required
+                onChange={(e) => handleInputChange("nombre", e.target.value)}
               />
             </div>
           </div>
@@ -184,6 +218,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
               defaultValue={paciente.apellido}
               maxLength={100}
               required
+              onChange={(e) => handleInputChange("apellido", e.target.value)}
             />
           </div>
 
@@ -197,6 +232,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 type="tel"
                 placeholder="Ej: 809-123-4567"
                 maxLength={20}
+                onChange={(e) => handleInputChange("contacto_px", e.target.value)}
               />
             </div>
             <div className="space-y-2 flex items-end pb-2">
@@ -221,6 +257,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 type="tel"
                 placeholder="Ej: 809-123-4567"
                 maxLength={20}
+                onChange={(e) => handleInputChange("contacto_cuidador", e.target.value)}
               />
             </div>
             <div className="space-y-2 flex items-end pb-2">

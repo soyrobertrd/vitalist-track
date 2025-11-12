@@ -23,6 +23,8 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { z } from "zod";
 import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
+import { useDetectarDuplicados } from "@/hooks/useDetectarDuplicados";
+import { AlertaDuplicados } from "@/components/AlertaDuplicados";
 
 // Validation schema
 const pacienteSchema = z.object({
@@ -120,7 +122,26 @@ const Pacientes = () => {
     grado: "todos",
     busqueda: ""
   });
+  const [newPacienteData, setNewPacienteData] = useState({
+    cedula: "",
+    nombre: "",
+    apellido: "",
+    contacto_px: "",
+    contacto_cuidador: ""
+  });
   const { isAdmin } = useUserRole();
+
+  const { duplicados } = useDetectarDuplicados(
+    newPacienteData.cedula,
+    newPacienteData.nombre,
+    newPacienteData.apellido,
+    newPacienteData.contacto_px,
+    newPacienteData.contacto_cuidador
+  );
+
+  const handleNewPacienteInputChange = (field: string, value: string) => {
+    setNewPacienteData(prev => ({ ...prev, [field]: value }));
+  };
 
   const fetchPacientes = async () => {
     const { data, error } = await supabase
@@ -369,6 +390,9 @@ const Pacientes = () => {
               <DialogHeader>
                 <DialogTitle>Agregar Nuevo Paciente</DialogTitle>
               </DialogHeader>
+              
+              <AlertaDuplicados duplicados={duplicados} />
+              
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -383,7 +407,9 @@ const Pacientes = () => {
                       disabled={loadingCedula}
                       onChange={(e) => {
                         // Solo permitir números
-                        e.target.value = e.target.value.replace(/\D/g, '');
+                        const value = e.target.value.replace(/\D/g, '');
+                        e.target.value = value;
+                        handleNewPacienteInputChange("cedula", value);
                       }}
                     />
                     <p className="text-xs text-muted-foreground">Digitar cédula sin guiones (11 dígitos)</p>
@@ -411,6 +437,7 @@ const Pacientes = () => {
                   value={cedulaData?.nombres || ''}
                   readOnly={!!cedulaData}
                   className={cedulaData ? 'bg-muted' : ''}
+                  onChange={(e) => handleNewPacienteInputChange("nombre", e.target.value)}
                 />
               </div>
               <div className="space-y-2">
@@ -422,6 +449,7 @@ const Pacientes = () => {
                   value={cedulaData ? `${cedulaData.apellido1} ${cedulaData.apellido2}`.trim() : ''}
                   readOnly={!!cedulaData}
                   className={cedulaData ? 'bg-muted' : ''}
+                  onChange={(e) => handleNewPacienteInputChange("apellido", e.target.value)}
                 />
               </div>
                 </div>
@@ -434,6 +462,7 @@ const Pacientes = () => {
                     type="tel"
                     placeholder="Ej: 809-123-4567"
                     maxLength={20}
+                    onChange={(e) => handleNewPacienteInputChange("contacto_px", e.target.value)}
                   />
                 </div>
                   <div className="space-y-2">
@@ -457,6 +486,7 @@ const Pacientes = () => {
                     type="tel"
                     placeholder="Ej: 809-123-4567"
                     maxLength={20}
+                    onChange={(e) => handleNewPacienteInputChange("contacto_cuidador", e.target.value)}
                   />
                 </div>
                   <div className="space-y-2">
