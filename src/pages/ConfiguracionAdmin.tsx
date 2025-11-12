@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Settings, Users, Shield, Mail, FileText, 
-  BarChart, Lock, Palette, Database, Workflow, Plus 
+  BarChart, Lock, Palette, Database, Workflow, Plus, CalendarDays
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DiasNoLaborablesCalendar } from "@/components/DiasNoLaborablesCalendar";
 
 const ConfiguracionAdmin = () => {
   const navigate = useNavigate();
@@ -212,7 +213,7 @@ const ConfiguracionAdmin = () => {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid grid-cols-5 lg:grid-cols-10 gap-2">
+        <TabsList className="grid grid-cols-5 lg:grid-cols-11 gap-2">
           <TabsTrigger value="general">
             <Settings className="mr-2 h-4 w-4" />
             General
@@ -252,6 +253,10 @@ const ConfiguracionAdmin = () => {
           <TabsTrigger value="automatizacion">
             <Workflow className="mr-2 h-4 w-4" />
             Automatización
+          </TabsTrigger>
+          <TabsTrigger value="calendario">
+            <CalendarDays className="mr-2 h-4 w-4" />
+            Días Feriados
           </TabsTrigger>
         </TabsList>
 
@@ -737,6 +742,13 @@ const ConfiguracionAdmin = () => {
                 </div>
               ))}
             </div>
+          </GlassCard>
+        </TabsContent>
+
+        {/* Calendario - Días Feriados */}
+        <TabsContent value="calendario">
+          <GlassCard className="p-6">
+            <DiasNoLaborablesCalendar />
           </GlassCard>
         </TabsContent>
       </Tabs>

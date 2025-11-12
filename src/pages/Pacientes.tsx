@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Phone, MapPin, Upload, Filter } from "lucide-react";
+import { Plus, Phone, MapPin, Upload, Filter, Calendar, PhoneCall } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -25,6 +25,7 @@ import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validac
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { useDetectarDuplicados } from "@/hooks/useDetectarDuplicados";
 import { AlertaDuplicados } from "@/components/AlertaDuplicados";
+import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
 
 // Validation schema
 const pacienteSchema = z.object({
@@ -120,8 +121,13 @@ const Pacientes = () => {
     status: "todos",
     zona: "todos",
     grado: "todos",
-    busqueda: ""
+    busqueda: "",
+    barrio: "todos"
   });
+  const [agendarLlamadaOpen, setAgendarLlamadaOpen] = useState(false);
+  const [agendarVisitaOpen, setAgendarVisitaOpen] = useState(false);
+  const [pacienteParaAgendar, setPacienteParaAgendar] = useState<string | null>(null);
+  const [personal, setPersonal] = useState<any[]>([]);
   const [newPacienteData, setNewPacienteData] = useState({
     cedula: "",
     nombre: "",
@@ -160,6 +166,7 @@ const Pacientes = () => {
     if (filters.status !== "todos" && p.status_px !== filters.status) return false;
     if (filters.zona !== "todos" && p.zona !== filters.zona) return false;
     if (filters.grado !== "todos" && p.grado_dificultad !== filters.grado) return false;
+    if (filters.barrio !== "todos" && p.barrio !== filters.barrio) return false;
     if (filters.busqueda) {
       const busqueda = filters.busqueda.toLowerCase();
       const nombreCompleto = `${p.nombre} ${p.apellido}`.toLowerCase();
@@ -171,7 +178,17 @@ const Pacientes = () => {
 
   useEffect(() => {
     fetchPacientes();
+    fetchPersonal();
   }, []);
+  
+  const fetchPersonal = async () => {
+    const { data } = await supabase
+      .from("personal_salud")
+      .select("*")
+      .eq("activo", true)
+      .order("nombre", { ascending: true });
+    setPersonal(data || []);
+  };
 
   const fetchCedulaData = async (cedula: string) => {
     // Validar que solo contenga números y tenga 11 dígitos
@@ -265,7 +282,7 @@ const Pacientes = () => {
       nombre: formValues.nombre,
       apellido: formValues.apellido,
       fecha_nacimiento: formValues.fecha_nacimiento,
-      sexo: cedulaData?.sexo || null,
+      sexo: formData.get("sexo") as string || null,
       foto_url: cedulaData?.foto_encoded ? `data:image/jpeg;base64,${cedulaData.foto_encoded}` : null,
       contacto_px: formValues.contacto_px,
       whatsapp_px: formValues.whatsapp_px,
@@ -426,6 +443,27 @@ const Pacientes = () => {
                       className={cedulaData ? 'bg-muted' : ''}
                     />
                   </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="sexo">Sexo</Label>
+                    <Select 
+                      name="sexo" 
+                      defaultValue={cedulaData?.sexo || ''}
+                      disabled={!!cedulaData}
+                    >
+                      <SelectTrigger className={cedulaData ? 'bg-muted' : ''}>
+                        <SelectValue placeholder="Seleccionar sexo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="M">Masculino</SelectItem>
+                        <SelectItem value="F">Femenino</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                 </div>
                 <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -679,7 +717,7 @@ const Pacientes = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Búsqueda</label>
               <Input
@@ -733,6 +771,20 @@ const Pacientes = () => {
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Barrio</label>
+              <Select value={filters.barrio} onValueChange={(v) => setFilters({ ...filters, barrio: v })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos</SelectItem>
+                  {[...new Set(pacientes.map(p => p.barrio).filter(Boolean))].sort().map(barrio => (
+                    <SelectItem key={barrio} value={barrio!}>{barrio}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -758,6 +810,30 @@ const Pacientes = () => {
                   <Badge className={getStatusColor(paciente.status_px)}>
                     {capitalizeStatus(paciente.status_px)}
                   </Badge>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPacienteParaAgendar(paciente.id);
+                      setAgendarLlamadaOpen(true);
+                    }}
+                    title="Agendar llamada"
+                  >
+                    <PhoneCall className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPacienteParaAgendar(paciente.id);
+                      setAgendarVisitaOpen(true);
+                    }}
+                    title="Agendar visita"
+                  >
+                    <Calendar className="h-4 w-4" />
+                  </Button>
                   <Button
                     size="icon"
                     variant="ghost"
@@ -840,6 +916,21 @@ const Pacientes = () => {
         onOpenChange={setImportOpen}
         onSuccess={fetchPacientes}
       />
+
+      {pacienteParaAgendar && (
+        <>
+          <AgendarLlamadaDialog
+            open={agendarLlamadaOpen}
+            onOpenChange={setAgendarLlamadaOpen}
+            pacientes={pacientes.map(p => ({ ...p, id: p.id }))}
+            personal={personal}
+            onSuccess={() => {
+              toast.success("Llamada agendada");
+              setPacienteParaAgendar(null);
+            }}
+          />
+        </>
+      )}
     </div>
   );
 };

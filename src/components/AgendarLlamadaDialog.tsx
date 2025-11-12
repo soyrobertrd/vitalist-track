@@ -2,24 +2,27 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { PacienteCombobox } from "@/components/PacienteCombobox";
-import { ProfesionalCombobox } from "@/components/ProfesionalCombobox";
+import { toast } from "sonner";
+import { PacienteCombobox } from "./PacienteCombobox";
+import { ProfesionalCombobox } from "./ProfesionalCombobox";
+import { ConflictoAgendamientoDialog } from "./ConflictoAgendamientoDialog";
+import { useDiasLaborables } from "@/hooks/useDiasLaborables";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 const MOTIVOS_LLAMADA = [
   "Seguimiento rutinario",
-  "Agendar visita",
-  "Verificar medicación",
-  "Control post-visita",
   "Recordatorio de cita",
-  "Consulta sobre síntomas",
-  "Actualización de datos",
+  "Verificación de medicamentos",
+  "Control post-visita",
+  "Consulta telefónica",
+  "Reagendamiento",
   "Otro"
-] as const;
+];
 
 interface AgendarLlamadaDialogProps {
   open: boolean;
@@ -29,181 +32,207 @@ interface AgendarLlamadaDialogProps {
   onSuccess: () => void;
 }
 
-export function AgendarLlamadaDialog({
-  open,
-  onOpenChange,
-  pacientes,
-  personal,
-  onSuccess,
-}: AgendarLlamadaDialogProps) {
+export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, onSuccess }: AgendarLlamadaDialogProps) {
   const [loading, setLoading] = useState(false);
   const [pacienteId, setPacienteId] = useState<string>("");
   const [profesionalId, setProfesionalId] = useState<string>("");
   const [motivo, setMotivo] = useState<string>("");
+  const [conflictoOpen, setConflictoOpen] = useState(false);
+  const [llamadaExistente, setLlamadaExistente] = useState<any>(null);
+  const [pendingSubmit, setPendingSubmit] = useState<any>(null);
+  
+  const { esDiaLaborable, siguienteDiaLaborable } = useDiasLaborables();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, forceCreate = false) => {
     e.preventDefault();
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    
-    const fechaAgendada = formData.get("fecha_agendada") as string;
-    const horaAgendada = formData.get("hora_agendada") as string;
-    const fechaHoraAgendada = `${fechaAgendada}T${horaAgendada}:00`;
+    const fecha = formData.get("fecha") as string;
+    const hora = formData.get("hora") as string;
+    let fechaAgendada = new Date(`${fecha}T${hora}`);
 
-    // Validar si ya existe una llamada agendada para este paciente
-    const { data: existingLlamadas } = await supabase
-      .from("registro_llamadas")
-      .select("id, fecha_agendada, personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
-      .eq("paciente_id", pacienteId)
-      .in("estado", ["agendada", "pendiente"]);
-
-    if (existingLlamadas && existingLlamadas.length > 0) {
-      const llamada = existingLlamadas[0];
-      const profesional = llamada.personal_salud;
-      const fecha = new Date(llamada.fecha_agendada).toLocaleString('es-DO', {
-        dateStyle: 'long',
-        timeStyle: 'short'
-      });
-      toast.error(
-        `Este paciente ya tiene una llamada agendada para el ${fecha} con ${profesional?.nombre} ${profesional?.apellido}`,
-        { duration: 5000 }
+    // Validar día laborable
+    if (!esDiaLaborable(fechaAgendada)) {
+      fechaAgendada = siguienteDiaLaborable(fechaAgendada);
+      toast.warning(
+        `La fecha seleccionada no es laborable. Se ajustó al siguiente día laborable: ${format(fechaAgendada, "PPP", { locale: es })}`
       );
-      setLoading(false);
-      return;
     }
 
-    const comentarios = formData.get("comentarios") as string;
-    const motivoFinal = comentarios ? `${motivo} - ${comentarios}` : motivo;
+    // Verificar si ya existe una llamada agendada para este paciente
+    if (!forceCreate) {
+      const { data: existente, error: checkError } = await supabase
+        .from("registro_llamadas")
+        .select("*, personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
+        .eq("paciente_id", pacienteId)
+        .in("estado", ["agendada", "pendiente"])
+        .maybeSingle();
 
-    const data = {
+      if (existente && !checkError) {
+        const paciente = pacientes.find(p => p.id === pacienteId);
+        setLlamadaExistente({
+          id: existente.id,
+          fecha: existente.fecha_agendada,
+          profesional: existente.personal_salud,
+          motivo: existente.motivo,
+          duracion_estimada: existente.duracion_estimada,
+        });
+        setPendingSubmit({ formData, fechaAgendada });
+        setConflictoOpen(true);
+        setLoading(false);
+        return;
+      }
+    }
+
+    const llamadaData = {
       paciente_id: pacienteId,
-      profesional_id: profesionalId,
-      motivo: motivoFinal,
+      profesional_id: profesionalId || null,
+      fecha_agendada: fechaAgendada.toISOString(),
+      estado: "agendada" as any,
+      motivo: motivo,
       duracion_estimada: parseInt(formData.get("duracion_estimada") as string) || null,
-      fecha_agendada: fechaHoraAgendada,
-      estado: "agendada" as const,
-      recordatorio_enviado: false,
+      notas_adicionales: formData.get("notas_adicionales") as string,
     };
 
-    const { error } = await supabase.from("registro_llamadas").insert([data]);
+    const { error } = await supabase
+      .from("registro_llamadas")
+      .insert([llamadaData]);
 
     if (error) {
-      console.error("Error al agendar llamada:", error);
-      toast.error("Error al agendar la llamada");
+      toast.error("Error al agendar llamada");
     } else {
       toast.success("Llamada agendada exitosamente");
+      onSuccess();
+      onOpenChange(false);
+      (e.target as HTMLFormElement).reset();
       setPacienteId("");
       setProfesionalId("");
       setMotivo("");
-      onOpenChange(false);
-      onSuccess();
-      (e.target as HTMLFormElement).reset();
     }
     setLoading(false);
   };
 
+  const handleConfirmConflict = () => {
+    if (pendingSubmit) {
+      const form = document.getElementById("agendar-llamada-form") as HTMLFormElement;
+      if (form) {
+        handleSubmit({ preventDefault: () => {}, currentTarget: form } as any, true);
+      }
+    }
+    setConflictoOpen(false);
+    setPendingSubmit(null);
+  };
+
+  const paciente = pacientes.find(p => p.id === pacienteId);
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Agendar Nueva Llamada</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="paciente_id">Paciente *</Label>
-              <PacienteCombobox
-                pacientes={pacientes}
-                value={pacienteId}
-                onValueChange={setPacienteId}
-                required
-              />
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Agendar Llamada</DialogTitle>
+          </DialogHeader>
+          <form id="agendar-llamada-form" onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="paciente">Paciente *</Label>
+                <PacienteCombobox
+                  pacientes={pacientes}
+                  value={pacienteId}
+                  onValueChange={setPacienteId}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="profesional">Profesional Asignado</Label>
+                <ProfesionalCombobox
+                  profesionales={personal}
+                  value={profesionalId}
+                  onValueChange={setProfesionalId}
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="profesional_id">Profesional Asignado *</Label>
-              <ProfesionalCombobox
-                profesionales={personal}
-                value={profesionalId}
-                onValueChange={setProfesionalId}
-                required
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="fecha">Fecha *</Label>
+                <Input
+                  id="fecha"
+                  name="fecha"
+                  type="date"
+                  required
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="hora">Hora *</Label>
+                <Input
+                  id="hora"
+                  name="hora"
+                  type="time"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="duracion_estimada">Duración (min)</Label>
+                <Input
+                  id="duracion_estimada"
+                  name="duracion_estimada"
+                  type="number"
+                  min="5"
+                  max="120"
+                  defaultValue="15"
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
-              <Label htmlFor="fecha_agendada">Fecha *</Label>
-              <Input
-                type="date"
-                id="fecha_agendada"
-                name="fecha_agendada"
-                required
-                min={new Date().toISOString().split('T')[0]}
+              <Label htmlFor="motivo">Motivo de la Llamada *</Label>
+              <Select value={motivo} onValueChange={setMotivo} required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccione un motivo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {MOTIVOS_LLAMADA.map((m) => (
+                    <SelectItem key={m} value={m}>
+                      {m}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="notas_adicionales">Comentarios Adicionales</Label>
+              <Textarea
+                id="notas_adicionales"
+                name="notas_adicionales"
+                placeholder="Detalles adicionales sobre la llamada..."
+                rows={3}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="hora_agendada">Hora *</Label>
-              <Input
-                type="time"
-                id="hora_agendada"
-                name="hora_agendada"
-                required
-              />
+
+            <div className="flex gap-2 justify-end">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Agendando..." : "Agendar Llamada"}
+              </Button>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="duracion_estimada">Duración (min)</Label>
-              <Input
-                type="number"
-                id="duracion_estimada"
-                name="duracion_estimada"
-                placeholder="15"
-                min="1"
-                defaultValue="15"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="motivo">Motivo de la Llamada *</Label>
-            <Select value={motivo} onValueChange={setMotivo} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccione un motivo" />
-              </SelectTrigger>
-              <SelectContent>
-                {MOTIVOS_LLAMADA.map((m) => (
-                  <SelectItem key={m} value={m}>
-                    {m}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="comentarios">Comentarios Adicionales</Label>
-            <Textarea
-              id="comentarios"
-              name="comentarios"
-              placeholder="Detalles adicionales sobre la llamada..."
-              rows={3}
-            />
-          </div>
-
-          <div className="flex gap-2 justify-end pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Agendando..." : "Agendar Llamada"}
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+          </form>
+        </DialogContent>
+      </Dialog>
+      
+      <ConflictoAgendamientoDialog
+        open={conflictoOpen}
+        onOpenChange={setConflictoOpen}
+        onConfirm={handleConfirmConflict}
+        tipo="llamada"
+        eventoExistente={llamadaExistente}
+        pacienteNombre={paciente ? `${paciente.nombre} ${paciente.apellido}` : ""}
+      />
+    </>
   );
 }

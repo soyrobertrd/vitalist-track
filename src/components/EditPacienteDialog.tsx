@@ -144,6 +144,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       cedula: formValues.cedula,
       nombre: formValues.nombre,
       apellido: formValues.apellido,
+      sexo: formData.get("sexo") as string || null,
       contacto_px: formValues.contacto_px,
       whatsapp_px: formData.get("whatsapp_px") === "on",
       nombre_cuidador: formValues.nombre_cuidador,
@@ -210,16 +211,30 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="apellido">Apellido *</Label>
-            <Input 
-              id="apellido" 
-              name="apellido" 
-              defaultValue={paciente.apellido}
-              maxLength={100}
-              required
-              onChange={(e) => handleInputChange("apellido", e.target.value)}
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="apellido">Apellido *</Label>
+              <Input 
+                id="apellido" 
+                name="apellido" 
+                defaultValue={paciente.apellido}
+                maxLength={100}
+                required
+                onChange={(e) => handleInputChange("apellido", e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="sexo">Sexo</Label>
+              <Select name="sexo" defaultValue={paciente.sexo || ''}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar sexo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="M">Masculino</SelectItem>
+                  <SelectItem value="F">Femenino</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
