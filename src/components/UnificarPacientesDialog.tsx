@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { AlertTriangle, Check } from "lucide-react";
+import { AlertTriangle, Check, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface UnificarPacientesDialogProps {
@@ -19,6 +19,31 @@ interface UnificarPacientesDialogProps {
 export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSuccess }: UnificarPacientesDialogProps) => {
   const [loading, setLoading] = useState(false);
   const [selectedPaciente, setSelectedPaciente] = useState<string>("");
+  const [phoneNumbers, setPhoneNumbers] = useState<{
+    contacto_px: string[];
+    contacto_cuidador: string[];
+  }>({ contacto_px: [], contacto_cuidador: [] });
+  const [selectedPhones, setSelectedPhones] = useState<{
+    contacto_px: string | null;
+    contacto_cuidador: string | null;
+  }>({ contacto_px: null, contacto_cuidador: null });
+
+  // Collect all unique phone numbers when dialog opens or pacientes change
+  useEffect(() => {
+    if (pacientes && pacientes.length > 0) {
+      const uniquePx = Array.from(new Set(
+        pacientes.map(p => p.contacto_px).filter(c => c && c.trim())
+      )) as string[];
+      const uniqueCuidador = Array.from(new Set(
+        pacientes.map(p => p.contacto_cuidador).filter(c => c && c.trim())
+      )) as string[];
+      
+      setPhoneNumbers({
+        contacto_px: uniquePx,
+        contacto_cuidador: uniqueCuidador
+      });
+    }
+  }, [pacientes]);
 
   const handleUnificar = async () => {
     if (!selectedPaciente) {
@@ -30,6 +55,15 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
     try {
       const pacienteAMantener = selectedPaciente;
       const pacientesAEliminar = pacientes.filter(p => p.id !== pacienteAMantener).map(p => p.id);
+      
+      // Prepare phone data to update
+      const phoneUpdates: any = {};
+      if (selectedPhones.contacto_px) {
+        phoneUpdates.contacto_px = selectedPhones.contacto_px;
+      }
+      if (selectedPhones.contacto_cuidador) {
+        phoneUpdates.contacto_cuidador = selectedPhones.contacto_cuidador;
+      }
 
       // Transferir llamadas
       const { error: llamadasError } = await supabase
@@ -70,6 +104,16 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
         .in("paciente_id", pacientesAEliminar);
 
       if (atencionError) throw atencionError;
+
+      // Update phone numbers if selected
+      if (Object.keys(phoneUpdates).length > 0) {
+        const { error: phoneUpdateError } = await supabase
+          .from("pacientes")
+          .update(phoneUpdates)
+          .eq("id", pacienteAMantener);
+        
+        if (phoneUpdateError) throw phoneUpdateError;
+      }
 
       // Marcar como inactivos los pacientes duplicados (no eliminar)
       const { error: updateError } = await supabase
@@ -181,6 +225,54 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
               {pacientes.map(renderPacienteOption)}
             </div>
           </RadioGroup>
+
+          {/* Phone number selection */}
+          {selectedPaciente && (phoneNumbers.contacto_px.length > 1 || phoneNumbers.contacto_cuidador.length > 1) && (
+            <div className="mt-6 p-4 border border-primary/20 rounded-lg bg-primary/5 space-y-4">
+              <h4 className="font-semibold text-sm flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                Seleccionar Teléfonos a Conservar
+              </h4>
+              
+              {phoneNumbers.contacto_px.length > 1 && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Teléfono del Paciente</Label>
+                  <RadioGroup 
+                    value={selectedPhones.contacto_px || ""} 
+                    onValueChange={(value) => setSelectedPhones(prev => ({ ...prev, contacto_px: value }))}
+                  >
+                    {phoneNumbers.contacto_px.map((phone, idx) => (
+                      <div key={idx} className="flex items-center space-x-2">
+                        <RadioGroupItem value={phone} id={`px-${idx}`} />
+                        <Label htmlFor={`px-${idx}`} className="text-sm cursor-pointer">
+                          {phone}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              )}
+
+              {phoneNumbers.contacto_cuidador.length > 1 && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Teléfono del Cuidador</Label>
+                  <RadioGroup 
+                    value={selectedPhones.contacto_cuidador || ""} 
+                    onValueChange={(value) => setSelectedPhones(prev => ({ ...prev, contacto_cuidador: value }))}
+                  >
+                    {phoneNumbers.contacto_cuidador.map((phone, idx) => (
+                      <div key={idx} className="flex items-center space-x-2">
+                        <RadioGroupItem value={phone} id={`cuidador-${idx}`} />
+                        <Label htmlFor={`cuidador-${idx}`} className="text-sm cursor-pointer">
+                          {phone}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex gap-2 pt-4 border-t">
