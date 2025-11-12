@@ -130,8 +130,32 @@ const Visitas = () => {
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
+    const pacienteId = formData.get("paciente_id") as string;
+    
+    // Validar si ya existe una visita pendiente para este paciente
+    const { data: existingVisitas } = await supabase
+      .from("control_visitas")
+      .select("id, fecha_hora_visita, personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)")
+      .eq("paciente_id", pacienteId)
+      .eq("estado", "pendiente");
+
+    if (existingVisitas && existingVisitas.length > 0) {
+      const visita = existingVisitas[0];
+      const profesional = visita.personal_salud;
+      const fecha = new Date(visita.fecha_hora_visita).toLocaleString('es-DO', {
+        dateStyle: 'long',
+        timeStyle: 'short'
+      });
+      toast.error(
+        `Este paciente ya tiene una visita agendada para el ${fecha} con ${profesional?.nombre} ${profesional?.apellido}`,
+        { duration: 5000 }
+      );
+      setLoading(false);
+      return;
+    }
+    
     const data = {
-      paciente_id: formData.get("paciente_id") as string,
+      paciente_id: pacienteId,
       profesional_id: formData.get("profesional_id") as string,
       fecha_hora_visita: formData.get("fecha_hora_visita") as string,
       tipo_visita: formData.get("tipo_visita") as any,

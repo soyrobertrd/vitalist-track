@@ -54,12 +54,21 @@ export function AgendarLlamadaDialog({
     // Validar si ya existe una llamada agendada para este paciente
     const { data: existingLlamadas } = await supabase
       .from("registro_llamadas")
-      .select("id")
+      .select("id, fecha_agendada, personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
       .eq("paciente_id", pacienteId)
       .in("estado", ["agendada", "pendiente"]);
 
     if (existingLlamadas && existingLlamadas.length > 0) {
-      toast.error("Este paciente ya tiene una llamada agendada o pendiente");
+      const llamada = existingLlamadas[0];
+      const profesional = llamada.personal_salud;
+      const fecha = new Date(llamada.fecha_agendada).toLocaleString('es-DO', {
+        dateStyle: 'long',
+        timeStyle: 'short'
+      });
+      toast.error(
+        `Este paciente ya tiene una llamada agendada para el ${fecha} con ${profesional?.nombre} ${profesional?.apellido}`,
+        { duration: 5000 }
+      );
       setLoading(false);
       return;
     }
