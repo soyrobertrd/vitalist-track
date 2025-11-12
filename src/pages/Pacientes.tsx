@@ -20,6 +20,8 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { z } from "zod";
+import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
+import { BarrioCombobox } from "@/components/BarrioCombobox";
 
 // Validation schema
 const pacienteSchema = z.object({
@@ -39,7 +41,10 @@ const pacienteSchema = z.object({
   contacto_px: z.string()
     .trim()
     .max(20, { message: "El contacto debe tener menos de 20 caracteres" })
-    .regex(/^[\d\s\-\+\(\)]*$/, { message: "Formato de teléfono inválido" })
+    .refine(
+      (val) => !val || TELEFONO_DOMINICANO_REGEX.test(val.replace(/\s+/g, '')),
+      { message: TELEFONO_ERROR_MESSAGE }
+    )
     .optional(),
   whatsapp_px: z.boolean().optional(),
   nombre_cuidador: z.string()
@@ -49,7 +54,10 @@ const pacienteSchema = z.object({
   contacto_cuidador: z.string()
     .trim()
     .max(20, { message: "El contacto debe tener menos de 20 caracteres" })
-    .regex(/^[\d\s\-\+\(\)]*$/, { message: "Formato de teléfono inválido" })
+    .refine(
+      (val) => !val || TELEFONO_DOMINICANO_REGEX.test(val.replace(/\s+/g, '')),
+      { message: TELEFONO_ERROR_MESSAGE }
+    )
     .optional(),
   whatsapp_cuidador: z.boolean().optional(),
   numero_principal: z.enum(["paciente", "cuidador"]).optional(),
@@ -103,6 +111,8 @@ const Pacientes = () => {
     foto_encoded?: string;
   } | null>(null);
   const [medicamentos, setMedicamentos] = useState<string[]>([""]);
+  const [selectedZona, setSelectedZona] = useState<string | null>(null);
+  const [selectedBarrio, setSelectedBarrio] = useState<string>("");
   const [filters, setFilters] = useState({
     status: "todos",
     zona: "todos",
@@ -472,7 +482,13 @@ const Pacientes = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="zona">Zona</Label>
-                    <Select name="zona">
+                    <Select 
+                      name="zona"
+                      onValueChange={(value) => {
+                        setSelectedZona(value);
+                        setSelectedBarrio(""); // Reset barrio cuando cambia zona
+                      }}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Seleccionar zona" />
                       </SelectTrigger>
@@ -481,17 +497,25 @@ const Pacientes = () => {
                         <SelectItem value="santo_domingo_este">SD Este</SelectItem>
                         <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
                         <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
+                        <SelectItem value="san_luis">San Luis</SelectItem>
+                        <SelectItem value="los_alcarrizos">Los Alcarrizos</SelectItem>
+                        <SelectItem value="boca_chica">Boca Chica</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="barrio">Barrio</Label>
-                    <Input 
-                      id="barrio" 
-                      name="barrio" 
-                      placeholder="Ej: Los Prados, Naco, etc."
-                      maxLength={100}
+                    <BarrioCombobox
+                      zona={selectedZona}
+                      value={selectedBarrio}
+                      onChange={setSelectedBarrio}
                     />
+                    <input type="hidden" name="barrio" value={selectedBarrio} />
+                    {!selectedZona && (
+                      <p className="text-xs text-muted-foreground">
+                        Seleccione una zona primero
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="space-y-2">

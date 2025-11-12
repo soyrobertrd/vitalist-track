@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { PersonalDetailDialog } from "@/components/PersonalDetailDialog";
 import { EditPersonalDialog } from "@/components/EditPersonalDialog";
 import { Edit } from "lucide-react";
+import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 
 interface Personal {
   id: string;
@@ -200,7 +201,13 @@ const Personal = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contacto">Teléfono</Label>
-                <Input id="contacto" name="contacto" type="tel" />
+                <Input 
+                  id="contacto" 
+                  name="contacto" 
+                  type="tel"
+                  placeholder="809-123-4567"
+                />
+                <p className="text-xs text-muted-foreground">{TELEFONO_ERROR_MESSAGE}</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email_contacto">Email *</Label>

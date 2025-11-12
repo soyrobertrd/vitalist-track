@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
+import { BarrioCombobox } from "@/components/BarrioCombobox";
 
 // Validation schema
 const editPacienteSchema = z.object({
@@ -27,7 +29,10 @@ const editPacienteSchema = z.object({
   contacto_px: z.string()
     .trim()
     .max(20, { message: "El contacto debe tener menos de 20 caracteres" })
-    .regex(/^[\d\s\-\+\(\)]*$/, { message: "Formato de teléfono inválido" })
+    .refine(
+      (val) => !val || TELEFONO_DOMINICANO_REGEX.test(val.replace(/\s+/g, '')),
+      { message: TELEFONO_ERROR_MESSAGE }
+    )
     .optional(),
   nombre_cuidador: z.string()
     .trim()
@@ -36,7 +41,10 @@ const editPacienteSchema = z.object({
   contacto_cuidador: z.string()
     .trim()
     .max(20, { message: "El contacto debe tener menos de 20 caracteres" })
-    .regex(/^[\d\s\-\+\(\)]*$/, { message: "Formato de teléfono inválido" })
+    .refine(
+      (val) => !val || TELEFONO_DOMINICANO_REGEX.test(val.replace(/\s+/g, '')),
+      { message: TELEFONO_ERROR_MESSAGE }
+    )
     .optional(),
   direccion_domicilio: z.string()
     .trim()
@@ -61,6 +69,15 @@ interface EditPacienteDialogProps {
 
 export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: EditPacienteDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [selectedZona, setSelectedZona] = useState<string | null>(null);
+  const [selectedBarrio, setSelectedBarrio] = useState<string>("");
+
+  useEffect(() => {
+    if (paciente && open) {
+      setSelectedZona(paciente.zona || null);
+      setSelectedBarrio(paciente.barrio || "");
+    }
+  }, [paciente, open]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -246,7 +263,14 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             </div>
             <div className="space-y-2">
               <Label htmlFor="zona">Zona</Label>
-              <Select name="zona" defaultValue={paciente.zona || ''}>
+              <Select 
+                name="zona" 
+                defaultValue={paciente.zona || ''}
+                onValueChange={(value) => {
+                  setSelectedZona(value);
+                  setSelectedBarrio(""); // Reset barrio cuando cambia zona
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar zona" />
                 </SelectTrigger>
@@ -255,6 +279,9 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   <SelectItem value="santo_domingo_este">SD Este</SelectItem>
                   <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
                   <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
+                  <SelectItem value="san_luis">San Luis</SelectItem>
+                  <SelectItem value="los_alcarrizos">Los Alcarrizos</SelectItem>
+                  <SelectItem value="boca_chica">Boca Chica</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -263,13 +290,17 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="barrio">Barrio</Label>
-              <Input 
-                id="barrio" 
-                name="barrio" 
-                defaultValue={paciente.barrio || ''}
-                placeholder="Ej: Los Prados, Naco, etc."
-                maxLength={100}
+              <BarrioCombobox
+                zona={selectedZona}
+                value={selectedBarrio}
+                onChange={setSelectedBarrio}
               />
+              <input type="hidden" name="barrio" value={selectedBarrio} />
+              {!selectedZona && (
+                <p className="text-xs text-muted-foreground">
+                  Seleccione una zona primero
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="grado_dificultad">Grado de Dificultad</Label>

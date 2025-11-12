@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 
 interface Personal {
   id: string;
@@ -132,15 +133,18 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
               placeholder="Ej: Cardiología, Enfermería"
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="contacto">Teléfono</Label>
-            <Input
-              id="contacto"
-              value={formData.contacto}
-              onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
-              placeholder="809-123-4567"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="contacto">Teléfono</Label>
+                <Input
+                  id="contacto"
+                  name="contacto"
+                  type="tel"
+                  value={formData.contacto}
+                  onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
+                  placeholder="809-123-4567"
+                />
+                <p className="text-xs text-muted-foreground">{TELEFONO_ERROR_MESSAGE}</p>
+              </div>
           <div className="space-y-2">
             <Label htmlFor="email_contacto">Email</Label>
             <Input
