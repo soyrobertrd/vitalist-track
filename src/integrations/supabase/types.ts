@@ -405,9 +405,46 @@ export type Database = {
           },
         ]
       }
+      module_permissions: {
+        Row: {
+          can_create: boolean | null
+          can_delete: boolean | null
+          can_edit: boolean | null
+          can_view: boolean | null
+          created_at: string | null
+          id: string
+          module_name: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string | null
+        }
+        Insert: {
+          can_create?: boolean | null
+          can_delete?: boolean | null
+          can_edit?: boolean | null
+          can_view?: boolean | null
+          created_at?: string | null
+          id?: string
+          module_name: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at?: string | null
+        }
+        Update: {
+          can_create?: boolean | null
+          can_delete?: boolean | null
+          can_edit?: boolean | null
+          can_view?: boolean | null
+          created_at?: string | null
+          id?: string
+          module_name?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       pacientes: {
         Row: {
           apellido: string
+          barrio: string | null
           cedula: string
           contacto_cuidador: string | null
           contacto_px: string | null
@@ -433,6 +470,7 @@ export type Database = {
         }
         Insert: {
           apellido: string
+          barrio?: string | null
           cedula: string
           contacto_cuidador?: string | null
           contacto_px?: string | null
@@ -458,6 +496,7 @@ export type Database = {
         }
         Update: {
           apellido?: string
+          barrio?: string | null
           cedula?: string
           contacto_cuidador?: string | null
           contacto_px?: string | null
@@ -1016,6 +1055,16 @@ export type Database = {
           requieren_seguimiento: number
           tasa_contacto: number
           total_llamadas: number
+        }[]
+      }
+      get_user_module_permissions: {
+        Args: { _user_id: string }
+        Returns: {
+          can_create: boolean
+          can_delete: boolean
+          can_edit: boolean
+          can_view: boolean
+          module_name: string
         }[]
       }
       has_role: {
