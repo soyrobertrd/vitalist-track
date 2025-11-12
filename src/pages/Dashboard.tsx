@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, Phone, Calendar, AlertCircle, TrendingUp, Activity, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StatsCard } from "@/components/StatsCard";
-import { format } from "date-fns";
+import { DashboardFilters } from "@/components/DashboardFilters";
+import { format, subDays, startOfDay, endOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +30,12 @@ import {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [selectedProfessional, setSelectedProfessional] = useState("all");
+  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+    from: subDays(new Date(), 30),
+    to: new Date(),
+  });
+  const [professionals, setProfessionals] = useState<Array<{ id: string; nombre: string; apellido: string }>>([]);
   const [stats, setStats] = useState({
     totalPacientes: 0,
     pacientesActivos: 0,
@@ -41,6 +48,7 @@ const Dashboard = () => {
     callsDistribution: [] as any[],
     visitsStatus: [] as any[],
     monthlyTrend: [] as any[],
+    professionalComparison: [] as any[],
   });
 
   useEffect(() => {
@@ -53,12 +61,39 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    const fetchProfessionals = async () => {
+      const { data } = await supabase
+        .from("personal_salud")
+        .select("id, nombre, apellido")
+        .eq("activo", true);
+      setProfessionals(data || []);
+    };
+    fetchProfessionals();
+  }, []);
+
+  useEffect(() => {
     const fetchStats = async () => {
+      const today = new Date();
+      const startDate = dateRange.from ? startOfDay(dateRange.from) : subDays(today, 30);
+      const endDate = dateRange.to ? endOfDay(dateRange.to) : endOfDay(today);
+
+      let pacientesQuery = supabase.from("pacientes").select("id", { count: "exact", head: true });
+      let activosQuery = supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("status_px", "activo");
+      let llamadasQuery = supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]);
+      let visitasQuery = supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").gte("fecha_hora_visita", new Date().toISOString().split("T")[0]).lte("fecha_hora_visita", new Date(new Date().setHours(23, 59, 59)).toISOString());
+
+      if (selectedProfessional !== "all") {
+        pacientesQuery = pacientesQuery.eq("profesional_asignado_id", selectedProfessional);
+        activosQuery = activosQuery.eq("profesional_asignado_id", selectedProfessional);
+        llamadasQuery = llamadasQuery.eq("profesional_id", selectedProfessional);
+        visitasQuery = visitasQuery.eq("profesional_id", selectedProfessional);
+      }
+
       const [pacientes, activos, llamadas, visitas] = await Promise.all([
-        supabase.from("pacientes").select("id", { count: "exact", head: true }),
-        supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("status_px", "activo"),
-        supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]),
-        supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").gte("fecha_hora_visita", new Date().toISOString().split("T")[0]).lte("fecha_hora_visita", new Date(new Date().setHours(23, 59, 59)).toISOString()),
+        pacientesQuery,
+        activosQuery,
+        llamadasQuery,
+        visitasQuery,
       ]);
 
       setStats({
@@ -68,7 +103,25 @@ const Dashboard = () => {
         visitasHoy: visitas.count || 0,
       });
 
-      // Mock data for charts
+      // Fetch real chart data
+      const { data: callsData } = await supabase
+        .from("registro_llamadas")
+        .select("estado, resultado_seguimiento, fecha_hora_realizada, profesional_id")
+        .gte("created_at", startDate.toISOString())
+        .lte("created_at", endDate.toISOString());
+
+      const { data: visitsData } = await supabase
+        .from("control_visitas")
+        .select("estado, fecha_hora_visita, profesional_id")
+        .gte("created_at", startDate.toISOString())
+        .lte("created_at", endDate.toISOString());
+
+      // Calculate calls distribution
+      const totalCalls = callsData?.length || 0;
+      const contactadas = callsData?.filter(c => c.resultado_seguimiento === 'contactado').length || 0;
+      const noContactadas = callsData?.filter(c => c.resultado_seguimiento === 'no_contestada').length || 0;
+      const pendientes = callsData?.filter(c => c.estado === 'pendiente' || c.estado === 'agendada').length || 0;
+
       setChartData({
         weeklyActivity: [
           { name: "Lun", llamadas: 12, visitas: 8 },
@@ -78,14 +131,14 @@ const Dashboard = () => {
           { name: "Vie", llamadas: 18, visitas: 11 },
         ],
         callsDistribution: [
-          { name: "Contestadas", value: 75, color: "hsl(var(--success))" },
-          { name: "No Contestadas", value: 15, color: "hsl(var(--warning))" },
-          { name: "Pendientes", value: 10, color: "hsl(var(--muted))" },
+          { name: "Contestadas", value: Math.round((contactadas / totalCalls) * 100) || 0, color: "hsl(var(--success))" },
+          { name: "No Contestadas", value: Math.round((noContactadas / totalCalls) * 100) || 0, color: "hsl(var(--warning))" },
+          { name: "Pendientes", value: Math.round((pendientes / totalCalls) * 100) || 0, color: "hsl(var(--muted))" },
         ],
         visitsStatus: [
-          { name: "Realizadas", value: 45 },
-          { name: "Pendientes", value: 20 },
-          { name: "Canceladas", value: 8 },
+          { name: "Realizadas", value: visitsData?.filter(v => v.estado === 'realizada').length || 0 },
+          { name: "Pendientes", value: visitsData?.filter(v => v.estado === 'pendiente').length || 0 },
+          { name: "Canceladas", value: visitsData?.filter(v => v.estado === 'cancelada').length || 0 },
         ],
         monthlyTrend: [
           { name: "Ene", pacientes: 120 },
@@ -94,11 +147,16 @@ const Dashboard = () => {
           { name: "Abr", pacientes: 162 },
           { name: "May", pacientes: 175 },
         ],
+        professionalComparison: professionals.map(prof => ({
+          name: `${prof.nombre} ${prof.apellido}`,
+          llamadas: callsData?.filter(c => c.profesional_id === prof.id).length || 0,
+          visitas: visitsData?.filter(v => v.profesional_id === prof.id).length || 0,
+        })),
       });
     };
 
     fetchStats();
-  }, []);
+  }, [selectedProfessional, dateRange, professionals]);
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--warning))"];
   const dominicanTime = toZonedTime(currentTime, "America/Santo_Domingo");
@@ -122,6 +180,15 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Filters */}
+      <DashboardFilters
+        selectedProfessional={selectedProfessional}
+        onProfessionalChange={setSelectedProfessional}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        professionals={professionals}
+      />
 
       {/* Stats Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -253,6 +320,29 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Professional Comparison Chart */}
+      {selectedProfessional === "all" && chartData.professionalComparison.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Comparativa por Profesional</CardTitle>
+            <CardDescription>Actividad de llamadas y visitas por profesional</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartData.professionalComparison}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                <XAxis dataKey="name" className="text-muted-foreground" />
+                <YAxis className="text-muted-foreground" />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="llamadas" fill="hsl(var(--primary))" name="Llamadas" />
+                <Bar dataKey="visitas" fill="hsl(var(--secondary))" name="Visitas" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Activity Summary */}
       <div className="grid gap-6 md:grid-cols-3">

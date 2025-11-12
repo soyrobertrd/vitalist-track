@@ -1,9 +1,12 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.75.0'
+import { Resend } from 'https://esm.sh/resend@2.0.0'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+const resend = new Resend(Deno.env.get('RESEND_API_KEY') as string)
 
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
@@ -90,11 +93,68 @@ Deno.serve(async (req) => {
       // Only send notification if there are calls or visits
       if ((calls && calls.length > 0) || (visits && visits.length > 0)) {
         console.log(`Sending notification to ${prof.nombre} ${prof.apellido}`)
-        console.log(message)
         
-        // Here you would integrate with your notification system
-        // For now, we're just logging it
-        // You could send emails, SMS, push notifications, etc.
+        const emailTo = prof.email_contacto || prof.user_id ? `${prof.user_id}@temp.com` : null;
+        
+        if (emailTo) {
+          try {
+            await resend.emails.send({
+              from: 'Sistema de Salud <notifications@resend.dev>',
+              to: [emailTo],
+              subject: `Agenda del día ${today.toLocaleDateString('es-DO')}`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2 style="color: #217BF4;">Hola ${prof.nombre} ${prof.apellido}</h2>
+                  <p style="color: #666;">Aquí está tu agenda para el día de hoy:</p>
+                  
+                  ${calls && calls.length > 0 ? `
+                    <div style="margin: 20px 0;">
+                      <h3 style="color: #217BF4;">📞 Llamadas programadas (${calls.length}):</h3>
+                      <ul style="list-style: none; padding: 0;">
+                        ${calls.map((call: any, index: number) => {
+                          const time = new Date(call.fecha_agendada).toLocaleTimeString('es-DO', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          });
+                          return `<li style="padding: 10px; background: #f5f5f5; margin: 5px 0; border-radius: 5px;">
+                            ${index + 1}. ${time} - ${call.pacientes?.nombre} ${call.pacientes?.apellido}
+                          </li>`;
+                        }).join('')}
+                      </ul>
+                    </div>
+                  ` : ''}
+                  
+                  ${visits && visits.length > 0 ? `
+                    <div style="margin: 20px 0;">
+                      <h3 style="color: #217BF4;">🏥 Visitas programadas (${visits.length}):</h3>
+                      <ul style="list-style: none; padding: 0;">
+                        ${visits.map((visit: any, index: number) => {
+                          const time = new Date(visit.fecha_hora_visita).toLocaleTimeString('es-DO', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          });
+                          const tipo = visit.tipo_visita === 'domicilio' ? '🏠 Domicilio' : '🏥 Consultorio';
+                          return `<li style="padding: 10px; background: #f5f5f5; margin: 5px 0; border-radius: 5px;">
+                            ${index + 1}. ${time} ${tipo} - ${visit.pacientes?.nombre} ${visit.pacientes?.apellido}
+                          </li>`;
+                        }).join('')}
+                      </ul>
+                    </div>
+                  ` : ''}
+                  
+                  <p style="color: #999; margin-top: 30px; font-size: 12px;">
+                    Este es un mensaje automático del Sistema de Seguimiento de Pacientes
+                  </p>
+                </div>
+              `,
+            });
+            console.log(`Email sent successfully to ${emailTo}`);
+          } catch (error) {
+            console.error(`Failed to send email to ${emailTo}:`, error);
+          }
+        } else {
+          console.log(`No email address available for ${prof.nombre} ${prof.apellido}`);
+        }
       }
     }
 
