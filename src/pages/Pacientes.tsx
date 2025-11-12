@@ -14,6 +14,7 @@ import { PacienteDetailDialog } from "@/components/PacienteDetailDialog";
 import { ImportPacientesDialog } from "@/components/ImportPacientesDialog";
 import { EditPacienteDialog } from "@/components/EditPacienteDialog";
 import { NearbyPatientsRecommendation } from "@/components/NearbyPatientsRecommendation";
+import { DetectarDuplicadosDialog } from "@/components/DetectarDuplicadosDialog";
 import { addDays, format, isWeekend } from "date-fns";
 import { Pencil } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -349,10 +350,13 @@ const Pacientes = () => {
         </div>
         <div className="flex gap-2">
           {isAdmin && (
-            <Button variant="outline" onClick={() => setImportOpen(true)}>
-              <Upload className="mr-2 h-4 w-4" />
-              Importar
-            </Button>
+            <>
+              <Button variant="outline" onClick={() => setImportOpen(true)}>
+                <Upload className="mr-2 h-4 w-4" />
+                Importar
+              </Button>
+              <DetectarDuplicadosDialog />
+            </>
           )}
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
