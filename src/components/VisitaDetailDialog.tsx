@@ -43,12 +43,14 @@ export function VisitaDetailDialog({
     const formData = new FormData(e.currentTarget);
     const fechaHoraVisita = formData.get("nueva_fecha_hora") as string;
     const profesionalId = formData.get("profesional_id") as string;
+    const motivo = formData.get("motivo_reagendar") as string;
 
     const { error } = await supabase
       .from("control_visitas")
       .update({
         fecha_hora_visita: fechaHoraVisita,
         profesional_id: profesionalId,
+        motivo_visita: motivo,
         estado: "pendiente",
       })
       .eq("id", visita.id);
@@ -73,11 +75,53 @@ export function VisitaDetailDialog({
     if (error) {
       toast.error("Error al cancelar la visita");
     } else {
-      toast.success("Visita cancelada");
+      // Crear llamada de seguimiento 2-3 días después
+      await createFollowUpCall(2);
+      toast.success("Visita cancelada y llamada de seguimiento programada");
       onSuccess();
       onOpenChange(false);
     }
     setLoading(false);
+  };
+
+  const handlePosponer = async (dias: number) => {
+    setLoading(true);
+
+    const nuevaFecha = new Date(visita.fecha_hora_visita);
+    nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+
+    const { error } = await supabase
+      .from("control_visitas")
+      .update({ 
+        fecha_hora_visita: nuevaFecha.toISOString(),
+        estado: "pendiente" 
+      })
+      .eq("id", visita.id);
+
+    if (error) {
+      toast.error("Error al posponer la visita");
+    } else {
+      // Crear llamada de seguimiento 2-3 días después
+      await createFollowUpCall(2);
+      toast.success(`Visita pospuesta ${dias} días y llamada de seguimiento programada`);
+      onSuccess();
+      onOpenChange(false);
+    }
+    setLoading(false);
+  };
+
+  const createFollowUpCall = async (diasDespues: number) => {
+    const fechaLlamada = new Date();
+    fechaLlamada.setDate(fechaLlamada.getDate() + diasDespues);
+
+    await supabase.from("registro_llamadas").insert({
+      paciente_id: visita.paciente_id,
+      profesional_id: visita.profesional_id,
+      fecha_agendada: fechaLlamada.toISOString(),
+      estado: "agendada",
+      motivo: `Seguimiento por ${visita.estado === "cancelada" ? "cancelación" : "posposición"} de visita`,
+      duracion_estimada: 10,
+    });
   };
 
   const handleMarcarRealizada = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -250,6 +294,22 @@ export function VisitaDetailDialog({
                       min={new Date().toISOString().slice(0, 16)}
                     />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="motivo_reagendar">Motivo del Reagendamiento *</Label>
+                    <Select name="motivo_reagendar" required>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar motivo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Paciente solicitó cambio">Paciente solicitó cambio</SelectItem>
+                        <SelectItem value="Conflicto de horarios">Conflicto de horarios</SelectItem>
+                        <SelectItem value="Profesional no disponible">Profesional no disponible</SelectItem>
+                        <SelectItem value="Emergencia del paciente">Emergencia del paciente</SelectItem>
+                        <SelectItem value="Condiciones climáticas">Condiciones climáticas</SelectItem>
+                        <SelectItem value="Otro motivo">Otro motivo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Reagendando..." : "Reagendar Visita"}
@@ -259,16 +319,37 @@ export function VisitaDetailDialog({
             </Tabs>
           )}
 
-          {/* Botón de Cancelar */}
+          {/* Botones de Cancelar y Posponer */}
           {puedeReagendar && (
-            <Button
-              variant="destructive"
-              className="w-full"
-              onClick={handleCancelar}
-              disabled={loading}
-            >
-              Cancelar Visita
-            </Button>
+            <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => handlePosponer(7)}
+                  disabled={loading}
+                >
+                  Posponer 1 Semana
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handlePosponer(14)}
+                  disabled={loading}
+                >
+                  Posponer 2 Semanas
+                </Button>
+              </div>
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={handleCancelar}
+                disabled={loading}
+              >
+                Cancelar Visita
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                Al cancelar o posponer se programará una llamada de seguimiento en 2 días
+              </p>
+            </div>
           )}
         </div>
       </DialogContent>

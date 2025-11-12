@@ -77,14 +77,45 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
         throw new Error("No se encontraron datos para importar");
       }
 
-      // Validar formato estándar o intentar mapa de formato legado
-      const requiredFields = ["paciente_cedula", "profesional_cedula", "fecha_agendada"];
+      // Detectar formato y procesar
       const firstItem = data[0];
-      const missingFields = requiredFields.filter(field => !(field in firstItem));
-
       let llamadasToInsert: any[] = [];
 
-      if (missingFields.length === 0) {
+      // FORMATO NOMBRE + FRECUENCIA: nombre, fecha_ultima_llamada, fecha_proxima_llamada, frecuencia_llamada
+      if ("nombre" in firstItem && "frecuencia_llamada" in firstItem) {
+        // Obtener todos los pacientes
+        const { data: todosPacientes } = await supabase
+          .from("pacientes")
+          .select("id, nombre, apellido");
+
+        const pacienteMap = new Map<string, string>();
+        (todosPacientes || []).forEach((p: any) => {
+          const nombreCompleto = `${p.nombre} ${p.apellido}`.toLowerCase().trim();
+          pacienteMap.set(nombreCompleto, p.id);
+        });
+
+        llamadasToInsert = data
+          .map((d: any) => {
+            const nombreBuscado = String(d.nombre).toLowerCase().trim();
+            const pacienteId = pacienteMap.get(nombreBuscado);
+            
+            if (!pacienteId) return null;
+
+            return {
+              paciente_id: pacienteId,
+              profesional_id: null,
+              fecha_agendada: d.fecha_proxima_llamada ? `${String(d.fecha_proxima_llamada).trim()}${String(d.fecha_proxima_llamada).length <= 10 ? " 00:00:00" : ""}` : null,
+              fecha_hora_realizada: d.fecha_ultima_llamada ? `${String(d.fecha_ultima_llamada).trim()}${String(d.fecha_ultima_llamada).length <= 10 ? " 00:00:00" : ""}` : null,
+              estado: d.fecha_ultima_llamada ? "realizada" : "agendada",
+              motivo: `Seguimiento - Frecuencia: cada ${d.frecuencia_llamada} días`,
+              duracion_estimada: 15,
+              notas_adicionales: d.frecuencia_llamada ? `Frecuencia programada: ${d.frecuencia_llamada} días` : null,
+            };
+          })
+          .filter(Boolean) as any[];
+      }
+      // FORMATO ESTÁNDAR: paciente_cedula, profesional_cedula, fecha_agendada
+      else if ("paciente_cedula" in firstItem && "fecha_agendada" in firstItem) {
         // FORMATO ESTÁNDAR: resolver IDs por cédula
         const pacientesCedulas = [...new Set(data.map(d => d.paciente_cedula))];
         const profesionalesCedulas = [...new Set(data.map(d => d.profesional_cedula))];
@@ -174,7 +205,7 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
           })
           .filter(Boolean) as any[];
       } else {
-        throw new Error(`Faltan campos requeridos: ${missingFields.join(", ")}`);
+        throw new Error("Formato no reconocido. Use formato estándar (cedula), por nombre+frecuencia, o legado (teléfono)");
       }
 
       if (llamadasToInsert.length === 0) {
@@ -226,35 +257,41 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
           </div>
 
           <div className="space-y-3 p-4 bg-muted rounded-lg">
-            <h4 className="font-medium">Formato Requerido</h4>
-            <p className="text-sm text-muted-foreground">
-              El archivo debe contener las siguientes columnas:
-            </p>
-            <ul className="text-sm space-y-1 list-disc list-inside">
-              <li><strong>paciente_cedula</strong>: Cédula del paciente</li>
-              <li><strong>profesional_cedula</strong>: Cédula del profesional</li>
-              <li><strong>fecha_agendada</strong>: Fecha y hora (formato: YYYY-MM-DD HH:MM:SS)</li>
-              <li>motivo: Motivo de la llamada (opcional)</li>
-              <li>duracion_estimada: Duración estimada en minutos (opcional)</li>
-              <li>estado: Estado (agendada, pendiente, etc.) (opcional)</li>
-              <li>notas_adicionales: Notas adicionales (opcional)</li>
-            </ul>
+            <h4 className="font-medium">Formatos Soportados</h4>
+            <div className="space-y-3 text-sm">
+              <div>
+                <p className="font-medium">1. Por Nombre + Frecuencia:</p>
+                <ul className="list-disc list-inside text-muted-foreground ml-2">
+                  <li><strong>nombre</strong>: Nombre completo (Nombre Apellido)</li>
+                  <li><strong>fecha_ultima_llamada</strong>: Fecha última llamada (YYYY-MM-DD)</li>
+                  <li><strong>fecha_proxima_llamada</strong>: Próxima llamada (YYYY-MM-DD)</li>
+                  <li><strong>frecuencia_llamada</strong>: Días entre llamadas (ej: 30)</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-medium">2. Por Cédula (Formato Estándar):</p>
+                <ul className="list-disc list-inside text-muted-foreground ml-2">
+                  <li><strong>paciente_cedula</strong>: Cédula del paciente</li>
+                  <li><strong>profesional_cedula</strong>: Cédula del profesional</li>
+                  <li><strong>fecha_agendada</strong>: Fecha (YYYY-MM-DD HH:MM:SS)</li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-4">
             <div className="flex-1 p-3 border rounded-lg space-y-2">
               <div className="flex items-center gap-2">
                 <FileJson className="h-5 w-5 text-primary" />
-                <span className="font-medium text-sm">Ejemplo JSON</span>
+                <span className="font-medium text-sm">Ejemplo Nombre + Frecuencia</span>
               </div>
               <pre className="text-xs bg-background p-2 rounded overflow-x-auto">
 {`[
   {
-    "paciente_cedula": "001-1234567-8",
-    "profesional_cedula": "031-0123456-7",
-    "fecha_agendada": "2024-12-15 10:00:00",
-    "motivo": "Seguimiento mensual",
-    "duracion_estimada": 15
+    "nombre": "Juan Pérez",
+    "fecha_ultima_llamada": "2024-11-01",
+    "fecha_proxima_llamada": "2024-12-01",
+    "frecuencia_llamada": "30"
   }
 ]`}
               </pre>
@@ -263,11 +300,11 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
             <div className="flex-1 p-3 border rounded-lg space-y-2">
               <div className="flex items-center gap-2">
                 <FileSpreadsheet className="h-5 w-5 text-success" />
-                <span className="font-medium text-sm">Ejemplo CSV/Excel</span>
+                <span className="font-medium text-sm">Ejemplo CSV</span>
               </div>
               <pre className="text-xs bg-background p-2 rounded overflow-x-auto">
-{`paciente_cedula,profesional_cedula,fecha_agendada,motivo
-001-1234567-8,031-0123456-7,2024-12-15 10:00:00,Seguimiento`}
+{`nombre,fecha_ultima_llamada,fecha_proxima_llamada,frecuencia_llamada
+Juan Pérez,2024-11-01,2024-12-01,30`}
               </pre>
             </div>
           </div>

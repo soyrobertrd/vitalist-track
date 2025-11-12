@@ -16,6 +16,9 @@ import { VisitaDetailDialog } from "@/components/VisitaDetailDialog";
 import { ImportVisitasDialog } from "@/components/ImportVisitasDialog";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { NearbyPatientsRecommendation } from "@/components/NearbyPatientsRecommendation";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface Visita {
   id: string;
@@ -51,6 +54,8 @@ const Visitas = () => {
     canceladas: 0,
   });
   const [selectedProfessionals, setSelectedProfessionals] = useState<string[]>([]);
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
+  const [selectedPatientData, setSelectedPatientData] = useState<any>(null);
 
   const fetchData = async () => {
     const thirtyDaysAgo = new Date();
@@ -156,10 +161,22 @@ const Visitas = () => {
       toast.success("Visita programada exitosamente");
       setOpen(false);
       setSelectedProfessionals([]);
+      setSelectedPatientId(null);
+      setSelectedPatientData(null);
       fetchData();
       (e.target as HTMLFormElement).reset();
     }
     setLoading(false);
+  };
+
+  const handlePatientChange = async (pacienteId: string) => {
+    setSelectedPatientId(pacienteId);
+    const { data } = await supabase
+      .from("pacientes")
+      .select("zona, barrio")
+      .eq("id", pacienteId)
+      .single();
+    setSelectedPatientData(data);
   };
 
   const handleUnscheduledSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -339,7 +356,7 @@ const Visitas = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="paciente_id">Paciente *</Label>
-                <Select name="paciente_id" required>
+                <Select name="paciente_id" required onValueChange={handlePatientChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Seleccionar paciente" />
                   </SelectTrigger>
@@ -352,6 +369,26 @@ const Visitas = () => {
                   </SelectContent>
                 </Select>
               </div>
+              
+              {selectedPatientId && (!selectedPatientData?.zona && !selectedPatientData?.barrio) && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    Este paciente no tiene zona ni barrio configurados. Por favor, actualiza sus datos para optimizar la planificación de rutas.
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {selectedPatientId && selectedPatientData?.zona && (
+                <NearbyPatientsRecommendation
+                  currentPatientId={selectedPatientId}
+                  barrio={selectedPatientData?.barrio}
+                  zona={selectedPatientData?.zona}
+                  onSelectPatient={(patientId) => {
+                    toast.info(`Paciente cercano recomendado. Considere planificar visita conjunta.`);
+                  }}
+                />
+              )}
               <div className="space-y-2">
                 <Label htmlFor="profesional_id">Profesional *</Label>
                 <Select name="profesional_id" required>

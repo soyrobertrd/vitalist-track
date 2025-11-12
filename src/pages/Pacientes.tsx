@@ -683,7 +683,7 @@ const Pacientes = () => {
         {filteredPacientes.map((paciente) => (
           <Card 
             key={paciente.id} 
-            className="hover:bg-accent transition-colors"
+            className="hover:bg-accent transition-colors flex flex-col h-full"
           >
             <CardHeader>
               <div className="flex justify-between items-start">
