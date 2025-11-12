@@ -4,8 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, Phone, Calendar, AlertCircle, TrendingUp, Activity, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StatsCard } from "@/components/StatsCard";
-import { DashboardFilters } from "@/components/DashboardFilters";
-import { format, subDays, startOfDay, endOfDay } from "date-fns";
+import { format, subDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
 import { useNavigate } from "react-router-dom";
@@ -30,12 +29,7 @@ import {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [selectedProfessional, setSelectedProfessional] = useState("all");
-  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
-    from: subDays(new Date(), 30),
-    to: new Date(),
-  });
-  const [professionals, setProfessionals] = useState<Array<{ id: string; nombre: string; apellido: string }>>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [stats, setStats] = useState({
     totalPacientes: 0,
     pacientesActivos: 0,
@@ -48,7 +42,6 @@ const Dashboard = () => {
     callsDistribution: [] as any[],
     visitsStatus: [] as any[],
     monthlyTrend: [] as any[],
-    professionalComparison: [] as any[],
   });
 
   useEffect(() => {
@@ -61,39 +54,27 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProfessionals = async () => {
-      const { data } = await supabase
-        .from("personal_salud")
-        .select("id, nombre, apellido")
-        .eq("activo", true);
-      setProfessionals(data || []);
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUserId(user.id);
+      }
     };
-    fetchProfessionals();
+    getCurrentUser();
   }, []);
 
   useEffect(() => {
     const fetchStats = async () => {
-      const today = new Date();
-      const startDate = dateRange.from ? startOfDay(dateRange.from) : subDays(today, 30);
-      const endDate = dateRange.to ? endOfDay(dateRange.to) : endOfDay(today);
+      if (!currentUserId) return;
 
-      let pacientesQuery = supabase.from("pacientes").select("id", { count: "exact", head: true });
-      let activosQuery = supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("status_px", "activo");
-      let llamadasQuery = supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]);
-      let visitasQuery = supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").gte("fecha_hora_visita", new Date().toISOString().split("T")[0]).lte("fecha_hora_visita", new Date(new Date().setHours(23, 59, 59)).toISOString());
-
-      if (selectedProfessional !== "all") {
-        pacientesQuery = pacientesQuery.eq("profesional_asignado_id", selectedProfessional);
-        activosQuery = activosQuery.eq("profesional_asignado_id", selectedProfessional);
-        llamadasQuery = llamadasQuery.eq("profesional_id", selectedProfessional);
-        visitasQuery = visitasQuery.eq("profesional_id", selectedProfessional);
-      }
+      const thirtyDaysAgo = subDays(new Date(), 30).toISOString().split('T')[0];
+      const today = new Date().toISOString().split('T')[0];
 
       const [pacientes, activos, llamadas, visitas] = await Promise.all([
-        pacientesQuery,
-        activosQuery,
-        llamadasQuery,
-        visitasQuery,
+        supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("profesional_asignado_id", currentUserId),
+        supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("status_px", "activo").eq("profesional_asignado_id", currentUserId),
+        supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]).eq("profesional_id", currentUserId).gte("fecha_agendada", thirtyDaysAgo).lte("fecha_agendada", today),
+        supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").eq("profesional_id", currentUserId).gte("fecha_hora_visita", `${today}T00:00:00`).lte("fecha_hora_visita", `${today}T23:59:59`),
       ]);
 
       setStats({
@@ -103,18 +84,20 @@ const Dashboard = () => {
         visitasHoy: visitas.count || 0,
       });
 
-      // Fetch real chart data
+      // Fetch real chart data - últimos 30 días
       const { data: callsData } = await supabase
         .from("registro_llamadas")
-        .select("estado, resultado_seguimiento, fecha_hora_realizada, profesional_id")
-        .gte("created_at", startDate.toISOString())
-        .lte("created_at", endDate.toISOString());
+        .select("estado, resultado_seguimiento, fecha_hora_realizada")
+        .eq("profesional_id", currentUserId)
+        .gte("fecha_hora_realizada", thirtyDaysAgo)
+        .lte("fecha_hora_realizada", today);
 
       const { data: visitsData } = await supabase
         .from("control_visitas")
-        .select("estado, fecha_hora_visita, profesional_id")
-        .gte("created_at", startDate.toISOString())
-        .lte("created_at", endDate.toISOString());
+        .select("estado, fecha_hora_visita")
+        .eq("profesional_id", currentUserId)
+        .gte("fecha_hora_visita", thirtyDaysAgo)
+        .lte("fecha_hora_visita", today);
 
       // Calculate calls distribution
       const totalCalls = callsData?.length || 0;
@@ -147,16 +130,11 @@ const Dashboard = () => {
           { name: "Abr", pacientes: 162 },
           { name: "May", pacientes: 175 },
         ],
-        professionalComparison: professionals.map(prof => ({
-          name: `${prof.nombre} ${prof.apellido}`,
-          llamadas: callsData?.filter(c => c.profesional_id === prof.id).length || 0,
-          visitas: visitsData?.filter(v => v.profesional_id === prof.id).length || 0,
-        })),
       });
     };
 
     fetchStats();
-  }, [selectedProfessional, dateRange, professionals]);
+  }, [currentUserId]);
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--warning))"];
   const dominicanTime = toZonedTime(currentTime, "America/Santo_Domingo");
@@ -180,15 +158,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Filters */}
-      <DashboardFilters
-        selectedProfessional={selectedProfessional}
-        onProfessionalChange={setSelectedProfessional}
-        dateRange={dateRange}
-        onDateRangeChange={setDateRange}
-        professionals={professionals}
-      />
 
       {/* Stats Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -320,29 +289,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
-
-      {/* Professional Comparison Chart */}
-      {selectedProfessional === "all" && chartData.professionalComparison.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Comparativa por Profesional</CardTitle>
-            <CardDescription>Actividad de llamadas y visitas por profesional</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData.professionalComparison}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                <XAxis dataKey="name" className="text-muted-foreground" />
-                <YAxis className="text-muted-foreground" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="llamadas" fill="hsl(var(--primary))" name="Llamadas" />
-                <Bar dataKey="visitas" fill="hsl(var(--secondary))" name="Visitas" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Activity Summary */}
       <div className="grid gap-6 md:grid-cols-3">

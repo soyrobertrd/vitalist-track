@@ -4,10 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PacienteCombobox } from "@/components/PacienteCombobox";
 import { ProfesionalCombobox } from "@/components/ProfesionalCombobox";
+
+const MOTIVOS_LLAMADA = [
+  "Seguimiento rutinario",
+  "Agendar visita",
+  "Verificar medicación",
+  "Control post-visita",
+  "Recordatorio de cita",
+  "Consulta sobre síntomas",
+  "Actualización de datos",
+  "Otro"
+] as const;
 
 interface AgendarLlamadaDialogProps {
   open: boolean;
@@ -27,6 +39,7 @@ export function AgendarLlamadaDialog({
   const [loading, setLoading] = useState(false);
   const [pacienteId, setPacienteId] = useState<string>("");
   const [profesionalId, setProfesionalId] = useState<string>("");
+  const [motivo, setMotivo] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,10 +64,13 @@ export function AgendarLlamadaDialog({
       return;
     }
 
+    const comentarios = formData.get("comentarios") as string;
+    const motivoFinal = comentarios ? `${motivo} - ${comentarios}` : motivo;
+
     const data = {
       paciente_id: pacienteId,
       profesional_id: profesionalId,
-      motivo: formData.get("motivo") as string,
+      motivo: motivoFinal,
       duracion_estimada: parseInt(formData.get("duracion_estimada") as string) || null,
       fecha_agendada: fechaHoraAgendada,
       estado: "agendada" as const,
@@ -70,6 +86,7 @@ export function AgendarLlamadaDialog({
       toast.success("Llamada agendada exitosamente");
       setPacienteId("");
       setProfesionalId("");
+      setMotivo("");
       onOpenChange(false);
       onSuccess();
       (e.target as HTMLFormElement).reset();
@@ -140,11 +157,26 @@ export function AgendarLlamadaDialog({
 
           <div className="space-y-2">
             <Label htmlFor="motivo">Motivo de la Llamada *</Label>
+            <Select value={motivo} onValueChange={setMotivo} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccione un motivo" />
+              </SelectTrigger>
+              <SelectContent>
+                {MOTIVOS_LLAMADA.map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {m}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="comentarios">Comentarios Adicionales</Label>
             <Textarea
-              id="motivo"
-              name="motivo"
-              placeholder="Ej: Seguimiento rutinario, agendar visita, verificar medicación..."
-              required
+              id="comentarios"
+              name="comentarios"
+              placeholder="Detalles adicionales sobre la llamada..."
               rows={3}
             />
           </div>
