@@ -51,7 +51,7 @@ serve(async (req) => {
       apellido1: citizenInfo.apellido1 || '',
       apellido2: citizenInfo.apellido2 || '',
       fecha_nac: citizenInfo.fecha_nac || '',
-      sexo: citizenInfo.sexo || '',
+      sexo: citizenInfo.ced_a_sexo || citizenInfo.sexo || '',
       foto_encoded: citizenInfo.foto_encoded || ''
     };
 

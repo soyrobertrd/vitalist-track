@@ -80,11 +80,12 @@ const Configuracion = () => {
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { error } = await updateProfile(formData);
-    if (error) {
-      toast.error("Error al actualizar perfil");
-    } else {
+    try {
+      const { error } = await updateProfile(formData);
+      if (error) throw error;
       toast.success("Perfil actualizado exitosamente");
+    } catch (error: any) {
+      toast.error(error.message || "Error al actualizar perfil");
     }
   };
 

@@ -26,6 +26,7 @@ import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { useDetectarDuplicados } from "@/hooks/useDetectarDuplicados";
 import { AlertaDuplicados } from "@/components/AlertaDuplicados";
 import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
+import { MobileFilters } from "@/components/MobileFilters";
 
 // Validation schema
 const pacienteSchema = z.object({
@@ -709,15 +710,92 @@ const Pacientes = () => {
       </div>
 
       {/* Filtros */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filtros
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="lg:block hidden">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Filter className="h-5 w-5" />
+              Filtros
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Búsqueda</label>
+                <Input
+                  placeholder="Nombre o cédula..."
+                  value={filters.busqueda}
+                  onChange={(e) => setFilters({ ...filters, busqueda: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Estado</label>
+                <Select value={filters.status} onValueChange={(v) => setFilters({ ...filters, status: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos</SelectItem>
+                    <SelectItem value="activo">Activo</SelectItem>
+                    <SelectItem value="inactivo">Inactivo</SelectItem>
+                    <SelectItem value="fallecido">Fallecido</SelectItem>
+                    <SelectItem value="renuncio">Renunció</SelectItem>
+                    <SelectItem value="cambio_ars">Cambió ARS</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Zona</label>
+                <Select value={filters.zona} onValueChange={(v) => setFilters({ ...filters, zona: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todas</SelectItem>
+                    <SelectItem value="santo_domingo_oeste">SD Oeste</SelectItem>
+                    <SelectItem value="santo_domingo_este">SD Este</SelectItem>
+                    <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
+                    <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Grado Dificultad</label>
+                <Select value={filters.grado} onValueChange={(v) => setFilters({ ...filters, grado: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos</SelectItem>
+                    <SelectItem value="bajo">Bajo</SelectItem>
+                    <SelectItem value="medio">Medio</SelectItem>
+                    <SelectItem value="alto">Alto</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Barrio</label>
+                <Select value={filters.barrio} onValueChange={(v) => setFilters({ ...filters, barrio: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos</SelectItem>
+                    {[...new Set(pacientes.map(p => p.barrio).filter(Boolean))].sort().map(barrio => (
+                      <SelectItem key={barrio} value={barrio!}>{barrio}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filtros móviles */}
+      <div className="lg:hidden">
+        <MobileFilters title="Filtros de Pacientes">
+          <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Búsqueda</label>
               <Input
@@ -786,8 +864,8 @@ const Pacientes = () => {
               </Select>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </MobileFilters>
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredPacientes.map((paciente) => (
