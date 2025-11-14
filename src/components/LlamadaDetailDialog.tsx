@@ -33,6 +33,14 @@ export function LlamadaDetailDialog({
 }: LlamadaDetailDialogProps) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [showVisitaForm, setShowVisitaForm] = useState(false);
+  const [visitaData, setVisitaData] = useState({
+    fechaHora: "",
+    tipoVisita: "domicilio" as "domicilio" | "centro",
+    motivo: "",
+    profesionales: [] as string[],
+  });
+  const { esDiaLaborable, siguienteDiaLaborable } = useDiasLaborables();
 
   if (!llamada) return null;
 

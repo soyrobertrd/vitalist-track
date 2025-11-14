@@ -12,6 +12,9 @@ import { PersonalDetailDialog } from "@/components/PersonalDetailDialog";
 import { EditPersonalDialog } from "@/components/EditPersonalDialog";
 import { Edit } from "lucide-react";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
+import { MobileFilters } from "@/components/MobileFilters";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Personal {
   id: string;
@@ -38,6 +41,11 @@ const Personal = () => {
   const [selectedPersonal, setSelectedPersonal] = useState<Personal | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    especialidad: "todos",
+    estado: "todos",
+    busqueda: "",
+  });
 
   const fetchPersonal = async () => {
     const { data, error } = await supabase

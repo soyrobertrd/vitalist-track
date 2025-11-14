@@ -19,6 +19,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NearbyPatientsRecommendation } from "@/components/NearbyPatientsRecommendation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { MobileFilters } from "@/components/MobileFilters";
+import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 
 interface Visita {
   id: string;
@@ -56,6 +58,8 @@ const Visitas = () => {
   const [selectedProfessionals, setSelectedProfessionals] = useState<string[]>([]);
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const [selectedPatientData, setSelectedPatientData] = useState<any>(null);
+  const { esDiaLaborable, siguienteDiaLaborable } = useDiasLaborables();
+  const [restriccionesPaciente, setRestriccionesPaciente] = useState<any[]>([]);
 
   const fetchData = async () => {
     const thirtyDaysAgo = new Date();
