@@ -118,6 +118,7 @@ const Pacientes = () => {
   const [medicamentos, setMedicamentos] = useState<string[]>([""]);
   const [selectedZona, setSelectedZona] = useState<string | null>(null);
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
+  const [selectedSexo, setSelectedSexo] = useState<string>("");
   const [filters, setFilters] = useState({
     status: "todos",
     zona: "todos",
@@ -216,6 +217,11 @@ const Pacientes = () => {
           ...data,
           fecha_nac: formattedDate
         });
+        
+        // Mapear sexo de la API ("M" o "F") al valor del formulario
+        if (data.sexo) {
+          setSelectedSexo(data.sexo);
+        }
         
         toast.success("Datos cargados desde JCE");
       }
@@ -411,231 +417,296 @@ const Pacientes = () => {
               
               <AlertaDuplicados duplicados={duplicados} />
               
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="cedula">Cédula *</Label>
-                    <Input 
-                      id="cedula" 
-                      name="cedula" 
-                      required 
-                      maxLength={11}
-                      pattern="\d{11}"
-                      onBlur={(e) => fetchCedulaData(e.target.value)}
-                      disabled={loadingCedula}
-                      onChange={(e) => {
-                        // Solo permitir números
-                        const value = e.target.value.replace(/\D/g, '');
-                        e.target.value = value;
-                        handleNewPacienteInputChange("cedula", value);
-                      }}
-                    />
-                    <p className="text-xs text-muted-foreground">Digitar cédula sin guiones (11 dígitos)</p>
-                    {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="fecha_nacimiento">Fecha Nacimiento</Label>
-                    <Input 
-                      id="fecha_nacimiento" 
-                      name="fecha_nacimiento" 
-                      type="date" 
-                      value={cedulaData?.fecha_nac || ''}
-                      readOnly={!!cedulaData}
-                      className={cedulaData ? 'bg-muted' : ''}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="sexo">Sexo</Label>
-                    <Select 
-                      name="sexo" 
-                      defaultValue={cedulaData?.sexo || ''}
-                      disabled={!!cedulaData}
-                    >
-                      <SelectTrigger className={cedulaData ? 'bg-muted' : ''}>
-                        <SelectValue placeholder="Seleccionar sexo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="M">Masculino</SelectItem>
-                        <SelectItem value="F">Femenino</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="nombre">Nombre *</Label>
-                <Input 
-                  id="nombre" 
-                  name="nombre" 
-                  required 
-                  value={cedulaData?.nombres || ''}
-                  readOnly={!!cedulaData}
-                  className={cedulaData ? 'bg-muted' : ''}
-                  onChange={(e) => handleNewPacienteInputChange("nombre", e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="apellido">Apellido *</Label>
-                <Input 
-                  id="apellido" 
-                  name="apellido" 
-                  required 
-                  value={cedulaData ? `${cedulaData.apellido1} ${cedulaData.apellido2}`.trim() : ''}
-                  readOnly={!!cedulaData}
-                  className={cedulaData ? 'bg-muted' : ''}
-                  onChange={(e) => handleNewPacienteInputChange("apellido", e.target.value)}
-                />
-              </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="contacto_px">Contacto Paciente</Label>
-                  <Input 
-                    id="contacto_px" 
-                    name="contacto_px" 
-                    type="tel"
-                    placeholder="Ej: 809-123-4567"
-                    maxLength={20}
-                    onChange={(e) => handleNewPacienteInputChange("contacto_px", e.target.value)}
-                  />
-                </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="whatsapp_px" className="flex items-center gap-2">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Sección: Información de JCE */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground">Datos de Identificación</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="cedula">Cédula *</Label>
                       <Input 
-                        id="whatsapp_px" 
-                        name="whatsapp_px" 
-                        type="checkbox" 
-                        className="w-4 h-4"
+                        id="cedula" 
+                        name="cedula" 
+                        required 
+                        maxLength={11}
+                        pattern="\d{11}"
+                        onBlur={(e) => fetchCedulaData(e.target.value)}
+                        disabled={loadingCedula}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          e.target.value = value;
+                          handleNewPacienteInputChange("cedula", value);
+                        }}
                       />
-                      Tiene WhatsApp
-                    </Label>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="contacto_cuidador">Contacto Cuidador</Label>
-                  <Input 
-                    id="contacto_cuidador" 
-                    name="contacto_cuidador" 
-                    type="tel"
-                    placeholder="Ej: 809-123-4567"
-                    maxLength={20}
-                    onChange={(e) => handleNewPacienteInputChange("contacto_cuidador", e.target.value)}
-                  />
-                </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2">
+                      <p className="text-xs text-muted-foreground">Digitar cédula sin guiones (11 dígitos)</p>
+                      {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="fecha_nacimiento">Fecha Nacimiento</Label>
                       <Input 
-                        id="whatsapp_cuidador" 
-                        name="whatsapp_cuidador" 
-                        type="checkbox" 
-                        className="w-4 h-4"
+                        id="fecha_nacimiento" 
+                        name="fecha_nacimiento" 
+                        type="date" 
+                        value={cedulaData?.fecha_nac || ''}
+                        readOnly={!!cedulaData}
+                        className={cedulaData ? 'bg-muted' : ''}
                       />
-                      Tiene WhatsApp
-                    </Label>
+                    </div>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="numero_principal">Número Principal de Contacto</Label>
-                  <Select name="numero_principal">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar número principal" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="paciente">Paciente</SelectItem>
-                      <SelectItem value="cuidador">Cuidador</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="zona">Zona</Label>
-                    <Select 
-                      name="zona"
-                      onValueChange={(value) => {
-                        setSelectedZona(value);
-                        setSelectedBarrio(""); // Reset barrio cuando cambia zona
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar zona" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="santo_domingo_oeste">SD Oeste</SelectItem>
-                        <SelectItem value="santo_domingo_este">SD Este</SelectItem>
-                        <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
-                        <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
-                        <SelectItem value="san_luis">San Luis</SelectItem>
-                        <SelectItem value="los_alcarrizos">Los Alcarrizos</SelectItem>
-                        <SelectItem value="boca_chica">Boca Chica</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="sexo">Sexo</Label>
+                      <Select 
+                        name="sexo" 
+                        value={selectedSexo}
+                        onValueChange={setSelectedSexo}
+                        disabled={!!cedulaData}
+                      >
+                        <SelectTrigger className={cedulaData ? 'bg-muted' : ''}>
+                          <SelectValue placeholder="Seleccionar sexo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="M">Masculino</SelectItem>
+                          <SelectItem value="F">Femenino</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="nombre">Nombre *</Label>
+                      <Input 
+                        id="nombre" 
+                        name="nombre" 
+                        required 
+                        value={cedulaData?.nombres || ''}
+                        readOnly={!!cedulaData}
+                        className={cedulaData ? 'bg-muted' : ''}
+                        onChange={(e) => handleNewPacienteInputChange("nombre", e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="apellido">Apellido *</Label>
+                      <Input 
+                        id="apellido" 
+                        name="apellido" 
+                        required 
+                        value={cedulaData ? `${cedulaData.apellido1} ${cedulaData.apellido2}`.trim() : ''}
+                        readOnly={!!cedulaData}
+                        className={cedulaData ? 'bg-muted' : ''}
+                        onChange={(e) => handleNewPacienteInputChange("apellido", e.target.value)}
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="barrio">Barrio</Label>
-                    <BarrioCombobox
-                      zona={selectedZona}
-                      value={selectedBarrio}
-                      onChange={setSelectedBarrio}
-                    />
-                    <input type="hidden" name="barrio" value={selectedBarrio} />
-                    {!selectedZona && (
-                      <p className="text-xs text-muted-foreground">
-                        Seleccione una zona primero
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="grado_dificultad">Grado de Dificultad</Label>
-                  <Select name="grado_dificultad" defaultValue="medio">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bajo">Bajo</SelectItem>
-                      <SelectItem value="medio">Medio</SelectItem>
-                      <SelectItem value="alto">Alto</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="nombre_cuidador">Nombre del Cuidador</Label>
-                  <Input 
-                    id="nombre_cuidador" 
-                    name="nombre_cuidador"
-                    placeholder="Nombre completo del cuidador"
-                    maxLength={200}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="direccion_domicilio">Dirección Completa</Label>
-                  <Textarea
-                    id="direccion_domicilio" 
-                    name="direccion_domicilio"
-                    placeholder="Calle, número, sector, referencias..."
-                    rows={2}
-                    maxLength={500}
-                  />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="historia_medica">Historia Médica Básica</Label>
-                  <Textarea 
-                    id="historia_medica" 
-                    name="historia_medica" 
-                    placeholder="Resumen de condiciones médicas relevantes, alergias, cirugías previas..."
-                    rows={3}
-                    maxLength={2000}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Máximo 2000 caracteres
-                  </p>
+                {/* Sección: Información de Contacto */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground">Contacto del Paciente</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="contacto_px">Teléfono</Label>
+                      <Input 
+                        id="contacto_px" 
+                        name="contacto_px" 
+                        type="tel"
+                        placeholder="Ej: 809-123-4567"
+                        maxLength={20}
+                        onChange={(e) => handleNewPacienteInputChange("contacto_px", e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2 flex items-end">
+                      <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer">
+                        <Input 
+                          id="whatsapp_px" 
+                          name="whatsapp_px" 
+                          type="checkbox" 
+                          className="w-4 h-4"
+                        />
+                        Tiene WhatsApp
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sección: Información del Cuidador */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground">Cuidador</h3>
+                  <div className="space-y-2">
+                    <Label htmlFor="nombre_cuidador">Nombre del Cuidador</Label>
+                    <Input 
+                      id="nombre_cuidador" 
+                      name="nombre_cuidador"
+                      maxLength={200}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="contacto_cuidador">Teléfono</Label>
+                      <Input 
+                        id="contacto_cuidador" 
+                        name="contacto_cuidador" 
+                        type="tel"
+                        placeholder="Ej: 809-123-4567"
+                        maxLength={20}
+                        onChange={(e) => handleNewPacienteInputChange("contacto_cuidador", e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2 flex items-end">
+                      <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer">
+                        <Input 
+                          id="whatsapp_cuidador" 
+                          name="whatsapp_cuidador" 
+                          type="checkbox" 
+                          className="w-4 h-4"
+                        />
+                        Tiene WhatsApp
+                      </Label>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="numero_principal">Número Principal de Contacto</Label>
+                    <Select name="numero_principal">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar número principal" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="paciente">Paciente</SelectItem>
+                        <SelectItem value="cuidador">Cuidador</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Sección: Ubicación */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground">Dirección</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="zona">Zona</Label>
+                      <Select 
+                        name="zona"
+                        onValueChange={(value) => {
+                          setSelectedZona(value);
+                          setSelectedBarrio("");
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar zona" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="santo_domingo_oeste">SD Oeste</SelectItem>
+                          <SelectItem value="santo_domingo_este">SD Este</SelectItem>
+                          <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
+                          <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
+                          <SelectItem value="san_luis">San Luis</SelectItem>
+                          <SelectItem value="los_alcarrizos">Los Alcarrizos</SelectItem>
+                          <SelectItem value="boca_chica">Boca Chica</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="barrio">Barrio</Label>
+                      <BarrioCombobox
+                        zona={selectedZona}
+                        value={selectedBarrio}
+                        onChange={setSelectedBarrio}
+                      />
+                      <input type="hidden" name="barrio" value={selectedBarrio} />
+                      {!selectedZona && (
+                        <p className="text-xs text-muted-foreground">
+                          Seleccione una zona primero
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="direccion_domicilio">Dirección Completa</Label>
+                    <Textarea 
+                      id="direccion_domicilio" 
+                      name="direccion_domicilio"
+                      maxLength={500}
+                      className="min-h-[80px]"
+                      placeholder="Calle, número, sector, referencias..."
+                    />
+                  </div>
+                </div>
+
+                {/* Sección: Información Médica */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground">Información Médica</h3>
+                  <div className="space-y-2">
+                    <Label htmlFor="historia_medica_basica">Historia Médica</Label>
+                    <Textarea 
+                      id="historia_medica_basica" 
+                      name="historia_medica_basica"
+                      maxLength={2000}
+                      className="min-h-[100px]"
+                      placeholder="Diagnósticos, tratamientos, observaciones..."
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="grado_dificultad">Grado de Dificultad *</Label>
+                      <Select name="grado_dificultad" defaultValue="medio">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="bajo">Bajo</SelectItem>
+                          <SelectItem value="medio">Medio</SelectItem>
+                          <SelectItem value="alto">Alto</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="profesional_asignado_id">Profesional Asignado</Label>
+                      <Select name="profesional_asignado_id">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar profesional" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {personal.map((prof) => (
+                            <SelectItem key={prof.id} value={prof.id}>
+                              {prof.nombre} {prof.apellido}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sección: Configuración de Seguimiento */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground">Configuración de Seguimiento</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="periodo_llamada_ciclico">Período de Llamadas (días) *</Label>
+                      <Input 
+                        id="periodo_llamada_ciclico" 
+                        name="periodo_llamada_ciclico" 
+                        type="number" 
+                        defaultValue="30"
+                        min="1"
+                        max="365"
+                        required
+                      />
+                      <p className="text-xs text-muted-foreground">Frecuencia de llamadas de seguimiento</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="periodo_visita_ciclico">Período de Visitas (días) *</Label>
+                      <Input 
+                        id="periodo_visita_ciclico" 
+                        name="periodo_visita_ciclico" 
+                        type="number" 
+                        defaultValue="90"
+                        min="1"
+                        max="730"
+                        required
+                      />
+                      <p className="text-xs text-muted-foreground">Frecuencia de visitas domiciliarias</p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
