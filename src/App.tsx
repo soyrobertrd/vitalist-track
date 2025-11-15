@@ -25,6 +25,7 @@ import AtencionPaciente from "./pages/AtencionPaciente";
 import Reportes from "./pages/Reportes";
 import Soporte from "./pages/Soporte";
 import NotFound from "./pages/NotFound";
+import ConfirmarCita from "./pages/ConfirmarCita";
 
 const queryClient = new QueryClient();
 
@@ -114,6 +115,10 @@ const App = () => {
               <Route
                 path="/soporte"
                 element={session ? <Layout><Soporte /></Layout> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/confirmar-cita"
+                element={<ConfirmarCita />}
               />
               <Route path="*" element={<NotFound />} />
             </Routes>

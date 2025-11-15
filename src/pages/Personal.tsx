@@ -13,7 +13,6 @@ import { EditPersonalDialog } from "@/components/EditPersonalDialog";
 import { Edit } from "lucide-react";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { MobileFilters } from "@/components/MobileFilters";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Personal {

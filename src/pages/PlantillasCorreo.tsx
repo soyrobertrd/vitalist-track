@@ -41,14 +41,30 @@ const PlantillasCorreo = () => {
   });
 
   const variablesDisponibles = [
-    "{{nombre_paciente}}",
-    "{{apellido_paciente}}",
-    "{{profesional}}",
-    "{{fecha_cita}}",
-    "{{hora_cita}}",
-    "{{motivo}}",
-    "{{enlace}}",
-    "{{nombre_sistema}}",
+    "{{Logo_URL}}",
+    "{{Nombre_Centro}}",
+    "{{Color_Primario}}",
+    "{{Color_Secundario}}",
+    "{{Paciente_Nombre}}",
+    "{{Cita_Fecha}}",
+    "{{Cita_Hora}}",
+    "{{Profesional_Nombre}}",
+    "{{Profesional_Especialidad}}",
+    "{{Sede_Direccion}}",
+    "{{Telefono_Centro}}",
+    "{{URL_Confirmar}}",
+    "{{URL_Reagendar}}",
+    "{{Anio}}",
+    "{{Notas_Preparacion}}",
+    "{{Cita_Anterior_Fecha}}",
+    "{{Cita_Anterior_Hora}}",
+    "{{Nueva_Fecha}}",
+    "{{Nueva_Hora}}",
+    "{{Motivo_Reprogramacion}}",
+    "{{URL_Aceptar}}",
+    "{{URL_Elegir_Horario}}",
+    "{{URL_Cancelar}}",
+    "{{Ventana_Respuesta_Horas}}",
   ];
 
   useEffect(() => {
