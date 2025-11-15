@@ -13,6 +13,7 @@ import { format, addDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
+import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 
 interface LlamadaDetailDialogProps {
   open: boolean;
