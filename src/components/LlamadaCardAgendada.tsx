@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Calendar, Clock, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Phone, Calendar, Clock, User, Mail } from "lucide-react";
 import { format } from "date-fns";
+import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
 
 interface Llamada {
   id: string;
@@ -39,6 +41,7 @@ export const LlamadaCardAgendada = ({
   formatearTexto,
 }: LlamadaCardAgendadaProps) => {
   const [pacienteData, setPacienteData] = useState<any>(null);
+  const [recordatorioOpen, setRecordatorioOpen] = useState(false);
   const overdue = isCallOverdue(llamada);
 
   useEffect(() => {
@@ -137,7 +140,28 @@ export const LlamadaCardAgendada = ({
             {llamada.motivo}
           </p>
         )}
+        
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full mt-2"
+          onClick={(e) => {
+            e.stopPropagation();
+            setRecordatorioOpen(true);
+          }}
+        >
+          <Mail className="h-4 w-4 mr-2" />
+          Enviar Recordatorio
+        </Button>
       </CardContent>
+
+      <EnviarRecordatorioDialog
+        open={recordatorioOpen}
+        onOpenChange={setRecordatorioOpen}
+        tipo="llamada"
+        citaId={llamada.id}
+        pacienteNombre={`${llamada.pacientes?.nombre} ${llamada.pacientes?.apellido}`}
+      />
     </Card>
   );
 };
