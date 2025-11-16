@@ -27,6 +27,7 @@ import { useDetectarDuplicados } from "@/hooks/useDetectarDuplicados";
 import { AlertaDuplicados } from "@/components/AlertaDuplicados";
 import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
 import { MobileFilters } from "@/components/MobileFilters";
+import { formatPhoneDR, handlePhoneInput } from "@/lib/phoneUtils";
 
 // Validation schema
 const pacienteSchema = z.object({
@@ -155,6 +156,7 @@ const Pacientes = () => {
     const { data, error } = await supabase
       .from("pacientes")
       .select("*")
+      .neq("status_px", "inactivo") // Excluir pacientes inactivos por defecto
       .order("nombre", { ascending: true });
 
     if (error) {
@@ -188,6 +190,7 @@ const Pacientes = () => {
       .from("personal_salud")
       .select("*")
       .eq("activo", true)
+      .in("especialidad", ["Médico", "Enfermera", "Medico Internista", "Enfermera"]) // Excluir administradores
       .order("nombre", { ascending: true });
     setPersonal(data || []);
   };
@@ -291,10 +294,11 @@ const Pacientes = () => {
       fecha_nacimiento: formValues.fecha_nacimiento,
       sexo: formData.get("sexo") as string || null,
       foto_url: cedulaData?.foto_encoded ? `data:image/jpeg;base64,${cedulaData.foto_encoded}` : null,
-      contacto_px: formValues.contacto_px,
+      contacto_px: formValues.contacto_px ? formatPhoneDR(formValues.contacto_px) : null,
       whatsapp_px: formValues.whatsapp_px,
       nombre_cuidador: formValues.nombre_cuidador,
-      contacto_cuidador: formValues.contacto_cuidador,
+      parentesco_cuidador: formData.get("parentesco_cuidador") as string || null,
+      contacto_cuidador: formValues.contacto_cuidador ? formatPhoneDR(formValues.contacto_cuidador) : null,
       whatsapp_cuidador: formValues.whatsapp_cuidador,
       numero_principal: formValues.numero_principal,
       direccion_domicilio: formValues.direccion_domicilio,
@@ -302,6 +306,8 @@ const Pacientes = () => {
       barrio: formValues.barrio,
       historia_medica_basica: formValues.historia_medica_basica,
       grado_dificultad: formValues.grado_dificultad,
+      tipo_atencion: formData.get("tipo_atencion") as string || "domiciliario",
+      profesional_asignado_id: formData.get("profesional_asignado_id") as string || null,
       status_px: "activo" as any,
     };
 
@@ -338,10 +344,11 @@ const Pacientes = () => {
         fecha_proxima_visita_prog: format(addDays(new Date(), formValues.periodo_visita_ciclico), "yyyy-MM-dd"),
       }]);
 
-      // Agendar llamada automáticamente
+      // Agendar llamada automáticamente y asignarla a Juana Reyes Feliz
       const fechaLlamada = calcularFechaLlamada(new Date());
       await supabase.from("registro_llamadas").insert([{
         paciente_id: paciente.id,
+        profesional_id: "b00bbfd7-6854-478f-a082-cf4b23ada61e", // Juana Reyes Feliz
         fecha_agendada: fechaLlamada.toISOString(),
         estado: "agendada" as any,
         motivo: "Llamada inicial de seguimiento",
@@ -508,10 +515,16 @@ const Pacientes = () => {
                         id="contacto_px" 
                         name="contacto_px" 
                         type="tel"
-                        placeholder="Ej: 809-123-4567"
-                        maxLength={20}
-                        onChange={(e) => handleNewPacienteInputChange("contacto_px", e.target.value)}
+                        placeholder="829-123-1234"
+                        maxLength={12}
+                        value={newPacienteData.contacto_px}
+                        onChange={(e) => {
+                          const formatted = handlePhoneInput(e.target.value);
+                          e.target.value = formatted;
+                          handleNewPacienteInputChange("contacto_px", formatted);
+                        }}
                       />
+                      <p className="text-xs text-muted-foreground">Formato: 829-123-1234</p>
                     </div>
                     <div className="space-y-2 flex items-end">
                       <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer">
@@ -521,6 +534,7 @@ const Pacientes = () => {
                           type="checkbox" 
                           className="w-4 h-4"
                         />
+                        <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6 text-green-500" />
                         Tiene WhatsApp
                       </Label>
                     </div>
@@ -530,13 +544,24 @@ const Pacientes = () => {
                 {/* Sección: Información del Cuidador */}
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold text-muted-foreground">Cuidador</h3>
-                  <div className="space-y-2">
-                    <Label htmlFor="nombre_cuidador">Nombre del Cuidador</Label>
-                    <Input 
-                      id="nombre_cuidador" 
-                      name="nombre_cuidador"
-                      maxLength={200}
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="nombre_cuidador">Nombre del Cuidador</Label>
+                      <Input 
+                        id="nombre_cuidador" 
+                        name="nombre_cuidador"
+                        maxLength={200}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="parentesco_cuidador">Parentesco</Label>
+                      <Input 
+                        id="parentesco_cuidador" 
+                        name="parentesco_cuidador"
+                        placeholder="Ej: Hijo/a, Esposo/a, Madre"
+                        maxLength={100}
+                      />
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -545,10 +570,16 @@ const Pacientes = () => {
                         id="contacto_cuidador" 
                         name="contacto_cuidador" 
                         type="tel"
-                        placeholder="Ej: 809-123-4567"
-                        maxLength={20}
-                        onChange={(e) => handleNewPacienteInputChange("contacto_cuidador", e.target.value)}
+                        placeholder="829-123-1234"
+                        maxLength={12}
+                        value={newPacienteData.contacto_cuidador}
+                        onChange={(e) => {
+                          const formatted = handlePhoneInput(e.target.value);
+                          e.target.value = formatted;
+                          handleNewPacienteInputChange("contacto_cuidador", formatted);
+                        }}
                       />
+                      <p className="text-xs text-muted-foreground">Formato: 829-123-1234</p>
                     </div>
                     <div className="space-y-2 flex items-end">
                       <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer">
@@ -558,6 +589,7 @@ const Pacientes = () => {
                           type="checkbox" 
                           className="w-4 h-4"
                         />
+                        <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6 text-green-500" />
                         Tiene WhatsApp
                       </Label>
                     </div>
@@ -644,7 +676,7 @@ const Pacientes = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="grado_dificultad">Grado de Dificultad *</Label>
                       <Select name="grado_dificultad" defaultValue="medio">
@@ -655,6 +687,18 @@ const Pacientes = () => {
                           <SelectItem value="bajo">Bajo</SelectItem>
                           <SelectItem value="medio">Medio</SelectItem>
                           <SelectItem value="alto">Alto</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="tipo_atencion">Tipo de Atención *</Label>
+                      <Select name="tipo_atencion" defaultValue="domiciliario">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ambulatorio">Ambulatorio</SelectItem>
+                          <SelectItem value="domiciliario">Domiciliario</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
