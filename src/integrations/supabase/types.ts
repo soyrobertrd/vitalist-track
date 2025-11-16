@@ -487,9 +487,11 @@ export type Database = {
           nombre: string
           nombre_cuidador: string | null
           numero_principal: string | null
+          parentesco_cuidador: string | null
           profesional_asignado_id: string | null
           sexo: string | null
           status_px: Database["public"]["Enums"]["status_paciente"] | null
+          tipo_atencion: string | null
           updated_at: string | null
           whatsapp_cuidador: boolean | null
           whatsapp_px: boolean | null
@@ -513,9 +515,11 @@ export type Database = {
           nombre: string
           nombre_cuidador?: string | null
           numero_principal?: string | null
+          parentesco_cuidador?: string | null
           profesional_asignado_id?: string | null
           sexo?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
+          tipo_atencion?: string | null
           updated_at?: string | null
           whatsapp_cuidador?: boolean | null
           whatsapp_px?: boolean | null
@@ -539,9 +543,11 @@ export type Database = {
           nombre?: string
           nombre_cuidador?: string | null
           numero_principal?: string | null
+          parentesco_cuidador?: string | null
           profesional_asignado_id?: string | null
           sexo?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
+          tipo_atencion?: string | null
           updated_at?: string | null
           whatsapp_cuidador?: boolean | null
           whatsapp_px?: boolean | null

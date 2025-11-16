@@ -13,6 +13,7 @@ import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validac
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { useDetectarDuplicados } from "@/hooks/useDetectarDuplicados";
 import { AlertaDuplicados } from "@/components/AlertaDuplicados";
+import { formatPhoneDR, handlePhoneInput } from "@/lib/phoneUtils";
 
 // Validation schema
 const editPacienteSchema = z.object({
@@ -71,8 +72,10 @@ interface EditPacienteDialogProps {
 
 export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: EditPacienteDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [loadingCedula, setLoadingCedula] = useState(false);
   const [selectedZona, setSelectedZona] = useState<string | null>(null);
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
+  const [cedulaData, setCedulaData] = useState<any>(null);
   const [formData, setFormData] = useState({
     cedula: "",
     nombre: "",
@@ -106,6 +109,29 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const fetchCedulaData = async (cedula: string) => {
+    const cedulaLimpia = cedula.replace(/\D/g, '');
+    if (cedulaLimpia.length !== 11) return;
+    
+    setLoadingCedula(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('consultar-cedula', {
+        body: { cedula: cedulaLimpia }
+      });
+
+      if (error) throw error;
+      if (data && data.success) {
+        setCedulaData(data);
+        toast.success("Datos cargados desde JCE");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("No se pudo consultar la cédula");
+    } finally {
+      setLoadingCedula(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -145,10 +171,11 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       nombre: formValues.nombre,
       apellido: formValues.apellido,
       sexo: formData.get("sexo") as string || null,
-      contacto_px: formValues.contacto_px,
+      contacto_px: formValues.contacto_px ? formatPhoneDR(formValues.contacto_px) : null,
       whatsapp_px: formData.get("whatsapp_px") === "on",
       nombre_cuidador: formValues.nombre_cuidador,
-      contacto_cuidador: formValues.contacto_cuidador,
+      parentesco_cuidador: formData.get("parentesco_cuidador") as string || null,
+      contacto_cuidador: formValues.contacto_cuidador ? formatPhoneDR(formValues.contacto_cuidador) : null,
       whatsapp_cuidador: formData.get("whatsapp_cuidador") === "on",
       numero_principal: formData.get("numero_principal") as any,
       direccion_domicilio: formValues.direccion_domicilio,
@@ -156,6 +183,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       historia_medica_basica: formValues.historia_medica_basica,
       zona: formData.get("zona") as any,
       grado_dificultad: formData.get("grado_dificultad") as any,
+      tipo_atencion: formData.get("tipo_atencion") as string || "domiciliario",
       status_px: formData.get("status_px") as any,
     };
 
@@ -195,8 +223,11 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 defaultValue={paciente.cedula} 
                 maxLength={11}
                 required
+                onBlur={(e) => fetchCedulaData(e.target.value)}
+                disabled={loadingCedula}
                 onChange={(e) => handleInputChange("cedula", e.target.value)}
               />
+              {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="nombre">Nombre *</Label>
@@ -245,10 +276,15 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 name="contacto_px" 
                 defaultValue={paciente.contacto_px || ''} 
                 type="tel"
-                placeholder="Ej: 809-123-4567"
-                maxLength={20}
-                onChange={(e) => handleInputChange("contacto_px", e.target.value)}
+                placeholder="829-123-1234"
+                maxLength={12}
+                onChange={(e) => {
+                  const formatted = handlePhoneInput(e.target.value);
+                  e.target.value = formatted;
+                  handleInputChange("contacto_px", formatted);
+                }}
               />
+              <p className="text-xs text-muted-foreground">Formato: 829-123-1234</p>
             </div>
             <div className="space-y-2 flex items-end pb-2">
               <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer">
