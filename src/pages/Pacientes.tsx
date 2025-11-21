@@ -16,7 +16,7 @@ import { EditPacienteDialog } from "@/components/EditPacienteDialog";
 import { NearbyPatientsRecommendation } from "@/components/NearbyPatientsRecommendation";
 import { DetectarDuplicadosDialog } from "@/components/DetectarDuplicadosDialog";
 import { addDays, format, isWeekend } from "date-fns";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
@@ -725,10 +725,10 @@ const Pacientes = () => {
                   <h3 className="text-sm font-semibold text-muted-foreground">Configuración de Seguimiento</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="periodo_llamada_ciclico">Período de Llamadas (días) *</Label>
+                      <Label htmlFor="periodo_llamada">Período de Llamadas (días) *</Label>
                       <Input 
-                        id="periodo_llamada_ciclico" 
-                        name="periodo_llamada_ciclico" 
+                        id="periodo_llamada" 
+                        name="periodo_llamada" 
                         type="number" 
                         defaultValue="30"
                         min="1"
@@ -738,10 +738,10 @@ const Pacientes = () => {
                       <p className="text-xs text-muted-foreground">Frecuencia de llamadas de seguimiento</p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="periodo_visita_ciclico">Período de Visitas (días) *</Label>
+                      <Label htmlFor="periodo_visita">Período de Visitas (días) *</Label>
                       <Input 
-                        id="periodo_visita_ciclico" 
-                        name="periodo_visita_ciclico" 
+                        id="periodo_visita" 
+                        name="periodo_visita" 
                         type="number" 
                         defaultValue="90"
                         min="1"
@@ -782,37 +782,6 @@ const Pacientes = () => {
                       )}
                     </div>
                   ))}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="periodo_llamada">Período de Llamadas (días)</Label>
-                    <Input 
-                      id="periodo_llamada" 
-                      name="periodo_llamada" 
-                      type="number" 
-                      defaultValue="30"
-                      min="1"
-                      max="365"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Frecuencia entre llamadas de seguimiento
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="periodo_visita">Período de Visitas (días)</Label>
-                    <Input 
-                      id="periodo_visita" 
-                      name="periodo_visita" 
-                      type="number" 
-                      defaultValue="90"
-                      min="1"
-                      max="730"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Frecuencia entre visitas domiciliarias
-                    </p>
-                  </div>
                 </div>
 
                 <Button type="submit" className="w-full" disabled={loading}>
@@ -1038,6 +1007,30 @@ const Pacientes = () => {
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
+                  {isAdmin && (
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (confirm(`¿Está seguro de eliminar a ${paciente.nombre} ${paciente.apellido}? Esta acción no se puede deshacer.`)) {
+                          const { error } = await supabase
+                            .from("pacientes")
+                            .delete()
+                            .eq("id", paciente.id);
+                          if (error) {
+                            toast.error("Error al eliminar paciente");
+                          } else {
+                            toast.success("Paciente eliminado");
+                            fetchPacientes();
+                          }
+                        }
+                      }}
+                      className="text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardHeader>
@@ -1065,7 +1058,7 @@ const Pacientes = () => {
                     aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
                     title="Enviar mensaje por WhatsApp"
                   >
-                    <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-green-600" />
+                    <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6 text-green-600" />
                   </a>
                 </div>
               )}

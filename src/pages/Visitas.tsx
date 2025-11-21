@@ -21,6 +21,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { MobileFilters } from "@/components/MobileFilters";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
+import { PacienteCombobox } from "@/components/PacienteCombobox";
 
 interface Visita {
   id: string;
@@ -122,7 +123,13 @@ const Visitas = () => {
       });
     }
     if (pacientesRes.data) setPacientes(pacientesRes.data);
-    if (personalRes.data) setPersonal(personalRes.data);
+    if (personalRes.data) {
+      // Filter out admins from personal list
+      const filteredPersonal = (personalRes.data || []).filter(
+        (p: any) => p.especialidad && !p.especialidad.toLowerCase().includes('admin')
+      );
+      setPersonal(filteredPersonal);
+    }
   };
 
   useEffect(() => {
@@ -384,18 +391,17 @@ const Visitas = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="paciente_id">Paciente *</Label>
-                <Select name="paciente_id" required onValueChange={handlePatientChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar paciente" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {pacientes.map((p) => (
-                      <SelectItem key={p.id} value={p.id}>
-                        {p.nombre} {p.apellido} - {p.cedula}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <PacienteCombobox
+                  pacientes={pacientes.map((p) => ({
+                    id: p.id,
+                    nombre: p.nombre,
+                    apellido: p.apellido,
+                    cedula: p.cedula
+                  }))}
+                  value={selectedPatientId || ''}
+                  onValueChange={handlePatientChange}
+                  required
+                />
               </div>
               
               {selectedPatientId && (!selectedPatientData?.zona && !selectedPatientData?.barrio) && (

@@ -88,26 +88,57 @@ const Encuestas = () => {
   };
 
   const handleSubmit = async () => {
-    const { error } = await supabase.from("encuestas").insert([
-      {
-        ...formData,
-        created_by: (await supabase.auth.getUser()).data.user?.id,
-      },
-    ]);
+    if (selectedEncuesta) {
+      // Update existing survey
+      const { error } = await supabase
+        .from("encuestas")
+        .update({
+          nombre: formData.nombre,
+          descripcion: formData.descripcion,
+          tipo: formData.tipo,
+          activo: formData.activo,
+          estructura: formData.estructura,
+        })
+        .eq("id", selectedEncuesta.id);
 
-    if (error) {
-      toast({ title: "Error al crear encuesta", variant: "destructive" });
+      if (error) {
+        toast({ title: "Error al actualizar encuesta", variant: "destructive" });
+      } else {
+        toast({ title: "Encuesta actualizada exitosamente" });
+        setDialogOpen(false);
+        setSelectedEncuesta(null);
+        setFormData({
+          nombre: "",
+          descripcion: "",
+          tipo: "satisfaccion",
+          activo: true,
+          estructura: [],
+        });
+        fetchEncuestas();
+      }
     } else {
-      toast({ title: "Encuesta creada exitosamente" });
-      setDialogOpen(false);
-      setFormData({
-        nombre: "",
-        descripcion: "",
-        tipo: "satisfaccion",
-        activo: true,
-        estructura: [],
-      });
-      fetchEncuestas();
+      // Create new survey
+      const { error } = await supabase.from("encuestas").insert([
+        {
+          ...formData,
+          created_by: (await supabase.auth.getUser()).data.user?.id,
+        },
+      ]);
+
+      if (error) {
+        toast({ title: "Error al crear encuesta", variant: "destructive" });
+      } else {
+        toast({ title: "Encuesta creada exitosamente" });
+        setDialogOpen(false);
+        setFormData({
+          nombre: "",
+          descripcion: "",
+          tipo: "satisfaccion",
+          activo: true,
+          estructura: [],
+        });
+        fetchEncuestas();
+      }
     }
   };
 
@@ -148,9 +179,9 @@ const Encuestas = () => {
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Nueva Encuesta</DialogTitle>
-            </DialogHeader>
+          <DialogHeader>
+            <DialogTitle>{selectedEncuesta ? 'Editar Encuesta' : 'Nueva Encuesta'}</DialogTitle>
+          </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Nombre de la Encuesta</Label>
@@ -202,10 +233,22 @@ const Encuestas = () => {
               </div>
 
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                <Button variant="outline" onClick={() => {
+                  setDialogOpen(false);
+                  setSelectedEncuesta(null);
+                  setFormData({
+                    nombre: "",
+                    descripcion: "",
+                    tipo: "satisfaccion",
+                    activo: true,
+                    estructura: [],
+                  });
+                }}>
                   Cancelar
                 </Button>
-                <Button onClick={handleSubmit}>Crear Encuesta</Button>
+                <Button onClick={handleSubmit}>
+                  {selectedEncuesta ? 'Actualizar' : 'Crear'} Encuesta
+                </Button>
               </div>
             </div>
           </DialogContent>
@@ -244,6 +287,24 @@ const Encuestas = () => {
                     }}
                   >
                     <BarChart3 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      // Load encuesta for editing
+                      setFormData({
+                        nombre: encuesta.nombre,
+                        descripcion: encuesta.descripcion || '',
+                        tipo: encuesta.tipo,
+                        activo: encuesta.activo,
+                        estructura: (encuesta as any).estructura || []
+                      });
+                      setSelectedEncuesta(encuesta);
+                      setDialogOpen(true);
+                    }}
+                  >
+                    <Eye className="h-4 w-4" />
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => handleDelete(encuesta.id)}>
                     <Trash2 className="h-4 w-4" />

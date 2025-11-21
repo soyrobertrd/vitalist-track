@@ -200,6 +200,8 @@ const AtencionPaciente = () => {
     const labels: Record<string, string> = {
       cura: "Cura",
       medicacion: "Medicación",
+      cambio_sonda: "Cambio de Sonda",
+      canalizacion: "Canalización",
       receta: "Receta",
       laboratorio: "Laboratorio",
       muestra_medica: "Muestra Médica",
@@ -304,6 +306,8 @@ const AtencionPaciente = () => {
                     <SelectContent>
                       <SelectItem value="cura">Cura</SelectItem>
                       <SelectItem value="medicacion">Medicación</SelectItem>
+                      <SelectItem value="cambio_sonda">Cambio de Sonda</SelectItem>
+                      <SelectItem value="canalizacion">Canalización</SelectItem>
                       <SelectItem value="receta">Receta</SelectItem>
                       <SelectItem value="laboratorio">Laboratorio</SelectItem>
                       <SelectItem value="muestra_medica">Muestra Médica</SelectItem>
