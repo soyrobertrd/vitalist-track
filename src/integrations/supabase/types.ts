@@ -468,6 +468,51 @@ export type Database = {
         }
         Relationships: []
       }
+      notificaciones_plan_accion: {
+        Row: {
+          completada: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          notas_visita: string | null
+          paciente_id: string
+          visita_id: string
+        }
+        Insert: {
+          completada?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          notas_visita?: string | null
+          paciente_id: string
+          visita_id: string
+        }
+        Update: {
+          completada?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          notas_visita?: string | null
+          paciente_id?: string
+          visita_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notificaciones_plan_accion_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notificaciones_plan_accion_visita_id_fkey"
+            columns: ["visita_id"]
+            isOneToOne: true
+            referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pacientes: {
         Row: {
           apellido: string

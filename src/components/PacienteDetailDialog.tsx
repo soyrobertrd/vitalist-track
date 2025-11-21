@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { NotificacionPlanAccion } from "@/components/NotificacionPlanAccion";
 
 interface PacienteDetailDialogProps {
   pacienteId: string | null;
@@ -67,6 +68,8 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
           </DialogTitle>
         </DialogHeader>
 
+        <NotificacionPlanAccion pacienteId={pacienteId || ''} />
+
         <div className="space-y-4">
           {/* Información General */}
           <Card>
@@ -102,7 +105,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                         aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
                         title="Enviar mensaje por WhatsApp"
                       >
-                        <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-green-600" />
+                        <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6 text-green-600" />
                       </a>
                     )}
                   </div>

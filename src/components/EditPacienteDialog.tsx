@@ -76,6 +76,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [selectedZona, setSelectedZona] = useState<string | null>(null);
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
   const [cedulaData, setCedulaData] = useState<any>(null);
+  const [personal, setPersonal] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     cedula: "",
     nombre: "",
@@ -104,8 +105,19 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
         contacto_px: paciente.contacto_px || "",
         contacto_cuidador: paciente.contacto_cuidador || ""
       });
+      fetchPersonal();
     }
   }, [paciente, open]);
+
+  const fetchPersonal = async () => {
+    const { data } = await supabase
+      .from("personal_salud")
+      .select("*")
+      .eq("activo", true)
+      .in("especialidad", ["Médico", "Enfermera", "Medico Internista"])
+      .order("nombre", { ascending: true });
+    setPersonal(data || []);
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -123,7 +135,30 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
 
       if (error) throw error;
       if (data && data.success) {
-        setCedulaData(data);
+        // Convertir formato de fecha de "9/20/1984 12:00:00 AM" a "1984-09-20"
+        let formattedDate = '';
+        if (data.fecha_nac) {
+          const dateParts = data.fecha_nac.split(' ')[0].split('/');
+          formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+        }
+        
+        setCedulaData({
+          ...data,
+          fecha_nac: formattedDate
+        });
+        
+        // Actualizar los campos del formulario automáticamente
+        const nombreInput = document.getElementById('nombre') as HTMLInputElement;
+        const apellidoInput = document.getElementById('apellido') as HTMLInputElement;
+        const fechaNacInput = document.getElementById('fecha_nacimiento') as HTMLInputElement;
+        
+        if (nombreInput) nombreInput.value = data.nombres || '';
+        if (apellidoInput) apellidoInput.value = `${data.apellido1} ${data.apellido2}`.trim();
+        if (fechaNacInput) fechaNacInput.value = formattedDate;
+        
+        handleInputChange('nombre', data.nombres || '');
+        handleInputChange('apellido', `${data.apellido1} ${data.apellido2}`.trim());
+        
         toast.success("Datos cargados desde JCE");
       }
     } catch (error) {
@@ -229,17 +264,26 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
               />
               {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="nombre">Nombre *</Label>
-              <Input 
-                id="nombre" 
-                name="nombre" 
-                defaultValue={paciente.nombre}
-                maxLength={100}
-                required
-                onChange={(e) => handleInputChange("nombre", e.target.value)}
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="fecha_nacimiento">Fecha Nacimiento</Label>
+            <Input 
+              id="fecha_nacimiento" 
+              name="fecha_nacimiento" 
+              type="date"
+              defaultValue={paciente.fecha_nacimiento || ''}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="nombre">Nombre *</Label>
+            <Input 
+              id="nombre" 
+              name="nombre" 
+              defaultValue={paciente.nombre}
+              maxLength={100}
+              required
+              onChange={(e) => handleInputChange("nombre", e.target.value)}
+            />
+          </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -403,6 +447,35 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="tipo_atencion">Tipo de Atención</Label>
+              <Select name="tipo_atencion" defaultValue={paciente.tipo_atencion || 'domiciliario'}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ambulatorio">Ambulatorio</SelectItem>
+                  <SelectItem value="domiciliario">Domiciliario</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="profesional_asignado_id">Profesional Asignado</Label>
+            <Select name="profesional_asignado_id" defaultValue={paciente.profesional_asignado_id || ''}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar profesional" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Sin asignar</SelectItem>
+                {personal.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.nombre} {p.apellido} - {p.especialidad}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
