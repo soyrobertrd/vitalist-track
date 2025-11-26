@@ -522,6 +522,7 @@ export type Database = {
           contacto_px: string | null
           created_at: string | null
           direccion_domicilio: string | null
+          es_sospechoso: boolean | null
           fecha_nacimiento: string | null
           foto_url: string | null
           grado_dificultad:
@@ -550,6 +551,7 @@ export type Database = {
           contacto_px?: string | null
           created_at?: string | null
           direccion_domicilio?: string | null
+          es_sospechoso?: boolean | null
           fecha_nacimiento?: string | null
           foto_url?: string | null
           grado_dificultad?:
@@ -578,6 +580,7 @@ export type Database = {
           contacto_px?: string | null
           created_at?: string | null
           direccion_domicilio?: string | null
+          es_sospechoso?: boolean | null
           fecha_nacimiento?: string | null
           foto_url?: string | null
           grado_dificultad?:
@@ -691,41 +694,50 @@ export type Database = {
         Row: {
           activo: boolean | null
           apellido: string
+          barrio: string | null
           cedula: string
           contacto: string | null
           created_at: string | null
+          direccion: string | null
           email_contacto: string | null
           especialidad: string | null
           id: string
           nombre: string
           updated_at: string | null
           user_id: string | null
+          zona: string | null
         }
         Insert: {
           activo?: boolean | null
           apellido: string
+          barrio?: string | null
           cedula: string
           contacto?: string | null
           created_at?: string | null
+          direccion?: string | null
           email_contacto?: string | null
           especialidad?: string | null
           id?: string
           nombre: string
           updated_at?: string | null
           user_id?: string | null
+          zona?: string | null
         }
         Update: {
           activo?: boolean | null
           apellido?: string
+          barrio?: string | null
           cedula?: string
           contacto?: string | null
           created_at?: string | null
+          direccion?: string | null
           email_contacto?: string | null
           especialidad?: string | null
           id?: string
           nombre?: string
           updated_at?: string | null
           user_id?: string | null
+          zona?: string | null
         }
         Relationships: []
       }
