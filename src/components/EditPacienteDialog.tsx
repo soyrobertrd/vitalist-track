@@ -220,6 +220,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       zona: formData.get("zona") as any,
       grado_dificultad: formData.get("grado_dificultad") as any,
       tipo_atencion: formData.get("tipo_atencion") as string || "domiciliario",
+      profesional_asignado_id: formData.get("profesional_asignado_id") as string || null,
+      es_sospechoso: formData.get("es_sospechoso") === "on",
       status_px: formData.get("status_px") as any,
     };
 
@@ -501,6 +503,20 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             />
             <p className="text-xs text-muted-foreground">
               Máximo 2000 caracteres
+            </p>
+          </div>
+
+          <div className="space-y-2 flex items-center pt-4 border-t">
+            <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer">
+              <Checkbox 
+                id="es_sospechoso" 
+                name="es_sospechoso" 
+                defaultChecked={paciente.es_sospechoso || false}
+              />
+              <span>Paciente Sospechoso</span>
+            </Label>
+            <p className="text-xs text-muted-foreground ml-6">
+              (No ha entrado al programa pero requiere seguimiento)
             </p>
           </div>
 

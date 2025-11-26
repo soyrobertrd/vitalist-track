@@ -7,6 +7,7 @@ import { Plus, Mail, Phone } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { PersonalDetailDialog } from "@/components/PersonalDetailDialog";
 import { EditPersonalDialog } from "@/components/EditPersonalDialog";
@@ -14,6 +15,9 @@ import { Edit } from "lucide-react";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { MobileFilters } from "@/components/MobileFilters";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ZonaSelect } from "@/components/ZonaSelect";
+import { BarrioCombobox } from "@/components/BarrioCombobox";
+import { handlePhoneInput } from "@/lib/phoneUtils";
 
 interface Personal {
   id: string;
@@ -23,6 +27,9 @@ interface Personal {
   especialidad: string | null;
   contacto: string | null;
   email_contacto: string | null;
+  zona: string | null;
+  barrio: string | null;
+  direccion: string | null;
   activo: boolean;
 }
 
@@ -45,6 +52,8 @@ const Personal = () => {
     estado: "todos",
     busqueda: "",
   });
+  const [selectedZona, setSelectedZona] = useState<string>("");
+  const [selectedBarrio, setSelectedBarrio] = useState<string>("");
 
   const fetchPersonal = async () => {
     const { data, error } = await supabase
@@ -103,6 +112,9 @@ const Personal = () => {
       especialidad: formData.get("especialidad") as string,
       contacto: formData.get("contacto") as string,
       email_contacto: email,
+      zona: selectedZona || null,
+      barrio: selectedBarrio || null,
+      direccion: formData.get("direccion") as string || null,
       activo: true,
     };
 
@@ -228,6 +240,40 @@ const Personal = () => {
                 <Label htmlFor="password">Contraseña *</Label>
                 <Input id="password" name="password" type="password" required minLength={6} />
               </div>
+              
+              <div className="space-y-4 pt-4 border-t">
+                <h4 className="font-medium">Dirección del Profesional</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="zona">Zona</Label>
+                    <ZonaSelect
+                      value={selectedZona}
+                      onValueChange={(value) => {
+                        setSelectedZona(value);
+                        setSelectedBarrio("");
+                      }}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="barrio">Barrio</Label>
+                    <BarrioCombobox
+                      zona={selectedZona}
+                      value={selectedBarrio}
+                      onChange={setSelectedBarrio}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="direccion">Dirección Completa</Label>
+                  <Textarea
+                    id="direccion"
+                    name="direccion"
+                    placeholder="Calle, número, referencias..."
+                    rows={2}
+                  />
+                </div>
+              </div>
+              
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Guardando..." : "Crear Personal y Usuario"}
               </Button>

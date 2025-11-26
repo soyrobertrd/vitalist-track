@@ -126,7 +126,8 @@ const Pacientes = () => {
     zona: "todos",
     grado: "todos",
     busqueda: "",
-    barrio: "todos"
+    barrio: "todos",
+    tipo: "todos" // todos, regulares, sospechosos
   });
   const [agendarLlamadaOpen, setAgendarLlamadaOpen] = useState(false);
   const [agendarVisitaOpen, setAgendarVisitaOpen] = useState(false);
@@ -167,11 +168,13 @@ const Pacientes = () => {
     }
   };
 
-  const filteredPacientes = pacientes.filter((p) => {
+  const filteredPacientes = pacientes.filter((p: any) => {
     if (filters.status !== "todos" && p.status_px !== filters.status) return false;
     if (filters.zona !== "todos" && p.zona !== filters.zona) return false;
     if (filters.grado !== "todos" && p.grado_dificultad !== filters.grado) return false;
     if (filters.barrio !== "todos" && p.barrio !== filters.barrio) return false;
+    if (filters.tipo === "sospechosos" && !p.es_sospechoso) return false;
+    if (filters.tipo === "regulares" && p.es_sospechoso) return false;
     if (filters.busqueda) {
       const busqueda = filters.busqueda.toLowerCase();
       const nombreCompleto = `${p.nombre} ${p.apellido}`.toLowerCase();
@@ -309,6 +312,7 @@ const Pacientes = () => {
       grado_dificultad: formValues.grado_dificultad,
       tipo_atencion: formData.get("tipo_atencion") as string || "domiciliario",
       profesional_asignado_id: formData.get("profesional_asignado_id") as string || null,
+      es_sospechoso: formData.get("es_sospechoso") === "on",
       status_px: "activo" as any,
     };
 
@@ -705,6 +709,20 @@ const Pacientes = () => {
                         </SelectContent>
                       </Select>
                     </div>
+                    <div className="space-y-2 flex items-center pt-6">
+                      <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer">
+                        <Input 
+                          id="es_sospechoso" 
+                          name="es_sospechoso" 
+                          type="checkbox" 
+                          className="w-4 h-4"
+                        />
+                        <span>Paciente Sospechoso</span>
+                      </Label>
+                      <p className="text-xs text-muted-foreground ml-6">
+                        (No ha entrado al programa pero requiere seguimiento)
+                      </p>
+                    </div>
                   </div>
                 </div>
 
@@ -799,6 +817,19 @@ const Pacientes = () => {
                   value={filters.busqueda}
                   onChange={(e) => setFilters({ ...filters, busqueda: e.target.value })}
                 />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Tipo</label>
+                <Select value={filters.tipo} onValueChange={(v) => setFilters({ ...filters, tipo: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos</SelectItem>
+                    <SelectItem value="regulares">Regulares</SelectItem>
+                    <SelectItem value="sospechosos">Sospechosos</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Estado</label>

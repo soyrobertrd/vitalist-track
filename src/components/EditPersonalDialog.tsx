@@ -3,10 +3,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
+import { ZonaSelect } from "@/components/ZonaSelect";
+import { BarrioCombobox } from "@/components/BarrioCombobox";
+import { handlePhoneInput } from "@/lib/phoneUtils";
 
 interface Personal {
   id: string;
@@ -16,6 +20,9 @@ interface Personal {
   especialidad: string | null;
   contacto: string | null;
   email_contacto: string | null;
+  zona: string | null;
+  barrio: string | null;
+  direccion: string | null;
   activo: boolean;
   user_id?: string;
 }
@@ -34,8 +41,13 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
     especialidad: "",
     contacto: "",
     email_contacto: "",
+    zona: "",
+    barrio: "",
+    direccion: "",
     activo: true,
   });
+  const [selectedZona, setSelectedZona] = useState<string>("");
+  const [selectedBarrio, setSelectedBarrio] = useState<string>("");
 
   useEffect(() => {
     if (personal && open) {
@@ -43,8 +55,13 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
         especialidad: personal.especialidad || "",
         contacto: personal.contacto || "",
         email_contacto: personal.email_contacto || "",
+        zona: personal.zona || "",
+        barrio: personal.barrio || "",
+        direccion: personal.direccion || "",
         activo: personal.activo,
       });
+      setSelectedZona(personal.zona || "");
+      setSelectedBarrio(personal.barrio || "");
       
       // Fetch current role
       const fetchRole = async () => {
@@ -73,7 +90,11 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
       // Update personal_salud table
       const { error: updateError } = await supabase
         .from("personal_salud")
-        .update(formData)
+        .update({
+          ...formData,
+          zona: selectedZona || null,
+          barrio: selectedBarrio || null,
+        })
         .eq("id", personal.id);
 
       if (updateError) throw updateError;
@@ -171,6 +192,40 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-4 pt-4 border-t">
+            <h4 className="font-medium">Dirección</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="zona">Zona</Label>
+                <ZonaSelect
+                  value={selectedZona}
+                  onValueChange={(value) => {
+                    setSelectedZona(value);
+                    setSelectedBarrio("");
+                  }}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="barrio">Barrio</Label>
+                <BarrioCombobox
+                  zona={selectedZona}
+                  value={selectedBarrio}
+                  onChange={setSelectedBarrio}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="direccion">Dirección Completa</Label>
+              <Textarea
+                id="direccion"
+                value={formData.direccion}
+                onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
+                placeholder="Calle, número, referencias..."
+                rows={2}
+              />
+            </div>
+          </div>
+          
           <div className="flex items-center space-x-2">
             <input
               type="checkbox"
