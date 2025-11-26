@@ -213,8 +213,12 @@ const Personal = () => {
                   name="contacto" 
                   type="tel"
                   placeholder="809-123-4567"
+                  onChange={(e) => {
+                    const { handlePhoneInput } = require("@/lib/phoneUtils");
+                    e.target.value = handlePhoneInput(e.target.value);
+                  }}
                 />
-                <p className="text-xs text-muted-foreground">{TELEFONO_ERROR_MESSAGE}</p>
+                <p className="text-xs text-muted-foreground">Formato: 829-123-1234 (10 dígitos)</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email_contacto">Email *</Label>
@@ -277,7 +281,12 @@ const Personal = () => {
               {p.contacto && (
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Phone className="mr-2 h-4 w-4" />
-                  {p.contacto}
+                  <a href={`tel:${p.contacto.replace(/-/g, '')}`} className="hover:text-primary">
+                    {(() => {
+                      const { formatPhoneDR } = require("@/lib/phoneUtils");
+                      return formatPhoneDR(p.contacto);
+                    })()}
+                  </a>
                 </div>
               )}
               {p.email_contacto && (

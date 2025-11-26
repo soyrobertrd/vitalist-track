@@ -23,6 +23,7 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { z } from "zod";
 import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
+import { ZonaSelect } from "@/components/ZonaSelect";
 import { useDetectarDuplicados } from "@/hooks/useDetectarDuplicados";
 import { AlertaDuplicados } from "@/components/AlertaDuplicados";
 import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
@@ -614,26 +615,13 @@ const Pacientes = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="zona">Zona</Label>
-                      <Select 
-                        name="zona"
+                      <ZonaSelect
+                        value={selectedZona}
                         onValueChange={(value) => {
                           setSelectedZona(value);
                           setSelectedBarrio("");
                         }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Seleccionar zona" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="santo_domingo_oeste">SD Oeste</SelectItem>
-                          <SelectItem value="santo_domingo_este">SD Este</SelectItem>
-                          <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
-                          <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
-                          <SelectItem value="san_luis">San Luis</SelectItem>
-                          <SelectItem value="los_alcarrizos">Los Alcarrizos</SelectItem>
-                          <SelectItem value="boca_chica">Boca Chica</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="barrio">Barrio</Label>
