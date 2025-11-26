@@ -15,7 +15,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useBarriosPorZona } from "@/hooks/useBarriosPorZona";
+import { useOGTICZonas } from "@/hooks/useOGTICZonas";
+import { useOGTICBarrios } from "@/hooks/useOGTICBarrios";
 
 interface BarrioComboboxProps {
   zona: string | null | undefined;
@@ -26,7 +27,11 @@ interface BarrioComboboxProps {
 
 export function BarrioCombobox({ zona, value, onChange, disabled }: BarrioComboboxProps) {
   const [open, setOpen] = useState(false);
-  const { barrios, loading } = useBarriosPorZona(zona);
+  const { zonas } = useOGTICZonas();
+  
+  const zonaData = zonas.find(z => z.value === zona);
+  const municipalityId = zonaData?.municipalityId || null;
+  const { barrios, loading } = useOGTICBarrios(municipalityId);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,7 +61,7 @@ export function BarrioCombobox({ zona, value, onChange, disabled }: BarrioCombob
               </CommandEmpty>
             )}
             {barrios.length > 0 && (
-              <CommandGroup heading="Barrios registrados en esta zona">
+              <CommandGroup heading="Barrios disponibles en esta zona">
                 {barrios.map((barrio) => (
                   <CommandItem
                     key={barrio}

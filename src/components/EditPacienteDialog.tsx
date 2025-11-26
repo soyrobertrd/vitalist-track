@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
+import { ZonaSelect } from "@/components/ZonaSelect";
 import { useDetectarDuplicados } from "@/hooks/useDetectarDuplicados";
 import { AlertaDuplicados } from "@/components/AlertaDuplicados";
 import { formatPhoneDR, handlePhoneInput } from "@/lib/phoneUtils";
@@ -395,27 +396,14 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             </div>
             <div className="space-y-2">
               <Label htmlFor="zona">Zona</Label>
-              <Select 
-                name="zona" 
-                defaultValue={paciente.zona || ''}
+              <ZonaSelect
+                value={selectedZona || ''}
                 onValueChange={(value) => {
                   setSelectedZona(value);
-                  setSelectedBarrio(""); // Reset barrio cuando cambia zona
+                  setSelectedBarrio("");
                 }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar zona" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="santo_domingo_oeste">SD Oeste</SelectItem>
-                  <SelectItem value="santo_domingo_este">SD Este</SelectItem>
-                  <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
-                  <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
-                  <SelectItem value="san_luis">San Luis</SelectItem>
-                  <SelectItem value="los_alcarrizos">Los Alcarrizos</SelectItem>
-                  <SelectItem value="boca_chica">Boca Chica</SelectItem>
-                </SelectContent>
-              </Select>
+              />
+              <input type="hidden" name="zona" value={selectedZona || ''} />
             </div>
           </div>
 

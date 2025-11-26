@@ -140,10 +140,14 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
                   name="contacto"
                   type="tel"
                   value={formData.contacto}
-                  onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
-                  placeholder="809-123-4567"
+                  onChange={(e) => {
+                    const { handlePhoneInput } = require("@/lib/phoneUtils");
+                    const formatted = handlePhoneInput(e.target.value);
+                    setFormData({ ...formData, contacto: formatted });
+                  }}
+                  placeholder="829-123-1234"
                 />
-                <p className="text-xs text-muted-foreground">{TELEFONO_ERROR_MESSAGE}</p>
+                <p className="text-xs text-muted-foreground">Formato: 829-123-1234 (10 dígitos)</p>
               </div>
           <div className="space-y-2">
             <Label htmlFor="email_contacto">Email</Label>
