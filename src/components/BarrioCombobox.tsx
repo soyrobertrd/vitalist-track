@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useOGTICZonas } from "@/hooks/useOGTICZonas";
 import { useOGTICBarrios } from "@/hooks/useOGTICBarrios";
 
 interface BarrioComboboxProps {
@@ -28,16 +27,12 @@ interface BarrioComboboxProps {
 export function BarrioCombobox({ zona, value, onChange, disabled }: BarrioComboboxProps) {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState(value);
-  const { zonas } = useOGTICZonas();
-  
-  const zonaData = zonas.find(z => z.value === zona);
-  const municipalityId = zonaData?.municipalityId || null;
-  const { barrios, loading } = useOGTICBarrios(municipalityId);
+  const { barrios, loading } = useOGTICBarrios(zona || null);
 
   // Update search value when value prop changes
-  useState(() => {
+  useEffect(() => {
     setSearchValue(value);
-  });
+  }, [value]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

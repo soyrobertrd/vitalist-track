@@ -26,7 +26,14 @@ serve(async (req) => {
 
     console.log(`Consultando cédula: ${cedula}`);
 
-    const response = await fetch(`http://190.122.98.11:11080/jce/api/citizen/${cedula}`);
+    // Try multiple API endpoints
+    let response;
+    try {
+      response = await fetch(`https://api.digital.gob.do/v3/cedulas/${cedula}/validate`);
+    } catch (e) {
+      // Fallback to alternative endpoint
+      response = await fetch(`http://190.122.98.11:11080/jce/api/citizen/${cedula}`);
+    }
     
     if (!response.ok) {
       console.error(`Error al consultar JCE: ${response.status}`);
@@ -40,20 +47,38 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Datos obtenidos de JCE:', data);
+    console.log('Datos obtenidos de API:', data);
 
-    // Extraer y formatear los datos relevantes
-    const citizenInfo = data.citizenInfo || {};
-    const formattedData = {
-      success: data.success,
-      message: data.message,
-      nombres: citizenInfo.nombres || '',
-      apellido1: citizenInfo.apellido1 || '',
-      apellido2: citizenInfo.apellido2 || '',
-      fecha_nac: citizenInfo.fecha_nac || '',
-      sexo: citizenInfo.ced_a_sexo || citizenInfo.sexo || '',
-      foto_encoded: citizenInfo.foto_encoded || ''
-    };
+    // Handle different API response formats
+    let formattedData;
+    
+    // OGTIC API format
+    if (data.data) {
+      const info = data.data;
+      formattedData = {
+        success: true,
+        message: 'Datos obtenidos correctamente',
+        nombres: info.nombres || info.name || '',
+        apellido1: info.apellido1 || info.primer_apellido || '',
+        apellido2: info.apellido2 || info.segundo_apellido || '',
+        fecha_nac: info.fecha_nacimiento || info.fecha_nac || '',
+        sexo: info.sexo === 'M' ? 'Masculino' : info.sexo === 'F' ? 'Femenino' : info.sexo || '',
+        foto_encoded: info.foto || info.foto_encoded || ''
+      };
+    } else {
+      // JCE API format (legacy)
+      const citizenInfo = data.citizenInfo || data || {};
+      formattedData = {
+        success: data.success !== false,
+        message: data.message || 'Datos obtenidos correctamente',
+        nombres: citizenInfo.nombres || '',
+        apellido1: citizenInfo.apellido1 || '',
+        apellido2: citizenInfo.apellido2 || '',
+        fecha_nac: citizenInfo.fecha_nac || '',
+        sexo: citizenInfo.ced_a_sexo || citizenInfo.sexo || '',
+        foto_encoded: citizenInfo.foto_encoded || ''
+      };
+    }
 
     return new Response(
       JSON.stringify(formattedData),
