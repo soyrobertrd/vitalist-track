@@ -26,6 +26,8 @@ import Reportes from "./pages/Reportes";
 import Soporte from "./pages/Soporte";
 import NotFound from "./pages/NotFound";
 import ConfirmarCita from "./pages/ConfirmarCita";
+import ReporteSospechosos from "./pages/ReporteSospechosos";
+import DashboardGeografico from "./pages/DashboardGeografico";
 
 const queryClient = new QueryClient();
 
@@ -119,6 +121,14 @@ const App = () => {
               <Route
                 path="/confirmar-cita"
                 element={<ConfirmarCita />}
+              />
+              <Route
+                path="/reporte-sospechosos"
+                element={session ? <Layout><ReporteSospechosos /></Layout> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/dashboard-geografico"
+                element={session ? <Layout><DashboardGeografico /></Layout> : <Navigate to="/auth" />}
               />
               <Route path="*" element={<NotFound />} />
             </Routes>

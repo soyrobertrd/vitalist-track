@@ -29,6 +29,8 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useModulePermissions } from "@/hooks/useModulePermissions";
+import { useNotificacionesSospechosos } from "@/hooks/useNotificacionesSospechosos";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -53,8 +55,12 @@ const Layout = ({ children }: LayoutProps) => {
   const { profile } = useUserProfile();
   const { isAdmin } = useUserRole();
   const isMobile = useIsMobile();
+  const permissions = useModulePermissions();
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Enable automatic notifications for suspect patients
+  useNotificacionesSospechosos();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -87,13 +93,22 @@ const Layout = ({ children }: LayoutProps) => {
       label: "Pacientes",
       subItems: [
         { path: "/pacientes", label: "Lista de Pacientes" },
+        { path: "/reporte-sospechosos", label: "Reporte Sospechosos" },
         { path: "/atencion-paciente", label: "Atención al Paciente", icon: Stethoscope }
       ]
     },
     { path: "/personal", icon: UserCog, label: "Personal", adminOnly: true },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
-    { path: "/reportes", icon: BarChart3, label: "Reportes" },
+    { 
+      path: "/reportes", 
+      icon: BarChart3, 
+      label: "Reportes",
+      subItems: [
+        { path: "/reportes", label: "Reportes Generales" },
+        { path: "/dashboard-geografico", label: "Dashboard Geográfico" }
+      ]
+    },
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
 
