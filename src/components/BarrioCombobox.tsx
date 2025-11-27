@@ -27,11 +27,17 @@ interface BarrioComboboxProps {
 
 export function BarrioCombobox({ zona, value, onChange, disabled }: BarrioComboboxProps) {
   const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState(value);
   const { zonas } = useOGTICZonas();
   
   const zonaData = zonas.find(z => z.value === zona);
   const municipalityId = zonaData?.municipalityId || null;
   const { barrios, loading } = useOGTICBarrios(municipalityId);
+
+  // Update search value when value prop changes
+  useState(() => {
+    setSearchValue(value);
+  });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -48,38 +54,46 @@ export function BarrioCombobox({ zona, value, onChange, disabled }: BarrioCombob
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput 
             placeholder={loading ? "Cargando barrios..." : "Buscar o escribir barrio..."} 
-            value={value}
-            onValueChange={onChange}
+            value={searchValue}
+            onValueChange={(newValue) => {
+              setSearchValue(newValue);
+              onChange(newValue);
+            }}
           />
           <CommandList>
-            {!loading && barrios.length === 0 && (
+            {!loading && searchValue && barrios.length === 0 && (
               <CommandEmpty>
-                Escriba el nombre del barrio para agregarlo
+                Presione Enter para usar "{searchValue}"
               </CommandEmpty>
             )}
             {barrios.length > 0 && (
               <CommandGroup heading="Barrios disponibles en esta zona">
-                {barrios.map((barrio) => (
-                  <CommandItem
-                    key={barrio}
-                    value={barrio}
-                    onSelect={(currentValue) => {
-                      onChange(currentValue === value ? "" : currentValue);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === barrio ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    {barrio}
-                  </CommandItem>
-                ))}
+                {barrios
+                  .filter(barrio => 
+                    barrio.toLowerCase().includes(searchValue.toLowerCase())
+                  )
+                  .map((barrio) => (
+                    <CommandItem
+                      key={barrio}
+                      value={barrio}
+                      onSelect={(currentValue) => {
+                        onChange(currentValue);
+                        setSearchValue(currentValue);
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          value === barrio ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {barrio}
+                    </CommandItem>
+                  ))}
               </CommandGroup>
             )}
           </CommandList>

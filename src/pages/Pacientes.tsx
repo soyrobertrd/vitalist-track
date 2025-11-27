@@ -29,6 +29,8 @@ import { AlertaDuplicados } from "@/components/AlertaDuplicados";
 import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
 import { MobileFilters } from "@/components/MobileFilters";
 import { formatPhoneDR, handlePhoneInput } from "@/lib/phoneUtils";
+import { useOGTICZonas } from "@/hooks/useOGTICZonas";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Validation schema
 const pacienteSchema = z.object({
@@ -109,6 +111,9 @@ const Pacientes = () => {
   const [importOpen, setImportOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingCedula, setLoadingCedula] = useState(false);
+  const { zonas, loading: zonasLoading } = useOGTICZonas();
+  const { isAdmin } = useUserRole();
+  const isMobile = useIsMobile();
   const [cedulaData, setCedulaData] = useState<{
     nombres?: string;
     apellido1?: string;
@@ -140,7 +145,6 @@ const Pacientes = () => {
     contacto_px: "",
     contacto_cuidador: ""
   });
-  const { isAdmin } = useUserRole();
 
   const { duplicados } = useDetectarDuplicados(
     newPacienteData.cedula,
@@ -849,16 +853,17 @@ const Pacientes = () => {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Zona</label>
-                <Select value={filters.zona} onValueChange={(v) => setFilters({ ...filters, zona: v })}>
+                <Select value={filters.zona} onValueChange={(v) => setFilters({ ...filters, zona: v })} disabled={zonasLoading}>
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder={zonasLoading ? "Cargando..." : "Seleccionar"} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="todos">Todas</SelectItem>
-                    <SelectItem value="santo_domingo_oeste">SD Oeste</SelectItem>
-                    <SelectItem value="santo_domingo_este">SD Este</SelectItem>
-                    <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
-                    <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
+                    {zonas.map((zona) => (
+                      <SelectItem key={zona.value} value={zona.value}>
+                        {zona.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -925,16 +930,17 @@ const Pacientes = () => {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Zona</label>
-              <Select value={filters.zona} onValueChange={(v) => setFilters({ ...filters, zona: v })}>
+              <Select value={filters.zona} onValueChange={(v) => setFilters({ ...filters, zona: v })} disabled={zonasLoading}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder={zonasLoading ? "Cargando..." : "Seleccionar"} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="todos">Todas</SelectItem>
-                  <SelectItem value="santo_domingo_oeste">SD Oeste</SelectItem>
-                  <SelectItem value="santo_domingo_este">SD Este</SelectItem>
-                  <SelectItem value="santo_domingo_norte">SD Norte</SelectItem>
-                  <SelectItem value="distrito_nacional">Distrito Nacional</SelectItem>
+                  {zonas.map((zona) => (
+                    <SelectItem key={zona.value} value={zona.value}>
+                      {zona.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
