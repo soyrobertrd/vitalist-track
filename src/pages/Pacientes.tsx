@@ -216,29 +216,44 @@ const Pacientes = () => {
 
       if (error) throw error;
 
-      if (data && data.success) {
-        // Convertir formato de fecha de "9/20/1984 12:00:00 AM" a "1984-09-20"
-        let formattedDate = '';
-        if (data.fecha_nac) {
-          const dateParts = data.fecha_nac.split(' ')[0].split('/');
-          formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+      if (data) {
+        if (data.success && data.nombres) {
+          // Convertir formato de fecha de "9/20/1984 12:00:00 AM" a "1984-09-20"
+          let formattedDate = '';
+          if (data.fecha_nac) {
+            const dateParts = data.fecha_nac.split(' ')[0].split('/');
+            if (dateParts.length === 3) {
+              formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+            }
+          }
+          
+          setCedulaData({
+            ...data,
+            fecha_nac: formattedDate
+          });
+          
+          // Auto-fill form fields
+          if (data.nombres) {
+            handleNewPacienteInputChange('nombre', data.nombres);
+          }
+          if (data.apellido1) {
+            handleNewPacienteInputChange('apellido', `${data.apellido1} ${data.apellido2 || ''}`.trim());
+          }
+          
+          // Mapear sexo de la API ("M" o "F") al valor del formulario
+          if (data.sexo) {
+            setSelectedSexo(data.sexo);
+          }
+          
+          toast.success("Datos cargados desde JCE");
+        } else if (data.message) {
+          // API unavailable or no data - allow manual entry
+          toast.info(data.message);
         }
-        
-        setCedulaData({
-          ...data,
-          fecha_nac: formattedDate
-        });
-        
-        // Mapear sexo de la API ("M" o "F") al valor del formulario
-        if (data.sexo) {
-          setSelectedSexo(data.sexo);
-        }
-        
-        toast.success("Datos cargados desde JCE");
       }
     } catch (error) {
       console.error("Error fetching cedula data:", error);
-      toast.error("No se pudo consultar la cédula");
+      toast.info("Servicio de consulta no disponible. Ingrese los datos manualmente.");
     } finally {
       setLoadingCedula(false);
     }

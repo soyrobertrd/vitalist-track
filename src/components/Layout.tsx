@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,33 +56,12 @@ const Layout = ({ children }: LayoutProps) => {
   const { isAdmin } = useUserRole();
   const isMobile = useIsMobile();
   const permissions = useModulePermissions();
-  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Enable automatic notifications for suspect patients
   useNotificacionesSospechosos();
 
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error("Error al cerrar sesión");
-    } else {
-      navigate("/auth");
-    }
-  };
-
-  const toggleSubmenu = (path: string) => {
-    setOpenSubmenu(openSubmenu === path ? null : path);
-  };
-
-  const themeIcons = {
-    light: Sun,
-    dark: Moon,
-    standard: Monitor,
-  };
-
-  const ThemeIcon = themeIcons[theme];
-
+  // Menu items configuration
   const menuItems = [
     { path: "/", icon: LayoutDashboard, label: "Dashboard" },
     { path: "/llamadas", icon: Phone, label: "Llamadas" },
@@ -111,6 +90,50 @@ const Layout = ({ children }: LayoutProps) => {
     },
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
+
+  // Auto-expand the correct parent menu based on current route
+  const getActiveParentMenu = () => {
+    for (const item of menuItems) {
+      if ('subItems' in item && item.subItems) {
+        if (item.subItems.some(sub => sub.path === location.pathname)) {
+          return item.path;
+        }
+      }
+    }
+    return null;
+  };
+
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(getActiveParentMenu);
+
+  // Update open submenu when location changes
+  useEffect(() => {
+    const activeParent = getActiveParentMenu();
+    if (activeParent) {
+      setOpenSubmenu(activeParent);
+    }
+  }, [location.pathname]);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error("Error al cerrar sesión");
+    } else {
+      navigate("/auth");
+    }
+  };
+
+  const toggleSubmenu = (path: string) => {
+    setOpenSubmenu(openSubmenu === path ? null : path);
+  };
+
+  const themeIcons = {
+    light: Sun,
+    dark: Moon,
+    standard: Monitor,
+  };
+
+  const ThemeIcon = themeIcons[theme];
+
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
