@@ -22,10 +22,16 @@ serve(async (req) => {
 
     console.log(`Consultando cédula: ${cedula}`);
 
-    // Try OGTIC API first (returns citizen data)
+    // Note: The OGTIC API (api.digital.gob.do) requires authentication/API keys
+    // and is not publicly accessible. This function will return a graceful response
+    // indicating the service is unavailable, allowing manual data entry.
+    
+    // If you have OGTIC API credentials, add them here:
+    // const OGTIC_API_KEY = Deno.env.get('OGTIC_API_KEY');
+    
     const apiEndpoints = [
+      `https://api.digital.gob.do/v3/cedulas/${cedula}/validate`,
       `https://api.digital.gob.do/v1/citizens/${cedula}`,
-      `https://api.digital.gob.do/v3/cedulas/${cedula}`,
     ];
 
     let data = null;
@@ -37,16 +43,23 @@ serve(async (req) => {
         const response = await fetch(endpoint, {
           headers: {
             'Accept': 'application/json',
-            'User-Agent': 'HealthCRM/1.0'
+            'User-Agent': 'HealthCRM/1.0',
+            // If you have an API key, uncomment:
+            // 'Authorization': `Bearer ${OGTIC_API_KEY}`,
           }
         });
+        
+        console.log(`Endpoint ${endpoint} retornó status: ${response.status}`);
         
         if (response.ok) {
           data = await response.json();
           console.log('Datos obtenidos:', JSON.stringify(data));
           break;
-        } else {
-          console.log(`Endpoint ${endpoint} retornó status: ${response.status}`);
+        } else if (response.status === 401 || response.status === 403) {
+          console.log('API requiere autenticación');
+          lastError = new Error('API requiere autenticación');
+        } else if (response.status === 404) {
+          console.log('Cédula no encontrada o endpoint no disponible');
         }
       } catch (e) {
         console.log(`Error en endpoint ${endpoint}:`, e);
@@ -54,15 +67,22 @@ serve(async (req) => {
       }
     }
 
+    // If no data was obtained, return a graceful response
     if (!data) {
-      console.error('No se pudo obtener datos de ningún endpoint');
+      console.log('Servicio de consulta de cédula no disponible - permitiendo entrada manual');
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'No se pudo consultar la cédula en ningún servicio',
-          message: (lastError as Error)?.message || 'Error desconocido'
+          available: false,
+          message: 'El servicio de consulta de cédula no está disponible. Por favor, ingrese los datos manualmente.',
+          nombres: '',
+          apellido1: '',
+          apellido2: '',
+          fecha_nac: '',
+          sexo: '',
+          foto_encoded: ''
         }),
-        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -71,9 +91,9 @@ serve(async (req) => {
     const info = data.payload || data.data || data;
 
     if (info.names || info.name || info.nombres) {
-      // OGTIC v1 format
       formattedData = {
         success: true,
+        available: true,
         message: 'Datos obtenidos correctamente',
         nombres: info.names || info.name || info.nombres || '',
         apellido1: info.firstSurname || info.apellido1 || info.primer_apellido || '',
@@ -85,9 +105,9 @@ serve(async (req) => {
         foto_encoded: info.photo || info.foto || ''
       };
     } else if (info.valid !== undefined) {
-      // Validation-only response - cedula exists but no data returned
       formattedData = {
         success: info.valid,
+        available: true,
         message: info.valid ? 'Cédula válida pero sin datos disponibles' : 'Cédula inválida',
         nombres: '',
         apellido1: '',
@@ -99,7 +119,8 @@ serve(async (req) => {
     } else {
       formattedData = {
         success: false,
-        message: 'Formato de respuesta no reconocido',
+        available: false,
+        message: 'Formato de respuesta no reconocido. Ingrese los datos manualmente.',
         nombres: '',
         apellido1: '',
         apellido2: '',
@@ -119,10 +140,17 @@ serve(async (req) => {
     console.error('Error en edge function:', error);
     return new Response(
       JSON.stringify({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Error desconocido' 
+        success: false,
+        available: false,
+        message: 'Error en el servicio. Por favor, ingrese los datos manualmente.',
+        nombres: '',
+        apellido1: '',
+        apellido2: '',
+        fecha_nac: '',
+        sexo: '',
+        foto_encoded: ''
       }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
