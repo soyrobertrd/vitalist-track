@@ -123,7 +123,7 @@ const App = () => {
                 element={<ConfirmarCita />}
               />
               <Route
-                path="/reporte-sospechosos"
+                path="/sospechosos"
                 element={session ? <Layout><ReporteSospechosos /></Layout> : <Navigate to="/auth" />}
               />
               <Route

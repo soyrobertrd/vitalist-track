@@ -93,7 +93,7 @@ const Layout = ({ children }: LayoutProps) => {
       label: "Pacientes",
       subItems: [
         { path: "/pacientes", label: "Lista de Pacientes" },
-        { path: "/reporte-sospechosos", label: "Sospechosos" },
+        { path: "/sospechosos", label: "Sospechosos" },
         { path: "/atencion-paciente", label: "Atención al Paciente", icon: Stethoscope }
       ]
     },
