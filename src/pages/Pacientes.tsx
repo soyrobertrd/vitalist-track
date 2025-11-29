@@ -15,7 +15,7 @@ import { ImportPacientesDialog } from "@/components/ImportPacientesDialog";
 import { EditPacienteDialog } from "@/components/EditPacienteDialog";
 import { NearbyPatientsRecommendation } from "@/components/NearbyPatientsRecommendation";
 import { DetectarDuplicadosDialog } from "@/components/DetectarDuplicadosDialog";
-import { addDays, format, isWeekend } from "date-fns";
+import { addDays, format, isWeekend, differenceInYears } from "date-fns";
 import { Pencil, Trash2 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -451,10 +451,10 @@ const Pacientes = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Sección: Información de JCE */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Datos de Identificación</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="cedula">Cédula *</Label>
+                  <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Datos de Identificación</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="space-y-1">
+                      <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
                       <Input 
                         id="cedula" 
                         name="cedula" 
@@ -469,41 +469,10 @@ const Pacientes = () => {
                           handleNewPacienteInputChange("cedula", value);
                         }}
                       />
-                      <p className="text-xs text-muted-foreground">Digitar cédula sin guiones (11 dígitos)</p>
                       {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="fecha_nacimiento">Fecha Nacimiento</Label>
-                      <Input 
-                        id="fecha_nacimiento" 
-                        name="fecha_nacimiento" 
-                        type="date" 
-                        value={cedulaData?.fecha_nac || ''}
-                        readOnly={!!cedulaData}
-                        className={cedulaData ? 'bg-muted' : ''}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="sexo">Sexo</Label>
-                      <Select 
-                        name="sexo" 
-                        value={selectedSexo}
-                        onValueChange={setSelectedSexo}
-                        disabled={!!cedulaData}
-                      >
-                        <SelectTrigger className={cedulaData ? 'bg-muted' : ''}>
-                          <SelectValue placeholder="Seleccionar sexo" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="M">Masculino</SelectItem>
-                          <SelectItem value="F">Femenino</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="nombre">Nombre *</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="nombre" className="text-xs">Nombre *</Label>
                       <Input 
                         id="nombre" 
                         name="nombre" 
@@ -514,8 +483,8 @@ const Pacientes = () => {
                         onChange={(e) => handleNewPacienteInputChange("nombre", e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="apellido">Apellido *</Label>
+                    <div className="md:col-span-2 space-y-1">
+                      <Label htmlFor="apellido" className="text-xs">Apellido *</Label>
                       <Input 
                         id="apellido" 
                         name="apellido" 
@@ -527,14 +496,55 @@ const Pacientes = () => {
                       />
                     </div>
                   </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="space-y-1">
+                      <Label htmlFor="sexo" className="text-xs">Sexo</Label>
+                      <Select 
+                        name="sexo" 
+                        value={selectedSexo}
+                        onValueChange={setSelectedSexo}
+                        disabled={!!cedulaData}
+                      >
+                        <SelectTrigger className={cedulaData ? 'bg-muted' : ''}>
+                          <SelectValue placeholder="Seleccionar" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="M">Masculino</SelectItem>
+                          <SelectItem value="F">Femenino</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="fecha_nacimiento" className="text-xs">Fecha Nacimiento</Label>
+                      <Input 
+                        id="fecha_nacimiento" 
+                        name="fecha_nacimiento" 
+                        type="date" 
+                        value={cedulaData?.fecha_nac || ''}
+                        readOnly={!!cedulaData}
+                        className={cedulaData ? 'bg-muted' : ''}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Edad</Label>
+                      <Input 
+                        readOnly
+                        className="bg-muted"
+                        value={cedulaData?.fecha_nac ? `${differenceInYears(new Date(), new Date(cedulaData.fecha_nac))} años` : ''}
+                      />
+                    </div>
+                    <div className="space-y-1 invisible">
+                      {/* Placeholder para alinear */}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Sección: Información de Contacto */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Contacto del Paciente</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="contacto_px">Teléfono</Label>
+                  <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Contacto del Paciente</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1">
+                      <Label htmlFor="contacto_px" className="text-xs">Teléfono</Label>
                       <Input 
                         id="contacto_px" 
                         name="contacto_px" 
@@ -548,96 +558,100 @@ const Pacientes = () => {
                           handleNewPacienteInputChange("contacto_px", formatted);
                         }}
                       />
-                      <p className="text-xs text-muted-foreground">Formato: 829-123-1234</p>
                     </div>
-                    <div className="space-y-2 flex items-end">
-                      <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer">
+                    <div className="flex items-end pb-1">
+                      <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer text-xs">
                         <Input 
                           id="whatsapp_px" 
                           name="whatsapp_px" 
                           type="checkbox" 
                           className="w-4 h-4"
                         />
-                        <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6 text-green-500" />
-                        Tiene WhatsApp
+                        <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
+                        WhatsApp
                       </Label>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="numero_principal" className="text-xs">Número Principal</Label>
+                      <Select name="numero_principal" defaultValue="paciente">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="paciente">Paciente</SelectItem>
+                          <SelectItem value="cuidador">Cuidador</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
 
                 {/* Sección: Información del Cuidador */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Cuidador</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="nombre_cuidador">Nombre del Cuidador</Label>
+                  <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Cuidador</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="md:col-span-2 space-y-1">
+                      <Label htmlFor="nombre_cuidador" className="text-xs">Nombre del Cuidador</Label>
                       <Input 
                         id="nombre_cuidador" 
                         name="nombre_cuidador"
                         maxLength={200}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="parentesco_cuidador">Parentesco</Label>
-                      <Input 
-                        id="parentesco_cuidador" 
-                        name="parentesco_cuidador"
-                        placeholder="Ej: Hijo/a, Esposo/a, Madre"
-                        maxLength={100}
-                      />
+                    <div className="space-y-1">
+                      <Label htmlFor="parentesco_cuidador" className="text-xs">Parentesco</Label>
+                      <Select name="parentesco_cuidador">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Hijo/a">Hijo/a</SelectItem>
+                          <SelectItem value="Esposo/a">Esposo/a</SelectItem>
+                          <SelectItem value="Madre">Madre</SelectItem>
+                          <SelectItem value="Padre">Padre</SelectItem>
+                          <SelectItem value="Hermano/a">Hermano/a</SelectItem>
+                          <SelectItem value="Nieto/a">Nieto/a</SelectItem>
+                          <SelectItem value="Otro">Otro</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="contacto_cuidador">Teléfono</Label>
-                      <Input 
-                        id="contacto_cuidador" 
-                        name="contacto_cuidador" 
-                        type="tel"
-                        placeholder="829-123-1234"
-                        maxLength={12}
-                        value={newPacienteData.contacto_cuidador}
-                        onChange={(e) => {
-                          const formatted = handlePhoneInput(e.target.value);
-                          e.target.value = formatted;
-                          handleNewPacienteInputChange("contacto_cuidador", formatted);
-                        }}
-                      />
-                      <p className="text-xs text-muted-foreground">Formato: 829-123-1234</p>
-                    </div>
-                    <div className="space-y-2 flex items-end">
-                      <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer">
+                    <div className="space-y-1">
+                      <Label htmlFor="contacto_cuidador" className="text-xs">Teléfono</Label>
+                      <div className="flex gap-2">
                         <Input 
-                          id="whatsapp_cuidador" 
-                          name="whatsapp_cuidador" 
-                          type="checkbox" 
-                          className="w-4 h-4"
+                          id="contacto_cuidador" 
+                          name="contacto_cuidador" 
+                          type="tel"
+                          placeholder="829-123-1234"
+                          maxLength={12}
+                          value={newPacienteData.contacto_cuidador}
+                          onChange={(e) => {
+                            const formatted = handlePhoneInput(e.target.value);
+                            e.target.value = formatted;
+                            handleNewPacienteInputChange("contacto_cuidador", formatted);
+                          }}
+                          className="flex-1"
                         />
-                        <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6 text-green-500" />
-                        Tiene WhatsApp
-                      </Label>
+                        <Label htmlFor="whatsapp_cuidador" className="flex items-center cursor-pointer">
+                          <Input 
+                            id="whatsapp_cuidador" 
+                            name="whatsapp_cuidador" 
+                            type="checkbox" 
+                            className="w-4 h-4 sr-only"
+                          />
+                          <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
+                        </Label>
+                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="numero_principal">Número Principal de Contacto</Label>
-                    <Select name="numero_principal">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar número principal" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="paciente">Paciente</SelectItem>
-                        <SelectItem value="cuidador">Cuidador</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
                 </div>
 
                 {/* Sección: Ubicación */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Dirección</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="zona">Zona</Label>
+                  <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Dirección</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <Label htmlFor="zona" className="text-xs">Zona</Label>
                       <ZonaSelect
                         value={selectedZona}
                         onValueChange={(value) => {
@@ -646,28 +660,23 @@ const Pacientes = () => {
                         }}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="barrio">Barrio</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="barrio" className="text-xs">Barrio</Label>
                       <BarrioCombobox
                         zona={selectedZona}
                         value={selectedBarrio}
                         onChange={setSelectedBarrio}
                       />
                       <input type="hidden" name="barrio" value={selectedBarrio} />
-                      {!selectedZona && (
-                        <p className="text-xs text-muted-foreground">
-                          Seleccione una zona primero
-                        </p>
-                      )}
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="direccion_domicilio">Dirección Completa</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="direccion_domicilio" className="text-xs">Dirección Completa</Label>
                     <Textarea 
                       id="direccion_domicilio" 
                       name="direccion_domicilio"
                       maxLength={500}
-                      className="min-h-[80px]"
+                      className="min-h-[60px]"
                       placeholder="Calle, número, sector, referencias..."
                     />
                   </div>
@@ -675,21 +684,10 @@ const Pacientes = () => {
 
                 {/* Sección: Información Médica */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Información Médica</h3>
-                  <div className="space-y-2">
-                    <Label htmlFor="historia_medica_basica">Historia Médica</Label>
-                    <Textarea 
-                      id="historia_medica_basica" 
-                      name="historia_medica_basica"
-                      maxLength={2000}
-                      className="min-h-[100px]"
-                      placeholder="Diagnósticos, tratamientos, observaciones..."
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="grado_dificultad">Grado de Dificultad *</Label>
+                  <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Información Médica</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="space-y-1">
+                      <Label htmlFor="grado_dificultad" className="text-xs">Grado de Dificultad *</Label>
                       <Select name="grado_dificultad" defaultValue="medio">
                         <SelectTrigger>
                           <SelectValue />
@@ -701,8 +699,8 @@ const Pacientes = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="tipo_atencion">Tipo de Atención *</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="tipo_atencion" className="text-xs">Tipo de Atención *</Label>
                       <Select name="tipo_atencion" defaultValue="domiciliario">
                         <SelectTrigger>
                           <SelectValue />
@@ -713,11 +711,11 @@ const Pacientes = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="profesional_asignado_id">Profesional Asignado</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="profesional_asignado_id" className="text-xs">Profesional Asignado</Label>
                       <Select name="profesional_asignado_id">
                         <SelectTrigger>
-                          <SelectValue placeholder="Seleccionar profesional" />
+                          <SelectValue placeholder="Seleccionar" />
                         </SelectTrigger>
                         <SelectContent>
                           {personal.map((prof) => (
@@ -728,29 +726,36 @@ const Pacientes = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2 flex items-center pt-6">
-                      <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer">
+                    <div className="flex items-end pb-1">
+                      <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer text-xs">
                         <Input 
                           id="es_sospechoso" 
                           name="es_sospechoso" 
                           type="checkbox" 
                           className="w-4 h-4"
                         />
-                        <span>Paciente Sospechoso</span>
+                        Paciente Sospechoso
                       </Label>
-                      <p className="text-xs text-muted-foreground ml-6">
-                        (No ha entrado al programa pero requiere seguimiento)
-                      </p>
                     </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="historia_medica_basica" className="text-xs">Historia Médica</Label>
+                    <Textarea 
+                      id="historia_medica_basica" 
+                      name="historia_medica_basica"
+                      maxLength={2000}
+                      className="min-h-[80px]"
+                      placeholder="Diagnósticos, tratamientos, observaciones..."
+                    />
                   </div>
                 </div>
 
                 {/* Sección: Configuración de Seguimiento */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Configuración de Seguimiento</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="periodo_llamada">Período de Llamadas (días) *</Label>
+                  <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Configuración de Seguimiento</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="space-y-1">
+                      <Label htmlFor="periodo_llamada" className="text-xs">Llamadas cada (días) *</Label>
                       <Input 
                         id="periodo_llamada" 
                         name="periodo_llamada" 
@@ -760,10 +765,9 @@ const Pacientes = () => {
                         max="365"
                         required
                       />
-                      <p className="text-xs text-muted-foreground">Frecuencia de llamadas de seguimiento</p>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="periodo_visita">Período de Visitas (días) *</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="periodo_visita" className="text-xs">Visitas cada (días) *</Label>
                       <Input 
                         id="periodo_visita" 
                         name="periodo_visita" 
@@ -773,7 +777,6 @@ const Pacientes = () => {
                         max="730"
                         required
                       />
-                      <p className="text-xs text-muted-foreground">Frecuencia de visitas domiciliarias</p>
                     </div>
                   </div>
                 </div>
