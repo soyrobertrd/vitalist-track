@@ -22,54 +22,70 @@ serve(async (req) => {
 
     console.log(`Consultando cédula: ${cedula}`);
 
-    // Note: The OGTIC API (api.digital.gob.do) requires authentication/API keys
-    // and is not publicly accessible. This function will return a graceful response
-    // indicating the service is unavailable, allowing manual data entry.
+    // JCE API endpoint
+    const apiUrl = `http://190.122.98.11:11080/jce/api/citizen/${cedula}`;
     
-    // If you have OGTIC API credentials, add them here:
-    // const OGTIC_API_KEY = Deno.env.get('OGTIC_API_KEY');
-    
-    const apiEndpoints = [
-      `https://api.digital.gob.do/v3/cedulas/${cedula}/validate`,
-      `https://api.digital.gob.do/v1/citizens/${cedula}`,
-    ];
-
-    let data = null;
-    let lastError = null;
-
-    for (const endpoint of apiEndpoints) {
-      try {
-        console.log(`Intentando endpoint: ${endpoint}`);
-        const response = await fetch(endpoint, {
-          headers: {
-            'Accept': 'application/json',
-            'User-Agent': 'HealthCRM/1.0',
-            // If you have an API key, uncomment:
-            // 'Authorization': `Bearer ${OGTIC_API_KEY}`,
-          }
-        });
-        
-        console.log(`Endpoint ${endpoint} retornó status: ${response.status}`);
-        
-        if (response.ok) {
-          data = await response.json();
-          console.log('Datos obtenidos:', JSON.stringify(data));
-          break;
-        } else if (response.status === 401 || response.status === 403) {
-          console.log('API requiere autenticación');
-          lastError = new Error('API requiere autenticación');
-        } else if (response.status === 404) {
-          console.log('Cédula no encontrada o endpoint no disponible');
+    try {
+      console.log(`Llamando a JCE API: ${apiUrl}`);
+      const response = await fetch(apiUrl, {
+        headers: {
+          'Accept': 'application/json',
         }
-      } catch (e) {
-        console.log(`Error en endpoint ${endpoint}:`, e);
-        lastError = e;
+      });
+      
+      console.log(`JCE API status: ${response.status}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Datos JCE:', JSON.stringify(data));
+        
+        if (data.success && data.citizenInfo) {
+          const info = data.citizenInfo;
+          
+          // Parse fecha_nac from "9/20/1984 12:00:00 AM" to "1984-09-20"
+          let fechaNac = '';
+          if (info.fecha_nac) {
+            const datePart = info.fecha_nac.split(' ')[0];
+            const [month, day, year] = datePart.split('/');
+            fechaNac = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+          }
+          
+          return new Response(
+            JSON.stringify({
+              success: true,
+              available: true,
+              message: 'Datos obtenidos correctamente',
+              nombres: info.nombres || '',
+              apellido1: info.apellido1 || '',
+              apellido2: info.apellido2 || '',
+              fecha_nac: fechaNac,
+              sexo: info.sexo || '',
+              foto_encoded: info.foto_encoded || ''
+            }),
+            { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
       }
-    }
-
-    // If no data was obtained, return a graceful response
-    if (!data) {
-      console.log('Servicio de consulta de cédula no disponible - permitiendo entrada manual');
+      
+      // If we get here, the API didn't return valid data
+      console.log('JCE API no devolvió datos válidos');
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          available: false,
+          message: 'No se encontraron datos para esta cédula. Por favor, ingrese los datos manualmente.',
+          nombres: '',
+          apellido1: '',
+          apellido2: '',
+          fecha_nac: '',
+          sexo: '',
+          foto_encoded: ''
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+      
+    } catch (fetchError) {
+      console.error('Error al llamar JCE API:', fetchError);
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -86,56 +102,6 @@ serve(async (req) => {
       );
     }
 
-    // Parse response based on API format
-    let formattedData;
-    const info = data.payload || data.data || data;
-
-    if (info.names || info.name || info.nombres) {
-      formattedData = {
-        success: true,
-        available: true,
-        message: 'Datos obtenidos correctamente',
-        nombres: info.names || info.name || info.nombres || '',
-        apellido1: info.firstSurname || info.apellido1 || info.primer_apellido || '',
-        apellido2: info.secondSurname || info.apellido2 || info.segundo_apellido || '',
-        fecha_nac: info.birthdate || info.fecha_nacimiento || info.fecha_nac || '',
-        sexo: (info.sex === 'M' || info.sexo === 'M') ? 'M' : 
-              (info.sex === 'F' || info.sexo === 'F') ? 'F' : 
-              info.sex || info.sexo || '',
-        foto_encoded: info.photo || info.foto || ''
-      };
-    } else if (info.valid !== undefined) {
-      formattedData = {
-        success: info.valid,
-        available: true,
-        message: info.valid ? 'Cédula válida pero sin datos disponibles' : 'Cédula inválida',
-        nombres: '',
-        apellido1: '',
-        apellido2: '',
-        fecha_nac: '',
-        sexo: '',
-        foto_encoded: ''
-      };
-    } else {
-      formattedData = {
-        success: false,
-        available: false,
-        message: 'Formato de respuesta no reconocido. Ingrese los datos manualmente.',
-        nombres: '',
-        apellido1: '',
-        apellido2: '',
-        fecha_nac: '',
-        sexo: '',
-        foto_encoded: ''
-      };
-    }
-
-    console.log('Respuesta formateada:', JSON.stringify(formattedData));
-
-    return new Response(
-      JSON.stringify(formattedData),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
   } catch (error) {
     console.error('Error en edge function:', error);
     return new Response(
