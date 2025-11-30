@@ -218,19 +218,8 @@ const Pacientes = () => {
 
       if (data) {
         if (data.success && data.nombres) {
-          // Convertir formato de fecha de "9/20/1984 12:00:00 AM" a "1984-09-20"
-          let formattedDate = '';
-          if (data.fecha_nac) {
-            const dateParts = data.fecha_nac.split(' ')[0].split('/');
-            if (dateParts.length === 3) {
-              formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
-            }
-          }
-          
-          setCedulaData({
-            ...data,
-            fecha_nac: formattedDate
-          });
+          // La fecha ya viene formateada del edge function como "YYYY-MM-DD"
+          setCedulaData(data);
           
           // Auto-fill form fields
           if (data.nombres) {
@@ -632,14 +621,17 @@ const Pacientes = () => {
                           }}
                           className="flex-1"
                         />
-                        <Label htmlFor="whatsapp_cuidador" className="flex items-center cursor-pointer">
+                      </div>
+                      <div className="flex items-end pb-1">
+                        <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer text-xs">
                           <Input 
                             id="whatsapp_cuidador" 
                             name="whatsapp_cuidador" 
                             type="checkbox" 
-                            className="w-4 h-4 sr-only"
+                            className="w-4 h-4"
                           />
                           <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
+                          WhatsApp
                         </Label>
                       </div>
                     </div>
