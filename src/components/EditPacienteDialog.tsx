@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import { differenceInYears } from "date-fns";
 import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { ZonaSelect } from "@/components/ZonaSelect";
@@ -17,7 +18,6 @@ import { AlertaDuplicados } from "@/components/AlertaDuplicados";
 import { formatPhoneDR, handlePhoneInput } from "@/lib/phoneUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
-import { Separator } from "@/components/ui/separator";
 
 const editPacienteSchema = z.object({
   cedula: z.string()
@@ -79,6 +79,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [selectedZona, setSelectedZona] = useState<string | null>(null);
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
   const [selectedSexo, setSelectedSexo] = useState<string>("");
+  const [fechaNacimiento, setFechaNacimiento] = useState<string>("");
   const [cedulaData, setCedulaData] = useState<any>(null);
   const [personal, setPersonal] = useState<any[]>([]);
   const [formData, setFormData] = useState({
@@ -103,6 +104,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       setSelectedZona(paciente.zona || null);
       setSelectedBarrio(paciente.barrio || "");
       setSelectedSexo(paciente.sexo || "");
+      setFechaNacimiento(paciente.fecha_nacimiento || "");
+      setCedulaData(null);
       setFormData({
         cedula: paciente.cedula || "",
         nombre: paciente.nombre || "",
@@ -142,15 +145,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       
       if (data) {
         if (data.success && data.nombres) {
-          let formattedDate = data.fecha_nac || '';
-          if (formattedDate && formattedDate.includes('/')) {
-            const dateParts = formattedDate.split(' ')[0].split('/');
-            if (dateParts.length === 3) {
-              formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
-            }
-          }
-          
-          setCedulaData({ ...data, fecha_nac: formattedDate });
+          // La fecha ya viene formateada del edge function como "YYYY-MM-DD"
+          setCedulaData(data);
           
           if (data.nombres) {
             handleInputChange('nombre', data.nombres);
@@ -161,18 +157,30 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
           if (data.sexo) {
             setSelectedSexo(data.sexo);
           }
+          if (data.fecha_nac) {
+            setFechaNacimiento(data.fecha_nac);
+          }
           
           toast.success("Datos cargados desde JCE");
         } else if (data.message) {
-          // API unavailable or no data - allow manual entry
           toast.info(data.message);
         }
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.info("Servicio de consulta no disponible. Ingrese los datos manualmente.");
+      toast.info("Servicio de consulta no disponible.");
     } finally {
       setLoadingCedula(false);
+    }
+  };
+
+  const calculateAge = () => {
+    if (!fechaNacimiento) return '';
+    try {
+      const years = differenceInYears(new Date(), new Date(fechaNacimiento));
+      return `${years} años`;
+    } catch {
+      return '';
     }
   };
 
@@ -184,11 +192,11 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
     
     const formValues = {
       cedula: (formDataObj.get("cedula") as string || "").trim(),
-      nombre: (formDataObj.get("nombre") as string || "").trim(),
-      apellido: (formDataObj.get("apellido") as string || "").trim(),
-      contacto_px: (formDataObj.get("contacto_px") as string || "").trim() || undefined,
+      nombre: formData.nombre.trim(),
+      apellido: formData.apellido.trim(),
+      contacto_px: formData.contacto_px.trim() || undefined,
       nombre_cuidador: (formDataObj.get("nombre_cuidador") as string || "").trim() || undefined,
-      contacto_cuidador: (formDataObj.get("contacto_cuidador") as string || "").trim() || undefined,
+      contacto_cuidador: formData.contacto_cuidador.trim() || undefined,
       direccion_domicilio: (formDataObj.get("direccion_domicilio") as string || "").trim() || undefined,
       barrio: selectedBarrio || undefined,
       historia_medica_basica: (formDataObj.get("historia_medica") as string || "").trim() || undefined,
@@ -212,7 +220,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       cedula: formValues.cedula,
       nombre: formValues.nombre,
       apellido: formValues.apellido,
-      fecha_nacimiento: formDataObj.get("fecha_nacimiento") as string || null,
+      fecha_nacimiento: fechaNacimiento || null,
       sexo: selectedSexo || null,
       contacto_px: formValues.contacto_px ? formatPhoneDR(formValues.contacto_px) : null,
       whatsapp_px: formDataObj.get("whatsapp_px") === "on",
@@ -261,80 +269,100 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Sección: Datos de Identificación */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-primary border-b pb-2">Datos de Identificación</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="cedula">Cédula *</Label>
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Datos de Identificación</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
                 <Input 
                   id="cedula" 
                   name="cedula" 
-                  defaultValue={paciente.cedula} 
+                  value={formData.cedula}
                   maxLength={11}
                   required
                   onBlur={(e) => fetchCedulaData(e.target.value)}
                   disabled={loadingCedula}
-                  onChange={(e) => handleInputChange("cedula", e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    e.target.value = value;
+                    handleInputChange("cedula", value);
+                  }}
                 />
                 {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="fecha_nacimiento">Fecha Nacimiento</Label>
-                <Input 
-                  id="fecha_nacimiento" 
-                  name="fecha_nacimiento" 
-                  type="date"
-                  defaultValue={paciente.fecha_nacimiento || cedulaData?.fecha_nac || ''}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="nombre">Nombre *</Label>
+              <div className="space-y-1">
+                <Label htmlFor="nombre" className="text-xs">Nombre *</Label>
                 <Input 
                   id="nombre" 
                   name="nombre" 
                   value={formData.nombre}
                   maxLength={100}
                   required
-                  onChange={(e) => handleInputChange("nombre", e.target.value)}
+                  readOnly
+                  className="bg-muted"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="apellido">Apellido *</Label>
+              <div className="md:col-span-2 space-y-1">
+                <Label htmlFor="apellido" className="text-xs">Apellido *</Label>
                 <Input 
                   id="apellido" 
                   name="apellido" 
                   value={formData.apellido}
                   maxLength={100}
                   required
-                  onChange={(e) => handleInputChange("apellido", e.target.value)}
+                  readOnly
+                  className="bg-muted"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="sexo">Sexo</Label>
-                <Select value={selectedSexo} onValueChange={setSelectedSexo}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar sexo" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="sexo" className="text-xs">Sexo</Label>
+                <Select 
+                  name="sexo" 
+                  value={selectedSexo}
+                  onValueChange={setSelectedSexo}
+                  disabled
+                >
+                  <SelectTrigger className="bg-muted">
+                    <SelectValue placeholder="Seleccionar" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="M">Masculino</SelectItem>
                     <SelectItem value="F">Femenino</SelectItem>
                   </SelectContent>
                 </Select>
-                <input type="hidden" name="sexo" value={selectedSexo} />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="fecha_nacimiento" className="text-xs">Fecha Nacimiento</Label>
+                <Input 
+                  id="fecha_nacimiento" 
+                  name="fecha_nacimiento" 
+                  type="date"
+                  value={fechaNacimiento}
+                  readOnly
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Edad</Label>
+                <Input 
+                  readOnly
+                  className="bg-muted"
+                  value={calculateAge()}
+                />
+              </div>
+              <div className="space-y-1 invisible">
+                {/* Placeholder para alinear */}
               </div>
             </div>
           </div>
 
-          <Separator />
-
           {/* Sección: Contacto del Paciente */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-primary border-b pb-2">Contacto del Paciente</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="contacto_px">Teléfono</Label>
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Contacto del Paciente</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="contacto_px" className="text-xs">Teléfono</Label>
                 <Input 
                   id="contacto_px" 
                   name="contacto_px" 
@@ -349,50 +377,66 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   }}
                 />
               </div>
-              <div className="space-y-2 flex items-end pb-2">
-                <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox 
+              <div className="flex items-end pb-1">
+                <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer text-xs">
+                  <Input 
                     id="whatsapp_px" 
                     name="whatsapp_px" 
+                    type="checkbox" 
                     defaultChecked={paciente.whatsapp_px}
+                    className="w-4 h-4"
                   />
                   <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
-                  Tiene WhatsApp
+                  WhatsApp
                 </Label>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="numero_principal" className="text-xs">Número Principal</Label>
+                <Select name="numero_principal" defaultValue={paciente.numero_principal || 'paciente'}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="paciente">Paciente</SelectItem>
+                    <SelectItem value="cuidador">Cuidador</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
 
-          <Separator />
-
-          {/* Sección: Cuidador */}
+          {/* Sección: Información del Cuidador */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-primary border-b pb-2">Información del Cuidador</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="nombre_cuidador">Nombre del Cuidador</Label>
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Cuidador</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="md:col-span-2 space-y-1">
+                <Label htmlFor="nombre_cuidador" className="text-xs">Nombre del Cuidador</Label>
                 <Input 
                   id="nombre_cuidador" 
-                  name="nombre_cuidador" 
+                  name="nombre_cuidador"
                   defaultValue={paciente.nombre_cuidador || ''}
-                  placeholder="Nombre completo"
                   maxLength={200}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="parentesco_cuidador">Parentesco</Label>
-                <Input 
-                  id="parentesco_cuidador" 
-                  name="parentesco_cuidador" 
-                  defaultValue={paciente.parentesco_cuidador || ''}
-                  placeholder="Ej: Hijo/a, Esposo/a"
-                  maxLength={100}
-                />
+              <div className="space-y-1">
+                <Label htmlFor="parentesco_cuidador" className="text-xs">Parentesco</Label>
+                <Select name="parentesco_cuidador" defaultValue={paciente.parentesco_cuidador || ''}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Hijo/a">Hijo/a</SelectItem>
+                    <SelectItem value="Esposo/a">Esposo/a</SelectItem>
+                    <SelectItem value="Madre">Madre</SelectItem>
+                    <SelectItem value="Padre">Padre</SelectItem>
+                    <SelectItem value="Hermano/a">Hermano/a</SelectItem>
+                    <SelectItem value="Nieto/a">Nieto/a</SelectItem>
+                    <SelectItem value="Otro">Otro</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="contacto_cuidador">Teléfono</Label>
+              <div className="space-y-1">
+                <Label htmlFor="contacto_cuidador" className="text-xs">Teléfono</Label>
                 <Input 
                   id="contacto_cuidador" 
                   name="contacto_cuidador" 
@@ -407,40 +451,28 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   }}
                 />
               </div>
-              <div className="space-y-2 flex items-end pb-2">
-                <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox 
-                    id="whatsapp_cuidador" 
-                    name="whatsapp_cuidador" 
-                    defaultChecked={paciente.whatsapp_cuidador}
-                  />
-                  <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
-                  Tiene WhatsApp
-                </Label>
-              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="numero_principal">Número Principal de Contacto</Label>
-              <Select name="numero_principal" defaultValue={paciente.numero_principal || 'paciente'}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="paciente">Paciente</SelectItem>
-                  <SelectItem value="cuidador">Cuidador</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex items-center">
+              <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer text-xs">
+                <Input 
+                  id="whatsapp_cuidador" 
+                  name="whatsapp_cuidador" 
+                  type="checkbox" 
+                  defaultChecked={paciente.whatsapp_cuidador}
+                  className="w-4 h-4"
+                />
+                <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
+                WhatsApp del Cuidador
+              </Label>
             </div>
           </div>
 
-          <Separator />
-
           {/* Sección: Dirección */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-primary border-b pb-2">Dirección</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="zona">Zona / Municipio</Label>
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Dirección</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="zona" className="text-xs">Zona</Label>
                 <ZonaSelect
                   value={selectedZona || ''}
                   onValueChange={(value) => {
@@ -449,41 +481,35 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   }}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="barrio">Barrio</Label>
+              <div className="space-y-1">
+                <Label htmlFor="barrio" className="text-xs">Barrio</Label>
                 <BarrioCombobox
                   zona={selectedZona}
                   value={selectedBarrio}
                   onChange={setSelectedBarrio}
                 />
-                {!selectedZona && (
-                  <p className="text-xs text-muted-foreground">
-                    Seleccione una zona primero
-                  </p>
-                )}
+                <input type="hidden" name="barrio" value={selectedBarrio} />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="direccion_domicilio">Dirección Completa</Label>
-              <Textarea
+            <div className="space-y-1">
+              <Label htmlFor="direccion_domicilio" className="text-xs">Dirección Completa</Label>
+              <Textarea 
                 id="direccion_domicilio" 
-                name="direccion_domicilio" 
+                name="direccion_domicilio"
                 defaultValue={paciente.direccion_domicilio || ''}
-                placeholder="Calle, número, sector, referencias..."
-                rows={2}
                 maxLength={500}
+                className="min-h-[60px]"
+                placeholder="Calle, número, sector, referencias..."
               />
             </div>
           </div>
 
-          <Separator />
-
           {/* Sección: Información Médica */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-primary border-b pb-2">Información Médica</h3>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="grado_dificultad">Grado de Dificultad</Label>
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Información Médica</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="grado_dificultad" className="text-xs">Grado de Dificultad *</Label>
                 <Select name="grado_dificultad" defaultValue={paciente.grado_dificultad || 'medio'}>
                   <SelectTrigger>
                     <SelectValue />
@@ -495,8 +521,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="tipo_atencion">Tipo de Atención</Label>
+              <div className="space-y-1">
+                <Label htmlFor="tipo_atencion" className="text-xs">Tipo de Atención *</Label>
                 <Select name="tipo_atencion" defaultValue={paciente.tipo_atencion || 'domiciliario'}>
                   <SelectTrigger>
                     <SelectValue />
@@ -507,8 +533,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="status_px">Estado</Label>
+              <div className="space-y-1">
+                <Label htmlFor="status_px" className="text-xs">Estado *</Label>
                 <Select name="status_px" defaultValue={paciente.status_px || 'activo'}>
                   <SelectTrigger>
                     <SelectValue />
@@ -522,37 +548,35 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-1">
+                <Label htmlFor="profesional_asignado_id" className="text-xs">Profesional</Label>
+                <Select name="profesional_asignado_id" defaultValue={paciente.profesional_asignado_id || 'sin-asignar'}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sin-asignar">Sin asignar</SelectItem>
+                    {personal.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {p.nombre} {p.apellido}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="profesional_asignado_id">Profesional Asignado</Label>
-              <Select name="profesional_asignado_id" defaultValue={paciente.profesional_asignado_id || 'sin-asignar'}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar profesional" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sin-asignar">Sin asignar</SelectItem>
-                  {personal.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.nombre} {p.apellido} - {p.especialidad}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="historia_medica">Historia Médica</Label>
+            <div className="space-y-1">
+              <Label htmlFor="historia_medica" className="text-xs">Historia Médica</Label>
               <Textarea 
                 id="historia_medica" 
-                name="historia_medica" 
+                name="historia_medica"
                 defaultValue={paciente.historia_medica_basica || ''}
-                placeholder="Diagnósticos, tratamientos, observaciones..."
-                rows={3}
                 maxLength={2000}
+                className="min-h-[80px]"
+                placeholder="Diagnósticos, tratamientos, observaciones..."
               />
             </div>
           </div>
-
-          <Separator />
 
           {/* Sección: Opciones */}
           <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
