@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import { differenceInYears } from "date-fns";
+import { Loader2, CheckCircle2 } from "lucide-react";
 import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { ZonaSelect } from "@/components/ZonaSelect";
@@ -273,21 +274,39 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-1">
                 <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
-                <Input 
-                  id="cedula" 
-                  name="cedula" 
-                  value={formData.cedula}
-                  maxLength={11}
-                  required
-                  onBlur={(e) => fetchCedulaData(e.target.value)}
-                  disabled={loadingCedula}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '');
-                    e.target.value = value;
-                    handleInputChange("cedula", value);
-                  }}
-                />
-                {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
+                <div className="relative">
+                  <Input 
+                    id="cedula" 
+                    name="cedula" 
+                    value={formData.cedula}
+                    maxLength={11}
+                    required
+                    onBlur={(e) => fetchCedulaData(e.target.value)}
+                    disabled={loadingCedula}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      e.target.value = value;
+                      handleInputChange("cedula", value);
+                    }}
+                    className="pr-8"
+                  />
+                  {loadingCedula && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    </div>
+                  )}
+                  {!loadingCedula && formData.cedula.length === 11 && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    </div>
+                  )}
+                </div>
+                {loadingCedula && (
+                  <div className="flex items-center gap-2 text-xs text-primary">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    Consultando datos de la JCE...
+                  </div>
+                )}
               </div>
               <div className="space-y-1">
                 <Label htmlFor="nombre" className="text-xs">Nombre *</Label>

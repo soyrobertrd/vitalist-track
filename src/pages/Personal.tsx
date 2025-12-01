@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Mail, Phone } from "lucide-react";
+import { Plus, Mail, Phone, Edit, Calendar } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { PersonalDetailDialog } from "@/components/PersonalDetailDialog";
 import { EditPersonalDialog } from "@/components/EditPersonalDialog";
-import { Edit } from "lucide-react";
+import { AusenciasProfesionalDialog } from "@/components/AusenciasProfesionalDialog";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { MobileFilters } from "@/components/MobileFilters";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -47,6 +47,7 @@ const Personal = () => {
   const [selectedPersonal, setSelectedPersonal] = useState<Personal | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [ausenciasOpen, setAusenciasOpen] = useState(false);
   const [filters, setFilters] = useState({
     especialidad: "todos",
     estado: "todos",
@@ -296,8 +297,21 @@ const Personal = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedPersonal(p);
+                      setAusenciasOpen(true);
+                    }}
+                    title="Gestionar ausencias"
+                  >
+                    <Calendar className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPersonal(p);
                       setEditOpen(true);
                     }}
+                    title="Editar"
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -362,6 +376,15 @@ const Personal = () => {
         onOpenChange={setEditOpen}
         onSuccess={fetchPersonal}
       />
+      
+      {selectedPersonal && (
+        <AusenciasProfesionalDialog
+          profesionalId={selectedPersonal.id}
+          profesionalNombre={`${selectedPersonal.nombre} ${selectedPersonal.apellido}`}
+          open={ausenciasOpen}
+          onOpenChange={setAusenciasOpen}
+        />
+      )}
     </div>
   );
 };
