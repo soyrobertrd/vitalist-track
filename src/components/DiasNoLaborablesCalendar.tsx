@@ -13,6 +13,7 @@ import { Trash2, Plus } from "lucide-react";
 interface DiaNoLaborable {
   fecha: string;
   descripcion: string;
+  es_ciclico?: boolean;
 }
 
 export function DiasNoLaborablesCalendar() {
@@ -20,6 +21,7 @@ export function DiasNoLaborablesCalendar() {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [descripcion, setDescripcion] = useState("");
+  const [esCiclico, setEsCiclico] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -29,7 +31,7 @@ export function DiasNoLaborablesCalendar() {
   const fetchDiasNoLaborables = async () => {
     const { data, error } = await supabase
       .from("dias_no_laborables")
-      .select("*")
+      .select("fecha, descripcion, es_ciclico")
       .order("fecha", { ascending: true });
 
     if (error) {
@@ -50,7 +52,7 @@ export function DiasNoLaborablesCalendar() {
 
     const { error } = await supabase
       .from("dias_no_laborables")
-      .insert([{ fecha: fechaStr, descripcion: descripcion.trim() }]);
+      .insert([{ fecha: fechaStr, descripcion: descripcion.trim(), es_ciclico: esCiclico }]);
 
     if (error) {
       toast.error("Error al agregar día no laborable");
@@ -58,6 +60,7 @@ export function DiasNoLaborablesCalendar() {
       toast.success("Día no laborable agregado");
       setDialogOpen(false);
       setDescripcion("");
+      setEsCiclico(false);
       setSelectedDate(undefined);
       fetchDiasNoLaborables();
     }
@@ -136,6 +139,11 @@ export function DiasNoLaborablesCalendar() {
                   <div>
                     <p className="font-medium">
                       {format(new Date(dia.fecha), "PPP", { locale: es })}
+                      {dia.es_ciclico && (
+                        <span className="ml-2 text-xs bg-primary/20 text-primary px-2 py-0.5 rounded">
+                          Anual
+                        </span>
+                      )}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {dia.descripcion}
@@ -179,6 +187,18 @@ export function DiasNoLaborablesCalendar() {
                 maxLength={200}
               />
             </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="esCiclico"
+                checked={esCiclico}
+                onChange={(e) => setEsCiclico(e.target.checked)}
+                className="rounded"
+              />
+              <Label htmlFor="esCiclico" className="cursor-pointer text-sm">
+                Repetir todos los años (día festivo anual)
+              </Label>
+            </div>
             <div className="flex gap-2">
               <Button onClick={handleAddDia} disabled={loading} className="flex-1">
                 {loading ? "Guardando..." : "Guardar"}
@@ -188,6 +208,7 @@ export function DiasNoLaborablesCalendar() {
                 onClick={() => {
                   setDialogOpen(false);
                   setDescripcion("");
+                  setEsCiclico(false);
                   setSelectedDate(undefined);
                 }}
               >

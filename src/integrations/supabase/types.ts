@@ -107,6 +107,53 @@ export type Database = {
         }
         Relationships: []
       }
+      ausencias_profesionales: {
+        Row: {
+          aprobado: boolean | null
+          aprobado_por: string | null
+          created_at: string | null
+          descripcion: string | null
+          fecha_fin: string
+          fecha_inicio: string
+          id: string
+          profesional_id: string
+          tipo: string
+          updated_at: string | null
+        }
+        Insert: {
+          aprobado?: boolean | null
+          aprobado_por?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          fecha_fin: string
+          fecha_inicio: string
+          id?: string
+          profesional_id: string
+          tipo: string
+          updated_at?: string | null
+        }
+        Update: {
+          aprobado?: boolean | null
+          aprobado_por?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          fecha_fin?: string
+          fecha_inicio?: string
+          id?: string
+          profesional_id?: string
+          tipo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ausencias_profesionales_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automatizaciones: {
         Row: {
           accion: string
@@ -264,14 +311,17 @@ export type Database = {
       dias_no_laborables: {
         Row: {
           descripcion: string
+          es_ciclico: boolean | null
           fecha: string
         }
         Insert: {
           descripcion: string
+          es_ciclico?: boolean | null
           fecha: string
         }
         Update: {
           descripcion?: string
+          es_ciclico?: boolean | null
           fecha?: string
         }
         Relationships: []

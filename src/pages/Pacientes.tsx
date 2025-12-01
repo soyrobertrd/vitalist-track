@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Phone, MapPin, Upload, Filter, Calendar, PhoneCall } from "lucide-react";
+import { Plus, Phone, MapPin, Upload, Filter, Calendar, PhoneCall, Loader2, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -444,21 +444,39 @@ const Pacientes = () => {
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-1">
                       <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
-                      <Input 
-                        id="cedula" 
-                        name="cedula" 
-                        required 
-                        maxLength={11}
-                        pattern="\d{11}"
-                        onBlur={(e) => fetchCedulaData(e.target.value)}
-                        disabled={loadingCedula}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, '');
-                          e.target.value = value;
-                          handleNewPacienteInputChange("cedula", value);
-                        }}
-                      />
-                      {loadingCedula && <p className="text-xs text-muted-foreground">Consultando JCE...</p>}
+                      <div className="relative">
+                        <Input 
+                          id="cedula" 
+                          name="cedula" 
+                          required 
+                          maxLength={11}
+                          pattern="\d{11}"
+                          onBlur={(e) => fetchCedulaData(e.target.value)}
+                          disabled={loadingCedula}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            e.target.value = value;
+                            handleNewPacienteInputChange("cedula", value);
+                          }}
+                          className="pr-8"
+                        />
+                        {loadingCedula && (
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                          </div>
+                        )}
+                        {!loadingCedula && newPacienteData.cedula.length === 11 && (
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          </div>
+                        )}
+                      </div>
+                      {loadingCedula && (
+                        <div className="flex items-center gap-2 text-xs text-primary">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          Consultando datos de la JCE...
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-1">
                       <Label htmlFor="nombre" className="text-xs">Nombre *</Label>

@@ -132,7 +132,7 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Personal</DialogTitle>
         </DialogHeader>
@@ -154,22 +154,21 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
               placeholder="Ej: Cardiología, Enfermería"
             />
           </div>
-              <div className="space-y-2">
-                <Label htmlFor="contacto">Teléfono</Label>
-                <Input
-                  id="contacto"
-                  name="contacto"
-                  type="tel"
-                  value={formData.contacto}
-                  onChange={(e) => {
-                    const { handlePhoneInput } = require("@/lib/phoneUtils");
-                    const formatted = handlePhoneInput(e.target.value);
-                    setFormData({ ...formData, contacto: formatted });
-                  }}
-                  placeholder="829-123-1234"
-                />
-                <p className="text-xs text-muted-foreground">Formato: 829-123-1234 (10 dígitos)</p>
-              </div>
+          <div className="space-y-2">
+            <Label htmlFor="contacto">Teléfono</Label>
+            <Input
+              id="contacto"
+              name="contacto"
+              type="tel"
+              value={formData.contacto}
+              onChange={(e) => {
+                const formatted = handlePhoneInput(e.target.value);
+                setFormData({ ...formData, contacto: formatted });
+              }}
+              placeholder="829-123-1234"
+            />
+            <p className="text-xs text-muted-foreground">Formato: 829-123-1234 (10 dígitos)</p>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="email_contacto">Email</Label>
             <Input
