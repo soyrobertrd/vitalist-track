@@ -478,7 +478,7 @@ const Pacientes = () => {
                         </div>
                       )}
                     </div>
-                    <div className="space-y-1">
+                    <div className="md:col-span-2 space-y-1">
                       <Label htmlFor="nombre" className="text-xs">Nombre *</Label>
                       <Input 
                         id="nombre" 
@@ -490,7 +490,7 @@ const Pacientes = () => {
                         onChange={(e) => handleNewPacienteInputChange("nombre", e.target.value)}
                       />
                     </div>
-                    <div className="md:col-span-2 space-y-1">
+                    <div className="space-y-1">
                       <Label htmlFor="apellido" className="text-xs">Apellido *</Label>
                       <Input 
                         id="apellido" 

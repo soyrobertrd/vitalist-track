@@ -8,10 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { format, eachDayOfInterval, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
-import { Trash2, Plus, Calendar, AlertTriangle } from "lucide-react";
+import { Trash2, Plus, Calendar, AlertTriangle, UserCheck } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Ausencia {
   id: string;
@@ -29,6 +30,13 @@ interface CitaConflicto {
   fecha: string;
   paciente_nombre: string;
   paciente_id: string;
+}
+
+interface ProfesionalDisponible {
+  id: string;
+  nombre: string;
+  apellido: string;
+  especialidad: string | null;
 }
 
 interface AusenciasProfesionalDialogProps {
@@ -64,7 +72,8 @@ export function AusenciasProfesionalDialog({
   const [conflictos, setConflictos] = useState<CitaConflicto[]>([]);
   const [showConflictDialog, setShowConflictDialog] = useState(false);
   const [pendingAusencia, setPendingAusencia] = useState<typeof formData | null>(null);
-  const [profesionalesDisponibles, setProfesionalesDisponibles] = useState<any[]>([]);
+  const [profesionalesDisponibles, setProfesionalesDisponibles] = useState<ProfesionalDisponible[]>([]);
+  const [selectedProfesionalReasignar, setSelectedProfesionalReasignar] = useState<string>("");
   const { isAdmin } = useUserRole();
 
   useEffect(() => {
@@ -227,8 +236,31 @@ export function AusenciasProfesionalDialog({
 
     setLoading(true);
 
-    if (action === "reagendar") {
-      // Just mark them as needing rescheduling - for now we'll cancel them
+    if (action === "reasignar" && selectedProfesionalReasignar) {
+      // Reassign to another professional
+      for (const conflicto of conflictos) {
+        if (conflicto.tipo === "llamada") {
+          await supabase
+            .from("registro_llamadas")
+            .update({ 
+              profesional_id: selectedProfesionalReasignar,
+              notas_adicionales: `Reasignada desde ${profesionalNombre} por ausencia`
+            })
+            .eq("id", conflicto.id);
+        } else {
+          await supabase
+            .from("control_visitas")
+            .update({ 
+              profesional_id: selectedProfesionalReasignar,
+              notas_visita: `Reasignada desde ${profesionalNombre} por ausencia`
+            })
+            .eq("id", conflicto.id);
+        }
+      }
+      const prof = profesionalesDisponibles.find(p => p.id === selectedProfesionalReasignar);
+      toast.success(`${conflictos.length} cita(s) reasignadas a ${prof?.nombre} ${prof?.apellido}`);
+    } else if (action === "reagendar") {
+      // Mark for rescheduling
       for (const conflicto of conflictos) {
         if (conflicto.tipo === "llamada") {
           await supabase
@@ -251,6 +283,7 @@ export function AusenciasProfesionalDialog({
     setShowConflictDialog(false);
     setPendingAusencia(null);
     setConflictos([]);
+    setSelectedProfesionalReasignar("");
     setLoading(false);
   };
 
@@ -369,34 +402,72 @@ export function AusenciasProfesionalDialog({
       </Dialog>
 
       <AlertDialog open={showConflictDialog} onOpenChange={setShowConflictDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-lg">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
               Citas programadas encontradas
             </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-3">
-              <p>
-                Se encontraron {conflictos.length} cita(s) programada(s) durante este período de ausencia:
-              </p>
-              <div className="max-h-40 overflow-y-auto space-y-1">
-                {conflictos.map((c) => (
-                  <div key={c.id} className="text-sm p-2 bg-muted rounded">
-                    <span className="font-medium capitalize">{c.tipo}</span> -{" "}
-                    {format(parseISO(c.fecha), "dd/MM/yyyy HH:mm", { locale: es })} - {c.paciente_nombre}
+            <AlertDialogDescription asChild>
+              <div className="space-y-3">
+                <p>
+                  Se encontraron {conflictos.length} cita(s) programada(s) durante este período de ausencia:
+                </p>
+                <ScrollArea className="max-h-32">
+                  <div className="space-y-1 pr-4">
+                    {conflictos.map((c) => (
+                      <div key={c.id} className="text-sm p-2 bg-muted rounded">
+                        <span className="font-medium capitalize">{c.tipo}</span> -{" "}
+                        {format(parseISO(c.fecha), "dd/MM/yyyy HH:mm", { locale: es })} - {c.paciente_nombre}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
+                
+                <div className="space-y-2 pt-2 border-t">
+                  <Label className="text-sm font-medium flex items-center gap-2">
+                    <UserCheck className="h-4 w-4" />
+                    Reasignar a otro profesional
+                  </Label>
+                  <Select
+                    value={selectedProfesionalReasignar}
+                    onValueChange={setSelectedProfesionalReasignar}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar profesional..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {profesionalesDisponibles.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.nombre} {p.apellido} {p.especialidad && `(${p.especialidad})`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <p className="text-sm text-muted-foreground">
+                  Seleccione un profesional para reasignar las citas, o márquelas para reagendar manualmente.
+                </p>
               </div>
-              <p className="font-medium">¿Qué desea hacer con estas citas?</p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setSelectedProfesionalReasignar("")}>
+              Cancelar
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => handleConfirmWithConflicts("reagendar")}
               className="bg-amber-500 hover:bg-amber-600"
             >
               Marcar para Reagendar
+            </AlertDialogAction>
+            <AlertDialogAction
+              onClick={() => handleConfirmWithConflicts("reasignar")}
+              disabled={!selectedProfesionalReasignar}
+              className="bg-primary hover:bg-primary/90"
+            >
+              Reasignar Citas
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

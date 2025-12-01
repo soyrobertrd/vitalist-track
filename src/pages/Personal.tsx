@@ -168,7 +168,7 @@ const Personal = () => {
               Nuevo Personal
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Agregar Personal de Salud</DialogTitle>
             </DialogHeader>
