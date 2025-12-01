@@ -308,7 +308,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   </div>
                 )}
               </div>
-              <div className="space-y-1">
+              <div className="md:col-span-2 space-y-1">
                 <Label htmlFor="nombre" className="text-xs">Nombre *</Label>
                 <Input 
                   id="nombre" 
@@ -320,7 +320,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   className="bg-muted"
                 />
               </div>
-              <div className="md:col-span-2 space-y-1">
+              <div className="space-y-1">
                 <Label htmlFor="apellido" className="text-xs">Apellido *</Label>
                 <Input 
                   id="apellido" 
