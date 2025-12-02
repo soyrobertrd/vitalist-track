@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DiasNoLaborablesCalendar } from "@/components/DiasNoLaborablesCalendar";
+import { ModulePermissionsManager } from "@/components/ModulePermissionsManager";
 
 const ConfiguracionAdmin = () => {
   const navigate = useNavigate();
@@ -435,53 +436,11 @@ const ConfiguracionAdmin = () => {
         <TabsContent value="roles">
           <GlassCard className="p-6 space-y-6">
             <div>
-              <h2 className="text-2xl font-bold mb-2">Configuración de Roles</h2>
-              <p className="text-muted-foreground">Definir permisos por rol</p>
+              <h2 className="text-2xl font-bold mb-2">Configuración de Roles y Permisos</h2>
+              <p className="text-muted-foreground">Definir permisos granulares por rol y módulo</p>
             </div>
             
-            <div className="space-y-4">
-              <div className="p-4 border rounded-lg">
-                <h3 className="font-bold mb-4">Administrador</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label>Acceso total</Label>
-                    <Switch defaultChecked disabled />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="p-4 border rounded-lg">
-                <h3 className="font-bold mb-4">Moderador</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label>Crear pacientes</Label>
-                    <Switch defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label>Editar pacientes</Label>
-                    <Switch defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label>Eliminar pacientes</Label>
-                    <Switch />
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-4 border rounded-lg">
-                <h3 className="font-bold mb-4">Usuario</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label>Ver pacientes asignados</Label>
-                    <Switch defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label>Editar pacientes asignados</Label>
-                    <Switch defaultChecked />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ModulePermissionsManager />
           </GlassCard>
         </TabsContent>
 
