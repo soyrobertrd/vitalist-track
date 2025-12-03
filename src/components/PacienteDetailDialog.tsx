@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Phone, User, MapPin, Heart, Pill } from "lucide-react";
+import { Calendar, Phone, User, MapPin, Heart, Pill, Mail } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
@@ -114,6 +114,20 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                 )}
               </div>
               <div>
+                <p className="text-sm text-muted-foreground">Correo del Paciente</p>
+                {paciente.email_px ? (
+                  <a 
+                    href={`mailto:${paciente.email_px}`}
+                    className="font-medium flex items-center gap-1 hover:text-primary"
+                  >
+                    <Mail className="h-4 w-4" />
+                    {paciente.email_px}
+                  </a>
+                ) : (
+                  <p className="font-medium">N/A</p>
+                )}
+              </div>
+              <div>
                 <p className="text-sm text-muted-foreground">Estado</p>
                 <Badge className={paciente.status_px === 'activo' ? 'bg-success' : 'bg-muted'}>
                   {paciente.status_px}
@@ -174,6 +188,20 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                         </a>
                       )}
                     </div>
+                  ) : (
+                    <p className="font-medium">N/A</p>
+                  )}
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm text-muted-foreground">Correo del Cuidador</p>
+                  {paciente.email_cuidador ? (
+                    <a 
+                      href={`mailto:${paciente.email_cuidador}`}
+                      className="font-medium flex items-center gap-1 hover:text-primary"
+                    >
+                      <Mail className="h-4 w-4" />
+                      {paciente.email_cuidador}
+                    </a>
                   ) : (
                     <p className="font-medium">N/A</p>
                   )}

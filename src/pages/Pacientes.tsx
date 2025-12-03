@@ -308,10 +308,12 @@ const Pacientes = () => {
       foto_url: cedulaData?.foto_encoded ? `data:image/jpeg;base64,${cedulaData.foto_encoded}` : null,
       contacto_px: formValues.contacto_px ? formatPhoneDR(formValues.contacto_px) : null,
       whatsapp_px: formValues.whatsapp_px,
+      email_px: (formData.get("email_px") as string || "").trim() || null,
       nombre_cuidador: formValues.nombre_cuidador,
       parentesco_cuidador: formData.get("parentesco_cuidador") as string || null,
       contacto_cuidador: formValues.contacto_cuidador ? formatPhoneDR(formValues.contacto_cuidador) : null,
       whatsapp_cuidador: formValues.whatsapp_cuidador,
+      email_cuidador: (formData.get("email_cuidador") as string || "").trim() || null,
       numero_principal: formValues.numero_principal,
       direccion_domicilio: formValues.direccion_domicilio,
       zona: formValues.zona,
@@ -321,6 +323,7 @@ const Pacientes = () => {
       tipo_atencion: formData.get("tipo_atencion") as string || "domiciliario",
       profesional_asignado_id: formData.get("profesional_asignado_id") as string || null,
       es_sospechoso: formData.get("es_sospechoso") === "on",
+      notificaciones_activas: true,
       status_px: "activo" as any,
     };
 
@@ -591,6 +594,17 @@ const Pacientes = () => {
                       </Select>
                     </div>
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <Label htmlFor="email_px" className="text-xs">Correo Electrónico del Paciente</Label>
+                      <Input 
+                        id="email_px" 
+                        name="email_px" 
+                        type="email"
+                        placeholder="paciente@ejemplo.com"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Sección: Información del Cuidador */}
@@ -651,9 +665,18 @@ const Pacientes = () => {
                           <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
                           WhatsApp
                         </Label>
-                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="email_cuidador" className="text-xs">Correo del Cuidador</Label>
+                      <Input 
+                        id="email_cuidador" 
+                        name="email_cuidador" 
+                        type="email"
+                        placeholder="cuidador@ejemplo.com"
+                      />
                     </div>
                   </div>
+                </div>
                 </div>
 
                 {/* Sección: Ubicación */}

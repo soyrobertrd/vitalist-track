@@ -225,10 +225,12 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       sexo: selectedSexo || null,
       contacto_px: formValues.contacto_px ? formatPhoneDR(formValues.contacto_px) : null,
       whatsapp_px: formDataObj.get("whatsapp_px") === "on",
+      email_px: (formDataObj.get("email_px") as string || "").trim() || null,
       nombre_cuidador: formValues.nombre_cuidador,
       parentesco_cuidador: formDataObj.get("parentesco_cuidador") as string || null,
       contacto_cuidador: formValues.contacto_cuidador ? formatPhoneDR(formValues.contacto_cuidador) : null,
       whatsapp_cuidador: formDataObj.get("whatsapp_cuidador") === "on",
+      email_cuidador: (formDataObj.get("email_cuidador") as string || "").trim() || null,
       numero_principal: formDataObj.get("numero_principal") as any,
       direccion_domicilio: formValues.direccion_domicilio,
       zona: selectedZona as any,
@@ -238,6 +240,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       tipo_atencion: formDataObj.get("tipo_atencion") as string || "domiciliario",
       profesional_asignado_id: profesionalId === 'sin-asignar' ? null : profesionalId || null,
       es_sospechoso: formDataObj.get("es_sospechoso") === "on",
+      notificaciones_activas: formDataObj.get("notificaciones_activas") === "on",
       status_px: formDataObj.get("status_px") as any,
     };
 
@@ -422,6 +425,18 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 </Select>
               </div>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="email_px" className="text-xs">Correo Electrónico del Paciente</Label>
+                <Input 
+                  id="email_px" 
+                  name="email_px" 
+                  type="email"
+                  defaultValue={paciente.email_px || ''}
+                  placeholder="paciente@ejemplo.com"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Sección: Información del Cuidador */}
@@ -471,18 +486,30 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 />
               </div>
             </div>
-            <div className="flex items-center">
-              <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center">
+                <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer text-xs">
+                  <Input 
+                    id="whatsapp_cuidador" 
+                    name="whatsapp_cuidador" 
+                    type="checkbox" 
+                    defaultChecked={paciente.whatsapp_cuidador}
+                    className="w-4 h-4"
+                  />
+                  <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
+                  WhatsApp del Cuidador
+                </Label>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="email_cuidador" className="text-xs">Correo del Cuidador</Label>
                 <Input 
-                  id="whatsapp_cuidador" 
-                  name="whatsapp_cuidador" 
-                  type="checkbox" 
-                  defaultChecked={paciente.whatsapp_cuidador}
-                  className="w-4 h-4"
+                  id="email_cuidador" 
+                  name="email_cuidador" 
+                  type="email"
+                  defaultValue={paciente.email_cuidador || ''}
+                  placeholder="cuidador@ejemplo.com"
                 />
-                <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
-                WhatsApp del Cuidador
-              </Label>
+              </div>
             </div>
           </div>
 
@@ -598,7 +625,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
           </div>
 
           {/* Sección: Opciones */}
-          <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+          <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
             <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer">
               <Checkbox 
                 id="es_sospechoso" 
@@ -606,10 +633,21 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 defaultChecked={paciente.es_sospechoso || false}
               />
               <span className="font-medium">Paciente Sospechoso</span>
+              <span className="text-xs text-muted-foreground">
+                (No ha entrado al programa pero requiere seguimiento)
+              </span>
             </Label>
-            <p className="text-xs text-muted-foreground">
-              (No ha entrado al programa pero requiere seguimiento)
-            </p>
+            <Label htmlFor="notificaciones_activas" className="flex items-center gap-2 cursor-pointer">
+              <Checkbox 
+                id="notificaciones_activas" 
+                name="notificaciones_activas" 
+                defaultChecked={paciente.notificaciones_activas ?? true}
+              />
+              <span className="font-medium">Recibir notificaciones por correo</span>
+              <span className="text-xs text-muted-foreground">
+                (Recordatorios y encuestas)
+              </span>
+            </Label>
           </div>
 
           <div className="flex gap-2 pt-4">

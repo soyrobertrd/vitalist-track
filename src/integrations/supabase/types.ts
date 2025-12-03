@@ -572,6 +572,8 @@ export type Database = {
           contacto_px: string | null
           created_at: string | null
           direccion_domicilio: string | null
+          email_cuidador: string | null
+          email_px: string | null
           es_sospechoso: boolean | null
           fecha_nacimiento: string | null
           foto_url: string | null
@@ -582,6 +584,7 @@ export type Database = {
           id: string
           nombre: string
           nombre_cuidador: string | null
+          notificaciones_activas: boolean | null
           numero_principal: string | null
           parentesco_cuidador: string | null
           profesional_asignado_id: string | null
@@ -601,6 +604,8 @@ export type Database = {
           contacto_px?: string | null
           created_at?: string | null
           direccion_domicilio?: string | null
+          email_cuidador?: string | null
+          email_px?: string | null
           es_sospechoso?: boolean | null
           fecha_nacimiento?: string | null
           foto_url?: string | null
@@ -611,6 +616,7 @@ export type Database = {
           id?: string
           nombre: string
           nombre_cuidador?: string | null
+          notificaciones_activas?: boolean | null
           numero_principal?: string | null
           parentesco_cuidador?: string | null
           profesional_asignado_id?: string | null
@@ -630,6 +636,8 @@ export type Database = {
           contacto_px?: string | null
           created_at?: string | null
           direccion_domicilio?: string | null
+          email_cuidador?: string | null
+          email_px?: string | null
           es_sospechoso?: boolean | null
           fecha_nacimiento?: string | null
           foto_url?: string | null
@@ -640,6 +648,7 @@ export type Database = {
           id?: string
           nombre?: string
           nombre_cuidador?: string | null
+          notificaciones_activas?: boolean | null
           numero_principal?: string | null
           parentesco_cuidador?: string | null
           profesional_asignado_id?: string | null
@@ -753,6 +762,7 @@ export type Database = {
           especialidad: string | null
           id: string
           nombre: string
+          notificaciones_activas: boolean | null
           updated_at: string | null
           user_id: string | null
           zona: string | null
@@ -769,6 +779,7 @@ export type Database = {
           especialidad?: string | null
           id?: string
           nombre: string
+          notificaciones_activas?: boolean | null
           updated_at?: string | null
           user_id?: string | null
           zona?: string | null
@@ -785,6 +796,7 @@ export type Database = {
           especialidad?: string | null
           id?: string
           nombre?: string
+          notificaciones_activas?: boolean | null
           updated_at?: string | null
           user_id?: string | null
           zona?: string | null
