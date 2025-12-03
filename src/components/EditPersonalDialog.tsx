@@ -45,6 +45,7 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
     barrio: "",
     direccion: "",
     activo: true,
+    notificaciones_activas: true,
   });
   const [selectedZona, setSelectedZona] = useState<string>("");
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
@@ -59,6 +60,7 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
         barrio: personal.barrio || "",
         direccion: personal.direccion || "",
         activo: personal.activo,
+        notificaciones_activas: (personal as any).notificaciones_activas ?? true,
       });
       setSelectedZona(personal.zona || "");
       setSelectedBarrio(personal.barrio || "");
@@ -225,17 +227,32 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="activo"
-              checked={formData.activo}
-              onChange={(e) => setFormData({ ...formData, activo: e.target.checked })}
-              className="rounded"
-            />
-            <Label htmlFor="activo" className="cursor-pointer">
-              Personal activo
-            </Label>
+          <div className="space-y-4 pt-4 border-t">
+            <h4 className="font-medium">Configuración</h4>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="activo"
+                checked={formData.activo}
+                onChange={(e) => setFormData({ ...formData, activo: e.target.checked })}
+                className="rounded"
+              />
+              <Label htmlFor="activo" className="cursor-pointer">
+                Personal activo
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="notificaciones_activas"
+                checked={formData.notificaciones_activas}
+                onChange={(e) => setFormData({ ...formData, notificaciones_activas: e.target.checked })}
+                className="rounded"
+              />
+              <Label htmlFor="notificaciones_activas" className="cursor-pointer">
+                Recibir notificaciones por correo
+              </Label>
+            </div>
           </div>
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
