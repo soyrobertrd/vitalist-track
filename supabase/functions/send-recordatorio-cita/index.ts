@@ -12,6 +12,7 @@ interface RecordatorioRequest {
   tipo: "llamada" | "visita";
   citaId: string;
   plantillaId?: string;
+  destinatarios?: string[]; // ["paciente", "cuidador", "profesional"]
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -20,7 +21,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { tipo, citaId, plantillaId }: RecordatorioRequest = await req.json();
+    const { tipo, citaId, plantillaId, destinatarios = ["paciente"] }: RecordatorioRequest = await req.json();
+
+    console.log("Procesando recordatorio:", { tipo, citaId, plantillaId, destinatarios });
 
     // Inicializar cliente Supabase
     const supabaseClient = createClient(
@@ -42,7 +45,10 @@ const handler = async (req: Request): Promise<Response> => {
         .eq("id", citaId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error al obtener llamada:", error);
+        throw error;
+      }
       cita = data;
       paciente = data.pacientes;
       profesional = data.personal_salud;
@@ -57,10 +63,29 @@ const handler = async (req: Request): Promise<Response> => {
         .eq("id", citaId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error al obtener visita:", error);
+        throw error;
+      }
       cita = data;
       paciente = data.pacientes;
       profesional = data.personal_salud;
+    }
+
+    // Verificar si el paciente tiene notificaciones activas
+    if (!paciente?.notificaciones_activas) {
+      console.log("Paciente tiene notificaciones desactivadas, omitiendo envío");
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: "Notificaciones desactivadas para este paciente",
+          skipped: true
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
     }
 
     // Obtener configuración del sistema
@@ -102,9 +127,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Generar token para confirmación (base64 del ID)
     const token = btoa(citaId);
-    const baseUrl = Deno.env.get("SUPABASE_URL")?.replace("https://", "https://").replace(".supabase.co", ".lovable.app") || "";
+    const baseUrl = Deno.env.get("SUPABASE_URL")?.replace("supabase.co", "lovable.app") || "";
     const urlConfirmar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}`;
-    const urlReagendar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}`;
+    const urlReagendar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}&reagendar=true`;
 
     // Extraer fecha y hora
     const fechaCita = tipo === "llamada" ? cita.fecha_agendada : cita.fecha_hora_visita;
@@ -129,8 +154,8 @@ const handler = async (req: Request): Promise<Response> => {
       "{{Paciente_Nombre}}": `${paciente.nombre} ${paciente.apellido}`,
       "{{Cita_Fecha}}": citaFecha,
       "{{Cita_Hora}}": citaHora,
-      "{{Profesional_Nombre}}": `${profesional.nombre} ${profesional.apellido}`,
-      "{{Profesional_Especialidad}}": profesional.especialidad || "",
+      "{{Profesional_Nombre}}": profesional ? `${profesional.nombre} ${profesional.apellido}` : "No asignado",
+      "{{Profesional_Especialidad}}": profesional?.especialidad || "",
       "{{Sede_Direccion}}": config.sede_direccion || "",
       "{{Telefono_Centro}}": config.telefono_centro || "",
       "{{URL_Confirmar}}": urlConfirmar,
@@ -144,16 +169,42 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Reemplazar variables en HTML y asunto
     Object.entries(variables).forEach(([key, value]) => {
-      contenidoHtml = contenidoHtml.replace(new RegExp(key, "g"), value);
-      asunto = asunto.replace(new RegExp(key, "g"), value);
+      contenidoHtml = contenidoHtml.replace(new RegExp(key.replace(/[{}]/g, "\\$&"), "g"), value);
+      asunto = asunto.replace(new RegExp(key.replace(/[{}]/g, "\\$&"), "g"), value);
     });
 
-    // Determinar el email del destinatario
-    const emailDestino = paciente.contacto_px || paciente.contacto_cuidador;
+    // Recopilar emails de destinatarios
+    const emailsToSend: string[] = [];
     
-    if (!emailDestino || !emailDestino.includes("@")) {
-      throw new Error("El paciente no tiene un email válido registrado");
+    if (destinatarios.includes("paciente") && paciente.email_px) {
+      emailsToSend.push(paciente.email_px);
     }
+    
+    if (destinatarios.includes("cuidador") && paciente.email_cuidador) {
+      emailsToSend.push(paciente.email_cuidador);
+    }
+    
+    if (destinatarios.includes("profesional") && profesional?.email_contacto) {
+      // Verificar si el profesional tiene notificaciones activas
+      if (profesional.notificaciones_activas !== false) {
+        emailsToSend.push(profesional.email_contacto);
+      }
+    }
+
+    // Fallback a contacto_px o contacto_cuidador si no hay emails específicos
+    if (emailsToSend.length === 0) {
+      if (paciente.contacto_px?.includes("@")) {
+        emailsToSend.push(paciente.contacto_px);
+      } else if (paciente.contacto_cuidador?.includes("@")) {
+        emailsToSend.push(paciente.contacto_cuidador);
+      }
+    }
+    
+    if (emailsToSend.length === 0) {
+      throw new Error("No hay direcciones de correo válidas para enviar el recordatorio");
+    }
+
+    console.log("Enviando correo a:", emailsToSend);
 
     // Enviar el correo usando Resend API
     const emailResponse = await fetch("https://api.resend.com/emails", {
@@ -164,7 +215,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: config.email_remitente || "Centro Médico <onboarding@resend.dev>",
-        to: [emailDestino],
+        to: emailsToSend,
         subject: asunto,
         html: contenidoHtml,
       }),
@@ -179,11 +230,20 @@ const handler = async (req: Request): Promise<Response> => {
     const emailData = await emailResponse.json();
     console.log("Correo enviado exitosamente:", emailData);
 
+    // Marcar recordatorio como enviado si es llamada
+    if (tipo === "llamada") {
+      await supabaseClient
+        .from("registro_llamadas")
+        .update({ recordatorio_enviado: true })
+        .eq("id", citaId);
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 
         message: "Correo enviado exitosamente",
-        emailId: emailData.id 
+        emailId: emailData.id,
+        destinatarios: emailsToSend
       }),
       {
         status: 200,

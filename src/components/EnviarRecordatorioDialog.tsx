@@ -3,9 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Send } from "lucide-react";
+import { Mail, Send, Users } from "lucide-react";
 
 interface EnviarRecordatorioDialogProps {
   open: boolean;
@@ -13,6 +14,8 @@ interface EnviarRecordatorioDialogProps {
   tipo: "llamada" | "visita";
   citaId: string;
   pacienteNombre: string;
+  emailPaciente?: string;
+  emailCuidador?: string;
 }
 
 export function EnviarRecordatorioDialog({
@@ -21,16 +24,25 @@ export function EnviarRecordatorioDialog({
   tipo,
   citaId,
   pacienteNombre,
+  emailPaciente,
+  emailCuidador,
 }: EnviarRecordatorioDialogProps) {
   const [loading, setLoading] = useState(false);
   const [plantillas, setPlantillas] = useState<any[]>([]);
   const [selectedPlantilla, setSelectedPlantilla] = useState<string>("");
+  const [destinatarios, setDestinatarios] = useState<string[]>(["paciente"]);
 
   useEffect(() => {
     if (open) {
       fetchPlantillas();
+      // Reset destinatarios based on available emails
+      const defaultDestinatarios: string[] = [];
+      if (emailPaciente) defaultDestinatarios.push("paciente");
+      if (emailCuidador) defaultDestinatarios.push("cuidador");
+      if (defaultDestinatarios.length === 0) defaultDestinatarios.push("paciente");
+      setDestinatarios(defaultDestinatarios);
     }
-  }, [open]);
+  }, [open, emailPaciente, emailCuidador]);
 
   const fetchPlantillas = async () => {
     const { data, error } = await supabase
@@ -51,9 +63,20 @@ export function EnviarRecordatorioDialog({
     }
   };
 
+  const handleDestinatarioChange = (dest: string, checked: boolean) => {
+    setDestinatarios(prev => 
+      checked ? [...prev, dest] : prev.filter(d => d !== dest)
+    );
+  };
+
   const handleEnviar = async () => {
     if (!selectedPlantilla) {
       toast.error("Debe seleccionar una plantilla");
+      return;
+    }
+
+    if (destinatarios.length === 0) {
+      toast.error("Debe seleccionar al menos un destinatario");
       return;
     }
 
@@ -64,13 +87,18 @@ export function EnviarRecordatorioDialog({
           tipo,
           citaId,
           plantillaId: selectedPlantilla,
+          destinatarios,
         },
       });
 
       if (error) throw error;
 
       if (data?.success) {
-        toast.success("Recordatorio enviado exitosamente");
+        if (data?.skipped) {
+          toast.info("El paciente tiene las notificaciones desactivadas");
+        } else {
+          toast.success(`Recordatorio enviado a: ${data.destinatarios?.join(", ")}`);
+        }
         onOpenChange(false);
       } else {
         throw new Error(data?.error || "Error al enviar recordatorio");
@@ -105,6 +133,47 @@ export function EnviarRecordatorioDialog({
           </div>
 
           <div>
+            <Label className="flex items-center gap-2 mb-2">
+              <Users className="h-4 w-4" />
+              Destinatarios
+            </Label>
+            <div className="space-y-2 border rounded-lg p-3">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="dest-paciente"
+                  checked={destinatarios.includes("paciente")}
+                  onCheckedChange={(checked) => handleDestinatarioChange("paciente", checked as boolean)}
+                  disabled={!emailPaciente}
+                />
+                <label htmlFor="dest-paciente" className="text-sm font-medium leading-none">
+                  Paciente {emailPaciente ? `(${emailPaciente})` : "(sin email)"}
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="dest-cuidador"
+                  checked={destinatarios.includes("cuidador")}
+                  onCheckedChange={(checked) => handleDestinatarioChange("cuidador", checked as boolean)}
+                  disabled={!emailCuidador}
+                />
+                <label htmlFor="dest-cuidador" className="text-sm font-medium leading-none">
+                  Cuidador {emailCuidador ? `(${emailCuidador})` : "(sin email)"}
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="dest-profesional"
+                  checked={destinatarios.includes("profesional")}
+                  onCheckedChange={(checked) => handleDestinatarioChange("profesional", checked as boolean)}
+                />
+                <label htmlFor="dest-profesional" className="text-sm font-medium leading-none">
+                  Profesional asignado
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div>
             <Label>Plantilla de Correo</Label>
             <Select value={selectedPlantilla} onValueChange={setSelectedPlantilla}>
               <SelectTrigger>
@@ -129,7 +198,7 @@ export function EnviarRecordatorioDialog({
             <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
               Cancelar
             </Button>
-            <Button onClick={handleEnviar} disabled={loading || plantillas.length === 0}>
+            <Button onClick={handleEnviar} disabled={loading || plantillas.length === 0 || destinatarios.length === 0}>
               <Send className="h-4 w-4 mr-2" />
               {loading ? "Enviando..." : "Enviar Recordatorio"}
             </Button>
