@@ -8,12 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, User, Phone, FileText } from "lucide-react";
+import { Calendar, Clock, User, Phone, FileText, Mail } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
+import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
 
 interface LlamadaDetailDialogProps {
   open: boolean;
@@ -35,6 +36,7 @@ export function LlamadaDetailDialog({
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [showVisitaForm, setShowVisitaForm] = useState(false);
+  const [showRecordatorioDialog, setShowRecordatorioDialog] = useState(false);
   const [visitaData, setVisitaData] = useState({
     fechaHora: "",
     tipoVisita: "domicilio" as "domicilio" | "centro",
@@ -296,6 +298,18 @@ export function LlamadaDetailDialog({
               {llamada.requiere_seguimiento && (
                 <Badge variant="destructive">Requiere Seguimiento</Badge>
               )}
+
+              {/* Botón Enviar Recordatorio */}
+              {!esRealizada && (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setShowRecordatorioDialog(true)}
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Enviar Recordatorio
+                </Button>
+              )}
             </CardContent>
           </Card>
 
@@ -475,6 +489,17 @@ export function LlamadaDetailDialog({
             </Button>
           )}
         </div>
+
+        {/* Dialog de Enviar Recordatorio */}
+        <EnviarRecordatorioDialog
+          open={showRecordatorioDialog}
+          onOpenChange={setShowRecordatorioDialog}
+          tipo="llamada"
+          citaId={llamada.id}
+          pacienteNombre={`${llamada.pacientes?.nombre} ${llamada.pacientes?.apellido}`}
+          emailPaciente={llamada.pacientes?.email_px}
+          emailCuidador={llamada.pacientes?.email_cuidador}
+        />
       </DialogContent>
     </Dialog>
   );
