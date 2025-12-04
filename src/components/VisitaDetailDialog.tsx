@@ -8,12 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, User, Home, Building } from "lucide-react";
+import { Calendar, Clock, User, Home, Building, Mail } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { GlassCard } from "@/components/GlassCard";
+import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
 
 interface VisitaDetailDialogProps {
   open: boolean;
@@ -33,8 +34,7 @@ export function VisitaDetailDialog({
   personal,
 }: VisitaDetailDialogProps) {
   const [loading, setLoading] = useState(false);
-
-  if (!visita) return null;
+  const [showRecordatorioDialog, setShowRecordatorioDialog] = useState(false);
 
   const handleReagendar = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -235,6 +235,18 @@ export function VisitaDetailDialog({
                 <p className="text-sm">{visita.notas_visita}</p>
               </div>
             )}
+
+            {/* Botón Enviar Recordatorio */}
+            {!esRealizada && (
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setShowRecordatorioDialog(true)}
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Enviar Recordatorio
+              </Button>
+            )}
           </GlassCard>
 
           {/* Acciones según estado */}
@@ -352,6 +364,17 @@ export function VisitaDetailDialog({
             </div>
           )}
         </div>
+
+        {/* Dialog de Enviar Recordatorio */}
+        <EnviarRecordatorioDialog
+          open={showRecordatorioDialog}
+          onOpenChange={setShowRecordatorioDialog}
+          tipo="visita"
+          citaId={visita.id}
+          pacienteNombre={`${visita.pacientes?.nombre} ${visita.pacientes?.apellido}`}
+          emailPaciente={visita.pacientes?.email_px}
+          emailCuidador={visita.pacientes?.email_cuidador}
+        />
       </DialogContent>
     </Dialog>
   );

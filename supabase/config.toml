@@ -1,10 +1,13 @@
 project_id = "qkjjyiymzaouqslzbxrp"
 
+[functions.consultar-cedula]
+verify_jwt = false
+
 [functions.send-recordatorio-cita]
 verify_jwt = false
 
 [functions.daily-agenda-notifications]
 verify_jwt = false
 
-[functions.consultar-cedula]
+[functions.daily-reminder-cron]
 verify_jwt = false
