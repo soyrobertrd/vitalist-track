@@ -21,51 +21,23 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Calcular el rango de mañana (24 horas desde ahora)
     const ahora = new Date();
-    const mananaInicio = new Date(ahora);
-    mananaInicio.setDate(mananaInicio.getDate() + 1);
-    mananaInicio.setHours(0, 0, 0, 0);
     
-    const mananaFin = new Date(mananaInicio);
-    mananaFin.setHours(23, 59, 59, 999);
-
-    console.log(`Buscando citas para mañana: ${mananaInicio.toISOString()} - ${mananaFin.toISOString()}`);
-
-    // Obtener llamadas agendadas para mañana
-    const { data: llamadas, error: llamadasError } = await supabaseClient
-      .from("registro_llamadas")
-      .select(`
-        *,
-        pacientes(*),
-        personal_salud(*)
-      `)
-      .gte("fecha_agendada", mananaInicio.toISOString())
-      .lte("fecha_agendada", mananaFin.toISOString())
-      .eq("estado", "agendada")
-      .eq("recordatorio_enviado", false);
-
-    if (llamadasError) {
-      console.error("Error al obtener llamadas:", llamadasError);
-    }
-
-    // Obtener visitas pendientes para mañana
-    const { data: visitas, error: visitasError } = await supabaseClient
-      .from("control_visitas")
-      .select(`
-        *,
-        pacientes(*),
-        personal_salud(*)
-      `)
-      .gte("fecha_hora_visita", mananaInicio.toISOString())
-      .lte("fecha_hora_visita", mananaFin.toISOString())
-      .eq("estado", "pendiente");
-
-    if (visitasError) {
-      console.error("Error al obtener visitas:", visitasError);
-    }
-
-    console.log(`Encontradas ${llamadas?.length || 0} llamadas y ${visitas?.length || 0} visitas para mañana`);
+    // Definir rangos para los diferentes tipos de recordatorio
+    const rangos = {
+      "3_dias": {
+        inicio: new Date(ahora.getTime() + 3 * 24 * 60 * 60 * 1000),
+        fin: new Date(ahora.getTime() + 3 * 24 * 60 * 60 * 1000 + 24 * 60 * 60 * 1000),
+      },
+      "1_dia": {
+        inicio: new Date(ahora.getTime() + 24 * 60 * 60 * 1000),
+        fin: new Date(ahora.getTime() + 2 * 24 * 60 * 60 * 1000),
+      },
+      "2_horas": {
+        inicio: new Date(ahora.getTime() + 2 * 60 * 60 * 1000),
+        fin: new Date(ahora.getTime() + 3 * 60 * 60 * 1000),
+      },
+    };
 
     // Obtener plantilla de recordatorio por defecto
     const { data: plantilla } = await supabaseClient
@@ -80,10 +52,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (!plantilla) {
       console.warn("No se encontró plantilla de recordatorio activa");
       return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: "No hay plantilla de recordatorio activa" 
-        }),
+        JSON.stringify({ success: false, error: "No hay plantilla de recordatorio activa" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
@@ -99,61 +68,175 @@ const handler = async (req: Request): Promise<Response> => {
     }, {} as any) || {};
 
     const resultados = {
-      llamadasEnviadas: 0,
-      llamadasOmitidas: 0,
-      visitasEnviadas: 0,
-      visitasOmitidas: 0,
-      errores: [] as string[],
+      "3_dias": { llamadas: 0, visitas: 0, omitidos: 0, errores: [] as string[] },
+      "1_dia": { llamadas: 0, visitas: 0, omitidos: 0, errores: [] as string[] },
+      "2_horas": { llamadas: 0, visitas: 0, omitidos: 0, errores: [] as string[] },
+      reintentos: { exitosos: 0, fallidos: 0 },
     };
 
-    // Procesar llamadas
-    for (const llamada of llamadas || []) {
-      try {
-        const resultado = await enviarRecordatorio(
-          supabaseClient,
-          "llamada",
-          llamada,
-          llamada.pacientes,
-          llamada.personal_salud,
-          plantilla,
-          config
-        );
-        
-        if (resultado.enviado) {
-          resultados.llamadasEnviadas++;
-          // Marcar como enviado
-          await supabaseClient
-            .from("registro_llamadas")
-            .update({ recordatorio_enviado: true })
-            .eq("id", llamada.id);
-        } else {
-          resultados.llamadasOmitidas++;
+    // Procesar cada tipo de recordatorio
+    for (const [tipoRecordatorio, rango] of Object.entries(rangos)) {
+      rango.inicio.setHours(0, 0, 0, 0);
+      rango.fin.setHours(23, 59, 59, 999);
+
+      console.log(`Buscando citas para ${tipoRecordatorio}: ${rango.inicio.toISOString()} - ${rango.fin.toISOString()}`);
+
+      // Verificar si ya se envió recordatorio de este tipo para estas citas
+      const { data: historialExistente } = await supabaseClient
+        .from("historial_recordatorios")
+        .select("cita_id")
+        .eq("tipo_recordatorio", tipoRecordatorio)
+        .eq("estado", "enviado");
+
+      const citasYaEnviadas = new Set(historialExistente?.map(h => h.cita_id) || []);
+
+      // Obtener llamadas usando la relación correcta
+      const { data: llamadas, error: llamadasError } = await supabaseClient
+        .from("registro_llamadas")
+        .select(`
+          *,
+          pacientes!registro_llamadas_paciente_id_fkey(*),
+          personal_salud!registro_llamadas_profesional_id_fkey(*)
+        `)
+        .gte("fecha_agendada", rango.inicio.toISOString())
+        .lte("fecha_agendada", rango.fin.toISOString())
+        .eq("estado", "agendada");
+
+      if (llamadasError) {
+        console.error("Error al obtener llamadas:", llamadasError);
+      }
+
+      // Obtener visitas usando la relación correcta
+      const { data: visitas, error: visitasError } = await supabaseClient
+        .from("control_visitas")
+        .select(`
+          *,
+          pacientes!control_visitas_paciente_id_fkey(*),
+          personal_salud!control_visitas_profesional_id_fkey(*)
+        `)
+        .gte("fecha_hora_visita", rango.inicio.toISOString())
+        .lte("fecha_hora_visita", rango.fin.toISOString())
+        .eq("estado", "pendiente");
+
+      if (visitasError) {
+        console.error("Error al obtener visitas:", visitasError);
+      }
+
+      console.log(`${tipoRecordatorio}: ${llamadas?.length || 0} llamadas, ${visitas?.length || 0} visitas`);
+
+      // Procesar llamadas
+      for (const llamada of llamadas || []) {
+        if (citasYaEnviadas.has(llamada.id)) {
+          resultados[tipoRecordatorio as keyof typeof rangos].omitidos++;
+          continue;
         }
-      } catch (error: any) {
-        resultados.errores.push(`Llamada ${llamada.id}: ${error.message}`);
+
+        try {
+          const resultado = await enviarRecordatorio(
+            supabaseClient,
+            "llamada",
+            llamada,
+            llamada.pacientes,
+            llamada.personal_salud,
+            plantilla,
+            config,
+            tipoRecordatorio as "3_dias" | "1_dia" | "2_horas"
+          );
+          
+          if (resultado.enviado) {
+            resultados[tipoRecordatorio as keyof typeof rangos].llamadas++;
+          } else {
+            resultados[tipoRecordatorio as keyof typeof rangos].omitidos++;
+          }
+        } catch (error: any) {
+          resultados[tipoRecordatorio as keyof typeof rangos].errores.push(`Llamada ${llamada.id}: ${error.message}`);
+        }
+      }
+
+      // Procesar visitas
+      for (const visita of visitas || []) {
+        if (citasYaEnviadas.has(visita.id)) {
+          resultados[tipoRecordatorio as keyof typeof rangos].omitidos++;
+          continue;
+        }
+
+        try {
+          const resultado = await enviarRecordatorio(
+            supabaseClient,
+            "visita",
+            visita,
+            visita.pacientes,
+            visita.personal_salud,
+            plantilla,
+            config,
+            tipoRecordatorio as "3_dias" | "1_dia" | "2_horas"
+          );
+          
+          if (resultado.enviado) {
+            resultados[tipoRecordatorio as keyof typeof rangos].visitas++;
+          } else {
+            resultados[tipoRecordatorio as keyof typeof rangos].omitidos++;
+          }
+        } catch (error: any) {
+          resultados[tipoRecordatorio as keyof typeof rangos].errores.push(`Visita ${visita.id}: ${error.message}`);
+        }
       }
     }
 
-    // Procesar visitas
-    for (const visita of visitas || []) {
+    // Procesar reintentos pendientes
+    const { data: pendientesReintento } = await supabaseClient
+      .from("historial_recordatorios")
+      .select("*")
+      .eq("estado", "reintentando")
+      .lt("proximo_reintento", ahora.toISOString())
+      .lt("intentos", 3);
+
+    for (const pendiente of pendientesReintento || []) {
       try {
-        const resultado = await enviarRecordatorio(
-          supabaseClient,
-          "visita",
-          visita,
-          visita.pacientes,
-          visita.personal_salud,
-          plantilla,
-          config
-        );
-        
-        if (resultado.enviado) {
-          resultados.visitasEnviadas++;
+        // Invocar la función de envío con flag de reintento
+        const response = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/send-recordatorio-cita`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+          },
+          body: JSON.stringify({
+            tipo: pendiente.tipo_cita,
+            citaId: pendiente.cita_id,
+            plantillaId: pendiente.plantilla_id,
+            tipoRecordatorio: pendiente.tipo_recordatorio,
+            esReintento: true,
+            historialId: pendiente.id,
+          }),
+        });
+
+        if (response.ok) {
+          resultados.reintentos.exitosos++;
         } else {
-          resultados.visitasOmitidas++;
+          // Actualizar intentos y programar nuevo reintento
+          const nuevoReintento = new Date();
+          nuevoReintento.setMinutes(nuevoReintento.getMinutes() + 30 * pendiente.intentos);
+
+          if (pendiente.intentos >= 2) {
+            // Marcar como fallido definitivamente
+            await supabaseClient
+              .from("historial_recordatorios")
+              .update({ estado: "fallido", intentos: pendiente.intentos + 1 })
+              .eq("id", pendiente.id);
+          } else {
+            await supabaseClient
+              .from("historial_recordatorios")
+              .update({
+                intentos: pendiente.intentos + 1,
+                proximo_reintento: nuevoReintento.toISOString(),
+              })
+              .eq("id", pendiente.id);
+          }
+          resultados.reintentos.fallidos++;
         }
       } catch (error: any) {
-        resultados.errores.push(`Visita ${visita.id}: ${error.message}`);
+        console.error(`Error en reintento ${pendiente.id}:`, error);
+        resultados.reintentos.fallidos++;
       }
     }
 
@@ -183,32 +266,22 @@ async function enviarRecordatorio(
   paciente: any,
   profesional: any,
   plantilla: any,
-  config: any
+  config: any,
+  tipoRecordatorio: "3_dias" | "1_dia" | "2_horas"
 ): Promise<{ enviado: boolean; mensaje: string }> {
-  // Verificar si el paciente tiene notificaciones activas
   if (!paciente?.notificaciones_activas) {
     console.log(`Paciente ${paciente?.id} tiene notificaciones desactivadas`);
     return { enviado: false, mensaje: "Notificaciones desactivadas" };
   }
 
-  // Recopilar emails
   const emailsToSend: string[] = [];
   
-  if (paciente.email_px) {
-    emailsToSend.push(paciente.email_px);
-  }
-  
-  if (paciente.email_cuidador) {
-    emailsToSend.push(paciente.email_cuidador);
-  }
+  if (paciente.email_px) emailsToSend.push(paciente.email_px);
+  if (paciente.email_cuidador) emailsToSend.push(paciente.email_cuidador);
 
-  // Fallback a campos de contacto si tienen formato email
   if (emailsToSend.length === 0) {
-    if (paciente.contacto_px?.includes("@")) {
-      emailsToSend.push(paciente.contacto_px);
-    } else if (paciente.contacto_cuidador?.includes("@")) {
-      emailsToSend.push(paciente.contacto_cuidador);
-    }
+    if (paciente.contacto_px?.includes("@")) emailsToSend.push(paciente.contacto_px);
+    else if (paciente.contacto_cuidador?.includes("@")) emailsToSend.push(paciente.contacto_cuidador);
   }
 
   if (emailsToSend.length === 0) {
@@ -216,27 +289,16 @@ async function enviarRecordatorio(
     return { enviado: false, mensaje: "Sin emails" };
   }
 
-  // Generar token para confirmación
   const token = btoa(cita.id);
   const baseUrl = Deno.env.get("SUPABASE_URL")?.replace("supabase.co", "lovable.app") || "";
   const urlConfirmar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}`;
   const urlReagendar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}&reagendar=true`;
 
-  // Extraer fecha y hora
   const fechaCita = tipo === "llamada" ? cita.fecha_agendada : cita.fecha_hora_visita;
   const fecha = fechaCita ? new Date(fechaCita) : new Date();
-  const citaFecha = fecha.toLocaleDateString("es-DO", { 
-    day: "2-digit", 
-    month: "long", 
-    year: "numeric" 
-  });
-  const citaHora = fecha.toLocaleTimeString("es-DO", { 
-    hour: "2-digit", 
-    minute: "2-digit",
-    hour12: true 
-  });
+  const citaFecha = fecha.toLocaleDateString("es-DO", { day: "2-digit", month: "long", year: "numeric" });
+  const citaHora = fecha.toLocaleTimeString("es-DO", { hour: "2-digit", minute: "2-digit", hour12: true });
 
-  // Reemplazar variables
   const variables: Record<string, string> = {
     "{{Logo_URL}}": config.logo_url || "",
     "{{Nombre_Centro}}": config.nombre_centro || "Centro Médico",
@@ -253,6 +315,7 @@ async function enviarRecordatorio(
     "{{URL_Reagendar}}": urlReagendar,
     "{{Anio}}": new Date().getFullYear().toString(),
     "{{Notas_Preparacion}}": tipo === "llamada" ? cita.notas_adicionales || "" : cita.notas_visita || "",
+    "{{Tipo_Visita}}": tipo === "visita" ? (cita.tipo_visita === "domicilio" ? "Visita a Domicilio" : "Consulta Ambulatoria") : "Llamada",
   };
 
   let contenidoHtml = plantilla.contenido_html;
@@ -263,7 +326,6 @@ async function enviarRecordatorio(
     asunto = asunto.replace(new RegExp(key.replace(/[{}]/g, "\\$&"), "g"), value);
   });
 
-  // Enviar correo
   const emailResponse = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -281,10 +343,55 @@ async function enviarRecordatorio(
   if (!emailResponse.ok) {
     const errorData = await emailResponse.text();
     console.error("Error de Resend:", errorData);
+    
+    // Crear registro con error y programar reintento
+    const proximoReintento = new Date();
+    proximoReintento.setMinutes(proximoReintento.getMinutes() + 15);
+
+    await supabase
+      .from("historial_recordatorios")
+      .insert({
+        tipo_cita: tipo,
+        cita_id: cita.id,
+        paciente_id: paciente.id,
+        profesional_id: profesional?.id,
+        plantilla_id: plantilla.id,
+        destinatarios: emailsToSend,
+        canal: "email",
+        estado: "reintentando",
+        intentos: 1,
+        proximo_reintento: proximoReintento.toISOString(),
+        error_mensaje: errorData,
+        tipo_recordatorio: tipoRecordatorio,
+      });
+
     throw new Error(`Error al enviar correo: ${errorData}`);
   }
 
-  console.log(`Recordatorio enviado a ${emailsToSend.join(", ")} para ${tipo} ${cita.id}`);
+  // Guardar en historial
+  await supabase
+    .from("historial_recordatorios")
+    .insert({
+      tipo_cita: tipo,
+      cita_id: cita.id,
+      paciente_id: paciente.id,
+      profesional_id: profesional?.id,
+      plantilla_id: plantilla.id,
+      destinatarios: emailsToSend,
+      canal: "email",
+      estado: "enviado",
+      tipo_recordatorio: tipoRecordatorio,
+    });
+
+  // Marcar recordatorio enviado si es llamada
+  if (tipo === "llamada") {
+    await supabase
+      .from("registro_llamadas")
+      .update({ recordatorio_enviado: true })
+      .eq("id", cita.id);
+  }
+
+  console.log(`Recordatorio ${tipoRecordatorio} enviado a ${emailsToSend.join(", ")} para ${tipo} ${cita.id}`);
   return { enviado: true, mensaje: "Enviado correctamente" };
 }
 

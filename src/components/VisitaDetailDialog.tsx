@@ -374,6 +374,10 @@ export function VisitaDetailDialog({
           pacienteNombre={`${visita.pacientes?.nombre} ${visita.pacientes?.apellido}`}
           emailPaciente={visita.pacientes?.email_px}
           emailCuidador={visita.pacientes?.email_cuidador}
+          telefonoPaciente={visita.pacientes?.contacto_px}
+          telefonoCuidador={visita.pacientes?.contacto_cuidador}
+          fechaCita={visita.fecha_hora_visita ? format(new Date(visita.fecha_hora_visita), "PPP", { locale: es }) : undefined}
+          horaCita={visita.fecha_hora_visita ? format(new Date(visita.fecha_hora_visita), "p", { locale: es }) : undefined}
         />
       </DialogContent>
     </Dialog>
