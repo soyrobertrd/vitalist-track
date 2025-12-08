@@ -12,7 +12,11 @@ interface RecordatorioRequest {
   tipo: "llamada" | "visita";
   citaId: string;
   plantillaId?: string;
-  destinatarios?: string[]; // ["paciente", "cuidador", "profesional"]
+  destinatarios?: string[];
+  tipoRecordatorio?: "3_dias" | "1_dia" | "2_horas";
+  canal?: "email" | "whatsapp";
+  esReintento?: boolean;
+  historialId?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -20,18 +24,26 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+  );
+
   try {
-    const { tipo, citaId, plantillaId, destinatarios = ["paciente"] }: RecordatorioRequest = await req.json();
+    const { 
+      tipo, 
+      citaId, 
+      plantillaId, 
+      destinatarios = ["paciente"],
+      tipoRecordatorio = "1_dia",
+      canal = "email",
+      esReintento = false,
+      historialId
+    }: RecordatorioRequest = await req.json();
 
-    console.log("Procesando recordatorio:", { tipo, citaId, plantillaId, destinatarios });
+    console.log("Procesando recordatorio:", { tipo, citaId, plantillaId, destinatarios, tipoRecordatorio, canal });
 
-    // Inicializar cliente Supabase
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-
-    // Obtener datos de la cita
+    // Obtener datos de la cita usando la relación correcta
     let cita, paciente, profesional;
     
     if (tipo === "llamada") {
@@ -39,8 +51,8 @@ const handler = async (req: Request): Promise<Response> => {
         .from("registro_llamadas")
         .select(`
           *,
-          pacientes(*),
-          personal_salud(*)
+          pacientes!registro_llamadas_paciente_id_fkey(*),
+          personal_salud!registro_llamadas_profesional_id_fkey(*)
         `)
         .eq("id", citaId)
         .single();
@@ -57,8 +69,8 @@ const handler = async (req: Request): Promise<Response> => {
         .from("control_visitas")
         .select(`
           *,
-          pacientes(*),
-          personal_salud(*)
+          pacientes!control_visitas_paciente_id_fkey(*),
+          personal_salud!control_visitas_profesional_id_fkey(*)
         `)
         .eq("id", citaId)
         .single();
@@ -109,23 +121,42 @@ const handler = async (req: Request): Promise<Response> => {
         .single();
       plantilla = data;
     } else {
-      // Buscar plantilla por defecto de recordatorio
-      const { data } = await supabaseClient
+      // Buscar plantilla según tipo de visita
+      const tipoVisita = tipo === "visita" && cita.tipo_visita;
+      let query = supabaseClient
         .from("plantillas_correo")
         .select("*")
         .eq("tipo", "recordatorio")
-        .eq("activo", true)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
-      plantilla = data;
+        .eq("activo", true);
+
+      if (tipoVisita) {
+        query = query.eq("categoria", tipoVisita);
+      }
+
+      const { data } = await query.order("created_at", { ascending: false }).limit(1).single();
+      
+      // Si no hay plantilla específica, usar la genérica
+      if (!data) {
+        const { data: genericData } = await supabaseClient
+          .from("plantillas_correo")
+          .select("*")
+          .eq("tipo", "recordatorio")
+          .eq("activo", true)
+          .is("categoria", null)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
+        plantilla = genericData;
+      } else {
+        plantilla = data;
+      }
     }
 
     if (!plantilla) {
       throw new Error("No se encontró una plantilla de correo activa");
     }
 
-    // Generar token para confirmación (base64 del ID)
+    // Generar token para confirmación
     const token = btoa(citaId);
     const baseUrl = Deno.env.get("SUPABASE_URL")?.replace("supabase.co", "lovable.app") || "";
     const urlConfirmar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}`;
@@ -162,12 +193,12 @@ const handler = async (req: Request): Promise<Response> => {
       "{{URL_Reagendar}}": urlReagendar,
       "{{Anio}}": new Date().getFullYear().toString(),
       "{{Notas_Preparacion}}": tipo === "llamada" ? cita.notas_adicionales || "" : cita.notas_visita || "",
+      "{{Tipo_Visita}}": tipo === "visita" ? (cita.tipo_visita === "domicilio" ? "Visita a Domicilio" : "Consulta Ambulatoria") : "Llamada",
     };
 
     let contenidoHtml = plantilla.contenido_html;
     let asunto = plantilla.asunto;
 
-    // Reemplazar variables en HTML y asunto
     Object.entries(variables).forEach(([key, value]) => {
       contenidoHtml = contenidoHtml.replace(new RegExp(key.replace(/[{}]/g, "\\$&"), "g"), value);
       asunto = asunto.replace(new RegExp(key.replace(/[{}]/g, "\\$&"), "g"), value);
@@ -185,13 +216,12 @@ const handler = async (req: Request): Promise<Response> => {
     }
     
     if (destinatarios.includes("profesional") && profesional?.email_contacto) {
-      // Verificar si el profesional tiene notificaciones activas
       if (profesional.notificaciones_activas !== false) {
         emailsToSend.push(profesional.email_contacto);
       }
     }
 
-    // Fallback a contacto_px o contacto_cuidador si no hay emails específicos
+    // Fallback
     if (emailsToSend.length === 0) {
       if (paciente.contacto_px?.includes("@")) {
         emailsToSend.push(paciente.contacto_px);
@@ -224,11 +254,79 @@ const handler = async (req: Request): Promise<Response> => {
     if (!emailResponse.ok) {
       const errorData = await emailResponse.text();
       console.error("Error de Resend:", errorData);
+      
+      // Registrar error en historial y programar reintento
+      if (esReintento && historialId) {
+        // Get current attempts first
+        const { data: currentRecord } = await supabaseClient
+          .from("historial_recordatorios")
+          .select("intentos")
+          .eq("id", historialId)
+          .single();
+        
+        await supabaseClient
+          .from("historial_recordatorios")
+          .update({
+            estado: "fallido",
+            error_mensaje: errorData,
+            intentos: (currentRecord?.intentos || 0) + 1,
+          })
+          .eq("id", historialId);
+      } else {
+        // Crear registro con estado fallido y programar reintento
+        const proximoReintento = new Date();
+        proximoReintento.setMinutes(proximoReintento.getMinutes() + 15);
+
+        await supabaseClient
+          .from("historial_recordatorios")
+          .insert({
+            tipo_cita: tipo,
+            cita_id: citaId,
+            paciente_id: paciente.id,
+            profesional_id: profesional?.id,
+            plantilla_id: plantillaId || plantilla.id,
+            destinatarios: emailsToSend,
+            canal,
+            estado: "reintentando",
+            intentos: 1,
+            max_intentos: 3,
+            proximo_reintento: proximoReintento.toISOString(),
+            error_mensaje: errorData,
+            tipo_recordatorio: tipoRecordatorio,
+          });
+      }
+
       throw new Error(`Error al enviar correo: ${errorData}`);
     }
 
     const emailData = await emailResponse.json();
     console.log("Correo enviado exitosamente:", emailData);
+
+    // Guardar en historial como enviado
+    if (esReintento && historialId) {
+      await supabaseClient
+        .from("historial_recordatorios")
+        .update({
+          estado: "enviado",
+          error_mensaje: null,
+          enviado_at: new Date().toISOString(),
+        })
+        .eq("id", historialId);
+    } else {
+      await supabaseClient
+        .from("historial_recordatorios")
+        .insert({
+          tipo_cita: tipo,
+          cita_id: citaId,
+          paciente_id: paciente.id,
+          profesional_id: profesional?.id,
+          plantilla_id: plantillaId || plantilla.id,
+          destinatarios: emailsToSend,
+          canal,
+          estado: "enviado",
+          tipo_recordatorio: tipoRecordatorio,
+        });
+    }
 
     // Marcar recordatorio como enviado si es llamada
     if (tipo === "llamada") {
@@ -247,10 +345,7 @@ const handler = async (req: Request): Promise<Response> => {
       }),
       {
         status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          ...corsHeaders,
-        },
+        headers: { "Content-Type": "application/json", ...corsHeaders },
       }
     );
   } catch (error: any) {
@@ -262,10 +357,7 @@ const handler = async (req: Request): Promise<Response> => {
       }),
       {
         status: 500,
-        headers: { 
-          "Content-Type": "application/json", 
-          ...corsHeaders 
-        },
+        headers: { "Content-Type": "application/json", ...corsHeaders },
       }
     );
   }

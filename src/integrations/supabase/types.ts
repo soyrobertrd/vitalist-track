@@ -167,6 +167,7 @@ export type Database = {
           nombre: string
           parametros: Json | null
           plantilla_correo_id: string | null
+          recordatorios_config: Json | null
           tiempo_ejecucion: string | null
           trigger_evento: string
           updated_at: string | null
@@ -183,6 +184,7 @@ export type Database = {
           nombre: string
           parametros?: Json | null
           plantilla_correo_id?: string | null
+          recordatorios_config?: Json | null
           tiempo_ejecucion?: string | null
           trigger_evento: string
           updated_at?: string | null
@@ -199,6 +201,7 @@ export type Database = {
           nombre?: string
           parametros?: Json | null
           plantilla_correo_id?: string | null
+          recordatorios_config?: Json | null
           tiempo_ejecucion?: string | null
           trigger_evento?: string
           updated_at?: string | null
@@ -242,8 +245,10 @@ export type Database = {
       }
       control_visitas: {
         Row: {
+          confirmado_por_recordatorio: boolean | null
           created_at: string | null
           estado: Database["public"]["Enums"]["estado_visita"] | null
+          fecha_confirmacion: string | null
           fecha_hora_visita: string
           id: string
           motivo_visita: string | null
@@ -254,8 +259,10 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          confirmado_por_recordatorio?: boolean | null
           created_at?: string | null
           estado?: Database["public"]["Enums"]["estado_visita"] | null
+          fecha_confirmacion?: string | null
           fecha_hora_visita: string
           id?: string
           motivo_visita?: string | null
@@ -266,8 +273,10 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          confirmado_por_recordatorio?: boolean | null
           created_at?: string | null
           estado?: Database["public"]["Enums"]["estado_visita"] | null
+          fecha_confirmacion?: string | null
           fecha_hora_visita?: string
           id?: string
           motivo_visita?: string | null
@@ -378,6 +387,88 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "encuestas_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      historial_recordatorios: {
+        Row: {
+          canal: string
+          cita_id: string
+          created_at: string
+          destinatarios: Json
+          enviado_at: string | null
+          error_mensaje: string | null
+          estado: string
+          id: string
+          intentos: number
+          max_intentos: number
+          paciente_id: string | null
+          plantilla_id: string | null
+          profesional_id: string | null
+          proximo_reintento: string | null
+          tipo_cita: string
+          tipo_recordatorio: string
+          updated_at: string
+        }
+        Insert: {
+          canal?: string
+          cita_id: string
+          created_at?: string
+          destinatarios?: Json
+          enviado_at?: string | null
+          error_mensaje?: string | null
+          estado?: string
+          id?: string
+          intentos?: number
+          max_intentos?: number
+          paciente_id?: string | null
+          plantilla_id?: string | null
+          profesional_id?: string | null
+          proximo_reintento?: string | null
+          tipo_cita: string
+          tipo_recordatorio?: string
+          updated_at?: string
+        }
+        Update: {
+          canal?: string
+          cita_id?: string
+          created_at?: string
+          destinatarios?: Json
+          enviado_at?: string | null
+          error_mensaje?: string | null
+          estado?: string
+          id?: string
+          intentos?: number
+          max_intentos?: number
+          paciente_id?: string | null
+          plantilla_id?: string | null
+          profesional_id?: string | null
+          proximo_reintento?: string | null
+          tipo_cita?: string
+          tipo_recordatorio?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historial_recordatorios_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historial_recordatorios_plantilla_id_fkey"
+            columns: ["plantilla_id"]
+            isOneToOne: false
+            referencedRelation: "plantillas_correo"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historial_recordatorios_profesional_id_fkey"
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
@@ -906,11 +997,13 @@ export type Database = {
         Row: {
           archivos_adjuntos: Json | null
           comentarios_resultados: string | null
+          confirmado_por_recordatorio: boolean | null
           created_at: string | null
           duracion_estimada: number | null
           duracion_minutos: number | null
           estado: Database["public"]["Enums"]["estado_llamada"] | null
           fecha_agendada: string | null
+          fecha_confirmacion: string | null
           fecha_hora_realizada: string | null
           id: string
           llamada_origen_id: string | null
@@ -928,11 +1021,13 @@ export type Database = {
         Insert: {
           archivos_adjuntos?: Json | null
           comentarios_resultados?: string | null
+          confirmado_por_recordatorio?: boolean | null
           created_at?: string | null
           duracion_estimada?: number | null
           duracion_minutos?: number | null
           estado?: Database["public"]["Enums"]["estado_llamada"] | null
           fecha_agendada?: string | null
+          fecha_confirmacion?: string | null
           fecha_hora_realizada?: string | null
           id?: string
           llamada_origen_id?: string | null
@@ -950,11 +1045,13 @@ export type Database = {
         Update: {
           archivos_adjuntos?: Json | null
           comentarios_resultados?: string | null
+          confirmado_por_recordatorio?: boolean | null
           created_at?: string | null
           duracion_estimada?: number | null
           duracion_minutos?: number | null
           estado?: Database["public"]["Enums"]["estado_llamada"] | null
           fecha_agendada?: string | null
+          fecha_confirmacion?: string | null
           fecha_hora_realizada?: string | null
           id?: string
           llamada_origen_id?: string | null

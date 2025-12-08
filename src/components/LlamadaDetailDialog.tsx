@@ -499,6 +499,10 @@ export function LlamadaDetailDialog({
           pacienteNombre={`${llamada.pacientes?.nombre} ${llamada.pacientes?.apellido}`}
           emailPaciente={llamada.pacientes?.email_px}
           emailCuidador={llamada.pacientes?.email_cuidador}
+          telefonoPaciente={llamada.pacientes?.contacto_px}
+          telefonoCuidador={llamada.pacientes?.contacto_cuidador}
+          fechaCita={llamada.fecha_agendada ? format(new Date(llamada.fecha_agendada), "PPP", { locale: es }) : undefined}
+          horaCita={llamada.fecha_agendada ? format(new Date(llamada.fecha_agendada), "p", { locale: es }) : undefined}
         />
       </DialogContent>
     </Dialog>
