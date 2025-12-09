@@ -51,7 +51,7 @@ export function BarrioCombobox({ zona, value, onChange, disabled }: BarrioCombob
       <PopoverContent className="w-full p-0">
         <Command shouldFilter={false}>
           <CommandInput 
-            placeholder={loading ? "Cargando barrios..." : "Buscar o escribir barrio..."} 
+            placeholder={loading ? "Cargando barrios del municipio..." : "Buscar o escribir barrio..."} 
             value={searchValue}
             onValueChange={(newValue) => {
               setSearchValue(newValue);

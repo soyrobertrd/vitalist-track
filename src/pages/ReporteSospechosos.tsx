@@ -110,7 +110,7 @@ export default function ReporteSospechosos() {
                 <TableRow>
                   <TableHead>Paciente</TableHead>
                   <TableHead>Cédula</TableHead>
-                  <TableHead>Zona</TableHead>
+                  <TableHead>Municipio</TableHead>
                   <TableHead>Profesional Asignado</TableHead>
                   <TableHead>Fecha Registro</TableHead>
                   <TableHead>Llamadas</TableHead>

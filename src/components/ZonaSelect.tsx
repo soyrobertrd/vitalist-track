@@ -13,7 +13,7 @@ export function ZonaSelect({ value, onValueChange, disabled }: ZonaSelectProps) 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled || loading}>
       <SelectTrigger>
-        <SelectValue placeholder={loading ? "Cargando zonas..." : "Seleccionar zona"} />
+        <SelectValue placeholder={loading ? "Cargando municipios..." : "Seleccionar municipio"} />
       </SelectTrigger>
       <SelectContent>
         {zonas.map((zona) => (

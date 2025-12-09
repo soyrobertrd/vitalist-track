@@ -197,7 +197,7 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
             <h4 className="font-medium">Dirección</h4>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="zona">Zona</Label>
+                <Label htmlFor="zona">Municipio (zona)</Label>
                 <ZonaSelect
                   value={selectedZona}
                   onValueChange={(value) => {

@@ -522,7 +522,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Dirección</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <Label htmlFor="zona" className="text-xs">Zona</Label>
+                <Label htmlFor="zona" className="text-xs">Municipio (zona)</Label>
                 <ZonaSelect
                   value={selectedZona || ''}
                   onValueChange={(value) => {

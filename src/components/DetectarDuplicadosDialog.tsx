@@ -212,7 +212,7 @@ export const DetectarDuplicadosDialog = () => {
             <p>{paciente.cedula || "N/A"}</p>
           </div>
           <div>
-            <span className="font-medium text-muted-foreground">Zona:</span>
+            <span className="font-medium text-muted-foreground">Municipio (zona):</span>
             <p>{paciente.zona || "N/A"}</p>
           </div>
           <div>
@@ -361,7 +361,7 @@ export const DetectarDuplicadosDialog = () => {
                       <TableHead>Nombre</TableHead>
                       <TableHead>Cédula</TableHead>
                       <TableHead>Teléfono</TableHead>
-                      <TableHead>Zona</TableHead>
+                      <TableHead>Municipio</TableHead>
                       <TableHead>Barrio</TableHead>
                       <TableHead className="w-[100px]">Acciones</TableHead>
                     </TableRow>
