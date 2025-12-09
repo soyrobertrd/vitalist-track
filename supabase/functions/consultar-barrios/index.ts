@@ -36,7 +36,8 @@ serve(async (req) => {
 
     // Usar el nombre del municipio directamente o del mapeo
     const municipioParam = MUNICIPIO_API_NAMES[municipio] || municipio;
-    const apiUrl = `https://phpstack-616350-6059894.cloudwaysapps.com/api/localizacion.php?municipio=${encodeURIComponent(municipioParam)}`;
+    // La API requiere full=1 para obtener los barrios
+    const apiUrl = `https://phpstack-616350-6059894.cloudwaysapps.com/api/localizacion.php?full=1&municipio=${encodeURIComponent(municipioParam)}`;
     
     console.log('URL de la API:', apiUrl);
 
