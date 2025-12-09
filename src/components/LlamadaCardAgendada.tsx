@@ -27,6 +27,7 @@ interface LlamadaCardAgendadaProps {
   llamada: Llamada;
   onLlamadaClick: (llamada: Llamada) => void;
   isCallOverdue: (llamada: Llamada) => boolean;
+  isCallToday?: (llamada: Llamada) => boolean;
   getEstadoBadgeColor: (estado: string) => string;
   getResultadoBadgeColor: (resultado: string | null) => string;
   formatearTexto: (texto: string | null) => string;
@@ -36,6 +37,7 @@ export const LlamadaCardAgendada = ({
   llamada,
   onLlamadaClick,
   isCallOverdue,
+  isCallToday,
   getEstadoBadgeColor,
   getResultadoBadgeColor,
   formatearTexto,
@@ -43,6 +45,7 @@ export const LlamadaCardAgendada = ({
   const [pacienteData, setPacienteData] = useState<any>(null);
   const [recordatorioOpen, setRecordatorioOpen] = useState(false);
   const overdue = isCallOverdue(llamada);
+  const today = isCallToday ? isCallToday(llamada) : false;
 
   useEffect(() => {
     if (llamada.pacientes) {
@@ -69,7 +72,11 @@ export const LlamadaCardAgendada = ({
   return (
     <Card 
       className={`cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full ${
-        overdue ? 'border-destructive border-2 bg-destructive/5' : ''
+        overdue 
+          ? 'border-destructive border-2 bg-destructive/5' 
+          : today 
+            ? 'border-green-500 border-2 bg-green-500/5' 
+            : ''
       }`}
       onClick={() => onLlamadaClick(llamada)}
     >
@@ -77,9 +84,8 @@ export const LlamadaCardAgendada = ({
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-base line-clamp-2 flex-1">
             {llamada.pacientes?.nombre} {llamada.pacientes?.apellido}
-            {overdue && <span className="text-destructive ml-2">⚠️ Retrasada</span>}
           </CardTitle>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-1 flex-wrap justify-end items-center">
             {mainPhone && (
               <a
                 href={`tel:${mainPhone.replace(/\D/g, '')}`}
@@ -90,6 +96,16 @@ export const LlamadaCardAgendada = ({
               >
                 <Phone className="h-4 w-4" />
               </a>
+            )}
+            {overdue && (
+              <Badge variant="destructive" className="text-xs">
+                Atrasada
+              </Badge>
+            )}
+            {today && !overdue && (
+              <Badge className="bg-green-500 text-white text-xs">
+                Hoy
+              </Badge>
             )}
             <Badge className={getEstadoBadgeColor(llamada.estado)} variant="secondary">
               {formatearTexto(llamada.estado)}
