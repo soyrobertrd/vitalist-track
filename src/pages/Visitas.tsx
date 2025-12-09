@@ -61,6 +61,7 @@ const Visitas = () => {
   const [selectedPatientData, setSelectedPatientData] = useState<any>(null);
   const { esDiaLaborable, siguienteDiaLaborable } = useDiasLaborables();
   const [restriccionesPaciente, setRestriccionesPaciente] = useState<any[]>([]);
+  const [pacientesSinVisita, setPacientesSinVisita] = useState<number>(0);
 
   const fetchData = async () => {
     const thirtyDaysAgo = new Date();
@@ -122,7 +123,20 @@ const Visitas = () => {
         canceladas,
       });
     }
-    if (pacientesRes.data) setPacientes(pacientesRes.data);
+    if (pacientesRes.data) {
+      setPacientes(pacientesRes.data);
+      
+      // Calcular pacientes sin visitas agendadas
+      if (visitasRes.data) {
+        const pacientesConVisita = new Set(
+          (visitasRes.data as any[])
+            .filter(v => v.estado === 'pendiente')
+            .map(v => v.paciente_id)
+        );
+        const sinVisita = pacientesRes.data.filter(p => !pacientesConVisita.has(p.id)).length;
+        setPacientesSinVisita(sinVisita);
+      }
+    }
     if (personalRes.data) {
       // Filter out admins from personal list
       const filteredPersonal = (personalRes.data || []).filter(
@@ -496,6 +510,16 @@ const Visitas = () => {
         </Dialog>
         </div>
       </div>
+
+      {/* Alerta de pacientes sin visitas */}
+      {pacientesSinVisita > 0 && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Hay {pacientesSinVisita} paciente{pacientesSinVisita > 1 ? 's' : ''} activo{pacientesSinVisita > 1 ? 's' : ''} sin visitas agendadas.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Stats Cards */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-4">

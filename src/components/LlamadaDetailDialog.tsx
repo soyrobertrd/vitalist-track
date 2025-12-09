@@ -47,6 +47,9 @@ export function LlamadaDetailDialog({
 
   if (!llamada) return null;
 
+  const hasEmail = llamada.pacientes?.email_px || llamada.pacientes?.email_cuidador;
+  const hasPhone = llamada.pacientes?.contacto_px || llamada.pacientes?.contacto_cuidador;
+
   const handleReagendar = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -305,6 +308,8 @@ export function LlamadaDetailDialog({
                   variant="outline"
                   className="w-full"
                   onClick={() => setShowRecordatorioDialog(true)}
+                  disabled={!hasEmail && !hasPhone}
+                  title={!hasEmail && !hasPhone ? "El paciente no tiene correo ni teléfono registrado" : undefined}
                 >
                   <Mail className="h-4 w-4 mr-2" />
                   Enviar Recordatorio
