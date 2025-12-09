@@ -20,6 +20,7 @@ import { ProcesarLlamadasImportadasDialog } from "@/components/ProcesarLlamadasI
 import { useUserRole } from "@/hooks/useUserRole";
 import { LlamadaCardAgendada } from "@/components/LlamadaCardAgendada";
 import { PacientesSinCitasDialog } from "@/components/PacientesSinCitasDialog";
+import { AlertaSobrecargaProfesional } from "@/components/AlertaSobrecargaProfesional";
 
 interface Llamada {
   id: string;
@@ -327,6 +328,9 @@ const Llamadas = () => {
           </Button>
         </div>
       </div>
+
+      {/* Alerta de sobrecarga de profesionales */}
+      <AlertaSobrecargaProfesional />
 
       {/* Alerta de pacientes sin llamadas */}
       {pacientesSinLlamada > 0 && (
