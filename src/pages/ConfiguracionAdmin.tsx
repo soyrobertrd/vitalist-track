@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Settings, Users, Shield, Mail, FileText, 
-  BarChart, Lock, Palette, Database, Workflow, Plus, CalendarDays
+  BarChart, Lock, Palette, Database, Workflow, Plus, CalendarDays, Key
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -27,6 +27,9 @@ const ConfiguracionAdmin = () => {
   const [loading, setLoading] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [createUserOpen, setCreateUserOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [selectedUserForPassword, setSelectedUserForPassword] = useState<any>(null);
+  const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
     if (!roleLoading && !isAdmin) {
@@ -114,6 +117,37 @@ const ConfiguracionAdmin = () => {
       toast.success(`Enlace de restablecimiento enviado a ${email}`);
     }
     setLoading(false);
+  };
+
+  const handleManualPasswordChange = async () => {
+    if (!selectedUserForPassword || !newPassword) return;
+    
+    if (newPassword.length < 6) {
+      toast.error("La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const { error } = await supabase.functions.invoke('admin-update-password', {
+        body: { 
+          userId: selectedUserForPassword.id,
+          newPassword: newPassword
+        }
+      });
+
+      if (error) throw error;
+      
+      toast.success(`Contraseña actualizada para ${selectedUserForPassword.nombre}`);
+      setChangePasswordOpen(false);
+      setNewPassword("");
+      setSelectedUserForPassword(null);
+    } catch (error: any) {
+      console.error("Error updating password:", error);
+      toast.error("Error al cambiar la contraseña");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleToggleUserStatus = async (userId: string, currentStatus: boolean) => {
@@ -363,9 +397,23 @@ const ConfiguracionAdmin = () => {
                       size="sm"
                       onClick={() => handlePasswordReset(usuario.email)}
                       disabled={loading}
+                      title="Enviar enlace de restablecimiento"
                     >
-                      <Lock className="mr-2 h-4 w-4" />
-                      Restablecer
+                      <Mail className="mr-2 h-4 w-4" />
+                      Enviar Link
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        setSelectedUserForPassword(usuario);
+                        setChangePasswordOpen(true);
+                      }}
+                      disabled={loading}
+                      title="Cambiar contraseña manualmente"
+                    >
+                      <Key className="mr-2 h-4 w-4" />
+                      Cambiar Clave
                     </Button>
                     <Button 
                       variant={usuario.activo ? "destructive" : "default"}
@@ -428,6 +476,43 @@ const ConfiguracionAdmin = () => {
                   {loading ? "Creando..." : "Crear Usuario"}
                 </Button>
               </form>
+            </DialogContent>
+          </Dialog>
+
+          {/* Change Password Dialog */}
+          <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Cambiar Contraseña Manualmente</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Cambiar contraseña para: <strong>{selectedUserForPassword?.nombre} {selectedUserForPassword?.apellido}</strong>
+                </p>
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword">Nueva Contraseña *</Label>
+                  <Input 
+                    id="newPassword" 
+                    type="password" 
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Mínimo 6 caracteres"
+                    minLength={6}
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => {
+                    setChangePasswordOpen(false);
+                    setNewPassword("");
+                    setSelectedUserForPassword(null);
+                  }}>
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleManualPasswordChange} disabled={loading || !newPassword}>
+                    {loading ? "Actualizando..." : "Cambiar Contraseña"}
+                  </Button>
+                </div>
+              </div>
             </DialogContent>
           </Dialog>
         </TabsContent>
