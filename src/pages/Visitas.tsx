@@ -5,7 +5,7 @@ import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Plus, Clock, User, Filter, TrendingUp, Activity, CheckSquare, Phone } from "lucide-react";
-import { differenceInDays } from "date-fns";
+import { differenceInDays, getDay } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,12 +18,14 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NearbyPatientsRecommendation } from "@/components/NearbyPatientsRecommendation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, CalendarOff } from "lucide-react";
 import { MobileFilters } from "@/components/MobileFilters";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 import { PacienteCombobox } from "@/components/PacienteCombobox";
 import { PacientesSinCitasDialog } from "@/components/PacientesSinCitasDialog";
 import { VisitaCardAgendada } from "@/components/VisitaCardAgendada";
+import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
+import { MuestraMedicaDialog } from "@/components/MuestraMedicaDialog";
 
 interface Visita {
   id: string;
@@ -65,6 +67,10 @@ const Visitas = () => {
   const [restriccionesPaciente, setRestriccionesPaciente] = useState<any[]>([]);
   const [pacientesSinVisita, setPacientesSinVisita] = useState<number>(0);
   const [listaPacientesSinVisita, setListaPacientesSinVisita] = useState<any[]>([]);
+  const [diasNoVisitaPaciente, setDiasNoVisitaPaciente] = useState<number[]>([]);
+  const [muestraMedicaOpen, setMuestraMedicaOpen] = useState(false);
+  const [visitaCreada, setVisitaCreada] = useState<any>(null);
+  const { medicamentos } = useMedicamentosPaciente(selectedPatientId);
 
   const fetchData = async () => {
     const thirtyDaysAgo = new Date();
@@ -160,6 +166,25 @@ const Visitas = () => {
 
     const formData = new FormData(e.currentTarget);
     const pacienteId = formData.get("paciente_id") as string;
+    const fechaHoraVisita = formData.get("fecha_hora_visita") as string;
+    
+    // Validar días de restricción del paciente
+    if (fechaHoraVisita && diasNoVisitaPaciente.length > 0) {
+      const fechaVisita = new Date(fechaHoraVisita);
+      const diaSemana = getDay(fechaVisita); // 0=Dom, 1=Lun, 2=Mar, etc
+      // Convertir a nuestro formato (1=Lun, 2=Mar, etc)
+      const diaConvertido = diaSemana === 0 ? 7 : diaSemana;
+      
+      if (diasNoVisitaPaciente.includes(diaConvertido)) {
+        const diasNombres = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+        toast.error(
+          `Este paciente no tiene disponibilidad los ${diasNombres[diaConvertido]}. Por favor seleccione otro día.`,
+          { duration: 5000 }
+        );
+        setLoading(false);
+        return;
+      }
+    }
     
     // Validar si ya existe una visita pendiente para este paciente
     const { data: existingVisitas } = await supabase
@@ -186,7 +211,7 @@ const Visitas = () => {
     const data = {
       paciente_id: pacienteId,
       profesional_id: formData.get("profesional_id") as string,
-      fecha_hora_visita: formData.get("fecha_hora_visita") as string,
+      fecha_hora_visita: fechaHoraVisita,
       tipo_visita: formData.get("tipo_visita") as any,
       motivo_visita: formData.get("motivo_visita") as string,
       estado: "pendiente" as any,
@@ -214,22 +239,39 @@ const Visitas = () => {
       toast.success("Visita programada exitosamente");
       setOpen(false);
       setSelectedProfessionals([]);
-      setSelectedPatientId(null);
-      setSelectedPatientData(null);
+      
+      // Check if patient has medications and show dialog
+      if (medicamentos.length > 0 && visitaData) {
+        setVisitaCreada(visitaData);
+        setMuestraMedicaOpen(true);
+      } else {
+        setSelectedPatientId(null);
+        setSelectedPatientData(null);
+        setDiasNoVisitaPaciente([]);
+      }
+      
       fetchData();
       (e.target as HTMLFormElement).reset();
     }
     setLoading(false);
   };
 
+  const handleMuestraMedicaComplete = () => {
+    setSelectedPatientId(null);
+    setSelectedPatientData(null);
+    setDiasNoVisitaPaciente([]);
+    setVisitaCreada(null);
+  };
+
   const handlePatientChange = async (pacienteId: string) => {
     setSelectedPatientId(pacienteId);
     const { data } = await supabase
       .from("pacientes")
-      .select("zona, barrio")
+      .select("zona, barrio, dias_no_visita")
       .eq("id", pacienteId)
       .single();
     setSelectedPatientData(data);
+    setDiasNoVisitaPaciente(data?.dias_no_visita || []);
   };
 
   const handleUnscheduledSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -450,6 +492,19 @@ const Visitas = () => {
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
                     Este paciente no tiene zona ni barrio configurados. Por favor, actualiza sus datos para optimizar la planificación de rutas.
+                  </AlertDescription>
+              </Alert>
+              )}
+              
+              {/* Alerta de días de restricción del paciente */}
+              {diasNoVisitaPaciente.length > 0 && (
+                <Alert className="border-orange-500 bg-orange-50 dark:bg-orange-950/20">
+                  <CalendarOff className="h-4 w-4 text-orange-500" />
+                  <AlertDescription className="text-orange-700 dark:text-orange-300">
+                    Este paciente no tiene disponibilidad los: {diasNoVisitaPaciente.map(d => {
+                      const dias = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+                      return dias[d];
+                    }).join(", ")}
                   </AlertDescription>
                 </Alert>
               )}
@@ -770,6 +825,18 @@ const Visitas = () => {
         pacientes={pacientes}
         personal={personal}
       />
+
+      {/* Dialog para muestra médica después de agendar visita */}
+      {selectedPatientId && visitaCreada && (
+        <MuestraMedicaDialog
+          open={muestraMedicaOpen}
+          onOpenChange={setMuestraMedicaOpen}
+          medicamentos={medicamentos}
+          pacienteId={selectedPatientId}
+          pacienteNombre={pacientes.find(p => p.id === selectedPatientId)?.nombre + " " + pacientes.find(p => p.id === selectedPatientId)?.apellido || "Paciente"}
+          onComplete={handleMuestraMedicaComplete}
+        />
+      )}
     </div>
   );
 };

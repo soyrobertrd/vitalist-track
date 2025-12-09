@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Phone, Calendar, Clock, User, Mail } from "lucide-react";
 import { format } from "date-fns";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
+import { MedicamentosPreview } from "@/components/MedicamentosPreview";
+import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
 
 interface Llamada {
   id: string;
@@ -19,6 +21,7 @@ interface Llamada {
   duracion_estimada: number | null;
   requiere_seguimiento: boolean;
   notas_adicionales: string | null;
+  paciente_id?: string;
   pacientes: { nombre: string; apellido: string } | null;
   personal_salud: { nombre: string; apellido: string } | null;
 }
@@ -43,19 +46,24 @@ export const LlamadaCardAgendada = ({
   formatearTexto,
 }: LlamadaCardAgendadaProps) => {
   const [pacienteData, setPacienteData] = useState<any>(null);
+  const [pacienteId, setPacienteId] = useState<string | null>(null);
   const [recordatorioOpen, setRecordatorioOpen] = useState(false);
   const overdue = isCallOverdue(llamada);
   const today = isCallToday ? isCallToday(llamada) : false;
+  const { medicamentos } = useMedicamentosPaciente(pacienteId);
 
   useEffect(() => {
     if (llamada.pacientes) {
       supabase
         .from("pacientes")
-        .select("contacto_px, whatsapp_px, contacto_cuidador, whatsapp_cuidador, numero_principal")
+        .select("id, contacto_px, whatsapp_px, contacto_cuidador, whatsapp_cuidador, numero_principal")
         .eq("nombre", llamada.pacientes.nombre)
         .eq("apellido", llamada.pacientes.apellido)
         .single()
-        .then(({ data }) => setPacienteData(data));
+        .then(({ data }) => {
+          setPacienteData(data);
+          if (data?.id) setPacienteId(data.id);
+        });
     }
   }, [llamada]);
 
@@ -152,10 +160,13 @@ export const LlamadaCardAgendada = ({
         )}
         
         {llamada.motivo && (
-          <p className="text-xs text-muted-foreground line-clamp-2 pt-2 border-t mt-auto">
+          <p className="text-xs text-muted-foreground line-clamp-2 pt-2 border-t">
             {llamada.motivo}
           </p>
         )}
+        
+        {/* Medicamentos del paciente */}
+        <MedicamentosPreview medicamentos={medicamentos} maxShow={2} className="pt-2 border-t" />
         
         <Button
           variant="outline"
