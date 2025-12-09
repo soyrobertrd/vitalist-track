@@ -22,6 +22,7 @@ import { AlertCircle } from "lucide-react";
 import { MobileFilters } from "@/components/MobileFilters";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 import { PacienteCombobox } from "@/components/PacienteCombobox";
+import { PacientesSinCitasDialog } from "@/components/PacientesSinCitasDialog";
 
 interface Visita {
   id: string;
@@ -62,6 +63,7 @@ const Visitas = () => {
   const { esDiaLaborable, siguienteDiaLaborable } = useDiasLaborables();
   const [restriccionesPaciente, setRestriccionesPaciente] = useState<any[]>([]);
   const [pacientesSinVisita, setPacientesSinVisita] = useState<number>(0);
+  const [listaPacientesSinVisita, setListaPacientesSinVisita] = useState<any[]>([]);
 
   const fetchData = async () => {
     const thirtyDaysAgo = new Date();
@@ -133,8 +135,9 @@ const Visitas = () => {
             .filter(v => v.estado === 'pendiente')
             .map(v => v.paciente_id)
         );
-        const sinVisita = pacientesRes.data.filter(p => !pacientesConVisita.has(p.id)).length;
-        setPacientesSinVisita(sinVisita);
+        const sinVisita = pacientesRes.data.filter(p => !pacientesConVisita.has(p.id));
+        setPacientesSinVisita(sinVisita.length);
+        setListaPacientesSinVisita(sinVisita);
       }
     }
     if (personalRes.data) {
@@ -515,8 +518,15 @@ const Visitas = () => {
       {pacientesSinVisita > 0 && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
+          <AlertDescription className="flex items-center gap-2">
             Hay {pacientesSinVisita} paciente{pacientesSinVisita > 1 ? 's' : ''} activo{pacientesSinVisita > 1 ? 's' : ''} sin visitas agendadas.
+            <PacientesSinCitasDialog 
+              pacientes={listaPacientesSinVisita}
+              tipo="visitas"
+              onAgendar={(pacienteId) => {
+                setOpen(true);
+              }}
+            />
           </AlertDescription>
         </Alert>
       )}
@@ -633,7 +643,7 @@ const Visitas = () => {
               return (
                 <GlassCard 
                   key={visita.id} 
-                  className={`aspect-square p-6 flex flex-col justify-between cursor-pointer hover:scale-105 transition-transform ${cardColorClass}`}
+                  className={`p-4 flex flex-col justify-between cursor-pointer hover:scale-[1.02] transition-transform ${cardColorClass}`}
                   onClick={() => {
                     setSelectedVisita(visita);
                     setDetailOpen(true);
@@ -714,7 +724,7 @@ const Visitas = () => {
               return (
                 <GlassCard 
                   key={visita.id} 
-                  className="aspect-square p-6 flex flex-col justify-between cursor-pointer hover:scale-105 transition-transform"
+                  className="p-4 flex flex-col justify-between cursor-pointer hover:scale-[1.02] transition-transform"
                   onClick={() => {
                     setSelectedVisita(visita);
                     setDetailOpen(true);
