@@ -19,6 +19,8 @@ import { AlertaDuplicados } from "@/components/AlertaDuplicados";
 import { formatPhoneDR, handlePhoneInput } from "@/lib/phoneUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { MedicamentosPaciente } from "@/components/MedicamentosPaciente";
+import { DiasRestriccionPaciente } from "@/components/DiasRestriccionPaciente";
 
 const editPacienteSchema = z.object({
   cedula: z.string()
@@ -94,6 +96,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [notificacionesActivas, setNotificacionesActivas] = useState(true);
   const [whatsappPx, setWhatsappPx] = useState(false);
   const [whatsappCuidador, setWhatsappCuidador] = useState(false);
+  const [diasNoVisita, setDiasNoVisita] = useState<number[]>([]);
 
   const { duplicados } = useDetectarDuplicados(
     formData.cedula,
@@ -122,6 +125,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       setNotificacionesActivas(paciente.notificaciones_activas ?? true);
       setWhatsappPx(paciente.whatsapp_px || false);
       setWhatsappCuidador(paciente.whatsapp_cuidador || false);
+      setDiasNoVisita(paciente.dias_no_visita || []);
       fetchPersonal();
     }
   }, [paciente, open]);
@@ -250,6 +254,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       es_sospechoso: esSospechoso,
       notificaciones_activas: notificacionesActivas,
       status_px: formDataObj.get("status_px") as any,
+      dias_no_visita: diasNoVisita,
     };
 
     const { error } = await supabase
@@ -626,6 +631,15 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 placeholder="Diagnósticos, tratamientos, observaciones..."
               />
             </div>
+
+            {/* Medicamentos del paciente */}
+            <MedicamentosPaciente pacienteId={paciente.id} />
+
+            {/* Días de restricción para visitas */}
+            <DiasRestriccionPaciente
+              diasNoVisita={diasNoVisita}
+              onChange={setDiasNoVisita}
+            />
           </div>
 
           {/* Sección: Opciones */}
