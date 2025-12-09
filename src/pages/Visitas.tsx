@@ -47,9 +47,9 @@ const Visitas = () => {
   const [showFilters, setShowFilters] = useState(false);
   const { isAdmin } = useUserRole();
   const [filters, setFilters] = useState({
-    estado: "",
-    profesional: "",
-    tipo: "",
+    estado: "all",
+    profesional: "all",
+    tipo: "all",
   });
   const [stats, setStats] = useState({
     totalVisitas: 0,
@@ -278,9 +278,9 @@ const Visitas = () => {
   };
 
   const filteredVisitas = visitas.filter((v: any) => {
-    if (filters.estado && v.estado !== filters.estado) return false;
-    if (filters.profesional && v.profesional_id !== filters.profesional) return false;
-    if (filters.tipo && v.tipo_visita !== filters.tipo) return false;
+    if (filters.estado !== "all" && v.estado !== filters.estado) return false;
+    if (filters.profesional !== "all" && v.profesional_id !== filters.profesional) return false;
+    if (filters.tipo !== "all" && v.tipo_visita !== filters.tipo) return false;
     return true;
   });
 
@@ -582,7 +582,7 @@ const Visitas = () => {
                   <SelectValue placeholder="Todos" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="all">Todos</SelectItem>
                   <SelectItem value="pendiente">Pendiente</SelectItem>
                   <SelectItem value="realizada">Realizada</SelectItem>
                   <SelectItem value="cancelada">Cancelada</SelectItem>
@@ -596,7 +596,7 @@ const Visitas = () => {
                   <SelectValue placeholder="Todos" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="all">Todos</SelectItem>
                   {personal.map((p) => (
                     <SelectItem key={p.id} value={p.id}>
                       {p.nombre} {p.apellido}
@@ -612,7 +612,7 @@ const Visitas = () => {
                   <SelectValue placeholder="Todos" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="all">Todos</SelectItem>
                   <SelectItem value="ambulatorio">Ambulatorio</SelectItem>
                   <SelectItem value="domicilio">Domicilio</SelectItem>
                 </SelectContent>

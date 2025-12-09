@@ -90,6 +90,10 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
     contacto_px: "",
     contacto_cuidador: ""
   });
+  const [esSospechoso, setEsSospechoso] = useState(false);
+  const [notificacionesActivas, setNotificacionesActivas] = useState(true);
+  const [whatsappPx, setWhatsappPx] = useState(false);
+  const [whatsappCuidador, setWhatsappCuidador] = useState(false);
 
   const { duplicados } = useDetectarDuplicados(
     formData.cedula,
@@ -114,6 +118,10 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
         contacto_px: paciente.contacto_px || "",
         contacto_cuidador: paciente.contacto_cuidador || ""
       });
+      setEsSospechoso(paciente.es_sospechoso || false);
+      setNotificacionesActivas(paciente.notificaciones_activas ?? true);
+      setWhatsappPx(paciente.whatsapp_px || false);
+      setWhatsappCuidador(paciente.whatsapp_cuidador || false);
       fetchPersonal();
     }
   }, [paciente, open]);
@@ -224,12 +232,12 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       fecha_nacimiento: fechaNacimiento || null,
       sexo: selectedSexo || null,
       contacto_px: formValues.contacto_px ? formatPhoneDR(formValues.contacto_px) : null,
-      whatsapp_px: formDataObj.get("whatsapp_px") === "on",
+      whatsapp_px: whatsappPx,
       email_px: (formDataObj.get("email_px") as string || "").trim() || null,
       nombre_cuidador: formValues.nombre_cuidador,
       parentesco_cuidador: formDataObj.get("parentesco_cuidador") as string || null,
       contacto_cuidador: formValues.contacto_cuidador ? formatPhoneDR(formValues.contacto_cuidador) : null,
-      whatsapp_cuidador: formDataObj.get("whatsapp_cuidador") === "on",
+      whatsapp_cuidador: whatsappCuidador,
       email_cuidador: (formDataObj.get("email_cuidador") as string || "").trim() || null,
       numero_principal: formDataObj.get("numero_principal") as any,
       direccion_domicilio: formValues.direccion_domicilio,
@@ -239,8 +247,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       grado_dificultad: formDataObj.get("grado_dificultad") as any,
       tipo_atencion: formDataObj.get("tipo_atencion") as string || "domiciliario",
       profesional_asignado_id: profesionalId === 'sin-asignar' ? null : profesionalId || null,
-      es_sospechoso: formDataObj.get("es_sospechoso") === "on",
-      notificaciones_activas: formDataObj.get("notificaciones_activas") === "on",
+      es_sospechoso: esSospechoso,
+      notificaciones_activas: notificacionesActivas,
       status_px: formDataObj.get("status_px") as any,
     };
 
@@ -401,12 +409,10 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
               </div>
               <div className="flex items-end pb-1">
                 <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer text-xs">
-                  <Input 
+                  <Checkbox 
                     id="whatsapp_px" 
-                    name="whatsapp_px" 
-                    type="checkbox" 
-                    defaultChecked={paciente.whatsapp_px}
-                    className="w-4 h-4"
+                    checked={whatsappPx}
+                    onCheckedChange={(checked) => setWhatsappPx(checked as boolean)}
                   />
                   <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
                   WhatsApp
@@ -489,12 +495,10 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center">
                 <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer text-xs">
-                  <Input 
+                  <Checkbox 
                     id="whatsapp_cuidador" 
-                    name="whatsapp_cuidador" 
-                    type="checkbox" 
-                    defaultChecked={paciente.whatsapp_cuidador}
-                    className="w-4 h-4"
+                    checked={whatsappCuidador}
+                    onCheckedChange={(checked) => setWhatsappCuidador(checked as boolean)}
                   />
                   <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
                   WhatsApp del Cuidador
@@ -629,8 +633,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer">
               <Checkbox 
                 id="es_sospechoso" 
-                name="es_sospechoso" 
-                defaultChecked={paciente.es_sospechoso || false}
+                checked={esSospechoso}
+                onCheckedChange={(checked) => setEsSospechoso(checked as boolean)}
               />
               <span className="font-medium">Paciente Sospechoso</span>
               <span className="text-xs text-muted-foreground">
@@ -640,8 +644,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             <Label htmlFor="notificaciones_activas" className="flex items-center gap-2 cursor-pointer">
               <Checkbox 
                 id="notificaciones_activas" 
-                name="notificaciones_activas" 
-                defaultChecked={paciente.notificaciones_activas ?? true}
+                checked={notificacionesActivas}
+                onCheckedChange={(checked) => setNotificacionesActivas(checked as boolean)}
               />
               <span className="font-medium">Recibir notificaciones por correo</span>
               <span className="text-xs text-muted-foreground">
