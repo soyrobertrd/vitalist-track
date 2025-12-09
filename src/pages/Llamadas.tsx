@@ -220,7 +220,23 @@ const Llamadas = () => {
 
   const isCallOverdue = (llamada: Llamada) => {
     if (llamada.fecha_agendada && (llamada.estado === 'agendada' || llamada.estado === 'pendiente')) {
-      return new Date(llamada.fecha_agendada) < new Date();
+      const fechaLlamada = new Date(llamada.fecha_agendada);
+      fechaLlamada.setHours(0, 0, 0, 0);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      // Si la fecha de hoy es al menos +1 día después de la fecha agendada, está atrasada
+      return hoy.getTime() > fechaLlamada.getTime();
+    }
+    return false;
+  };
+
+  const isCallToday = (llamada: Llamada) => {
+    if (llamada.fecha_agendada && (llamada.estado === 'agendada' || llamada.estado === 'pendiente')) {
+      const fechaLlamada = new Date(llamada.fecha_agendada);
+      fechaLlamada.setHours(0, 0, 0, 0);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      return hoy.getTime() === fechaLlamada.getTime();
     }
     return false;
   };
@@ -465,6 +481,7 @@ const Llamadas = () => {
                   llamada={llamada}
                   onLlamadaClick={handleLlamadaClick}
                   isCallOverdue={isCallOverdue}
+                  isCallToday={isCallToday}
                   getEstadoBadgeColor={getEstadoBadgeColor}
                   getResultadoBadgeColor={getResultadoBadgeColor}
                   formatearTexto={formatearTexto}
