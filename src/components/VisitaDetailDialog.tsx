@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, User, Home, Building, Mail } from "lucide-react";
+import { Calendar, Clock, User, Home, Building, Mail, Pill } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { GlassCard } from "@/components/GlassCard";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
+import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
 
 interface VisitaDetailDialogProps {
   open: boolean;
@@ -35,6 +36,7 @@ export function VisitaDetailDialog({
 }: VisitaDetailDialogProps) {
   const [loading, setLoading] = useState(false);
   const [showRecordatorioDialog, setShowRecordatorioDialog] = useState(false);
+  const { medicamentos } = useMedicamentosPaciente(visita?.paciente_id || null);
 
   if (!visita) return null;
 
@@ -238,6 +240,40 @@ export function VisitaDetailDialog({
               <div className="space-y-2">
                 <div className="text-sm text-muted-foreground">Notas</div>
                 <p className="text-sm">{visita.notas_visita}</p>
+              </div>
+            )}
+
+            {/* Medicamentos del Paciente */}
+            {medicamentos && medicamentos.length > 0 && (
+              <div className="space-y-2 pt-4 border-t">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Pill className="h-4 w-4" />
+                  <span>Medicamentos del Paciente</span>
+                </div>
+                <div className="space-y-2">
+                  {medicamentos.map((med) => (
+                    <div key={med.id} className="bg-muted/50 p-3 rounded-lg">
+                      <p className="font-medium text-sm">{med.nombre_medicamento}</p>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {med.dosis && (
+                          <Badge variant="outline" className="text-xs">
+                            Dosis: {med.dosis}
+                          </Badge>
+                        )}
+                        {med.frecuencia && (
+                          <Badge variant="outline" className="text-xs">
+                            {med.frecuencia}
+                          </Badge>
+                        )}
+                        {med.muestra_medica && (
+                          <Badge className="bg-green-500/10 text-green-600 text-xs">
+                            Muestra Médica
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
