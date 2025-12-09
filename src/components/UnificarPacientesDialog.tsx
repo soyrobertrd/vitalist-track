@@ -192,7 +192,7 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
                 <p className="font-medium">{paciente.cedula || "N/A"}</p>
               </div>
               <div>
-                <span className="text-muted-foreground">Zona:</span>
+                <span className="text-muted-foreground">Municipio (zona):</span>
                 <p className="font-medium">{paciente.zona || "N/A"}</p>
               </div>
               <div>

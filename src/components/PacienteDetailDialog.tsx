@@ -134,7 +134,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                 </Badge>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Zona</p>
+                <p className="text-sm text-muted-foreground">Municipio (zona)</p>
                 <p className="font-medium">{paciente.zona || 'N/A'}</p>
               </div>
               {paciente.barrio && (

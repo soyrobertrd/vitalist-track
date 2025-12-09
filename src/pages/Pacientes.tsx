@@ -684,7 +684,7 @@ const Pacientes = () => {
                   <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Dirección</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <Label htmlFor="zona" className="text-xs">Zona</Label>
+                      <Label htmlFor="zona" className="text-xs">Municipio (zona)</Label>
                       <ZonaSelect
                         value={selectedZona}
                         onValueChange={(value) => {
@@ -903,7 +903,7 @@ const Pacientes = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Zona</label>
+                <label className="text-sm font-medium">Municipio (zona)</label>
                 <Select value={filters.zona} onValueChange={(v) => setFilters({ ...filters, zona: v })} disabled={zonasLoading}>
                   <SelectTrigger>
                     <SelectValue placeholder={zonasLoading ? "Cargando..." : "Seleccionar"} />
@@ -980,7 +980,7 @@ const Pacientes = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Zona</label>
+              <label className="text-sm font-medium">Municipio (zona)</label>
               <Select value={filters.zona} onValueChange={(v) => setFilters({ ...filters, zona: v })} disabled={zonasLoading}>
                 <SelectTrigger>
                   <SelectValue placeholder={zonasLoading ? "Cargando..." : "Seleccionar"} />
