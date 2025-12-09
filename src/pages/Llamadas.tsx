@@ -19,6 +19,7 @@ import { ImportLlamadasDialog } from "@/components/ImportLlamadasDialog";
 import { ProcesarLlamadasImportadasDialog } from "@/components/ProcesarLlamadasImportadasDialog";
 import { useUserRole } from "@/hooks/useUserRole";
 import { LlamadaCardAgendada } from "@/components/LlamadaCardAgendada";
+import { PacientesSinCitasDialog } from "@/components/PacientesSinCitasDialog";
 
 interface Llamada {
   id: string;
@@ -57,6 +58,7 @@ const Llamadas = () => {
   const [busquedaPaciente, setBusquedaPaciente] = useState<string>("");
   const [showAllLlamadas, setShowAllLlamadas] = useState(false);
   const [pacientesSinLlamada, setPacientesSinLlamada] = useState<number>(0);
+  const [listaPacientesSinLlamada, setListaPacientesSinLlamada] = useState<any[]>([]);
 
   const fetchData = async () => {
     const [llamadasRes, pacientesRes, personalRes] = await Promise.all([
@@ -118,8 +120,9 @@ const Llamadas = () => {
             .filter(l => l.estado === 'agendada' || l.estado === 'pendiente')
             .map(l => l.paciente_id)
         );
-        const sinLlamada = pacientesRes.data.filter(p => !pacientesConLlamada.has(p.id)).length;
-        setPacientesSinLlamada(sinLlamada);
+        const sinLlamada = pacientesRes.data.filter(p => !pacientesConLlamada.has(p.id));
+        setPacientesSinLlamada(sinLlamada.length);
+        setListaPacientesSinLlamada(sinLlamada);
       }
     }
     if (personalRes.data) setPersonal(personalRes.data);
@@ -314,8 +317,16 @@ const Llamadas = () => {
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Atención</AlertTitle>
-          <AlertDescription>
+          <AlertDescription className="flex items-center gap-2">
             Hay {pacientesSinLlamada} paciente{pacientesSinLlamada > 1 ? 's' : ''} activo{pacientesSinLlamada > 1 ? 's' : ''} sin llamadas agendadas.
+            <PacientesSinCitasDialog 
+              pacientes={listaPacientesSinLlamada}
+              tipo="llamadas"
+              onAgendar={(pacienteId) => {
+                // Pre-select patient and open dialog
+                setOpenAgendar(true);
+              }}
+            />
           </AlertDescription>
         </Alert>
       )}

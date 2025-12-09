@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { DashboardRecordatorios } from "@/components/DashboardRecordatorios";
+import { ReportePacientesSinCitas } from "@/components/ReportePacientesSinCitas";
 import {
   BarChart,
   Bar,
@@ -321,10 +322,14 @@ const Reportes = () => {
 
       <div id="reporte-content">
       <Tabs defaultValue="resumen" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="resumen">Resumen Ejecutivo</TabsTrigger>
           <TabsTrigger value="llamadas">Control de Llamadas</TabsTrigger>
           <TabsTrigger value="visitas">Control de Visitas</TabsTrigger>
+          <TabsTrigger value="sin-citas" className="flex items-center gap-1">
+            <Users className="h-3 w-3" />
+            Sin Citas
+          </TabsTrigger>
           <TabsTrigger value="recordatorios" className="flex items-center gap-1">
             <Bell className="h-3 w-3" />
             Recordatorios
@@ -620,7 +625,12 @@ const Reportes = () => {
           </Card>
         </TabsContent>
 
-        {/* 4. RECORDATORIOS */}
+        {/* 4. PACIENTES SIN CITAS */}
+        <TabsContent value="sin-citas" className="space-y-6">
+          <ReportePacientesSinCitas />
+        </TabsContent>
+
+        {/* 5. RECORDATORIOS */}
         <TabsContent value="recordatorios" className="space-y-6">
           <DashboardRecordatorios />
         </TabsContent>
