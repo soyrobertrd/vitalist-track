@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Phone, Calendar, Clock, User, Mail, MapPin } from "lucide-react";
 import { format } from "date-fns";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
+import { MedicamentosPreview } from "@/components/MedicamentosPreview";
+import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
 
 interface Visita {
   id: string;
@@ -14,6 +16,7 @@ interface Visita {
   motivo_visita: string | null;
   estado: string;
   notas_visita: string | null;
+  paciente_id?: string;
   pacientes: { 
     nombre: string; 
     apellido: string;
@@ -39,8 +42,27 @@ export const VisitaCardAgendada = ({
   isVisitToday,
 }: VisitaCardAgendadaProps) => {
   const [recordatorioOpen, setRecordatorioOpen] = useState(false);
+  const [pacienteId, setPacienteId] = useState<string | null>(null);
   const overdue = isVisitOverdue(visita);
   const today = isVisitToday ? isVisitToday(visita) : false;
+  const { medicamentos } = useMedicamentosPaciente(pacienteId);
+
+  useEffect(() => {
+    // Get paciente_id from the visita or fetch it
+    if ((visita as any).paciente_id) {
+      setPacienteId((visita as any).paciente_id);
+    } else if (visita.pacientes) {
+      supabase
+        .from("pacientes")
+        .select("id")
+        .eq("nombre", visita.pacientes.nombre)
+        .eq("apellido", visita.pacientes.apellido)
+        .single()
+        .then(({ data }) => {
+          if (data?.id) setPacienteId(data.id);
+        });
+    }
+  }, [visita]);
 
   const formatearTexto = (texto: string | null) => {
     if (!texto) return 'N/A';
@@ -162,10 +184,13 @@ export const VisitaCardAgendada = ({
         </div>
         
         {visita.motivo_visita && (
-          <p className="text-xs text-muted-foreground line-clamp-2 pt-2 border-t mt-auto">
+          <p className="text-xs text-muted-foreground line-clamp-2 pt-2 border-t">
             {visita.motivo_visita}
           </p>
         )}
+        
+        {/* Medicamentos del paciente */}
+        <MedicamentosPreview medicamentos={medicamentos} maxShow={2} className="pt-2 border-t" />
         
         <Button
           variant="outline"

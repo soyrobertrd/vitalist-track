@@ -32,6 +32,7 @@ import { formatPhoneDR, handlePhoneInput } from "@/lib/phoneUtils";
 import { useOGTICZonas } from "@/hooks/useOGTICZonas";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PacienteCard } from "@/components/PacienteCard";
+import { DiasRestriccionPaciente } from "@/components/DiasRestriccionPaciente";
 
 // Validation schema
 const pacienteSchema = z.object({
@@ -126,10 +127,11 @@ const Pacientes = () => {
     sexo?: string;
     foto_encoded?: string;
   } | null>(null);
-  const [medicamentos, setMedicamentos] = useState<string[]>([""]);
+  const [medicamentos, setMedicamentos] = useState<{nombre: string, dosis: string, frecuencia: string}[]>([{nombre: "", dosis: "", frecuencia: ""}]);
   const [selectedZona, setSelectedZona] = useState<string | null>(null);
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
   const [selectedSexo, setSelectedSexo] = useState<string>("");
+  const [diasNoVisita, setDiasNoVisita] = useState<number[]>([]);
   const [filters, setFilters] = useState({
     status: "todos",
     zona: "todos",
@@ -329,6 +331,7 @@ const Pacientes = () => {
       es_sospechoso: formData.get("es_sospechoso") === "on",
       notificaciones_activas: true,
       status_px: "activo" as any,
+      dias_no_visita: diasNoVisita,
     };
 
     const { data: paciente, error: pacienteError } = await supabase
@@ -344,11 +347,13 @@ const Pacientes = () => {
     }
 
     // Insertar medicamentos
-    const medicamentosValidos = medicamentos.filter(m => m.trim() !== "");
+    const medicamentosValidos = medicamentos.filter(m => m.nombre.trim() !== "");
     if (medicamentosValidos.length > 0 && paciente) {
       const medicamentosData = medicamentosValidos.map(med => ({
         paciente_id: paciente.id,
-        nombre_medicamento: med,
+        nombre_medicamento: med.nombre.trim(),
+        dosis: med.dosis.trim() || null,
+        frecuencia: med.frecuencia.trim() || null,
       }));
       
       await supabase.from("medicamentos_paciente").insert(medicamentosData);
@@ -380,7 +385,8 @@ const Pacientes = () => {
 
     setOpen(false);
     fetchPacientes();
-    setMedicamentos([""]);
+    setMedicamentos([{nombre: "", dosis: "", frecuencia: ""}]);
+    setDiasNoVisita([]);
     (e.target as HTMLFormElement).reset();
     setLoading(false);
   };
@@ -818,36 +824,59 @@ const Pacientes = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Medicamentos</Label>
+                {/* Sección: Medicamentos */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Medicamentos</h3>
                   {medicamentos.map((med, index) => (
-                    <div key={index} className="flex gap-2">
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-2">
                       <Input
-                        value={med}
+                        value={med.nombre}
                         onChange={(e) => {
-                          const value = e.target.value;
-                          if (value.length <= 200) {
-                            const newMeds = [...medicamentos];
-                            newMeds[index] = value;
-                            setMedicamentos(newMeds);
-                          }
+                          const newMeds = [...medicamentos];
+                          newMeds[index] = { ...newMeds[index], nombre: e.target.value };
+                          setMedicamentos(newMeds);
                         }}
                         placeholder="Nombre del medicamento"
                         maxLength={200}
+                      />
+                      <Input
+                        value={med.dosis}
+                        onChange={(e) => {
+                          const newMeds = [...medicamentos];
+                          newMeds[index] = { ...newMeds[index], dosis: e.target.value };
+                          setMedicamentos(newMeds);
+                        }}
+                        placeholder="Dosis (ej: 500mg)"
+                        maxLength={50}
+                      />
+                      <Input
+                        value={med.frecuencia}
+                        onChange={(e) => {
+                          const newMeds = [...medicamentos];
+                          newMeds[index] = { ...newMeds[index], frecuencia: e.target.value };
+                          setMedicamentos(newMeds);
+                        }}
+                        placeholder="Frecuencia"
+                        maxLength={50}
                       />
                       {index === medicamentos.length - 1 && (
                         <Button
                           type="button"
                           variant="outline"
-                          size="icon"
-                          onClick={() => setMedicamentos([...medicamentos, ""])}
+                          onClick={() => setMedicamentos([...medicamentos, {nombre: "", dosis: "", frecuencia: ""}])}
                         >
-                          <Plus className="h-4 w-4" />
+                          <Plus className="h-4 w-4 mr-1" /> Agregar
                         </Button>
                       )}
                     </div>
                   ))}
                 </div>
+
+                {/* Sección: Días sin disponibilidad */}
+                <DiasRestriccionPaciente
+                  diasNoVisita={diasNoVisita}
+                  onChange={setDiasNoVisita}
+                />
 
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Guardando..." : "Guardar Paciente"}
