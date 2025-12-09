@@ -23,6 +23,7 @@ import { MobileFilters } from "@/components/MobileFilters";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 import { PacienteCombobox } from "@/components/PacienteCombobox";
 import { PacientesSinCitasDialog } from "@/components/PacientesSinCitasDialog";
+import { VisitaCardAgendada } from "@/components/VisitaCardAgendada";
 
 interface Visita {
   id: string;
@@ -292,6 +293,29 @@ const Visitas = () => {
   const visitasHistorial = filteredVisitas
     .filter((v: any) => v.estado !== 'pendiente')
     .sort((a: any, b: any) => new Date(b.fecha_hora_visita).getTime() - new Date(a.fecha_hora_visita).getTime()); // Descending for history
+
+  const isVisitOverdue = (visita: Visita) => {
+    if (visita.estado === 'pendiente' && visita.fecha_hora_visita) {
+      const fechaVisita = new Date(visita.fecha_hora_visita);
+      fechaVisita.setHours(0, 0, 0, 0);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      // Si la fecha de hoy es al menos +1 día después de la fecha agendada, está atrasada
+      return hoy.getTime() > fechaVisita.getTime();
+    }
+    return false;
+  };
+
+  const isVisitToday = (visita: Visita) => {
+    if (visita.estado === 'pendiente' && visita.fecha_hora_visita) {
+      const fechaVisita = new Date(visita.fecha_hora_visita);
+      fechaVisita.setHours(0, 0, 0, 0);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      return hoy.getTime() === fechaVisita.getTime();
+    }
+    return false;
+  };
 
   const getCardColor = (fecha: string, estado: string) => {
     if (estado !== "pendiente") return "";
@@ -636,78 +660,18 @@ const Visitas = () => {
         
         <TabsContent value="agendadas" className="mt-6">
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {visitasAgendadas.map((visita: any) => {
-              const formatearTexto = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase().replace("_", " ");
-              const cardColorClass = getCardColor(visita.fecha_hora_visita, visita.estado);
-              
-              return (
-                <GlassCard 
-                  key={visita.id} 
-                  className={`p-4 flex flex-col justify-between cursor-pointer hover:scale-[1.02] transition-transform ${cardColorClass}`}
-                  onClick={() => {
-                    setSelectedVisita(visita);
-                    setDetailOpen(true);
-                  }}
-                >
-                  <div>
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-bold text-lg">
-                        {visita.pacientes?.nombre} {visita.pacientes?.apellido}
-                      </h3>
-                      {visita.pacientes && (
-                        <a
-                          href={`tel:${
-                            visita.pacientes.numero_principal === 'cuidador' && visita.pacientes.contacto_cuidador
-                              ? visita.pacientes.contacto_cuidador.replace(/\D/g, '')
-                              : (visita.pacientes.contacto_px || '').replace(/\D/g, '')
-                          }`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-                          aria-label="Llamar al paciente"
-                          title="Llamar"
-                        >
-                          <Phone className="h-4 w-4" />
-                        </a>
-                      )}
-                    </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center">
-                        <Calendar className="mr-2 h-4 w-4" />
-                        {new Date(visita.fecha_hora_visita).toLocaleDateString('es-DO', { 
-                          day: '2-digit', 
-                          month: 'short', 
-                          year: 'numeric' 
-                        })}
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="mr-2 h-4 w-4" />
-                        {new Date(visita.fecha_hora_visita).toLocaleTimeString('es-DO', { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
-                      </div>
-                      {visita.personal_salud && (
-                        <div className="flex items-center">
-                          <User className="mr-2 h-4 w-4" />
-                          {visita.personal_salud.nombre} {visita.personal_salud.apellido}
-                        </div>
-                      )}
-                      {visita.profesionales_adicionales && visita.profesionales_adicionales.length > 0 && (
-                        <div className="text-xs text-muted-foreground">
-                          +{visita.profesionales_adicionales.length} profesional(es) más
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between mt-4">
-                    <Badge className={getEstadoColor(visita.estado)}>
-                      {formatearTexto(visita.estado)}
-                    </Badge>
-                    <span className="text-2xl">{getTipoIcon(visita.tipo_visita)}</span>
-                  </div>
-                </GlassCard>
-              );
-            })}
+            {visitasAgendadas.map((visita: any) => (
+              <VisitaCardAgendada
+                key={visita.id}
+                visita={visita}
+                onVisitaClick={(v) => {
+                  setSelectedVisita(v);
+                  setDetailOpen(true);
+                }}
+                isVisitOverdue={isVisitOverdue}
+                isVisitToday={isVisitToday}
+              />
+            ))}
           </div>
           {visitasAgendadas.length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
