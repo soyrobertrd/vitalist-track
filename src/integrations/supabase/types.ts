@@ -662,6 +662,7 @@ export type Database = {
           contacto_cuidador: string | null
           contacto_px: string | null
           created_at: string | null
+          dias_no_visita: number[] | null
           direccion_domicilio: string | null
           email_cuidador: string | null
           email_px: string | null
@@ -694,6 +695,7 @@ export type Database = {
           contacto_cuidador?: string | null
           contacto_px?: string | null
           created_at?: string | null
+          dias_no_visita?: number[] | null
           direccion_domicilio?: string | null
           email_cuidador?: string | null
           email_px?: string | null
@@ -726,6 +728,7 @@ export type Database = {
           contacto_cuidador?: string | null
           contacto_px?: string | null
           created_at?: string | null
+          dias_no_visita?: number[] | null
           direccion_domicilio?: string | null
           email_cuidador?: string | null
           email_px?: string | null
@@ -1114,6 +1117,8 @@ export type Database = {
           puntuacion_general: number | null
           respuestas: Json
           token: string | null
+          token_expira_at: string | null
+          token_usado: boolean | null
           updated_at: string | null
         }
         Insert: {
@@ -1125,6 +1130,8 @@ export type Database = {
           puntuacion_general?: number | null
           respuestas?: Json
           token?: string | null
+          token_expira_at?: string | null
+          token_usado?: boolean | null
           updated_at?: string | null
         }
         Update: {
@@ -1136,6 +1143,8 @@ export type Database = {
           puntuacion_general?: number | null
           respuestas?: Json
           token?: string | null
+          token_expira_at?: string | null
+          token_usado?: boolean | null
           updated_at?: string | null
         }
         Relationships: [
