@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Plus, Calendar, Filter, TrendingUp, Clock, User } from "lucide-react";
+import { Phone, Plus, Calendar, Filter, TrendingUp, Clock, User, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -55,6 +56,7 @@ const Llamadas = () => {
   const [filtroFechaFin, setFiltroFechaFin] = useState<string>("");
   const [busquedaPaciente, setBusquedaPaciente] = useState<string>("");
   const [showAllLlamadas, setShowAllLlamadas] = useState(false);
+  const [pacientesSinLlamada, setPacientesSinLlamada] = useState<number>(0);
 
   const fetchData = async () => {
     const [llamadasRes, pacientesRes, personalRes] = await Promise.all([
@@ -106,7 +108,20 @@ const Llamadas = () => {
       setLlamadasAgendadas(agendadas);
       setLlamadasHistorial(historial);
     }
-    if (pacientesRes.data) setPacientes(pacientesRes.data);
+    if (pacientesRes.data) {
+      setPacientes(pacientesRes.data);
+      
+      // Calcular pacientes sin llamadas agendadas
+      if (llamadasRes.data) {
+        const pacientesConLlamada = new Set(
+          (llamadasRes.data as any[])
+            .filter(l => l.estado === 'agendada' || l.estado === 'pendiente')
+            .map(l => l.paciente_id)
+        );
+        const sinLlamada = pacientesRes.data.filter(p => !pacientesConLlamada.has(p.id)).length;
+        setPacientesSinLlamada(sinLlamada);
+      }
+    }
     if (personalRes.data) setPersonal(personalRes.data);
   };
 
@@ -209,89 +224,48 @@ const Llamadas = () => {
 
 
   const renderLlamadaCardHistorial = (llamada: Llamada) => (
-    <Card 
+    <div 
       key={llamada.id} 
-      className="cursor-pointer hover:shadow-md transition-all hover:scale-[1.01] border-l-4"
-      style={{
-        borderLeftColor: llamada.estado === 'realizada' 
-          ? 'hsl(var(--success))' 
-          : llamada.estado === 'cancelada'
-          ? 'hsl(var(--destructive))'
-          : 'hsl(var(--muted))'
-      }}
+      className="flex items-center gap-4 p-4 border-b hover:bg-muted/50 cursor-pointer transition-colors"
       onClick={() => handleLlamadaClick(llamada)}
     >
-      <CardHeader className="pb-3">
-        <div className="flex justify-between items-start gap-4">
-          <div className="flex items-start gap-3 flex-1">
-            <div className="mt-1 p-2 rounded-lg bg-primary/10">
-              <Phone className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-lg mb-1">
-                {llamada.pacientes?.nombre || 'N/A'} {llamada.pacientes?.apellido || ''}
-              </CardTitle>
-              {llamada.personal_salud && (
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
-                  <span className="font-medium">Profesional:</span>
-                  {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 items-end">
-            <Badge variant="outline" className={getEstadoBadgeColor(llamada.estado)}>
-              {formatearTexto(llamada.estado)}
-            </Badge>
-            {llamada.resultado_seguimiento && (
-              <Badge variant="outline" className={getResultadoBadgeColor(llamada.resultado_seguimiento)}>
-                {formatearTexto(llamada.resultado_seguimiento)}
-              </Badge>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3 pt-0">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {llamada.fecha_hora_realizada && (
-            <div className="flex items-start gap-2 p-2 rounded-md bg-muted/50">
-              <Calendar className="h-4 w-4 text-primary mt-0.5" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-muted-foreground">Fecha Realizada</p>
-                <p className="text-sm font-semibold">
-                  {format(new Date(llamada.fecha_hora_realizada), "PPP", { locale: es })}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {format(new Date(llamada.fecha_hora_realizada), "p", { locale: es })}
-                </p>
-              </div>
-            </div>
-          )}
-          {llamada.duracion_minutos && (
-            <div className="flex items-start gap-2 p-2 rounded-md bg-muted/50">
-              <Phone className="h-4 w-4 text-success mt-0.5" />
-              <div className="flex-1">
-                <p className="text-xs font-medium text-muted-foreground">Duración</p>
-                <p className="text-sm font-semibold">{llamada.duracion_minutos} minutos</p>
-              </div>
-            </div>
-          )}
-        </div>
-        {llamada.motivo && (
-          <div className="pt-2 border-t">
-            <p className="text-sm">
-              <span className="font-medium text-muted-foreground">Motivo:</span>{' '}
-              <span className="text-foreground">{llamada.motivo}</span>
-            </p>
-          </div>
-        )}
-        {llamada.requiere_seguimiento && (
-          <Badge variant="destructive" className="mt-2">
-            Requiere Seguimiento
+      <div 
+        className="w-1 h-12 rounded-full"
+        style={{
+          backgroundColor: llamada.estado === 'realizada' 
+            ? 'hsl(var(--success))' 
+            : llamada.estado === 'cancelada'
+            ? 'hsl(var(--destructive))'
+            : 'hsl(var(--muted))'
+        }}
+      />
+      <div className="p-2 rounded-lg bg-primary/10 shrink-0">
+        <Phone className="h-4 w-4 text-primary" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-medium truncate">
+          {llamada.pacientes?.nombre || 'N/A'} {llamada.pacientes?.apellido || ''}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          {llamada.fecha_hora_realizada 
+            ? format(new Date(llamada.fecha_hora_realizada), "dd/MM/yyyy HH:mm", { locale: es })
+            : llamada.fecha_agendada
+            ? format(new Date(llamada.fecha_agendada), "dd/MM/yyyy HH:mm", { locale: es })
+            : 'Sin fecha'}
+          {llamada.duracion_minutos && ` • ${llamada.duracion_minutos} min`}
+        </p>
+      </div>
+      <div className="flex flex-col gap-1 items-end shrink-0">
+        <Badge variant="outline" className={`text-xs ${getEstadoBadgeColor(llamada.estado)}`}>
+          {formatearTexto(llamada.estado)}
+        </Badge>
+        {llamada.resultado_seguimiento && (
+          <Badge variant="outline" className={`text-xs ${getResultadoBadgeColor(llamada.resultado_seguimiento)}`}>
+            {formatearTexto(llamada.resultado_seguimiento)}
           </Badge>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 
   const llamadasAgendadasFiltradas = aplicarFiltros(llamadasAgendadas);
@@ -334,6 +308,17 @@ const Llamadas = () => {
           </Button>
         </div>
       </div>
+
+      {/* Alerta de pacientes sin llamadas */}
+      {pacientesSinLlamada > 0 && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Atención</AlertTitle>
+          <AlertDescription>
+            Hay {pacientesSinLlamada} paciente{pacientesSinLlamada > 1 ? 's' : ''} activo{pacientesSinLlamada > 1 ? 's' : ''} sin llamadas agendadas.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Indicadores de Rendimiento - Hidden on Mobile */}
       <div className="hidden md:block">
@@ -502,9 +487,11 @@ const Llamadas = () => {
                   Ocultar Historial
                 </Button>
               </div>
-              <div className="grid gap-4 md:grid-cols-1">
-                {llamadasHistorialFiltradas.map(renderLlamadaCardHistorial)}
-              </div>
+              <Card>
+                <CardContent className="p-0 divide-y">
+                  {llamadasHistorialFiltradas.map(renderLlamadaCardHistorial)}
+                </CardContent>
+              </Card>
             </>
           )}
         </TabsContent>
