@@ -31,6 +31,7 @@ import { MobileFilters } from "@/components/MobileFilters";
 import { formatPhoneDR, handlePhoneInput } from "@/lib/phoneUtils";
 import { useOGTICZonas } from "@/hooks/useOGTICZonas";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { PacienteCard } from "@/components/PacienteCard";
 
 // Validation schema
 const pacienteSchema = z.object({
@@ -99,6 +100,9 @@ interface Paciente {
   grado_dificultad: string;
   zona: string | null;
   barrio: string | null;
+  direccion_domicilio: string | null;
+  historia_medica_basica: string | null;
+  profesional_asignado_id: string | null;
 }
 
 const Pacientes = () => {
@@ -1027,129 +1031,48 @@ const Pacientes = () => {
         </MobileFilters>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredPacientes.map((paciente) => (
-          <Card 
-            key={paciente.id} 
-            className="hover:bg-accent transition-colors flex flex-col h-full"
-          >
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <CardTitle 
-                  className="text-lg cursor-pointer flex-1"
-                  onClick={() => {
-                    setSelectedPacienteId(paciente.id);
-                    setDetailOpen(true);
-                  }}
-                >
-                  {paciente.nombre} {paciente.apellido}
-                </CardTitle>
-                <div className="flex gap-2 items-center">
-                  <Badge className={getStatusColor(paciente.status_px)}>
-                    {capitalizeStatus(paciente.status_px)}
-                  </Badge>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPacienteParaAgendar(paciente.id);
-                      setAgendarLlamadaOpen(true);
-                    }}
-                    title="Agendar llamada"
-                  >
-                    <PhoneCall className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPacienteParaAgendar(paciente.id);
-                      setAgendarVisitaOpen(true);
-                    }}
-                    title="Agendar visita"
-                  >
-                    <Calendar className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedPaciente(paciente);
-                      setEditOpen(true);
-                    }}
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  {isAdmin && (
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        if (confirm(`¿Está seguro de eliminar a ${paciente.nombre} ${paciente.apellido}? Esta acción no se puede deshacer.`)) {
-                          const { error } = await supabase
-                            .from("pacientes")
-                            .delete()
-                            .eq("id", paciente.id);
-                          if (error) {
-                            toast.error("Error al eliminar paciente");
-                          } else {
-                            toast.success("Paciente eliminado");
-                            fetchPacientes();
-                          }
-                        }
-                      }}
-                      className="text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium">Cédula:</span> {paciente.cedula}
-              </p>
-              {paciente.contacto_px && (
-                <div className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Phone className="h-3 w-3" />
-                  <a
-                    href={`tel:${(paciente.contacto_px || '').replace(/\D/g, '')}`}
-                    className="no-underline hover:text-foreground"
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label={`Llamar a ${paciente.nombre} ${paciente.apellido}`}
-                  >
-                    {paciente.contacto_px}
-                  </a>
-                  <a
-                    href={`https://wa.me/${(paciente.contacto_px || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center p-1 rounded hover:bg-accent"
-                    aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
-                    title="Enviar mensaje por WhatsApp"
-                  >
-                    <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6 text-green-600" />
-                  </a>
-                </div>
-              )}
-              {paciente.zona && (
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <MapPin className="h-3 w-3" />
-                  {paciente.zona.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
-                </p>
-              )}
-              <Badge className={getDificultadColor(paciente.grado_dificultad)}>
-                Dificultad: {paciente.grado_dificultad}
-              </Badge>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {filteredPacientes.map((paciente) => {
+          const profesional = personal.find(p => p.id === paciente.profesional_asignado_id);
+          return (
+            <PacienteCard
+              key={paciente.id}
+              paciente={paciente}
+              profesionalNombre={profesional ? `${profesional.nombre} ${profesional.apellido}` : undefined}
+              onViewDetail={() => {
+                setSelectedPacienteId(paciente.id);
+                setDetailOpen(true);
+              }}
+              onEdit={() => {
+                setSelectedPaciente(paciente);
+                setEditOpen(true);
+              }}
+              onAgendarLlamada={() => {
+                setPacienteParaAgendar(paciente.id);
+                setAgendarLlamadaOpen(true);
+              }}
+              onAgendarVisita={() => {
+                setPacienteParaAgendar(paciente.id);
+                setAgendarVisitaOpen(true);
+              }}
+              onDelete={isAdmin ? async () => {
+                if (confirm(`¿Está seguro de eliminar a ${paciente.nombre} ${paciente.apellido}? Esta acción no se puede deshacer.`)) {
+                  const { error } = await supabase
+                    .from("pacientes")
+                    .delete()
+                    .eq("id", paciente.id);
+                  if (error) {
+                    toast.error("Error al eliminar paciente");
+                  } else {
+                    toast.success("Paciente eliminado");
+                    fetchPacientes();
+                  }
+                }
+              } : undefined}
+              isAdmin={isAdmin}
+            />
+          );
+        })}
       </div>
 
       {filteredPacientes.length === 0 && (
