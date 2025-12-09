@@ -26,6 +26,7 @@ import { PacientesSinCitasDialog } from "@/components/PacientesSinCitasDialog";
 import { VisitaCardAgendada } from "@/components/VisitaCardAgendada";
 import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
 import { MuestraMedicaDialog } from "@/components/MuestraMedicaDialog";
+import { AlertaSobrecargaProfesional } from "@/components/AlertaSobrecargaProfesional";
 
 interface Visita {
   id: string;
@@ -592,6 +593,10 @@ const Visitas = () => {
         </Dialog>
         </div>
       </div>
+
+      {/* Alerta de pacientes sin visitas */}
+      {/* Alerta de sobrecarga de profesionales */}
+      <AlertaSobrecargaProfesional />
 
       {/* Alerta de pacientes sin visitas */}
       {pacientesSinVisita > 0 && (
