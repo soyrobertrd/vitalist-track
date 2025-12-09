@@ -8,10 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Syringe, Pill, FileText, Beaker, Gift, Check, X } from "lucide-react";
+import { Plus, Syringe, Pill, FileText, Beaker, Gift, Check, X, AlertCircle } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { format } from "date-fns";
+import { format, isBefore, startOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 
 interface AtencionItem {
@@ -172,11 +172,23 @@ const AtencionPaciente = () => {
       .eq("id", id);
 
     if (error) {
+      console.error("Error updating:", error);
       toast({ title: "Error al actualizar estado", variant: "destructive" });
     } else {
       toast({ title: "Atención marcada como realizada" });
-      fetchData();
+      // Actualizar localmente para respuesta inmediata
+      setAtenciones(prev => prev.map(a => 
+        a.id === id 
+          ? { ...a, estado: "realizada", fecha_realizada: new Date().toISOString() }
+          : a
+      ));
     }
+  };
+
+  const isAtrasada = (fechaProgramada: string): boolean => {
+    const fechaAtencion = startOfDay(new Date(fechaProgramada));
+    const hoy = startOfDay(new Date());
+    return isBefore(fechaAtencion, hoy);
   };
 
   const getIconForTipo = (tipo: string) => {
@@ -210,56 +222,76 @@ const AtencionPaciente = () => {
     return labels[tipo] || tipo;
   };
 
-  const renderAtencionCard = (atencion: AtencionItem) => (
-    <GlassCard key={atencion.id} className="p-6 space-y-4">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="text-primary">{getIconForTipo(atencion.tipo)}</div>
-            <h3 className="font-semibold text-foreground">{getTipoLabel(atencion.tipo)}</h3>
+  const renderAtencionCard = (atencion: AtencionItem) => {
+    const atrasada = atencion.estado === "pendiente" && isAtrasada(atencion.fecha_programada);
+    
+    return (
+      <GlassCard 
+        key={atencion.id} 
+        className={`p-6 space-y-4 relative ${atrasada ? 'border-destructive border-2' : ''}`}
+      >
+        {/* Badge de estado en esquina superior derecha */}
+        {atencion.estado === "pendiente" && atrasada && (
+          <div className="absolute top-2 right-2">
+            <Badge variant="destructive" className="flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" />
+              Atrasada
+            </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mb-2">{atencion.descripcion}</p>
-          <div className="space-y-1 text-sm">
-            <p>
-              <span className="font-medium">Paciente:</span> {atencion.pacientes.nombre} {atencion.pacientes.apellido}
-            </p>
-            <p>
-              <span className="font-medium">Programada:</span>{" "}
-              {format(new Date(atencion.fecha_programada), "dd/MM/yyyy HH:mm", { locale: es })}
-            </p>
-            {atencion.personal_salud && (
+        )}
+        
+        <div className="flex items-start justify-between">
+          <div className="flex-1 pr-16">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="text-primary">{getIconForTipo(atencion.tipo)}</div>
+              <h3 className="font-semibold text-foreground">{getTipoLabel(atencion.tipo)}</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mb-2">{atencion.descripcion}</p>
+            <div className="space-y-1 text-sm">
               <p>
-                <span className="font-medium">Profesional:</span> {atencion.personal_salud.nombre}{" "}
-                {atencion.personal_salud.apellido}
+                <span className="font-medium">Paciente:</span> {atencion.pacientes.nombre} {atencion.pacientes.apellido}
               </p>
-            )}
-            {atencion.periodicidad && atencion.periodicidad !== "unica" && (
-              <Badge variant="outline" className="mt-2">
-                {atencion.periodicidad}
-              </Badge>
-            )}
+              <p>
+                <span className="font-medium">Programada:</span>{" "}
+                {format(new Date(atencion.fecha_programada), "dd/MM/yyyy HH:mm", { locale: es })}
+              </p>
+              {atencion.personal_salud && (
+                <p>
+                  <span className="font-medium">Profesional:</span> {atencion.personal_salud.nombre}{" "}
+                  {atencion.personal_salud.apellido}
+                </p>
+              )}
+              {atencion.periodicidad && atencion.periodicidad !== "unica" && (
+                <Badge variant="outline" className="mt-2">
+                  {atencion.periodicidad}
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {atencion.estado === "pendiente" && (
-        <div className="flex gap-2 pt-4 border-t">
-          <Button variant="default" size="sm" className="flex-1" onClick={() => marcarRealizada(atencion.id)}>
-            <Check className="h-4 w-4 mr-2" />
-            Marcar Realizada
-          </Button>
-        </div>
-      )}
+        {atencion.estado === "pendiente" && (
+          <div className="flex gap-2 pt-4 border-t">
+            <Button variant="default" size="sm" className="flex-1" onClick={() => marcarRealizada(atencion.id)}>
+              <Check className="h-4 w-4 mr-2" />
+              Marcar Realizada
+            </Button>
+          </div>
+        )}
 
-      {atencion.estado === "realizada" && atencion.fecha_realizada && (
-        <div className="pt-4 border-t">
-          <Badge variant="default">
-            Realizada el {format(new Date(atencion.fecha_realizada), "dd/MM/yyyy HH:mm", { locale: es })}
-          </Badge>
-        </div>
-      )}
-    </GlassCard>
-  );
+        {atencion.estado === "realizada" && atencion.fecha_realizada && (
+          <div className="pt-4 border-t">
+            <Badge variant="default">
+              Realizada el {format(new Date(atencion.fecha_realizada), "dd/MM/yyyy HH:mm", { locale: es })}
+            </Badge>
+          </div>
+        )}
+      </GlassCard>
+    );
+  };
+
+  const pendientes = atenciones.filter((a) => a.estado === "pendiente");
+  const realizadas = atenciones.filter((a) => a.estado === "realizada");
 
   return (
     <div className="space-y-6">
@@ -392,25 +424,35 @@ const AtencionPaciente = () => {
 
       <Tabs defaultValue="pendientes" className="space-y-4">
         <TabsList className="glass-card">
-          <TabsTrigger value="pendientes">Pendientes</TabsTrigger>
-          <TabsTrigger value="realizadas">Realizadas</TabsTrigger>
+          <TabsTrigger value="pendientes">
+            Pendientes {pendientes.length > 0 && `(${pendientes.length})`}
+          </TabsTrigger>
+          <TabsTrigger value="realizadas">
+            Realizadas {realizadas.length > 0 && `(${realizadas.length})`}
+          </TabsTrigger>
           <TabsTrigger value="todas">Todas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pendientes" className="space-y-4">
           {loading ? (
             <p className="text-muted-foreground text-center">Cargando atenciones...</p>
+          ) : pendientes.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">No hay atenciones pendientes</p>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {atenciones.filter((a) => a.estado === "pendiente").map(renderAtencionCard)}
+              {pendientes.map(renderAtencionCard)}
             </div>
           )}
         </TabsContent>
 
         <TabsContent value="realizadas" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {atenciones.filter((a) => a.estado === "realizada").map(renderAtencionCard)}
-          </div>
+          {realizadas.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">No hay atenciones realizadas</p>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {realizadas.map(renderAtencionCard)}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="todas" className="space-y-4">

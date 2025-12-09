@@ -182,7 +182,10 @@ const Pacientes = () => {
     if (filters.status !== "todos" && p.status_px !== filters.status) return false;
     if (filters.zona !== "todos" && p.zona !== filters.zona) return false;
     if (filters.grado !== "todos" && p.grado_dificultad !== filters.grado) return false;
-    if (filters.barrio !== "todos" && p.barrio !== filters.barrio) return false;
+    if (filters.barrio !== "todos") {
+      if (filters.barrio === "sin_asignar" && p.barrio) return false;
+      if (filters.barrio !== "sin_asignar" && p.barrio !== filters.barrio) return false;
+    }
     if (filters.tipo === "sospechosos" && !p.es_sospechoso) return false;
     if (filters.tipo === "regulares" && p.es_sospechoso) return false;
     if (filters.busqueda) {
@@ -973,6 +976,7 @@ const Pacientes = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="todos">Todos</SelectItem>
+                    <SelectItem value="sin_asignar">Sin asignar</SelectItem>
                     {[...new Set(pacientes.map(p => p.barrio).filter(Boolean))].sort().map(barrio => (
                       <SelectItem key={barrio} value={barrio!}>{barrio}</SelectItem>
                     ))}
@@ -1050,6 +1054,7 @@ const Pacientes = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="todos">Todos</SelectItem>
+                  <SelectItem value="sin_asignar">Sin asignar</SelectItem>
                   {[...new Set(pacientes.map(p => p.barrio).filter(Boolean))].sort().map(barrio => (
                     <SelectItem key={barrio} value={barrio!}>{barrio}</SelectItem>
                   ))}
