@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ZonaSelect } from "@/components/ZonaSelect";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { handlePhoneInput, formatPhoneDR } from "@/lib/phoneUtils";
+import { Switch } from "@/components/ui/switch";
 
 interface Personal {
   id: string;
@@ -55,6 +56,7 @@ const Personal = () => {
   });
   const [selectedZona, setSelectedZona] = useState<string>("");
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
+  const [createUserAccount, setCreateUserAccount] = useState(true);
 
   const fetchPersonal = async () => {
     const { data, error } = await supabase
@@ -120,32 +122,47 @@ const Personal = () => {
     };
 
     try {
-      // Create user account first
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: {
-            nombre: data.nombre,
-            apellido: data.apellido,
-            cedula: data.cedula,
-            especialidad: data.especialidad,
-          }
-        }
-      });
+      let userId = null;
 
-      if (authError) throw authError;
+      if (createUserAccount) {
+        if (!password || password.length < 6) {
+          toast.error("La contraseña debe tener al menos 6 caracteres");
+          setLoading(false);
+          return;
+        }
+        
+        // Create user account first
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              nombre: data.nombre,
+              apellido: data.apellido,
+              cedula: data.cedula,
+              especialidad: data.especialidad,
+            }
+          }
+        });
+
+        if (authError) throw authError;
+        userId = authData.user?.id;
+      }
 
       // Add to personal_salud table
       const { error: personalError } = await supabase
         .from("personal_salud")
-        .insert([{ ...data, user_id: authData.user?.id }]);
+        .insert([{ ...data, user_id: userId }]);
 
       if (personalError) throw personalError;
 
-      toast.success("Personal y usuario creados exitosamente");
+      toast.success(createUserAccount ? "Personal y usuario creados exitosamente" : "Personal creado exitosamente");
       setOpen(false);
       fetchPersonal();
+      setCedulaData(null);
+      setSelectedZona("");
+      setSelectedBarrio("");
+      setCreateUserAccount(true);
       (e.target as HTMLFormElement).reset();
     } catch (error: any) {
       toast.error(error.message);
@@ -233,13 +250,28 @@ const Personal = () => {
                 <p className="text-xs text-muted-foreground">Formato: 829-123-1234 (10 dígitos)</p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email_contacto">Email *</Label>
-                <Input id="email_contacto" name="email_contacto" type="email" required />
+                <Label htmlFor="email_contacto">Email {createUserAccount ? "*" : ""}</Label>
+                <Input id="email_contacto" name="email_contacto" type="email" required={createUserAccount} />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Contraseña *</Label>
-                <Input id="password" name="password" type="password" required minLength={6} />
+              
+              <div className="flex items-center space-x-2 pt-2">
+                <Switch
+                  id="createUser"
+                  checked={createUserAccount}
+                  onCheckedChange={setCreateUserAccount}
+                />
+                <Label htmlFor="createUser" className="cursor-pointer">
+                  Crear cuenta de usuario (permite acceso al sistema)
+                </Label>
               </div>
+              
+              {createUserAccount && (
+                <div className="space-y-2">
+                  <Label htmlFor="password">Contraseña *</Label>
+                  <Input id="password" name="password" type="password" minLength={6} />
+                  <p className="text-xs text-muted-foreground">Mínimo 6 caracteres</p>
+                </div>
+              )}
               
               <div className="space-y-4 pt-4 border-t">
                 <h4 className="font-medium">Dirección del Profesional</h4>
@@ -275,7 +307,7 @@ const Personal = () => {
               </div>
               
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Guardando..." : "Crear Personal y Usuario"}
+                {loading ? "Guardando..." : createUserAccount ? "Crear Personal y Usuario" : "Crear Solo Profesional"}
               </Button>
             </form>
           </DialogContent>

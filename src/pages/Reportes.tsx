@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, FileText, Phone, Calendar, Users, TrendingUp, Activity } from "lucide-react";
+import { Download, FileText, Phone, Calendar, Users, TrendingUp, Activity, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { format, subDays, startOfDay, endOfDay } from "date-fns";
 import { es } from "date-fns/locale";
@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { DashboardRecordatorios } from "@/components/DashboardRecordatorios";
 import {
   BarChart,
   Bar,
@@ -320,10 +321,14 @@ const Reportes = () => {
 
       <div id="reporte-content">
       <Tabs defaultValue="resumen" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="resumen">Resumen Ejecutivo</TabsTrigger>
           <TabsTrigger value="llamadas">Control de Llamadas</TabsTrigger>
           <TabsTrigger value="visitas">Control de Visitas</TabsTrigger>
+          <TabsTrigger value="recordatorios" className="flex items-center gap-1">
+            <Bell className="h-3 w-3" />
+            Recordatorios
+          </TabsTrigger>
           <TabsTrigger value="analisis">Análisis</TabsTrigger>
           <TabsTrigger value="observaciones">Observaciones</TabsTrigger>
         </TabsList>
@@ -615,7 +620,12 @@ const Reportes = () => {
           </Card>
         </TabsContent>
 
-        {/* 4. ANÁLISIS */}
+        {/* 4. RECORDATORIOS */}
+        <TabsContent value="recordatorios" className="space-y-6">
+          <DashboardRecordatorios />
+        </TabsContent>
+
+        {/* 5. ANÁLISIS */}
         <TabsContent value="analisis" className="space-y-6">
           {/* Análisis por Profesional */}
           <Card>
