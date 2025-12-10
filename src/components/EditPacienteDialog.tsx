@@ -228,6 +228,11 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
     }
 
     const profesionalId = formDataObj.get("profesional_asignado_id") as string;
+    
+    const latitudStr = (formDataObj.get("latitud") as string || "").trim();
+    const longitudStr = (formDataObj.get("longitud") as string || "").trim();
+    const latitudNum = latitudStr && !isNaN(parseFloat(latitudStr)) ? parseFloat(latitudStr) : null;
+    const longitudNum = longitudStr && !isNaN(parseFloat(longitudStr)) ? parseFloat(longitudStr) : null;
 
     const updateData = {
       cedula: formValues.cedula,
@@ -247,6 +252,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       direccion_domicilio: formValues.direccion_domicilio,
       zona: (selectedZona as "Boca Chica" | "Los Alcarrizos" | "San Luis" | "distrito_nacional" | "santo_domingo_este" | "santo_domingo_norte" | "santo_domingo_oeste") || null,
       barrio: selectedBarrio || null,
+      latitud: latitudNum,
+      longitud: longitudNum,
       historia_medica_basica: formValues.historia_medica_basica,
       grado_dificultad: (formDataObj.get("grado_dificultad") as "alto" | "bajo" | "medio") || null,
       tipo_atencion: formDataObj.get("tipo_atencion") as string || "domiciliario",
