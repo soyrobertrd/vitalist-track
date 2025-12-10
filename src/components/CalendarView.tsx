@@ -391,11 +391,6 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
                     )}>
                       <span>{format(day, view === 'week' ? "d MMM" : "d", { locale: es })}</span>
                       <div className="flex items-center gap-1">
-                        {isWeekendDayFlag && (
-                          <Badge variant="outline" className="text-[10px] px-1 py-0 text-destructive/70 border-destructive/30">
-                            No laborable
-                          </Badge>
-                        )}
                         {dayEvents.length > 0 && (
                           <Badge variant="secondary" className="text-xs px-1.5 py-0">
                             {dayEvents.length}
