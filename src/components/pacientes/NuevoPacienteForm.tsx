@@ -127,14 +127,16 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
     const gradoDificultad = (formDataObj.get("grado_dificultad") as string) || "medio";
     const zonaValue = selectedZona as "santo_domingo_oeste" | "santo_domingo_este" | "santo_domingo_norte" | "distrito_nacional" | "San Luis" | "Los Alcarrizos" | "Boca Chica" | null;
     
-    const latitud = formDataObj.get("latitud") as string;
-    const longitud = formDataObj.get("longitud") as string;
+    const latitudStr = (formDataObj.get("latitud") as string || "").trim();
+    const longitudStr = (formDataObj.get("longitud") as string || "").trim();
+    const latitudNum = latitudStr && !isNaN(parseFloat(latitudStr)) ? parseFloat(latitudStr) : null;
+    const longitudNum = longitudStr && !isNaN(parseFloat(longitudStr)) ? parseFloat(longitudStr) : null;
     
     const dataPaciente = {
       cedula: formValues.cedula,
       nombre: formValues.nombre,
       apellido: formValues.apellido,
-      fecha_nacimiento: formValues.fecha_nacimiento,
+      fecha_nacimiento: formValues.fecha_nacimiento || null,
       sexo: formDataObj.get("sexo") as string || null,
       foto_url: cedulaData?.foto_encoded ? `data:image/jpeg;base64,${cedulaData.foto_encoded}` : null,
       contacto_px: formData.contacto_px ? formatPhoneDR(formData.contacto_px) : null,
@@ -149,15 +151,15 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       direccion_domicilio: (formDataObj.get("direccion_domicilio") as string || "").trim() || null,
       zona: zonaValue,
       barrio: selectedBarrio || null,
-      latitud: latitud ? parseFloat(latitud) : null,
-      longitud: longitud ? parseFloat(longitud) : null,
+      latitud: latitudNum,
+      longitud: longitudNum,
       historia_medica_basica: (formDataObj.get("historia_medica_basica") as string || "").trim() || null,
       grado_dificultad: gradoDificultad as "bajo" | "medio" | "alto",
       tipo_atencion: formDataObj.get("tipo_atencion") as string || "domiciliario",
       profesional_asignado_id: formDataObj.get("profesional_asignado_id") as string || null,
       es_sospechoso: formDataObj.get("es_sospechoso") === "on",
       notificaciones_activas: true,
-      status_px: "activo" as any,
+      status_px: "activo" as const,
       dias_no_visita: diasNoVisita,
     };
 
