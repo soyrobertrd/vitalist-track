@@ -97,6 +97,11 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [whatsappPx, setWhatsappPx] = useState(false);
   const [whatsappCuidador, setWhatsappCuidador] = useState(false);
   const [diasNoVisita, setDiasNoVisita] = useState<number[]>([]);
+  const [emailPx, setEmailPx] = useState("");
+  const [emailCuidador, setEmailCuidador] = useState("");
+  
+  // Auto-disable notifications if no email
+  const hasAnyEmail = !!(emailPx.trim() || emailCuidador.trim());
 
   const { duplicados } = useDetectarDuplicados(
     formData.cedula,
@@ -129,6 +134,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       setWhatsappPx(paciente.whatsapp_px || false);
       setWhatsappCuidador(paciente.whatsapp_cuidador || false);
       setDiasNoVisita(paciente.dias_no_visita || []);
+      setEmailPx(paciente.email_px || "");
+      setEmailCuidador(paciente.email_cuidador || "");
       // If patient already has nombre, apellido, fecha_nacimiento and sexo, consider it validated
       const hasValidatedData = !!(paciente.nombre && paciente.apellido && paciente.fecha_nacimiento && paciente.sexo);
       setJceValidatedOnLoad(hasValidatedData);
@@ -248,12 +255,12 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       sexo: selectedSexo || null,
       contacto_px: formValues.contacto_px ? formatPhoneDR(formValues.contacto_px) : null,
       whatsapp_px: whatsappPx,
-      email_px: (formDataObj.get("email_px") as string || "").trim() || null,
+      email_px: emailPx.trim() || null,
       nombre_cuidador: formValues.nombre_cuidador,
       parentesco_cuidador: formDataObj.get("parentesco_cuidador") as string || null,
       contacto_cuidador: formValues.contacto_cuidador ? formatPhoneDR(formValues.contacto_cuidador) : null,
       whatsapp_cuidador: whatsappCuidador,
-      email_cuidador: (formDataObj.get("email_cuidador") as string || "").trim() || null,
+      email_cuidador: emailCuidador.trim() || null,
       numero_principal: formDataObj.get("numero_principal") as any || null,
       direccion_domicilio: formValues.direccion_domicilio,
       zona: (selectedZona as any) || null,
@@ -489,7 +496,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   id="email_px" 
                   name="email_px" 
                   type="email"
-                  defaultValue={paciente.email_px || ''}
+                  value={emailPx}
+                  onChange={(e) => setEmailPx(e.target.value)}
                   placeholder="paciente@ejemplo.com"
                 />
               </div>
@@ -561,7 +569,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   id="email_cuidador" 
                   name="email_cuidador" 
                   type="email"
-                  defaultValue={paciente.email_cuidador || ''}
+                  value={emailCuidador}
+                  onChange={(e) => setEmailCuidador(e.target.value)}
                   placeholder="cuidador@ejemplo.com"
                 />
               </div>
@@ -701,15 +710,16 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 (No ha entrado al programa pero requiere seguimiento)
               </span>
             </Label>
-            <Label htmlFor="notificaciones_activas" className="flex items-center gap-2 cursor-pointer">
+            <Label htmlFor="notificaciones_activas" className={`flex items-center gap-2 ${hasAnyEmail ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}>
               <Checkbox 
                 id="notificaciones_activas" 
-                checked={notificacionesActivas}
-                onCheckedChange={(checked) => setNotificacionesActivas(checked as boolean)}
+                checked={hasAnyEmail ? notificacionesActivas : false}
+                onCheckedChange={(checked) => hasAnyEmail && setNotificacionesActivas(checked as boolean)}
+                disabled={!hasAnyEmail}
               />
               <span className="font-medium">Recibir notificaciones por correo</span>
               <span className="text-xs text-muted-foreground">
-                (Recordatorios y encuestas)
+                {hasAnyEmail ? "(Recordatorios y encuestas)" : "(Se requiere un correo electrónico)"}
               </span>
             </Label>
           </div>
