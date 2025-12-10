@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Phone, Calendar, Clock, User, Mail } from "lucide-react";
 import { format } from "date-fns";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
-import { MedicamentosPreview } from "@/components/MedicamentosPreview";
-import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
 
 interface Llamada {
   id: string;
@@ -46,11 +44,9 @@ export const LlamadaCardAgendada = ({
   formatearTexto,
 }: LlamadaCardAgendadaProps) => {
   const [pacienteData, setPacienteData] = useState<any>(null);
-  const [pacienteId, setPacienteId] = useState<string | null>(null);
   const [recordatorioOpen, setRecordatorioOpen] = useState(false);
   const overdue = isCallOverdue(llamada);
   const today = isCallToday ? isCallToday(llamada) : false;
-  const { medicamentos } = useMedicamentosPaciente(pacienteId);
 
   useEffect(() => {
     if (llamada.pacientes) {
@@ -62,7 +58,6 @@ export const LlamadaCardAgendada = ({
         .single()
         .then(({ data }) => {
           setPacienteData(data);
-          if (data?.id) setPacienteId(data.id);
         });
     }
   }, [llamada]);
@@ -164,9 +159,6 @@ export const LlamadaCardAgendada = ({
             {llamada.motivo}
           </p>
         )}
-        
-        {/* Medicamentos del paciente */}
-        <MedicamentosPreview medicamentos={medicamentos} maxShow={2} className="pt-2 border-t" />
         
         <Button
           variant="outline"

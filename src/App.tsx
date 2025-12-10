@@ -1,9 +1,9 @@
+import { Suspense, lazy, useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -15,7 +15,6 @@ import Dashboard from "./pages/Dashboard";
 import Pacientes from "./pages/Pacientes";
 import Personal from "./pages/Personal";
 import Llamadas from "./pages/Llamadas";
-import Visitas from "./pages/Visitas";
 import Configuracion from "./pages/Configuracion";
 import ConfiguracionAdmin from "./pages/ConfiguracionAdmin";
 import PlantillasCorreo from "./pages/PlantillasCorreo";
@@ -28,6 +27,17 @@ import NotFound from "./pages/NotFound";
 import ConfirmarCita from "./pages/ConfirmarCita";
 import ReporteSospechosos from "./pages/ReporteSospechosos";
 import DashboardGeografico from "./pages/DashboardGeografico";
+
+// Lazy loaded components for better performance
+const Visitas = lazy(() => import("./pages/Visitas"));
+const Calendario = lazy(() => import("./pages/Calendario"));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 const queryClient = new QueryClient();
 
@@ -84,7 +94,11 @@ const App = () => {
               />
               <Route
                 path="/visitas"
-                element={session ? <Layout><Visitas /></Layout> : <Navigate to="/auth" />}
+                element={session ? <Layout><Suspense fallback={<PageLoader />}><Visitas /></Suspense></Layout> : <Navigate to="/auth" />}
+              />
+              <Route
+                path="/calendario"
+                element={session ? <Layout><Suspense fallback={<PageLoader />}><Calendario /></Suspense></Layout> : <Navigate to="/auth" />}
               />
               <Route
                 path="/configuracion"
