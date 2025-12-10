@@ -311,9 +311,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                     maxLength={11}
                     required
                     onBlur={(e) => {
-                      // Only auto-fetch if cedula changed from original and not already validated
-                      const cedulaChanged = e.target.value !== paciente?.cedula;
-                      if (cedulaChanged && !jceValidatedOnLoad) {
+                      // If NOT validated yet, fetch data automatically on blur
+                      if (!jceValidatedOnLoad && !cedulaData) {
                         fetchCedulaData(e.target.value);
                       }
                     }}
@@ -325,6 +324,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                       // If cedula changes, reset validation status
                       if (value !== paciente?.cedula) {
                         setJceValidatedOnLoad(false);
+                        setCedulaData(null);
                       }
                     }}
                     className="pr-8"
@@ -347,7 +347,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   </div>
                 )}
                 {(cedulaData || jceValidatedOnLoad) && !loadingCedula && (
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2 text-xs text-green-600">
                       <CheckCircle2 className="h-3 w-3" />
                       Datos validados con JCE
@@ -356,9 +356,10 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                       type="button" 
                       variant="ghost" 
                       size="sm"
-                      className="h-6 text-xs px-2"
+                      className="h-6 text-xs px-2 w-fit"
                       onClick={() => {
                         setJceValidatedOnLoad(false);
+                        setCedulaData(null);
                         fetchCedulaData(formData.cedula);
                       }}
                       disabled={loadingCedula || formData.cedula.length !== 11}
