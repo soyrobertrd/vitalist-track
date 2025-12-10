@@ -7,6 +7,7 @@ interface InteractiveKPIProps {
   value: number | string;
   previousValue?: number;
   description?: string;
+  subtitle?: string;
   icon: LucideIcon;
   trend?: {
     value: number;
@@ -23,6 +24,7 @@ export function InteractiveKPI({
   value,
   previousValue,
   description,
+  subtitle,
   icon: Icon,
   trend,
   onClick,
@@ -111,7 +113,7 @@ export function InteractiveKPI({
 
         {/* Footer with trend and description */}
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
-          <p className="text-xs text-muted-foreground">{description}</p>
+          <p className="text-xs text-muted-foreground">{subtitle || description}</p>
           
           {(trend || percentChange) && (
             <div className={cn(

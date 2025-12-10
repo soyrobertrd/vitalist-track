@@ -27,6 +27,7 @@ import { VisitaCardAgendada } from "@/components/VisitaCardAgendada";
 import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
 import { MuestraMedicaDialog } from "@/components/MuestraMedicaDialog";
 import { AlertaSobrecargaProfesional } from "@/components/AlertaSobrecargaProfesional";
+import { ExportButton } from "@/components/ExportButton";
 
 interface Visita {
   id: string;
@@ -381,6 +382,19 @@ const Visitas = () => {
         </div>
         <div className="flex gap-2">
           {isAdmin && <ImportVisitasDialog onSuccess={fetchData} />}
+          <ExportButton
+            data={visitas.map(v => ({
+              paciente: `${v.pacientes?.nombre || ''} ${v.pacientes?.apellido || ''}`,
+              profesional: `${v.personal_salud?.nombre || ''} ${v.personal_salud?.apellido || ''}`,
+              fecha_visita: v.fecha_hora_visita,
+              tipo: v.tipo_visita,
+              estado: v.estado,
+              motivo: v.motivo_visita || '',
+              notas: v.notas_visita || ''
+            }))}
+            filename="visitas"
+            title="Reporte de Visitas"
+          />
           <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
             <Filter className="mr-2 h-4 w-4" />
             {showFilters ? "Ocultar Filtros" : "Filtros"}

@@ -2,12 +2,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Phone, User, MapPin, Heart, Pill, Mail } from "lucide-react";
+import { Calendar, Phone, User, MapPin, Heart, Pill, Mail, History } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificacionPlanAccion } from "@/components/NotificacionPlanAccion";
+import { PatientTimeline } from "@/components/PatientTimeline";
 
 interface PacienteDetailDialogProps {
   pacienteId: string | null;
@@ -225,12 +226,16 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
             </Card>
           )}
 
-          {/* Tabs para Medicamentos, Llamadas y Visitas */}
+          {/* Tabs para Medicamentos, Llamadas, Visitas e Historial */}
           <Tabs defaultValue="medicamentos" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="medicamentos">Medicamentos ({medicamentos.length})</TabsTrigger>
               <TabsTrigger value="llamadas">Llamadas ({llamadas.length})</TabsTrigger>
               <TabsTrigger value="visitas">Visitas ({visitas.length})</TabsTrigger>
+              <TabsTrigger value="historial">
+                <History className="h-4 w-4 mr-1" />
+                Historial
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="medicamentos" className="space-y-2">
@@ -350,6 +355,10 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
               {visitas.length === 0 && (
                 <p className="text-center text-muted-foreground py-4">No hay visitas agendadas</p>
               )}
+            </TabsContent>
+
+            <TabsContent value="historial" className="space-y-2">
+              <PatientTimeline pacienteId={pacienteId || ''} />
             </TabsContent>
           </Tabs>
 

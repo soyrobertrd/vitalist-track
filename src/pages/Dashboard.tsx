@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Phone, Calendar, AlertCircle, TrendingUp, Activity, Clock } from "lucide-react";
+import { Users, Phone, Calendar, AlertCircle, TrendingUp, Activity, Clock, CalendarDays } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { StatsCard } from "@/components/StatsCard";
+import { InteractiveKPI } from "@/components/InteractiveKPI";
 import { format, subDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
@@ -159,38 +159,42 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid with Interactive KPIs */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
+        <InteractiveKPI
           title="Total Pacientes"
           value={stats.totalPacientes}
-          description={`${stats.pacientesActivos} activos`}
+          subtitle={`${stats.pacientesActivos} activos`}
           icon={Users}
           trend={{ value: 12, isPositive: true }}
           onClick={() => navigate('/pacientes')}
+          color="primary"
         />
-        <StatsCard
+        <InteractiveKPI
           title="Llamadas Pendientes"
           value={stats.llamadasPendientes}
-          description="Por realizar hoy"
+          subtitle="Por realizar"
           icon={Phone}
           trend={{ value: 5, isPositive: false }}
           onClick={() => navigate('/llamadas')}
+          color="warning"
         />
-        <StatsCard
+        <InteractiveKPI
           title="Visitas Hoy"
           value={stats.visitasHoy}
-          description="Programadas"
+          subtitle="Programadas"
           icon={Calendar}
           trend={{ value: 8, isPositive: true }}
           onClick={() => navigate('/visitas')}
+          color="success"
         />
-        <StatsCard
-          title="Tasa de Respuesta"
-          value="87%"
-          description="Última semana"
-          icon={TrendingUp}
-          trend={{ value: 3, isPositive: true }}
+        <InteractiveKPI
+          title="Ver Calendario"
+          value="Agenda"
+          subtitle="Citas y visitas"
+          icon={CalendarDays}
+          onClick={() => navigate('/calendario')}
+          color="secondary"
         />
       </div>
 

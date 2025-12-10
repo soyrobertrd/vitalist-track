@@ -21,6 +21,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { LlamadaCardAgendada } from "@/components/LlamadaCardAgendada";
 import { PacientesSinCitasDialog } from "@/components/PacientesSinCitasDialog";
 import { AlertaSobrecargaProfesional } from "@/components/AlertaSobrecargaProfesional";
+import { ExportButton } from "@/components/ExportButton";
 
 interface Llamada {
   id: string;
@@ -322,6 +323,18 @@ const Llamadas = () => {
               <ProcesarLlamadasImportadasDialog onSuccess={fetchData} />
             </>
           )}
+          <ExportButton
+            data={llamadas.map(l => ({
+              paciente: `${l.pacientes?.nombre || ''} ${l.pacientes?.apellido || ''}`,
+              profesional: `${l.personal_salud?.nombre || ''} ${l.personal_salud?.apellido || ''}`,
+              fecha_agendada: l.fecha_agendada || '',
+              estado: l.estado,
+              motivo: l.motivo || '',
+              resultado: l.resultado_seguimiento || ''
+            }))}
+            filename="llamadas"
+            title="Reporte de Llamadas"
+          />
           <Button onClick={() => setOpenAgendar(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Agendar Llamada
