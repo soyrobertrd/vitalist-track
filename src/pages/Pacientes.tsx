@@ -33,6 +33,7 @@ import { useOGTICZonas } from "@/hooks/useOGTICZonas";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PacienteCard } from "@/components/PacienteCard";
 import { DiasRestriccionPaciente } from "@/components/DiasRestriccionPaciente";
+import { ExportButton } from "@/components/ExportButton";
 
 // Validation schema
 const pacienteSchema = z.object({
@@ -439,6 +440,20 @@ const Pacientes = () => {
               <DetectarDuplicadosDialog />
             </>
           )}
+          <ExportButton
+            data={filteredPacientes.map((p: any) => ({
+              cedula: p.cedula,
+              nombre: p.nombre,
+              apellido: p.apellido,
+              contacto: p.contacto_px || '',
+              zona: p.zona || '',
+              barrio: p.barrio || '',
+              estado: p.status_px,
+              dificultad: p.grado_dificultad || ''
+            }))}
+            filename="pacientes"
+            title="Reporte de Pacientes"
+          />
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button>
