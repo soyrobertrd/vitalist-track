@@ -47,6 +47,7 @@ import { cn } from "@/lib/utils";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ThemeCustomizer } from "@/components/ThemeCustomizer";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
 
 interface LayoutProps {
   children: ReactNode;
@@ -373,6 +374,7 @@ const Layout = ({ children }: LayoutProps) => {
             <span className="font-bold text-sidebar-foreground">HealthCRM</span>
           </div>
           <div className="flex items-center gap-2">
+            <OfflineIndicator />
             <GlobalSearch />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -395,7 +397,10 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
             <div className="flex items-center justify-between px-6 py-3">
               <Breadcrumbs />
-              <GlobalSearch />
+              <div className="flex items-center gap-3">
+                <OfflineIndicator />
+                <GlobalSearch />
+              </div>
             </div>
           </div>
         )}
