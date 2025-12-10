@@ -6,9 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, User, Home, Building, Mail, Pill } from "lucide-react";
+import { Calendar, Clock, User, Home, Building, Mail, Pill, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { GlassCard } from "@/components/GlassCard";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
 import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
+import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 
 interface VisitaDetailDialogProps {
   open: boolean;
@@ -36,19 +38,47 @@ export function VisitaDetailDialog({
 }: VisitaDetailDialogProps) {
   const [loading, setLoading] = useState(false);
   const [showRecordatorioDialog, setShowRecordatorioDialog] = useState(false);
+  const [fechaError, setFechaError] = useState<string | null>(null);
   const { medicamentos } = useMedicamentosPaciente(visita?.paciente_id || null);
+  const { validarFechaAgendamiento } = useDiasLaborables();
 
   if (!visita) return null;
 
   const hasEmail = visita.pacientes?.email_px || visita.pacientes?.email_cuidador;
   const hasPhone = visita.pacientes?.contacto_px || visita.pacientes?.contacto_cuidador;
 
+  const handleFechaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fechaStr = e.target.value;
+    if (fechaStr) {
+      const fecha = new Date(fechaStr);
+      const validacion = validarFechaAgendamiento(fecha);
+      if (!validacion.valido) {
+        setFechaError(validacion.mensaje || "Fecha no válida");
+      } else {
+        setFechaError(null);
+      }
+    } else {
+      setFechaError(null);
+    }
+  };
+
   const handleReagendar = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-
+    
     const formData = new FormData(e.currentTarget);
     const fechaHoraVisita = formData.get("nueva_fecha_hora") as string;
+    
+    // Validate non-working days
+    if (fechaHoraVisita) {
+      const fecha = new Date(fechaHoraVisita);
+      const validacion = validarFechaAgendamiento(fecha);
+      if (!validacion.valido) {
+        toast.error(validacion.mensaje);
+        return;
+      }
+    }
+    
+    setLoading(true);
     const profesionalId = formData.get("profesional_id") as string;
     const motivo = formData.get("motivo_reagendar") as string;
 
@@ -347,7 +377,14 @@ export function VisitaDetailDialog({
                       name="nueva_fecha_hora"
                       required
                       min={new Date().toISOString().slice(0, 16)}
+                      onChange={handleFechaChange}
                     />
+                    {fechaError && (
+                      <Alert variant="destructive" className="py-2">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription className="text-xs">{fechaError}</AlertDescription>
+                      </Alert>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="motivo_reagendar">Motivo del Reagendamiento *</Label>

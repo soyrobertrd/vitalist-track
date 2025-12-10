@@ -674,6 +674,8 @@ export type Database = {
             | null
           historia_medica_basica: string | null
           id: string
+          latitud: number | null
+          longitud: number | null
           nombre: string
           nombre_cuidador: string | null
           notificaciones_activas: boolean | null
@@ -707,6 +709,8 @@ export type Database = {
             | null
           historia_medica_basica?: string | null
           id?: string
+          latitud?: number | null
+          longitud?: number | null
           nombre: string
           nombre_cuidador?: string | null
           notificaciones_activas?: boolean | null
@@ -740,6 +744,8 @@ export type Database = {
             | null
           historia_medica_basica?: string | null
           id?: string
+          latitud?: number | null
+          longitud?: number | null
           nombre?: string
           nombre_cuidador?: string | null
           notificaciones_activas?: boolean | null
