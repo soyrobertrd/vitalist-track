@@ -22,6 +22,7 @@ import {
   MessageSquare,
   Cog,
   Menu,
+  CalendarDays,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -43,6 +44,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { GlobalSearch } from "@/components/GlobalSearch";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ThemeCustomizer } from "@/components/ThemeCustomizer";
 
 interface LayoutProps {
   children: ReactNode;
@@ -57,6 +61,7 @@ const Layout = ({ children }: LayoutProps) => {
   const isMobile = useIsMobile();
   const permissions = useModulePermissions();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
 
   // Enable automatic notifications for suspect patients
   useNotificacionesSospechosos();
@@ -64,6 +69,7 @@ const Layout = ({ children }: LayoutProps) => {
   // Menu items configuration
   const menuItems = [
     { path: "/", icon: LayoutDashboard, label: "Dashboard" },
+    { path: "/calendario", icon: CalendarDays, label: "Calendario" },
     { path: "/llamadas", icon: Phone, label: "Llamadas" },
     { path: "/visitas", icon: Calendar, label: "Visitas" },
     {
@@ -267,6 +273,11 @@ const Layout = ({ children }: LayoutProps) => {
               <Monitor className="mr-2 h-4 w-4" />
               Estándar
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setThemeCustomizerOpen(true)}>
+              <Settings className="mr-2 h-4 w-4" />
+              Personalizar colores
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -361,23 +372,41 @@ const Layout = ({ children }: LayoutProps) => {
             <Activity className="h-6 w-6 text-primary" />
             <span className="font-bold text-sidebar-foreground">HealthCRM</span>
           </div>
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-sidebar-foreground">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-64 p-0 bg-sidebar border-sidebar-border">
-              <SidebarContent />
-            </SheetContent>
-          </Sheet>
+          <div className="flex items-center gap-2">
+            <GlobalSearch />
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-sidebar-foreground">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-64 p-0 bg-sidebar border-sidebar-border">
+                <SidebarContent />
+              </SheetContent>
+            </Sheet>
+          </div>
         </header>
       )}
 
       {/* Main Content */}
       <main className={`flex-1 overflow-auto ${isMobile ? 'pt-16' : ''}`}>
+        {/* Desktop Top Bar */}
+        {!isMobile && (
+          <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+            <div className="flex items-center justify-between px-6 py-3">
+              <Breadcrumbs />
+              <GlobalSearch />
+            </div>
+          </div>
+        )}
         <div className="p-4 sm:p-6 lg:p-8">{children}</div>
       </main>
+
+      {/* Theme Customizer Dialog */}
+      <ThemeCustomizer 
+        open={themeCustomizerOpen} 
+        onOpenChange={setThemeCustomizerOpen} 
+      />
     </div>
   );
 };
