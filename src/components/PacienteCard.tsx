@@ -127,7 +127,16 @@ export const PacienteCard = ({
           {paciente.direccion_domicilio && (
             <div className="flex items-start gap-2 text-muted-foreground">
               <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-              <span className="line-clamp-1">{paciente.direccion_domicilio}</span>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(paciente.direccion_domicilio)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="line-clamp-1 hover:text-foreground hover:underline transition-colors"
+                title="Ver en Google Maps"
+              >
+                {paciente.direccion_domicilio}
+              </a>
             </div>
           )}
 
