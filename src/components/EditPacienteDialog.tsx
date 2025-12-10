@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import { differenceInYears } from "date-fns";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, RefreshCw } from "lucide-react";
 import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { ZonaSelect } from "@/components/ZonaSelect";
@@ -107,6 +107,9 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
     paciente?.id
   );
 
+  // Track if patient data has already been validated with JCE (has nombre, apellido, fecha_nacimiento, sexo)
+  const [jceValidatedOnLoad, setJceValidatedOnLoad] = useState(false);
+
   useEffect(() => {
     if (paciente && open) {
       setSelectedZona(paciente.zona || null);
@@ -126,6 +129,9 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       setWhatsappPx(paciente.whatsapp_px || false);
       setWhatsappCuidador(paciente.whatsapp_cuidador || false);
       setDiasNoVisita(paciente.dias_no_visita || []);
+      // If patient already has nombre, apellido, fecha_nacimiento and sexo, consider it validated
+      const hasValidatedData = !!(paciente.nombre && paciente.apellido && paciente.fecha_nacimiento && paciente.sexo);
+      setJceValidatedOnLoad(hasValidatedData);
       fetchPersonal();
     }
   }, [paciente, open]);
@@ -304,12 +310,22 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                     value={formData.cedula}
                     maxLength={11}
                     required
-                    onBlur={(e) => fetchCedulaData(e.target.value)}
+                    onBlur={(e) => {
+                      // Only auto-fetch if cedula changed from original and not already validated
+                      const cedulaChanged = e.target.value !== paciente?.cedula;
+                      if (cedulaChanged && !jceValidatedOnLoad) {
+                        fetchCedulaData(e.target.value);
+                      }
+                    }}
                     disabled={loadingCedula}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, '');
                       e.target.value = value;
                       handleInputChange("cedula", value);
+                      // If cedula changes, reset validation status
+                      if (value !== paciente?.cedula) {
+                        setJceValidatedOnLoad(false);
+                      }
                     }}
                     className="pr-8"
                   />
@@ -318,7 +334,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                       <Loader2 className="h-4 w-4 animate-spin text-primary" />
                     </div>
                   )}
-                  {!loadingCedula && cedulaData && (
+                  {!loadingCedula && (cedulaData || jceValidatedOnLoad) && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2" title="Validado con JCE">
                       <CheckCircle2 className="h-4 w-4 text-green-500" />
                     </div>
@@ -330,10 +346,26 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                     Consultando datos de la JCE...
                   </div>
                 )}
-                {cedulaData && !loadingCedula && (
-                  <div className="flex items-center gap-2 text-xs text-green-600">
-                    <CheckCircle2 className="h-3 w-3" />
-                    Datos validados con JCE
+                {(cedulaData || jceValidatedOnLoad) && !loadingCedula && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs text-green-600">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Datos validados con JCE
+                    </div>
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="sm"
+                      className="h-6 text-xs px-2"
+                      onClick={() => {
+                        setJceValidatedOnLoad(false);
+                        fetchCedulaData(formData.cedula);
+                      }}
+                      disabled={loadingCedula || formData.cedula.length !== 11}
+                    >
+                      <RefreshCw className="h-3 w-3 mr-1" />
+                      Re-validar
+                    </Button>
                   </div>
                 )}
               </div>
