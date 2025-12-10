@@ -250,7 +250,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       email_cuidador: (formDataObj.get("email_cuidador") as string || "").trim() || null,
       numero_principal: formDataObj.get("numero_principal") as any || null,
       direccion_domicilio: formValues.direccion_domicilio,
-      zona: (selectedZona as "Boca Chica" | "Los Alcarrizos" | "San Luis" | "distrito_nacional" | "santo_domingo_este" | "santo_domingo_norte" | "santo_domingo_oeste") || null,
+      zona: (selectedZona as any) || null,
       barrio: selectedBarrio || null,
       latitud: latitudNum,
       longitud: longitudNum,
@@ -318,8 +318,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                       <Loader2 className="h-4 w-4 animate-spin text-primary" />
                     </div>
                   )}
-                  {!loadingCedula && formData.cedula.length === 11 && (
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                  {!loadingCedula && cedulaData && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2" title="Validado con JCE">
                       <CheckCircle2 className="h-4 w-4 text-green-500" />
                     </div>
                   )}
@@ -328,6 +328,12 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   <div className="flex items-center gap-2 text-xs text-primary">
                     <Loader2 className="h-3 w-3 animate-spin" />
                     Consultando datos de la JCE...
+                  </div>
+                )}
+                {cedulaData && !loadingCedula && (
+                  <div className="flex items-center gap-2 text-xs text-green-600">
+                    <CheckCircle2 className="h-3 w-3" />
+                    Datos validados con JCE
                   </div>
                 )}
               </div>

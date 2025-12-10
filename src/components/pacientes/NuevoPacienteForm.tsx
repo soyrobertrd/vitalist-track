@@ -125,7 +125,8 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
     }
 
     const gradoDificultad = (formDataObj.get("grado_dificultad") as string) || "medio";
-    const zonaValue = selectedZona as "santo_domingo_oeste" | "santo_domingo_este" | "santo_domingo_norte" | "distrito_nacional" | "San Luis" | "Los Alcarrizos" | "Boca Chica" | null;
+    // zona is stored as string - cast to any to allow new municipalities not in enum yet
+    const zonaValue = (selectedZona as any) || null;
     
     const latitudStr = (formDataObj.get("latitud") as string || "").trim();
     const longitudStr = (formDataObj.get("longitud") as string || "").trim();
@@ -264,12 +265,24 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
                     <Loader2 className="h-4 w-4 animate-spin text-primary" />
                   </div>
                 )}
-                {!loadingCedula && formData.cedula.length === 11 && (
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                {!loadingCedula && cedulaData && (
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2" title="Validado con JCE">
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
                   </div>
                 )}
               </div>
+              {loadingCedula && (
+                <div className="flex items-center gap-2 text-xs text-primary">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Consultando datos de la JCE...
+                </div>
+              )}
+              {cedulaData && !loadingCedula && (
+                <div className="flex items-center gap-2 text-xs text-green-600">
+                  <CheckCircle2 className="h-3 w-3" />
+                  Datos validados con JCE
+                </div>
+              )}
             </div>
             <div className="md:col-span-2 space-y-1">
               <Label htmlFor="nombre" className="text-xs">Nombre *</Label>
