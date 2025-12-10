@@ -186,16 +186,34 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
   };
 
   const days = useMemo(() => {
-    if (view === 'week') {
-      const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
-      const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
-      return eachDayOfInterval({ start: weekStart, end: weekEnd });
-    } else {
-      const monthStart = startOfMonth(currentDate);
-      const monthEnd = endOfMonth(currentDate);
-      const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
-      const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
-      return eachDayOfInterval({ start: calendarStart, end: calendarEnd });
+    try {
+      if (!currentDate || isNaN(currentDate.getTime())) {
+        return [];
+      }
+      
+      if (view === 'week') {
+        const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
+        const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
+        if (!weekStart || !weekEnd || isNaN(weekStart.getTime()) || isNaN(weekEnd.getTime())) {
+          return [];
+        }
+        return eachDayOfInterval({ start: weekStart, end: weekEnd });
+      } else {
+        const monthStart = startOfMonth(currentDate);
+        const monthEnd = endOfMonth(currentDate);
+        if (!monthStart || !monthEnd || isNaN(monthStart.getTime()) || isNaN(monthEnd.getTime())) {
+          return [];
+        }
+        const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+        const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+        if (!calendarStart || !calendarEnd || isNaN(calendarStart.getTime()) || isNaN(calendarEnd.getTime())) {
+          return [];
+        }
+        return eachDayOfInterval({ start: calendarStart, end: calendarEnd });
+      }
+    } catch (error) {
+      console.error("Error calculating days:", error);
+      return [];
     }
   }, [currentDate, view]);
 
@@ -217,18 +235,38 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
   };
 
   const navigatePrevious = () => {
-    if (view === 'week') {
-      setCurrentDate(subWeeks(currentDate, 1));
-    } else {
-      setCurrentDate(subMonths(currentDate, 1));
+    try {
+      if (view === 'week') {
+        const newDate = subWeeks(currentDate, 1);
+        if (newDate && !isNaN(newDate.getTime())) {
+          setCurrentDate(newDate);
+        }
+      } else {
+        const newDate = subMonths(currentDate, 1);
+        if (newDate && !isNaN(newDate.getTime())) {
+          setCurrentDate(newDate);
+        }
+      }
+    } catch (error) {
+      console.error("Error navigating previous:", error);
     }
   };
 
   const navigateNext = () => {
-    if (view === 'week') {
-      setCurrentDate(addWeeks(currentDate, 1));
-    } else {
-      setCurrentDate(addMonths(currentDate, 1));
+    try {
+      if (view === 'week') {
+        const newDate = addWeeks(currentDate, 1);
+        if (newDate && !isNaN(newDate.getTime())) {
+          setCurrentDate(newDate);
+        }
+      } else {
+        const newDate = addMonths(currentDate, 1);
+        if (newDate && !isNaN(newDate.getTime())) {
+          setCurrentDate(newDate);
+        }
+      }
+    } catch (error) {
+      console.error("Error navigating next:", error);
     }
   };
 
@@ -367,14 +405,16 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
                 "grid grid-cols-7 gap-px bg-border rounded-lg overflow-hidden"
               )}
             >
-              {days.map((day) => {
+              {days.length > 0 ? days.map((day) => {
+                if (!day || isNaN(day.getTime())) return null;
+                
                 const dayEvents = getEventsForDay(day);
                 const isCurrentMonth = view === 'week' || isSameMonth(day, currentDate);
                 const isWeekendDayFlag = isWeekendDay(day);
 
                 return (
                   <div
-                    key={day.toISOString()}
+                    key={day.getTime()}
                     className={cn(
                       "bg-card p-2 transition-colors flex flex-col",
                       !isCurrentMonth && "bg-muted/30",
@@ -438,7 +478,11 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
                     </div>
                   </div>
                 );
-              })}
+              }) : (
+                <div className="col-span-7 flex items-center justify-center h-32 text-muted-foreground">
+                  No se pueden mostrar los días
+                </div>
+              )}
             </div>
 
             {/* Summary */}

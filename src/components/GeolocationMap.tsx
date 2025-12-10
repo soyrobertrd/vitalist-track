@@ -82,7 +82,7 @@ export function GeolocationMap({ profesionalId, fecha: initialFecha }: Geolocati
         tipo_visita,
         estado,
         pacientes!control_visitas_paciente_id_fkey(
-          id, nombre, apellido, direccion_domicilio, barrio, zona
+          id, nombre, apellido, direccion_domicilio, barrio, zona, latitud, longitud
         )
       `)
       .gte("fecha_hora_visita", startOfDay.toISOString())
@@ -112,8 +112,8 @@ export function GeolocationMap({ profesionalId, fecha: initialFecha }: Geolocati
           barrio: v.pacientes.barrio,
           zona: v.pacientes.zona,
           hora: format(new Date(v.fecha_hora_visita), "HH:mm"),
-          latitud: null,
-          longitud: null,
+          latitud: v.pacientes.latitud,
+          longitud: v.pacientes.longitud,
         }));
       
       setVisitas(visitasFormateadas);
@@ -160,7 +160,7 @@ export function GeolocationMap({ profesionalId, fecha: initialFecha }: Geolocati
     });
   };
 
-  const handleSaveCoords = (pacienteId: string) => {
+  const handleSaveCoords = async (pacienteId: string) => {
     const lat = parseFloat(coordsForm.lat);
     const lng = parseFloat(coordsForm.lng);
     
@@ -169,14 +169,29 @@ export function GeolocationMap({ profesionalId, fecha: initialFecha }: Geolocati
       return;
     }
 
+    // Save to database
+    const { error } = await supabase
+      .from("pacientes")
+      .update({ 
+        latitud: coordsForm.lat ? lat : null, 
+        longitud: coordsForm.lng ? lng : null 
+      })
+      .eq("id", pacienteId);
+
+    if (error) {
+      toast.error("Error al guardar coordenadas");
+      console.error(error);
+      return;
+    }
+
     setVisitas(prev => prev.map(v => 
       v.id === pacienteId 
-        ? { ...v, latitud: lat || null, longitud: lng || null }
+        ? { ...v, latitud: coordsForm.lat ? lat : null, longitud: coordsForm.lng ? lng : null }
         : v
     ));
     
     setEditingCoords(null);
-    toast.success("Coordenadas actualizadas");
+    toast.success("Coordenadas guardadas en el paciente");
   };
 
   const zonaLabels: Record<string, string> = {

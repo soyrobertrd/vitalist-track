@@ -127,6 +127,9 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
     const gradoDificultad = (formDataObj.get("grado_dificultad") as string) || "medio";
     const zonaValue = selectedZona as "santo_domingo_oeste" | "santo_domingo_este" | "santo_domingo_norte" | "distrito_nacional" | "San Luis" | "Los Alcarrizos" | "Boca Chica" | null;
     
+    const latitud = formDataObj.get("latitud") as string;
+    const longitud = formDataObj.get("longitud") as string;
+    
     const dataPaciente = {
       cedula: formValues.cedula,
       nombre: formValues.nombre,
@@ -146,6 +149,8 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       direccion_domicilio: (formDataObj.get("direccion_domicilio") as string || "").trim() || null,
       zona: zonaValue,
       barrio: selectedBarrio || null,
+      latitud: latitud ? parseFloat(latitud) : null,
+      longitud: longitud ? parseFloat(longitud) : null,
       historia_medica_basica: (formDataObj.get("historia_medica_basica") as string || "").trim() || null,
       grado_dificultad: gradoDificultad as "bajo" | "medio" | "alto",
       tipo_atencion: formDataObj.get("tipo_atencion") as string || "domiciliario",
@@ -442,6 +447,28 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
           <div className="space-y-1">
             <Label htmlFor="direccion_domicilio" className="text-xs">Dirección Completa</Label>
             <Textarea id="direccion_domicilio" name="direccion_domicilio" maxLength={500} className="min-h-[60px]" placeholder="Calle, número, sector, referencias..." />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label htmlFor="latitud" className="text-xs">Latitud (coordenada)</Label>
+              <Input 
+                id="latitud" 
+                name="latitud" 
+                type="number" 
+                step="0.00000001"
+                placeholder="ej: 18.4861"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="longitud" className="text-xs">Longitud (coordenada)</Label>
+              <Input 
+                id="longitud" 
+                name="longitud" 
+                type="number" 
+                step="0.00000001"
+                placeholder="ej: -69.9312"
+              />
+            </div>
           </div>
         </div>
 
