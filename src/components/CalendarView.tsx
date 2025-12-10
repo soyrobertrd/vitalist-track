@@ -10,7 +10,9 @@ import {
   Phone, 
   Home, 
   Building,
-  Filter
+  Check,
+  Clock,
+  X
 } from "lucide-react";
 import { 
   format, 
@@ -25,16 +27,13 @@ import {
   endOfWeek, 
   isSameMonth,
   addWeeks,
-  subWeeks
+  subWeeks,
+  isWeekend,
+  getDay
 } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface CalendarEvent {
   id: string;
@@ -51,16 +50,16 @@ interface CalendarViewProps {
   onEventClick?: (event: CalendarEvent) => void;
 }
 
-type FilterType = 'all' | 'visitas' | 'llamadas';
-
 export function CalendarView({ onEventClick }: CalendarViewProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState<'month' | 'week'>('month');
-  const [filter, setFilter] = useState<FilterType>('all');
-  const [showVisitas, setShowVisitas] = useState(true);
-  const [showLlamadas, setShowLlamadas] = useState(true);
+  const [view, setView] = useState<'month' | 'week'>('week');
+  
+  // Toggle filters for type
+  const [activeTypes, setActiveTypes] = useState<string[]>(['llamadas', 'domicilio', 'ambulatorio']);
+  // Toggle filters for status  
+  const [activeStatuses, setActiveStatuses] = useState<string[]>(['pendiente', 'realizada', 'cancelada']);
 
   useEffect(() => {
     fetchEvents();
@@ -153,11 +152,24 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
 
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
-      if (!showVisitas && event.type === 'visita') return false;
-      if (!showLlamadas && event.type === 'llamada') return false;
+      // Filter by type
+      if (event.type === 'llamada' && !activeTypes.includes('llamadas')) return false;
+      if (event.type === 'visita' && event.tipoVisita === 'domicilio' && !activeTypes.includes('domicilio')) return false;
+      if (event.type === 'visita' && event.tipoVisita === 'ambulatorio' && !activeTypes.includes('ambulatorio')) return false;
+      
+      // Filter by status
+      const normalizedStatus = normalizeStatus(event.status);
+      if (!activeStatuses.includes(normalizedStatus)) return false;
+      
       return true;
     });
-  }, [events, showVisitas, showLlamadas]);
+  }, [events, activeTypes, activeStatuses]);
+
+  const normalizeStatus = (status: string): string => {
+    if (['realizada'].includes(status)) return 'realizada';
+    if (['cancelada'].includes(status)) return 'cancelada';
+    return 'pendiente'; // agendada, pendiente, etc.
+  };
 
   const days = useMemo(() => {
     if (view === 'week') {
@@ -182,7 +194,7 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
   const getEventColor = (event: CalendarEvent) => {
     if (event.type === 'llamada') {
       return event.status === 'realizada' ? 'bg-success/20 text-success border-success/30' : 
-             event.status === 'agendada' ? 'bg-primary/20 text-primary border-primary/30' :
+             event.status === 'agendada' || event.status === 'pendiente' ? 'bg-primary/20 text-primary border-primary/30' :
              'bg-muted text-muted-foreground border-muted';
     }
     return event.status === 'realizada' ? 'bg-secondary/20 text-secondary border-secondary/30' :
@@ -215,14 +227,10 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
     return format(currentDate, "MMMM yyyy", { locale: es });
   };
 
-  const maxEventsPerDay = useMemo(() => {
-    let max = 0;
-    days.forEach(day => {
-      const count = getEventsForDay(day).length;
-      if (count > max) max = count;
-    });
-    return max;
-  }, [days, filteredEvents]);
+  const isWeekendDay = (day: Date) => {
+    const dayOfWeek = getDay(day);
+    return dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday
+  };
 
   return (
     <Card className="w-full">
@@ -252,37 +260,6 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
           </div>
           
           <div className="flex items-center gap-2">
-            {/* Filter dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Filter className="h-4 w-4" />
-                  Filtrar
-                  {(!showVisitas || !showLlamadas) && (
-                    <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-xs">
-                      {showVisitas && !showLlamadas ? 'Visitas' : !showVisitas && showLlamadas ? 'Llamadas' : ''}
-                    </Badge>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuCheckboxItem
-                  checked={showVisitas}
-                  onCheckedChange={setShowVisitas}
-                >
-                  <Home className="h-4 w-4 mr-2" />
-                  Visitas
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem
-                  checked={showLlamadas}
-                  onCheckedChange={setShowLlamadas}
-                >
-                  <Phone className="h-4 w-4 mr-2" />
-                  Llamadas
-                </DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             <Button variant="outline" size="icon" onClick={navigatePrevious}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -298,24 +275,52 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
           </div>
         </div>
 
-        {/* Legend */}
-        <div className="flex items-center gap-4 mt-4 text-sm flex-wrap">
-          <div className="flex items-center gap-1">
-            <Phone className="h-3 w-3 text-primary" />
-            <span className="text-muted-foreground">Llamadas</span>
+        {/* Type Toggle Buttons */}
+        <div className="flex flex-wrap items-center gap-4 mt-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-muted-foreground">Tipo:</span>
+            <ToggleGroup 
+              type="multiple" 
+              value={activeTypes} 
+              onValueChange={(value) => value.length > 0 && setActiveTypes(value)}
+              className="gap-1"
+            >
+              <ToggleGroupItem value="llamadas" aria-label="Llamadas" className="gap-1 data-[state=on]:bg-primary/20">
+                <Phone className="h-4 w-4" />
+                Llamadas
+              </ToggleGroupItem>
+              <ToggleGroupItem value="domicilio" aria-label="Visitas Domicilio" className="gap-1 data-[state=on]:bg-warning/20">
+                <Home className="h-4 w-4" />
+                Domicilio
+              </ToggleGroupItem>
+              <ToggleGroupItem value="ambulatorio" aria-label="Visitas Ambulatorio" className="gap-1 data-[state=on]:bg-secondary/20">
+                <Building className="h-4 w-4" />
+                Ambulatorio
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
-          <div className="flex items-center gap-1">
-            <Home className="h-3 w-3 text-warning" />
-            <span className="text-muted-foreground">Visitas Domicilio</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Building className="h-3 w-3 text-secondary" />
-            <span className="text-muted-foreground">Visitas Ambulatorio</span>
-          </div>
-          <div className="flex items-center gap-2 ml-auto">
-            <Badge variant="outline" className="bg-success/10 text-success border-success/30">Realizada</Badge>
-            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">Pendiente</Badge>
-            <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/30">Cancelada</Badge>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-muted-foreground">Estado:</span>
+            <ToggleGroup 
+              type="multiple" 
+              value={activeStatuses} 
+              onValueChange={(value) => value.length > 0 && setActiveStatuses(value)}
+              className="gap-1"
+            >
+              <ToggleGroupItem value="pendiente" aria-label="Pendientes" className="gap-1 data-[state=on]:bg-primary/20">
+                <Clock className="h-4 w-4" />
+                Pendientes
+              </ToggleGroupItem>
+              <ToggleGroupItem value="realizada" aria-label="Realizadas" className="gap-1 data-[state=on]:bg-success/20">
+                <Check className="h-4 w-4" />
+                Realizadas
+              </ToggleGroupItem>
+              <ToggleGroupItem value="cancelada" aria-label="Canceladas" className="gap-1 data-[state=on]:bg-destructive/20">
+                <X className="h-4 w-4" />
+                Canceladas
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
         </div>
       </CardHeader>
@@ -329,57 +334,67 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
           <>
             {/* Weekday headers */}
             <div className="grid grid-cols-7 gap-px mb-2">
-              {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((day) => (
-                <div key={day} className="text-center text-sm font-medium text-muted-foreground py-2">
+              {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((day, index) => (
+                <div 
+                  key={day} 
+                  className={cn(
+                    "text-center text-sm font-medium py-2",
+                    index >= 5 ? "text-destructive/70" : "text-muted-foreground"
+                  )}
+                >
                   {day}
                 </div>
               ))}
             </div>
 
-            {/* Calendar grid - dynamic height based on events */}
+            {/* Calendar grid - fixed size */}
             <div 
               className={cn(
-                "grid grid-cols-7 gap-px bg-border rounded-lg overflow-hidden",
-                view === 'week' && "min-h-[300px]"
+                "grid grid-cols-7 gap-px bg-border rounded-lg overflow-hidden"
               )}
             >
               {days.map((day) => {
                 const dayEvents = getEventsForDay(day);
                 const isCurrentMonth = view === 'week' || isSameMonth(day, currentDate);
+                const isWeekendDayFlag = isWeekendDay(day);
 
                 return (
                   <div
                     key={day.toISOString()}
                     className={cn(
-                      "bg-card p-2 transition-colors hover:bg-accent/30 flex flex-col",
+                      "bg-card p-2 transition-colors flex flex-col",
                       !isCurrentMonth && "bg-muted/30",
                       isToday(day) && "ring-2 ring-primary ring-inset",
-                      view === 'week' ? "min-h-[300px]" : "min-h-[100px]"
+                      isWeekendDayFlag && "bg-destructive/5",
+                      view === 'week' ? "min-h-[300px]" : "min-h-[120px]"
                     )}
-                    style={{
-                      minHeight: view === 'month' 
-                        ? `${Math.max(100, 50 + dayEvents.length * 28)}px`
-                        : undefined
-                    }}
                   >
                     <div className={cn(
                       "text-sm font-medium mb-2 flex items-center justify-between",
                       !isCurrentMonth && "text-muted-foreground",
-                      isToday(day) && "text-primary"
+                      isToday(day) && "text-primary",
+                      isWeekendDayFlag && "text-destructive/70"
                     )}>
                       <span>{format(day, view === 'week' ? "d MMM" : "d", { locale: es })}</span>
-                      {dayEvents.length > 0 && (
-                        <Badge variant="secondary" className="text-xs px-1.5 py-0">
-                          {dayEvents.length}
-                        </Badge>
-                      )}
+                      <div className="flex items-center gap-1">
+                        {isWeekendDayFlag && (
+                          <Badge variant="outline" className="text-[10px] px-1 py-0 text-destructive/70 border-destructive/30">
+                            No laborable
+                          </Badge>
+                        )}
+                        {dayEvents.length > 0 && (
+                          <Badge variant="secondary" className="text-xs px-1.5 py-0">
+                            {dayEvents.length}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                     
                     <div className={cn(
                       "space-y-1 flex-1 overflow-y-auto",
-                      view === 'week' ? "max-h-[260px]" : "max-h-none"
+                      view === 'week' ? "max-h-[260px]" : "max-h-[80px]"
                     )}>
-                      {(view === 'week' ? dayEvents : dayEvents.slice(0, 5)).map((event) => (
+                      {(view === 'week' ? dayEvents : dayEvents.slice(0, 3)).map((event) => (
                         <button
                           key={event.id}
                           onClick={() => onEventClick?.(event)}
@@ -406,9 +421,9 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
                           )}
                         </button>
                       ))}
-                      {view === 'month' && dayEvents.length > 5 && (
+                      {view === 'month' && dayEvents.length > 3 && (
                         <div className="text-xs text-muted-foreground text-center py-1 bg-muted/50 rounded">
-                          +{dayEvents.length - 5} más
+                          +{dayEvents.length - 3} más
                         </div>
                       )}
                     </div>
@@ -423,13 +438,13 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
                 <span>
                   Total: <strong className="text-foreground">{filteredEvents.length}</strong> eventos
                 </span>
-                {showLlamadas && (
+                {activeTypes.includes('llamadas') && (
                   <span>
                     <Phone className="h-3 w-3 inline mr-1" />
                     {filteredEvents.filter(e => e.type === 'llamada').length} llamadas
                   </span>
                 )}
-                {showVisitas && (
+                {(activeTypes.includes('domicilio') || activeTypes.includes('ambulatorio')) && (
                   <span>
                     <Home className="h-3 w-3 inline mr-1" />
                     {filteredEvents.filter(e => e.type === 'visita').length} visitas
