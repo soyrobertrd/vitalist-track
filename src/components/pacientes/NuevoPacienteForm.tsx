@@ -62,13 +62,19 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
     nombre: "",
     apellido: "",
     contacto_px: "",
-    contacto_cuidador: ""
+    contacto_cuidador: "",
+    email_px: "",
+    email_cuidador: ""
   });
   const [selectedZona, setSelectedZona] = useState<string | null>(null);
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
   const [selectedSexo, setSelectedSexo] = useState<string>("");
   const [diasNoVisita, setDiasNoVisita] = useState<number[]>([]);
   const [medicamentos, setMedicamentos] = useState<{nombre: string, dosis: string, frecuencia: string}[]>([{nombre: "", dosis: "", frecuencia: ""}]);
+  const [notificacionesActivas, setNotificacionesActivas] = useState(true);
+  
+  // Auto-disable notifications if no email
+  const hasAnyEmail = !!(formData.email_px.trim() || formData.email_cuidador.trim());
 
   const { duplicados } = useDetectarDuplicados(
     formData.cedula,
@@ -142,12 +148,12 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       foto_url: cedulaData?.foto_encoded ? `data:image/jpeg;base64,${cedulaData.foto_encoded}` : null,
       contacto_px: formData.contacto_px ? formatPhoneDR(formData.contacto_px) : null,
       whatsapp_px: formDataObj.get("whatsapp_px") === "on",
-      email_px: (formDataObj.get("email_px") as string || "").trim() || null,
+      email_px: formData.email_px.trim() || null,
       nombre_cuidador: (formDataObj.get("nombre_cuidador") as string || "").trim() || null,
       parentesco_cuidador: formDataObj.get("parentesco_cuidador") as string || null,
       contacto_cuidador: formData.contacto_cuidador ? formatPhoneDR(formData.contacto_cuidador) : null,
       whatsapp_cuidador: formDataObj.get("whatsapp_cuidador") === "on",
-      email_cuidador: (formDataObj.get("email_cuidador") as string || "").trim() || null,
+      email_cuidador: formData.email_cuidador.trim() || null,
       numero_principal: formDataObj.get("numero_principal") as string || "paciente",
       direccion_domicilio: (formDataObj.get("direccion_domicilio") as string || "").trim() || null,
       zona: zonaValue,
@@ -159,7 +165,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       tipo_atencion: formDataObj.get("tipo_atencion") as string || "domiciliario",
       profesional_asignado_id: formDataObj.get("profesional_asignado_id") as string || null,
       es_sospechoso: formDataObj.get("es_sospechoso") === "on",
-      notificaciones_activas: true,
+      notificaciones_activas: hasAnyEmail ? notificacionesActivas : false,
       status_px: "activo" as const,
       dias_no_visita: diasNoVisita,
     };
@@ -383,7 +389,14 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
           </div>
           <div className="space-y-1">
             <Label htmlFor="email_px" className="text-xs">Correo Electrónico</Label>
-            <Input id="email_px" name="email_px" type="email" placeholder="paciente@ejemplo.com" />
+            <Input 
+              id="email_px" 
+              name="email_px" 
+              type="email" 
+              placeholder="paciente@ejemplo.com"
+              value={formData.email_px}
+              onChange={(e) => handleInputChange("email_px", e.target.value)}
+            />
           </div>
         </div>
 
@@ -435,7 +448,14 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
           </div>
           <div className="space-y-1">
             <Label htmlFor="email_cuidador" className="text-xs">Correo del Cuidador</Label>
-            <Input id="email_cuidador" name="email_cuidador" type="email" placeholder="cuidador@ejemplo.com" />
+            <Input 
+              id="email_cuidador" 
+              name="email_cuidador" 
+              type="email" 
+              placeholder="cuidador@ejemplo.com"
+              value={formData.email_cuidador}
+              onChange={(e) => handleInputChange("email_cuidador", e.target.value)}
+            />
           </div>
         </div>
 
@@ -529,6 +549,23 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
               <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer text-xs">
                 <Input id="es_sospechoso" name="es_sospechoso" type="checkbox" className="w-4 h-4" />
                 Paciente Sospechoso
+              </Label>
+            </div>
+            <div className="flex items-end pb-1">
+              <Label htmlFor="notificaciones_activas" className={`flex items-center gap-2 text-xs ${hasAnyEmail ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}>
+                <Input 
+                  id="notificaciones_activas" 
+                  name="notificaciones_activas" 
+                  type="checkbox" 
+                  className="w-4 h-4" 
+                  checked={hasAnyEmail ? notificacionesActivas : false}
+                  onChange={(e) => hasAnyEmail && setNotificacionesActivas(e.target.checked)}
+                  disabled={!hasAnyEmail}
+                />
+                Notificaciones
+                <span className="text-muted-foreground">
+                  {hasAnyEmail ? "" : "(Requiere email)"}
+                </span>
               </Label>
             </div>
           </div>

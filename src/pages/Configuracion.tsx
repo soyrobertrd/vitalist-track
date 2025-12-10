@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { HorariosProfesionalEditor } from "@/components/HorariosProfesionalEditor";
 
 const Configuracion = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Configuracion = () => {
   const { theme, setTheme } = useTheme();
   const { isAdmin } = useUserRole();
   const [uploading, setUploading] = useState(false);
+  const [profesionalId, setProfesionalId] = useState<string | null>(null);
   const [changingPassword, setChangingPassword] = useState(false);
   const [notificaciones, setNotificaciones] = useState({
     email: true,
@@ -123,16 +125,32 @@ const Configuracion = () => {
     }
   };
 
+  // Fetch profesional_id linked to this user
+  useEffect(() => {
+    const fetchProfesionalId = async () => {
+      if (!profile?.id) return;
+      const { data } = await supabase
+        .from("personal_salud")
+        .select("id")
+        .eq("user_id", profile.id)
+        .single();
+      
+      if (data) {
+        setProfesionalId(data.id);
+      }
+    };
+    fetchProfesionalId();
+  }, [profile?.id]);
 
   // Update form data cuando el perfil carga
-  useState(() => {
+  useEffect(() => {
     if (profile) {
       setFormData({
         telefono: profile.telefono || "",
         especialidad: profile.especialidad || "",
       });
     }
-  });
+  }, [profile]);
 
   if (profileLoading) {
     return (
@@ -430,8 +448,35 @@ const Configuracion = () => {
           <GlassCard className="p-6 space-y-6">
             <div>
               <h2 className="text-2xl font-bold mb-2">Agenda y Recordatorios</h2>
-              <p className="text-muted-foreground">Calendario personal y tareas pendientes</p>
+              <p className="text-muted-foreground">Calendario personal, horarios y tareas pendientes</p>
             </div>
+
+            {/* Horarios Laborables */}
+            {profesionalId && (
+              <div className="space-y-4">
+                <Separator />
+                <div>
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Mis Horarios Laborables
+                  </h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Configura tus días y horarios de trabajo
+                  </p>
+                  <HorariosProfesionalEditor profesionalId={profesionalId} />
+                </div>
+              </div>
+            )}
+
+            {!profesionalId && (
+              <div className="p-4 border rounded-lg bg-muted/50">
+                <p className="text-muted-foreground text-sm">
+                  No tienes un perfil de profesional vinculado. Contacta al administrador si crees que esto es un error.
+                </p>
+              </div>
+            )}
+
+            <Separator />
 
             <div className="space-y-4">
               <div className="p-4 border rounded-lg">
