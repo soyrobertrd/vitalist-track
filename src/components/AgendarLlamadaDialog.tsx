@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { PacienteCombobox } from "./PacienteCombobox";
@@ -13,6 +14,7 @@ import { ConflictoAgendamientoDialog } from "./ConflictoAgendamientoDialog";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { AlertTriangle } from "lucide-react";
 
 const MOTIVOS_LLAMADA = [
   "Seguimiento rutinario",
@@ -40,8 +42,25 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
   const [conflictoOpen, setConflictoOpen] = useState(false);
   const [llamadaExistente, setLlamadaExistente] = useState<any>(null);
   const [pendingSubmit, setPendingSubmit] = useState<any>(null);
+  const [fechaAlerta, setFechaAlerta] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>("");
   
-  const { esDiaLaborable, siguienteDiaLaborable } = useDiasLaborables();
+  const { validarFechaAgendamiento, siguienteDiaLaborable } = useDiasLaborables();
+
+  const handleDateChange = (fecha: string) => {
+    setSelectedDate(fecha);
+    if (fecha) {
+      const fechaDate = new Date(fecha + "T12:00:00");
+      const validacion = validarFechaAgendamiento(fechaDate);
+      if (!validacion.valido) {
+        setFechaAlerta(validacion.mensaje || null);
+      } else {
+        setFechaAlerta(null);
+      }
+    } else {
+      setFechaAlerta(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, forceCreate = false) => {
     e.preventDefault();
@@ -53,11 +72,14 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
     let fechaAgendada = new Date(`${fecha}T${hora}`);
 
     // Validar día laborable
-    if (!esDiaLaborable(fechaAgendada)) {
-      fechaAgendada = siguienteDiaLaborable(fechaAgendada);
-      toast.warning(
-        `La fecha seleccionada no es laborable. Se ajustó al siguiente día laborable: ${format(fechaAgendada, "PPP", { locale: es })}`
-      );
+    const validacion = validarFechaAgendamiento(fechaAgendada);
+    if (!validacion.valido) {
+      const sugerencia = siguienteDiaLaborable(fechaAgendada);
+      toast.error("Fecha no disponible", {
+        description: `No se puede agendar en esta fecha. Próximo día disponible: ${format(sugerencia, "dd/MM/yyyy")}`
+      });
+      setLoading(false);
+      return;
     }
 
     // Verificar si ya existe una llamada agendada para este paciente
@@ -163,6 +185,8 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
                   type="date"
                   required
                   min={new Date().toISOString().split('T')[0]}
+                  value={selectedDate}
+                  onChange={(e) => handleDateChange(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
@@ -187,6 +211,12 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
               </div>
             </div>
 
+            {fechaAlerta && (
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>{fechaAlerta}</AlertDescription>
+              </Alert>
+            )}
             <div className="space-y-2">
               <Label htmlFor="motivo">Motivo de la Llamada *</Label>
               <Select value={motivo} onValueChange={setMotivo} required>

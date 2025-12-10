@@ -111,33 +111,47 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
 
       if (visitas) {
         visitas.forEach((v: any) => {
-          const eventDate = new Date(v.fecha_hora_visita);
-          calendarEvents.push({
-            id: v.id,
-            type: 'visita',
-            title: `${v.pacientes?.nombre || ''} ${v.pacientes?.apellido || ''}`.trim(),
-            date: eventDate,
-            time: format(eventDate, "HH:mm"),
-            status: v.estado,
-            profesional: v.personal_salud ? `${v.personal_salud.nombre} ${v.personal_salud.apellido}` : undefined,
-            tipoVisita: v.tipo_visita,
-          });
+          if (v.fecha_hora_visita) {
+            try {
+              const eventDate = new Date(v.fecha_hora_visita);
+              if (!isNaN(eventDate.getTime())) {
+                calendarEvents.push({
+                  id: v.id,
+                  type: 'visita',
+                  title: `${v.pacientes?.nombre || ''} ${v.pacientes?.apellido || ''}`.trim() || 'Sin nombre',
+                  date: eventDate,
+                  time: format(eventDate, "HH:mm"),
+                  status: v.estado || 'pendiente',
+                  profesional: v.personal_salud ? `${v.personal_salud.nombre} ${v.personal_salud.apellido}` : undefined,
+                  tipoVisita: v.tipo_visita,
+                });
+              }
+            } catch (e) {
+              console.warn("Error parsing visita date:", v.fecha_hora_visita);
+            }
+          }
         });
       }
 
       if (llamadas) {
         llamadas.forEach((l: any) => {
           if (l.fecha_agendada) {
-            const eventDate = new Date(l.fecha_agendada);
-            calendarEvents.push({
-              id: l.id,
-              type: 'llamada',
-              title: `${l.pacientes?.nombre || ''} ${l.pacientes?.apellido || ''}`.trim(),
-              date: eventDate,
-              time: format(eventDate, "HH:mm"),
-              status: l.estado,
-              profesional: l.personal_salud ? `${l.personal_salud.nombre} ${l.personal_salud.apellido}` : undefined,
-            });
+            try {
+              const eventDate = new Date(l.fecha_agendada);
+              if (!isNaN(eventDate.getTime())) {
+                calendarEvents.push({
+                  id: l.id,
+                  type: 'llamada',
+                  title: `${l.pacientes?.nombre || ''} ${l.pacientes?.apellido || ''}`.trim() || 'Sin nombre',
+                  date: eventDate,
+                  time: format(eventDate, "HH:mm"),
+                  status: l.estado || 'pendiente',
+                  profesional: l.personal_salud ? `${l.personal_salud.nombre} ${l.personal_salud.apellido}` : undefined,
+                });
+              }
+            } catch (e) {
+              console.warn("Error parsing llamada date:", l.fecha_agendada);
+            }
           }
         });
       }
