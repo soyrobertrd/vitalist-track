@@ -164,6 +164,12 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
     }
   };
 
+  const normalizeStatus = (status: string): string => {
+    if (['realizada'].includes(status)) return 'realizada';
+    if (['cancelada'].includes(status)) return 'cancelada';
+    return 'pendiente'; // agendada, pendiente, etc.
+  };
+
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
       // Filter by type
@@ -178,12 +184,6 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
       return true;
     });
   }, [events, activeTypes, activeStatuses]);
-
-  const normalizeStatus = (status: string): string => {
-    if (['realizada'].includes(status)) return 'realizada';
-    if (['cancelada'].includes(status)) return 'cancelada';
-    return 'pendiente'; // agendada, pendiente, etc.
-  };
 
   const days = useMemo(() => {
     try {
