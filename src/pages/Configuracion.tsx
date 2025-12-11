@@ -39,6 +39,19 @@ interface TareaPendiente {
   fecha_programada: string | null;
 }
 
+interface EstadisticasDesempeno {
+  llamadasRealizadasMes: number;
+  llamadasRealizadasTotal: number;
+  visitasCompletadasMes: number;
+  visitasCompletadasTotal: number;
+  pacientesAsignados: number;
+  tasaContacto: number;
+  duracionPromedioLlamadas: number;
+  tareasCompletadasMes: number;
+  llamadasPendientes: number;
+  visitasPendientes: number;
+}
+
 const Configuracion = () => {
   const navigate = useNavigate();
   const { profile, loading: profileLoading, updateProfile } = useUserProfile();
@@ -50,6 +63,8 @@ const Configuracion = () => {
   const [proximasCitas, setProximasCitas] = useState<ProximaCita[]>([]);
   const [tareasPendientes, setTareasPendientes] = useState<TareaPendiente[]>([]);
   const [loadingCitas, setLoadingCitas] = useState(true);
+  const [estadisticas, setEstadisticas] = useState<EstadisticasDesempeno | null>(null);
+  const [loadingEstadisticas, setLoadingEstadisticas] = useState(true);
   const [notificaciones, setNotificaciones] = useState({
     email: true,
     push: true,
@@ -162,6 +177,127 @@ const Configuracion = () => {
     };
     fetchProfesionalId();
   }, [profile?.id]);
+
+  // Fetch performance statistics
+  useEffect(() => {
+    const fetchEstadisticas = async () => {
+      if (!profesionalId) {
+        setLoadingEstadisticas(false);
+        return;
+      }
+
+      setLoadingEstadisticas(true);
+      const now = new Date();
+      const inicioMes = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const finMes = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+
+      try {
+        // Fetch llamadas realizadas este mes
+        const { count: llamadasMes } = await supabase
+          .from("registro_llamadas")
+          .select("*", { count: "exact", head: true })
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "realizada")
+          .gte("fecha_hora_realizada", inicioMes)
+          .lte("fecha_hora_realizada", finMes);
+
+        // Fetch total llamadas realizadas
+        const { count: llamadasTotal } = await supabase
+          .from("registro_llamadas")
+          .select("*", { count: "exact", head: true })
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "realizada");
+
+        // Fetch visitas completadas este mes
+        const { count: visitasMes } = await supabase
+          .from("control_visitas")
+          .select("*", { count: "exact", head: true })
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "realizada")
+          .gte("fecha_hora_visita", inicioMes)
+          .lte("fecha_hora_visita", finMes);
+
+        // Fetch total visitas completadas
+        const { count: visitasTotal } = await supabase
+          .from("control_visitas")
+          .select("*", { count: "exact", head: true })
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "realizada");
+
+        // Fetch pacientes asignados
+        const { count: pacientes } = await supabase
+          .from("pacientes")
+          .select("*", { count: "exact", head: true })
+          .eq("profesional_asignado_id", profesionalId)
+          .eq("status_px", "activo");
+
+        // Fetch llamadas pendientes
+        const { count: llamadasPend } = await supabase
+          .from("registro_llamadas")
+          .select("*", { count: "exact", head: true })
+          .eq("profesional_id", profesionalId)
+          .in("estado", ["agendada", "pendiente"]);
+
+        // Fetch visitas pendientes
+        const { count: visitasPend } = await supabase
+          .from("control_visitas")
+          .select("*", { count: "exact", head: true })
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "pendiente");
+
+        // Fetch tareas completadas este mes
+        const { count: tareasCompletadas } = await supabase
+          .from("atencion_paciente")
+          .select("*", { count: "exact", head: true })
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "realizada")
+          .gte("fecha_realizada", inicioMes)
+          .lte("fecha_realizada", finMes);
+
+        // Calcular tasa de contacto (llamadas contactadas / llamadas realizadas)
+        const { count: llamadasContactadas } = await supabase
+          .from("registro_llamadas")
+          .select("*", { count: "exact", head: true })
+          .eq("profesional_id", profesionalId)
+          .eq("resultado_seguimiento", "contactado");
+
+        const tasaContacto = (llamadasTotal || 0) > 0 
+          ? Math.round(((llamadasContactadas || 0) / (llamadasTotal || 1)) * 100) 
+          : 0;
+
+        // Calcular duración promedio de llamadas
+        const { data: duracionData } = await supabase
+          .from("registro_llamadas")
+          .select("duracion_minutos")
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "realizada")
+          .not("duracion_minutos", "is", null);
+
+        const duracionPromedio = duracionData && duracionData.length > 0
+          ? Math.round(duracionData.reduce((acc, l) => acc + (l.duracion_minutos || 0), 0) / duracionData.length)
+          : 0;
+
+        setEstadisticas({
+          llamadasRealizadasMes: llamadasMes || 0,
+          llamadasRealizadasTotal: llamadasTotal || 0,
+          visitasCompletadasMes: visitasMes || 0,
+          visitasCompletadasTotal: visitasTotal || 0,
+          pacientesAsignados: pacientes || 0,
+          tasaContacto,
+          duracionPromedioLlamadas: duracionPromedio,
+          tareasCompletadasMes: tareasCompletadas || 0,
+          llamadasPendientes: llamadasPend || 0,
+          visitasPendientes: visitasPend || 0,
+        });
+      } catch (error) {
+        console.error("Error fetching estadisticas:", error);
+      } finally {
+        setLoadingEstadisticas(false);
+      }
+    };
+
+    fetchEstadisticas();
+  }, [profesionalId]);
 
   // Fetch upcoming appointments and pending tasks
   useEffect(() => {
@@ -512,32 +648,116 @@ const Configuracion = () => {
           <GlassCard className="p-6 space-y-6">
             <div>
               <h2 className="text-2xl font-bold mb-2">Resumen de Actividad y Desempeño</h2>
-              <p className="text-muted-foreground">Estadísticas personalizadas y actividades recientes</p>
+              <p className="text-muted-foreground">Estadísticas personalizadas basadas en tu actividad real</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 border rounded-lg space-y-2">
-                <Label className="text-muted-foreground">Llamadas Este Mes</Label>
-                <p className="text-3xl font-bold">0</p>
+            {loadingEstadisticas ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="p-4 border rounded-lg space-y-2 animate-pulse">
+                    <div className="h-4 bg-muted rounded w-24"></div>
+                    <div className="h-8 bg-muted rounded w-16"></div>
+                  </div>
+                ))}
               </div>
-              <div className="p-4 border rounded-lg space-y-2">
-                <Label className="text-muted-foreground">Visitas Programadas</Label>
-                <p className="text-3xl font-bold">0</p>
+            ) : !profesionalId ? (
+              <div className="p-4 border rounded-lg bg-muted/50">
+                <p className="text-muted-foreground text-sm">
+                  No tienes un perfil de profesional vinculado. Contacta al administrador para ver tus estadísticas.
+                </p>
               </div>
-              <div className="p-4 border rounded-lg space-y-2">
-                <Label className="text-muted-foreground">Pacientes Asignados</Label>
-                <p className="text-3xl font-bold">0</p>
-              </div>
-            </div>
+            ) : (
+              <>
+                {/* Estadísticas principales */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <div className="p-4 border rounded-lg space-y-1 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20">
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-blue-600" />
+                      <Label className="text-muted-foreground text-xs">Llamadas Este Mes</Label>
+                    </div>
+                    <p className="text-3xl font-bold text-blue-600">{estadisticas?.llamadasRealizadasMes || 0}</p>
+                    <p className="text-xs text-muted-foreground">Total: {estadisticas?.llamadasRealizadasTotal || 0}</p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg space-y-1 bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-900/20">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-green-600" />
+                      <Label className="text-muted-foreground text-xs">Visitas Este Mes</Label>
+                    </div>
+                    <p className="text-3xl font-bold text-green-600">{estadisticas?.visitasCompletadasMes || 0}</p>
+                    <p className="text-xs text-muted-foreground">Total: {estadisticas?.visitasCompletadasTotal || 0}</p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg space-y-1 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/30 dark:to-purple-900/20">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-purple-600" />
+                      <Label className="text-muted-foreground text-xs">Pacientes Asignados</Label>
+                    </div>
+                    <p className="text-3xl font-bold text-purple-600">{estadisticas?.pacientesAsignados || 0}</p>
+                    <p className="text-xs text-muted-foreground">Activos</p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg space-y-1 bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20">
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4 text-amber-600" />
+                      <Label className="text-muted-foreground text-xs">Tasa de Contacto</Label>
+                    </div>
+                    <p className="text-3xl font-bold text-amber-600">{estadisticas?.tasaContacto || 0}%</p>
+                    <p className="text-xs text-muted-foreground">Llamadas efectivas</p>
+                  </div>
+                  
+                  <div className="p-4 border rounded-lg space-y-1 bg-gradient-to-br from-cyan-50 to-cyan-100/50 dark:from-cyan-950/30 dark:to-cyan-900/20">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-cyan-600" />
+                      <Label className="text-muted-foreground text-xs">Duración Promedio</Label>
+                    </div>
+                    <p className="text-3xl font-bold text-cyan-600">{estadisticas?.duracionPromedioLlamadas || 0}</p>
+                    <p className="text-xs text-muted-foreground">minutos/llamada</p>
+                  </div>
+                </div>
 
-            <Separator />
+                <Separator />
 
-            <div>
-              <h3 className="font-semibold mb-4">Actividades Recientes</h3>
-              <div className="space-y-2">
-                <p className="text-muted-foreground text-sm">No hay actividades recientes</p>
-              </div>
-            </div>
+                {/* Pendientes y tareas */}
+                <div>
+                  <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4" />
+                    Actividades Pendientes
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 border rounded-lg flex items-center gap-4 bg-orange-50/50 dark:bg-orange-950/20">
+                      <div className="p-3 rounded-full bg-orange-100 dark:bg-orange-900/40">
+                        <Phone className="h-5 w-5 text-orange-600" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold">{estadisticas?.llamadasPendientes || 0}</p>
+                        <p className="text-sm text-muted-foreground">Llamadas pendientes</p>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 border rounded-lg flex items-center gap-4 bg-rose-50/50 dark:bg-rose-950/20">
+                      <div className="p-3 rounded-full bg-rose-100 dark:bg-rose-900/40">
+                        <MapPin className="h-5 w-5 text-rose-600" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold">{estadisticas?.visitasPendientes || 0}</p>
+                        <p className="text-sm text-muted-foreground">Visitas pendientes</p>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 border rounded-lg flex items-center gap-4 bg-emerald-50/50 dark:bg-emerald-950/20">
+                      <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/40">
+                        <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold">{estadisticas?.tareasCompletadasMes || 0}</p>
+                        <p className="text-sm text-muted-foreground">Tareas completadas (mes)</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </GlassCard>
         </TabsContent>
 
