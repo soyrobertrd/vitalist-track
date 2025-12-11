@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Phone, Calendar, Clock, User, Mail } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { format } from "date-fns";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
 
@@ -70,7 +72,26 @@ export const LlamadaCardAgendada = ({
     return pacienteData.contacto_px;
   };
 
+  const hasWhatsApp = () => {
+    if (!pacienteData) return false;
+    if (pacienteData.numero_principal === 'cuidador') {
+      return pacienteData.whatsapp_cuidador;
+    }
+    return pacienteData.whatsapp_px;
+  };
+
+  const getWhatsAppLink = () => {
+    const phone = getMainPhone();
+    if (!phone) return null;
+    const cleanPhone = phone.replace(/\D/g, '');
+    // Add country code if not present (Dominican Republic)
+    const fullPhone = cleanPhone.startsWith('1') ? cleanPhone : `1${cleanPhone}`;
+    return `https://wa.me/${fullPhone}`;
+  };
+
   const mainPhone = getMainPhone();
+  const whatsAppEnabled = hasWhatsApp();
+  const whatsAppLink = getWhatsAppLink();
 
   return (
     <Card 
@@ -98,6 +119,19 @@ export const LlamadaCardAgendada = ({
                 title="Llamar"
               >
                 <Phone className="h-4 w-4" />
+              </a>
+            )}
+            {whatsAppEnabled && whatsAppLink && (
+              <a
+                href={whatsAppLink}
+                onClick={(e) => e.stopPropagation()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-green-500 text-white hover:bg-green-600"
+                aria-label="Enviar mensaje por WhatsApp"
+                title="WhatsApp"
+              >
+                <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4" />
               </a>
             )}
             {overdue && (
