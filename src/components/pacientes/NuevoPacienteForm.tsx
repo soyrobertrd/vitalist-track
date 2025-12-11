@@ -76,7 +76,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
   // Auto-disable notifications if no email
   const hasAnyEmail = !!(formData.email_px.trim() || formData.email_cuidador.trim());
 
-  const { duplicados } = useDetectarDuplicados(
+  const { duplicados, confirmarDuplicado, refetchExcepciones } = useDetectarDuplicados(
     formData.cedula,
     formData.nombre,
     formData.apellido,
@@ -241,7 +241,11 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
 
   return (
     <>
-      <AlertaDuplicados duplicados={duplicados} />
+      <AlertaDuplicados 
+        duplicados={duplicados} 
+        onConfirmarDuplicado={confirmarDuplicado}
+        onRefresh={refetchExcepciones}
+      />
       
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Identification Section */}

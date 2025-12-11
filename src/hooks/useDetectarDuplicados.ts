@@ -12,6 +12,13 @@ interface DuplicadoEncontrado {
   zona?: string;
   barrio?: string;
   motivo: string[];
+  motivosCampos: { campo: string; valor: string }[];
+}
+
+interface ExcepcionDuplicado {
+  paciente_existente_id: string;
+  campo_duplicado: string;
+  valor_duplicado: string;
 }
 
 export function useDetectarDuplicados(
@@ -23,7 +30,96 @@ export function useDetectarDuplicados(
   excludeId?: string
 ) {
   const [duplicados, setDuplicados] = useState<DuplicadoEncontrado[]>([]);
+  const [excepciones, setExcepciones] = useState<ExcepcionDuplicado[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // Fetch existing exceptions
+  useEffect(() => {
+    const fetchExcepciones = async () => {
+      const { data, error } = await supabase
+        .from("excepciones_duplicados")
+        .select("paciente_existente_id, campo_duplicado, valor_duplicado");
+      
+      if (!error && data) {
+        setExcepciones(data);
+      }
+    };
+    fetchExcepciones();
+  }, []);
+
+  const refetchExcepciones = async () => {
+    const { data, error } = await supabase
+      .from("excepciones_duplicados")
+      .select("paciente_existente_id, campo_duplicado, valor_duplicado");
+    
+    if (!error && data) {
+      setExcepciones(data);
+    }
+  };
+
+  const confirmarDuplicado = async (
+    pacienteExistenteId: string,
+    campo: string,
+    valor: string,
+    notas?: string
+  ) => {
+    const { data: userData } = await supabase.auth.getUser();
+    
+    const { error } = await supabase
+      .from("excepciones_duplicados")
+      .upsert({
+        paciente_existente_id: pacienteExistenteId,
+        campo_duplicado: campo,
+        valor_duplicado: valor,
+        confirmado_por: userData?.user?.id,
+        notas: notas
+      }, {
+        onConflict: 'paciente_existente_id,campo_duplicado,valor_duplicado'
+      });
+
+    if (!error) {
+      await refetchExcepciones();
+      // Re-trigger duplicate detection
+      setDuplicados(prev => prev.filter(d => {
+        const hasThisCampo = d.motivosCampos.some(
+          m => m.campo === campo && m.valor === valor && d.id === pacienteExistenteId
+        );
+        if (hasThisCampo) {
+          // Remove this specific motivo
+          const newMotivos = d.motivosCampos.filter(
+            m => !(m.campo === campo && m.valor === valor)
+          );
+          if (newMotivos.length === 0) {
+            return false; // Remove this duplicate entirely
+          }
+          d.motivosCampos = newMotivos;
+          d.motivo = newMotivos.map(m => {
+            switch (m.campo) {
+              case 'cedula': return 'Misma cédula';
+              case 'nombre_completo': return 'Mismo nombre completo';
+              case 'telefono_px': return 'Mismo teléfono de paciente';
+              case 'telefono_cuidador': return 'Mismo teléfono de cuidador';
+              default: return m.campo;
+            }
+          });
+        }
+        return true;
+      }));
+    }
+    return !error;
+  };
+
+  const isExcepcionConfirmada = (
+    pacienteId: string,
+    campo: string,
+    valor: string
+  ): boolean => {
+    return excepciones.some(
+      e => e.paciente_existente_id === pacienteId &&
+           e.campo_duplicado === campo &&
+           e.valor_duplicado === valor
+    );
+  };
 
   useEffect(() => {
     const detectar = async () => {
@@ -51,10 +147,15 @@ export function useDetectarDuplicados(
 
         data?.forEach((paciente) => {
           const motivos: string[] = [];
+          const motivosCampos: { campo: string; valor: string }[] = [];
 
           // Verificar por cédula
           if (cedula && cedula.trim() && paciente.cedula === cedula.trim()) {
-            motivos.push("Misma cédula");
+            const valor = cedula.trim();
+            if (!isExcepcionConfirmada(paciente.id, 'cedula', valor)) {
+              motivos.push("Misma cédula");
+              motivosCampos.push({ campo: 'cedula', valor });
+            }
           }
 
           // Verificar por nombre completo
@@ -66,7 +167,11 @@ export function useDetectarDuplicados(
             paciente.nombre?.toLowerCase() === nombre.trim().toLowerCase() &&
             paciente.apellido?.toLowerCase() === apellido.trim().toLowerCase()
           ) {
-            motivos.push("Mismo nombre completo");
+            const valor = `${nombre.trim().toLowerCase()}|${apellido.trim().toLowerCase()}`;
+            if (!isExcepcionConfirmada(paciente.id, 'nombre_completo', valor)) {
+              motivos.push("Mismo nombre completo");
+              motivosCampos.push({ campo: 'nombre_completo', valor });
+            }
           }
 
           // Verificar por teléfono del paciente (usando normalización)
@@ -75,7 +180,10 @@ export function useDetectarDuplicados(
             if (paciente.contacto_px) {
               const telefonoPacienteNormalizado = normalizePhoneNumber(paciente.contacto_px);
               if (telefonoNormalizado === telefonoPacienteNormalizado && telefonoNormalizado !== "") {
-                motivos.push("Mismo teléfono de paciente");
+                if (!isExcepcionConfirmada(paciente.id, 'telefono_px', telefonoNormalizado)) {
+                  motivos.push("Mismo teléfono de paciente");
+                  motivosCampos.push({ campo: 'telefono_px', valor: telefonoNormalizado });
+                }
               }
             }
           }
@@ -86,7 +194,10 @@ export function useDetectarDuplicados(
             if (paciente.contacto_cuidador) {
               const telefonoCuidadorNormalizado = normalizePhoneNumber(paciente.contacto_cuidador);
               if (telefonoNormalizado === telefonoCuidadorNormalizado && telefonoNormalizado !== "") {
-                motivos.push("Mismo teléfono de cuidador");
+                if (!isExcepcionConfirmada(paciente.id, 'telefono_cuidador', telefonoNormalizado)) {
+                  motivos.push("Mismo teléfono de cuidador");
+                  motivosCampos.push({ campo: 'telefono_cuidador', valor: telefonoNormalizado });
+                }
               }
             }
           }
@@ -102,6 +213,7 @@ export function useDetectarDuplicados(
               zona: paciente.zona,
               barrio: paciente.barrio,
               motivo: motivos,
+              motivosCampos: motivosCampos,
             });
           }
         });
@@ -116,7 +228,7 @@ export function useDetectarDuplicados(
 
     const timeoutId = setTimeout(detectar, 500); // Debounce
     return () => clearTimeout(timeoutId);
-  }, [cedula, nombre, apellido, contactoPx, contactoCuidador, excludeId]);
+  }, [cedula, nombre, apellido, contactoPx, contactoCuidador, excludeId, excepciones]);
 
-  return { duplicados, loading };
+  return { duplicados, loading, confirmarDuplicado, refetchExcepciones };
 }
