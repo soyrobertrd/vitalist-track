@@ -394,6 +394,44 @@ export type Database = {
           },
         ]
       }
+      excepciones_duplicados: {
+        Row: {
+          campo_duplicado: string
+          confirmado_por: string | null
+          created_at: string
+          id: string
+          notas: string | null
+          paciente_existente_id: string
+          valor_duplicado: string
+        }
+        Insert: {
+          campo_duplicado: string
+          confirmado_por?: string | null
+          created_at?: string
+          id?: string
+          notas?: string | null
+          paciente_existente_id: string
+          valor_duplicado: string
+        }
+        Update: {
+          campo_duplicado?: string
+          confirmado_por?: string | null
+          created_at?: string
+          id?: string
+          notas?: string | null
+          paciente_existente_id?: string
+          valor_duplicado?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "excepciones_duplicados_paciente_existente_id_fkey"
+            columns: ["paciente_existente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       historial_recordatorios: {
         Row: {
           canal: string

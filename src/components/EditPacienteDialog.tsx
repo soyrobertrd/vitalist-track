@@ -103,7 +103,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   // Auto-disable notifications if no email
   const hasAnyEmail = !!(emailPx.trim() || emailCuidador.trim());
 
-  const { duplicados } = useDetectarDuplicados(
+  const { duplicados, confirmarDuplicado, refetchExcepciones } = useDetectarDuplicados(
     formData.cedula,
     formData.nombre,
     formData.apellido,
@@ -301,7 +301,11 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
           <DialogTitle>Editar Paciente</DialogTitle>
         </DialogHeader>
         
-        <AlertaDuplicados duplicados={duplicados} />
+        <AlertaDuplicados 
+          duplicados={duplicados} 
+          onConfirmarDuplicado={confirmarDuplicado}
+          onRefresh={refetchExcepciones}
+        />
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Sección: Datos de Identificación */}
