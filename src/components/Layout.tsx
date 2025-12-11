@@ -70,9 +70,16 @@ const Layout = ({ children }: LayoutProps) => {
   // Menu items configuration
   const menuItems = [
     { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/calendario", icon: CalendarDays, label: "Calendario" },
-    { path: "/llamadas", icon: Phone, label: "Llamadas" },
-    { path: "/visitas", icon: Calendar, label: "Visitas" },
+    {
+      path: "/agenda",
+      icon: CalendarDays,
+      label: "Agenda",
+      subItems: [
+        { path: "/calendario", label: "Calendario", icon: CalendarDays },
+        { path: "/llamadas", label: "Llamadas", icon: Phone },
+        { path: "/visitas", label: "Visitas", icon: Calendar }
+      ]
+    },
     {
       path: "/pacientes",
       icon: Users,

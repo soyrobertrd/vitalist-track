@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { 
   ArrowLeft, Upload, Lock, User, HelpCircle, Bell, Eye, Shield, 
   Briefcase, Calendar, FileText, TrendingUp, MessageSquare, 
-  Clock, Settings, Zap
+  Clock, Settings, Zap, Phone, MapPin, CheckCircle2
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -20,6 +20,24 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { HorariosProfesionalEditor } from "@/components/HorariosProfesionalEditor";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+
+interface ProximaCita {
+  id: string;
+  tipo: 'llamada' | 'visita';
+  fecha: string;
+  paciente: { nombre: string; apellido: string } | null;
+  estado: string;
+}
+
+interface TareaPendiente {
+  id: string;
+  tipo: string;
+  descripcion: string;
+  paciente: { nombre: string; apellido: string } | null;
+  fecha_programada: string | null;
+}
 
 const Configuracion = () => {
   const navigate = useNavigate();
@@ -29,6 +47,9 @@ const Configuracion = () => {
   const [uploading, setUploading] = useState(false);
   const [profesionalId, setProfesionalId] = useState<string | null>(null);
   const [changingPassword, setChangingPassword] = useState(false);
+  const [proximasCitas, setProximasCitas] = useState<ProximaCita[]>([]);
+  const [tareasPendientes, setTareasPendientes] = useState<TareaPendiente[]>([]);
+  const [loadingCitas, setLoadingCitas] = useState(true);
   const [notificaciones, setNotificaciones] = useState({
     email: true,
     push: true,
@@ -141,6 +162,83 @@ const Configuracion = () => {
     };
     fetchProfesionalId();
   }, [profile?.id]);
+
+  // Fetch upcoming appointments and pending tasks
+  useEffect(() => {
+    const fetchCitasYTareas = async () => {
+      if (!profesionalId) {
+        setLoadingCitas(false);
+        return;
+      }
+
+      setLoadingCitas(true);
+      const hoy = new Date().toISOString();
+
+      try {
+        // Fetch próximas llamadas
+        const { data: llamadas } = await supabase
+          .from("registro_llamadas")
+          .select("id, fecha_agendada, estado, paciente:pacientes(nombre, apellido)")
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "agendada")
+          .gte("fecha_agendada", hoy)
+          .order("fecha_agendada", { ascending: true })
+          .limit(5);
+
+        // Fetch próximas visitas
+        const { data: visitas } = await supabase
+          .from("control_visitas")
+          .select("id, fecha_hora_visita, estado, paciente:pacientes(nombre, apellido)")
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "pendiente")
+          .gte("fecha_hora_visita", hoy)
+          .order("fecha_hora_visita", { ascending: true })
+          .limit(5);
+
+        // Fetch tareas pendientes (atención al paciente)
+        const { data: tareas } = await supabase
+          .from("atencion_paciente")
+          .select("id, tipo, descripcion, fecha_programada, paciente:pacientes(nombre, apellido)")
+          .eq("profesional_id", profesionalId)
+          .eq("estado", "pendiente")
+          .order("fecha_programada", { ascending: true })
+          .limit(5);
+
+        // Combine and sort citas
+        const citasCombinadas: ProximaCita[] = [
+          ...(llamadas || []).map(l => ({
+            id: l.id,
+            tipo: 'llamada' as const,
+            fecha: l.fecha_agendada!,
+            paciente: l.paciente as any,
+            estado: l.estado!
+          })),
+          ...(visitas || []).map(v => ({
+            id: v.id,
+            tipo: 'visita' as const,
+            fecha: v.fecha_hora_visita,
+            paciente: v.paciente as any,
+            estado: v.estado!
+          }))
+        ].sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime()).slice(0, 5);
+
+        setProximasCitas(citasCombinadas);
+        setTareasPendientes((tareas || []).map(t => ({
+          id: t.id,
+          tipo: t.tipo,
+          descripcion: t.descripcion,
+          paciente: t.paciente as any,
+          fecha_programada: t.fecha_programada
+        })));
+      } catch (error) {
+        console.error("Error fetching citas:", error);
+      } finally {
+        setLoadingCitas(false);
+      }
+    };
+
+    fetchCitasYTareas();
+  }, [profesionalId]);
 
   // Update form data cuando el perfil carga
   useEffect(() => {
@@ -478,21 +576,72 @@ const Configuracion = () => {
 
             <Separator />
 
+            {/* Próximas Citas */}
             <div className="space-y-4">
               <div className="p-4 border rounded-lg">
-                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   Próximas Citas
                 </h3>
-                <p className="text-muted-foreground text-sm">No hay citas programadas</p>
+                {loadingCitas ? (
+                  <p className="text-muted-foreground text-sm">Cargando...</p>
+                ) : proximasCitas.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">No hay citas programadas</p>
+                ) : (
+                  <div className="space-y-3">
+                    {proximasCitas.map((cita) => (
+                      <div key={cita.id} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                        <div className={`p-2 rounded-full ${cita.tipo === 'llamada' ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'}`}>
+                          {cita.tipo === 'llamada' ? <Phone className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">
+                            {cita.paciente ? `${cita.paciente.nombre} ${cita.paciente.apellido}` : 'Paciente no asignado'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {format(new Date(cita.fecha), "dd/MM/yyyy 'a las' HH:mm", { locale: es })}
+                          </p>
+                        </div>
+                        <Badge variant="outline" className="capitalize">
+                          {cita.tipo}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
+              {/* Tareas Pendientes */}
               <div className="p-4 border rounded-lg">
-                <h3 className="font-semibold mb-2 flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4" />
                   Tareas Pendientes
                 </h3>
-                <p className="text-muted-foreground text-sm">No hay tareas pendientes</p>
+                {loadingCitas ? (
+                  <p className="text-muted-foreground text-sm">Cargando...</p>
+                ) : tareasPendientes.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">No hay tareas pendientes</p>
+                ) : (
+                  <div className="space-y-3">
+                    {tareasPendientes.map((tarea) => (
+                      <div key={tarea.id} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                        <div className="p-2 rounded-full bg-orange-100 text-orange-600">
+                          <Clock className="h-4 w-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{tarea.descripcion}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {tarea.paciente ? `${tarea.paciente.nombre} ${tarea.paciente.apellido}` : 'Sin paciente'}
+                            {tarea.fecha_programada && ` • ${format(new Date(tarea.fecha_programada), "dd/MM/yyyy", { locale: es })}`}
+                          </p>
+                        </div>
+                        <Badge variant="secondary" className="capitalize text-xs">
+                          {tarea.tipo}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </GlassCard>
