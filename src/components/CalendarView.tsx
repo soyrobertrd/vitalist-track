@@ -405,16 +405,22 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
                 "grid grid-cols-7 gap-px bg-border rounded-lg overflow-hidden"
               )}
             >
-              {days.length > 0 ? days.map((day) => {
-                if (!day || isNaN(day.getTime())) return null;
+              {days.length > 0 ? days.map((day, index) => {
+                // Validate day is a valid Date object
+                if (!day || !(day instanceof Date) || isNaN(day.getTime())) {
+                  return (
+                    <div key={`invalid-${index}`} className="bg-card p-2 min-h-[120px]" />
+                  );
+                }
                 
                 const dayEvents = getEventsForDay(day);
                 const isCurrentMonth = view === 'week' || isSameMonth(day, currentDate);
                 const isWeekendDayFlag = isWeekendDay(day);
+                const dayKey = `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`;
 
                 return (
                   <div
-                    key={day.getTime()}
+                    key={dayKey}
                     className={cn(
                       "bg-card p-2 transition-colors flex flex-col",
                       !isCurrentMonth && "bg-muted/30",
