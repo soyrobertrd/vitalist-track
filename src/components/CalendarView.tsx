@@ -34,8 +34,10 @@ import {
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { CalendarEventDialog } from "@/components/CalendarEventDialog";
+import { DayAgendaDialog } from "@/components/DayAgendaDialog";
 
-interface CalendarEvent {
+export interface CalendarEvent {
   id: string;
   type: 'visita' | 'llamada';
   title: string;
@@ -60,6 +62,12 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
   const [activeTypes, setActiveTypes] = useState<string[]>(['llamadas', 'domicilio', 'ambulatorio']);
   // Toggle filters for status  
   const [activeStatuses, setActiveStatuses] = useState<string[]>(['pendiente', 'realizada', 'cancelada']);
+  
+  // Dialog states
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [eventDialogOpen, setEventDialogOpen] = useState(false);
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [dayAgendaOpen, setDayAgendaOpen] = useState(false);
 
   useEffect(() => {
     fetchEvents();
@@ -221,6 +229,20 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
     return filteredEvents
       .filter((event) => isSameDay(event.date, day))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
+  };
+
+  const handleEventClick = (event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setEventDialogOpen(true);
+  };
+
+  const handleDayClick = (day: Date) => {
+    setSelectedDay(day);
+    setDayAgendaOpen(true);
+  };
+
+  const handleViewFullDetails = (event: CalendarEvent) => {
+    onEventClick?.(event);
   };
 
   const getEventColor = (event: CalendarEvent) => {
@@ -422,12 +444,13 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
                   <div
                     key={dayKey}
                     className={cn(
-                      "bg-card p-2 transition-colors flex flex-col",
+                      "bg-card p-2 transition-colors flex flex-col cursor-pointer hover:bg-accent/30",
                       !isCurrentMonth && "bg-muted/30",
                       isToday(day) && "ring-2 ring-primary ring-inset",
                       isWeekendDayFlag && "bg-destructive/5",
                       view === 'week' ? "min-h-[300px]" : "min-h-[120px]"
                     )}
+                    onClick={() => handleDayClick(day)}
                   >
                     <div className={cn(
                       "text-sm font-medium mb-2 flex items-center justify-between",
@@ -452,7 +475,10 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
                       {(view === 'week' ? dayEvents : dayEvents.slice(0, 3)).map((event) => (
                         <button
                           key={event.id}
-                          onClick={() => onEventClick?.(event)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEventClick(event);
+                          }}
                           className={cn(
                             "w-full text-left text-xs p-1.5 rounded border truncate transition-all hover:scale-[1.02] hover:shadow-sm",
                             getEventColor(event)
@@ -514,6 +540,23 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
           </>
         )}
       </CardContent>
+
+      {/* Event Detail Dialog */}
+      <CalendarEventDialog
+        event={selectedEvent}
+        open={eventDialogOpen}
+        onOpenChange={setEventDialogOpen}
+        onViewDetails={handleViewFullDetails}
+      />
+
+      {/* Day Agenda Dialog */}
+      <DayAgendaDialog
+        date={selectedDay}
+        events={selectedDay ? getEventsForDay(selectedDay) : []}
+        open={dayAgendaOpen}
+        onOpenChange={setDayAgendaOpen}
+        onEventClick={handleEventClick}
+      />
     </Card>
   );
 }
