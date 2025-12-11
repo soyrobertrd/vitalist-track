@@ -48,7 +48,11 @@ export function DiasNoLaborablesCalendar() {
     }
 
     setLoading(true);
-    const fechaStr = format(selectedDate, "yyyy-MM-dd");
+    // Use date parts directly to avoid timezone issues
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(selectedDate.getDate()).padStart(2, '0');
+    const fechaStr = `${year}-${month}-${day}`;
 
     const { error } = await supabase
       .from("dias_no_laborables")
@@ -138,7 +142,7 @@ export function DiasNoLaborablesCalendar() {
                 >
                   <div>
                     <p className="font-medium">
-                      {format(new Date(dia.fecha), "PPP", { locale: es })}
+                      {format(new Date(dia.fecha + 'T12:00:00'), "PPP", { locale: es })}
                       {dia.es_ciclico && (
                         <span className="ml-2 text-xs bg-primary/20 text-primary px-2 py-0.5 rounded">
                           Anual
