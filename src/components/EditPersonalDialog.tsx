@@ -5,12 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { ZonaSelect } from "@/components/ZonaSelect";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { handlePhoneInput } from "@/lib/phoneUtils";
+import { HorariosProfesionalEditor } from "@/components/HorariosProfesionalEditor";
+import { Clock } from "lucide-react";
 
 interface Personal {
   id: string;
@@ -227,7 +230,21 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
             </div>
           </div>
           
+          {/* Horarios Laborables */}
           <div className="space-y-4 pt-4 border-t">
+            <h4 className="font-medium flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              Horarios Laborables
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              Configura los días y horarios de trabajo de este profesional
+            </p>
+            <HorariosProfesionalEditor profesionalId={personal.id} />
+          </div>
+
+          <Separator />
+
+          <div className="space-y-4 pt-4">
             <h4 className="font-medium">Configuración</h4>
             <div className="flex items-center space-x-2">
               <input
@@ -245,14 +262,23 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
               <input
                 type="checkbox"
                 id="notificaciones_activas"
-                checked={formData.notificaciones_activas}
+                checked={formData.notificaciones_activas && !!formData.email_contacto}
                 onChange={(e) => setFormData({ ...formData, notificaciones_activas: e.target.checked })}
                 className="rounded"
+                disabled={!formData.email_contacto}
               />
-              <Label htmlFor="notificaciones_activas" className="cursor-pointer">
+              <Label 
+                htmlFor="notificaciones_activas" 
+                className={`cursor-pointer ${!formData.email_contacto ? 'text-muted-foreground' : ''}`}
+              >
                 Recibir notificaciones por correo
               </Label>
             </div>
+            {!formData.email_contacto && (
+              <p className="text-xs text-muted-foreground">
+                Se requiere un email para habilitar las notificaciones
+              </p>
+            )}
           </div>
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
