@@ -85,23 +85,43 @@ const ConfiguracionAdmin = () => {
   const handleRoleChange = async (userId: string, newRole: string) => {
     setLoading(true);
     
-    // First, delete existing role
-    await supabase
-      .from("user_roles")
-      .delete()
-      .eq("user_id", userId);
+    try {
+      // Check if user already has a role
+      const { data: existingRole } = await supabase
+        .from("user_roles")
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
 
-    // Then insert new role
-    const { error } = await supabase
-      .from("user_roles")
-      .insert([{ user_id: userId, role: newRole as any }]);
+      let error;
+      
+      if (existingRole) {
+        // Update existing role
+        const result = await supabase
+          .from("user_roles")
+          .update({ role: newRole as any })
+          .eq("user_id", userId);
+        error = result.error;
+      } else {
+        // Insert new role
+        const result = await supabase
+          .from("user_roles")
+          .insert([{ user_id: userId, role: newRole as any }]);
+        error = result.error;
+      }
 
-    if (error) {
-      toast.error("Error al actualizar rol");
-    } else {
-      toast.success("Rol actualizado exitosamente");
-      fetchUsuarios();
+      if (error) {
+        console.error("Error updating role:", error);
+        toast.error("Error al actualizar rol: " + error.message);
+      } else {
+        toast.success("Rol actualizado exitosamente");
+        fetchUsuarios();
+      }
+    } catch (err) {
+      console.error("Exception updating role:", err);
+      toast.error("Error inesperado al actualizar rol");
     }
+    
     setLoading(false);
   };
 
