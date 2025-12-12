@@ -381,21 +381,23 @@ const Visitas = () => {
           <p className="text-muted-foreground">Citas ambulatorias y domiciliarias</p>
         </div>
         <div className="flex gap-2">
-          {isAdmin && <ImportVisitasDialog onSuccess={fetchData} />}
-          <ExportButton
-            data={visitas.map(v => ({
-              paciente: `${v.pacientes?.nombre || ''} ${v.pacientes?.apellido || ''}`,
-              profesional: `${v.personal_salud?.nombre || ''} ${v.personal_salud?.apellido || ''}`,
-              fecha_visita: v.fecha_hora_visita,
-              tipo: v.tipo_visita,
-              estado: v.estado,
-              motivo: v.motivo_visita || '',
-              notas: v.notas_visita || ''
-            }))}
-            filename="visitas"
-            title="Reporte de Visitas"
-          />
-          <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
+          {isAdmin && <span className="hidden md:inline-flex"><ImportVisitasDialog onSuccess={fetchData} /></span>}
+          <span className="hidden md:inline-flex">
+            <ExportButton
+              data={visitas.map(v => ({
+                paciente: `${v.pacientes?.nombre || ''} ${v.pacientes?.apellido || ''}`,
+                profesional: `${v.personal_salud?.nombre || ''} ${v.personal_salud?.apellido || ''}`,
+                fecha_visita: v.fecha_hora_visita,
+                tipo: v.tipo_visita,
+                estado: v.estado,
+                motivo: v.motivo_visita || '',
+                notas: v.notas_visita || ''
+              }))}
+              filename="visitas"
+              title="Reporte de Visitas"
+            />
+          </span>
+          <Button variant="outline" onClick={() => setShowFilters(!showFilters)} className="hidden md:inline-flex">
             <Filter className="mr-2 h-4 w-4" />
             {showFilters ? "Ocultar Filtros" : "Filtros"}
           </Button>
@@ -629,8 +631,8 @@ const Visitas = () => {
         </Alert>
       )}
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-4">
+      {/* Stats Cards - Hidden on mobile */}
+      <div className="hidden md:grid gap-4 grid-cols-1 md:grid-cols-4">
         <GlassCard className="p-4">
           <div className="flex items-center justify-between">
             <div>
