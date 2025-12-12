@@ -375,33 +375,15 @@ const Visitas = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Control de Visitas</h1>
-          <p className="text-muted-foreground">Citas ambulatorias y domiciliarias</p>
-        </div>
-        <div className="flex gap-2">
-          {isAdmin && <span className="hidden md:inline-flex"><ImportVisitasDialog onSuccess={fetchData} /></span>}
-          <span className="hidden md:inline-flex">
-            <ExportButton
-              data={visitas.map(v => ({
-                paciente: `${v.pacientes?.nombre || ''} ${v.pacientes?.apellido || ''}`,
-                profesional: `${v.personal_salud?.nombre || ''} ${v.personal_salud?.apellido || ''}`,
-                fecha_visita: v.fecha_hora_visita,
-                tipo: v.tipo_visita,
-                estado: v.estado,
-                motivo: v.motivo_visita || '',
-                notas: v.notas_visita || ''
-              }))}
-              filename="visitas"
-              title="Reporte de Visitas"
-            />
-          </span>
-          <Button variant="outline" onClick={() => setShowFilters(!showFilters)} className="hidden md:inline-flex">
-            <Filter className="mr-2 h-4 w-4" />
-            {showFilters ? "Ocultar Filtros" : "Filtros"}
-          </Button>
-          <Dialog open={unscheduledOpen} onOpenChange={setUnscheduledOpen}>
+      {/* Header - Solo título y descripción */}
+      <div>
+        <h1 className="text-3xl font-bold">Control de Visitas</h1>
+        <p className="text-muted-foreground">Citas ambulatorias y domiciliarias</p>
+      </div>
+
+      {/* Botones de acción principales */}
+      <div className="flex flex-wrap gap-2">
+        <Dialog open={unscheduledOpen} onOpenChange={setUnscheduledOpen}>
             <DialogTrigger asChild>
               <Button variant="outline">
                 <CheckSquare className="mr-2 h-4 w-4" />
@@ -607,7 +589,6 @@ const Visitas = () => {
             </form>
           </DialogContent>
         </Dialog>
-        </div>
       </div>
 
       {/* Alerta de pacientes sin visitas */}
@@ -669,6 +650,28 @@ const Visitas = () => {
             <Badge variant="destructive">{stats.canceladas}</Badge>
           </div>
         </GlassCard>
+      </div>
+
+      {/* Botones secundarios - Debajo de stats, solo desktop */}
+      <div className="hidden md:flex gap-2">
+        {isAdmin && <ImportVisitasDialog onSuccess={fetchData} />}
+        <ExportButton
+          data={visitas.map(v => ({
+            paciente: `${v.pacientes?.nombre || ''} ${v.pacientes?.apellido || ''}`,
+            profesional: `${v.personal_salud?.nombre || ''} ${v.personal_salud?.apellido || ''}`,
+            fecha_visita: v.fecha_hora_visita,
+            tipo: v.tipo_visita,
+            estado: v.estado,
+            motivo: v.motivo_visita || '',
+            notas: v.notas_visita || ''
+          }))}
+          filename="visitas"
+          title="Reporte de Visitas"
+        />
+        <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
+          <Filter className="mr-2 h-4 w-4" />
+          {showFilters ? "Ocultar Filtros" : "Filtros"}
+        </Button>
       </div>
 
       {/* Filters */}
