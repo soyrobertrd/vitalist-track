@@ -92,6 +92,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
     contacto_px: "",
     contacto_cuidador: ""
   });
+  const [statusPx, setStatusPx] = useState<string>("activo");
+  const [motivoInactividad, setMotivoInactividad] = useState<string>("");
   const [esSospechoso, setEsSospechoso] = useState(false);
   const [notificacionesActivas, setNotificacionesActivas] = useState(true);
   const [whatsappPx, setWhatsappPx] = useState(false);
@@ -136,6 +138,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       setDiasNoVisita(paciente.dias_no_visita || []);
       setEmailPx(paciente.email_px || "");
       setEmailCuidador(paciente.email_cuidador || "");
+      setStatusPx(paciente.status_px || "activo");
+      setMotivoInactividad(paciente.motivo_inactividad || "");
       // If patient already has nombre, apellido, fecha_nacimiento and sexo, consider it validated
       const hasValidatedData = !!(paciente.nombre && paciente.apellido && paciente.fecha_nacimiento && paciente.sexo);
       setJceValidatedOnLoad(hasValidatedData);
@@ -273,8 +277,9 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       profesional_asignado_id: profesionalId === 'sin-asignar' ? null : profesionalId || null,
       es_sospechoso: esSospechoso,
       notificaciones_activas: notificacionesActivas,
-      status_px: formDataObj.get("status_px") as any,
+      status_px: statusPx as any,
       dias_no_visita: diasNoVisita,
+      motivo_inactividad: statusPx === 'inactivo' ? motivoInactividad : null,
     };
 
     const { error } = await supabase
@@ -649,7 +654,16 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
               </div>
               <div className="space-y-1">
                 <Label htmlFor="status_px" className="text-xs">Estado *</Label>
-                <Select name="status_px" defaultValue={paciente.status_px || 'activo'}>
+                <Select 
+                  name="status_px" 
+                  value={statusPx}
+                  onValueChange={(value) => {
+                    setStatusPx(value);
+                    if (value !== 'inactivo') {
+                      setMotivoInactividad("");
+                    }
+                  }}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -679,6 +693,36 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 </Select>
               </div>
             </div>
+            
+            {/* Motivo de inactividad - solo visible cuando status es inactivo */}
+            {statusPx === 'inactivo' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                <div className="space-y-1">
+                  <Label htmlFor="motivo_inactividad" className="text-xs">Motivo de Inactividad</Label>
+                  <Select 
+                    name="motivo_inactividad" 
+                    value={motivoInactividad}
+                    onValueChange={setMotivoInactividad}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar motivo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="viaje">De viaje temporalmente</SelectItem>
+                      <SelectItem value="cambio_ars">Cambió de ARS</SelectItem>
+                      <SelectItem value="referido_paliativo">Referido a paliativo</SelectItem>
+                      <SelectItem value="referido_otro_programa">Referido a otro programa</SelectItem>
+                      <SelectItem value="decision_paciente">Decisión del paciente</SelectItem>
+                      <SelectItem value="otro">Otro motivo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center text-xs text-muted-foreground">
+                  <span>El paciente podrá ser reactivado cuando vuelva al programa</span>
+                </div>
+              </div>
+            )}
+            
             <div className="space-y-1">
               <Label htmlFor="historia_medica" className="text-xs">Historia Médica</Label>
               <Textarea 

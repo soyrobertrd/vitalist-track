@@ -23,6 +23,7 @@ export interface Paciente {
   numero_principal?: string | null;
   tipo_atencion?: string | null;
   dias_no_visita?: number[];
+  motivo_inactividad?: string | null;
 }
 
 export interface PacienteFilters {

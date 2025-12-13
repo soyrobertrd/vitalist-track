@@ -714,6 +714,7 @@ export type Database = {
           id: string
           latitud: number | null
           longitud: number | null
+          motivo_inactividad: string | null
           nombre: string
           nombre_cuidador: string | null
           notificaciones_activas: boolean | null
@@ -749,6 +750,7 @@ export type Database = {
           id?: string
           latitud?: number | null
           longitud?: number | null
+          motivo_inactividad?: string | null
           nombre: string
           nombre_cuidador?: string | null
           notificaciones_activas?: boolean | null
@@ -784,6 +786,7 @@ export type Database = {
           id?: string
           latitud?: number | null
           longitud?: number | null
+          motivo_inactividad?: string | null
           nombre?: string
           nombre_cuidador?: string | null
           notificaciones_activas?: boolean | null
