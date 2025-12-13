@@ -18,15 +18,26 @@ export function PacientesHeader({
   onNewPacienteClick 
 }: PacientesHeaderProps) {
   return (
-    <div className="flex justify-between items-center">
+    <div className="space-y-4">
+      {/* Header - Solo título y descripción */}
       <div>
         <h1 className="text-3xl font-bold">Pacientes</h1>
         <p className="text-muted-foreground">Gestión de pacientes del programa</p>
       </div>
-      <div className="flex gap-2">
+
+      {/* Botón principal de acción */}
+      <div className="flex flex-wrap gap-2">
+        <Button onClick={onNewPacienteClick}>
+          <Plus className="mr-2 h-4 w-4" />
+          Nuevo Paciente
+        </Button>
+      </div>
+
+      {/* Botones secundarios - Solo desktop */}
+      <div className="hidden md:flex gap-2">
         {isAdmin && (
           <>
-            <Button variant="outline" onClick={onImportClick}>
+            <Button variant="outline" size="sm" onClick={onImportClick}>
               <Upload className="mr-2 h-4 w-4" />
               Importar
             </Button>
@@ -47,10 +58,6 @@ export function PacientesHeader({
           filename="pacientes"
           title="Reporte de Pacientes"
         />
-        <Button onClick={onNewPacienteClick}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nuevo Paciente
-        </Button>
       </div>
     </div>
   );
