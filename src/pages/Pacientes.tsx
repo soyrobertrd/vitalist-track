@@ -1,10 +1,10 @@
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Users, UserX } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { addDays, format, isWeekend } from "date-fns";
 
 // Hooks
 import { usePacientes } from "@/hooks/usePacientes";
@@ -22,16 +22,39 @@ import { EditPacienteDialog } from "@/components/EditPacienteDialog";
 import { ImportPacientesDialog } from "@/components/ImportPacientesDialog";
 import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
 import { NuevoPacienteForm } from "@/components/pacientes/NuevoPacienteForm";
+import { Badge } from "@/components/ui/badge";
+
+const MOTIVO_LABELS: Record<string, string> = {
+  viaje: "De viaje",
+  cambio_ars: "Cambió ARS",
+  referido_paliativo: "Referido a paliativo",
+  referido_otro_programa: "Referido a otro programa",
+  decision_paciente: "Decisión del paciente",
+  otro: "Otro motivo"
+};
 
 const Pacientes = () => {
+  const [activeTab, setActiveTab] = useState<string>("activos");
+  
+  // Pacientes activos
   const { 
-    pacientes, 
-    filteredPacientes, 
-    filters, 
-    updateFilter, 
-    fetchPacientes,
-    deletePaciente 
-  } = usePacientes();
+    pacientes: pacientesActivos, 
+    filteredPacientes: filteredPacientesActivos, 
+    filters: filtersActivos, 
+    updateFilter: updateFilterActivos, 
+    fetchPacientes: fetchPacientesActivos,
+    deletePaciente: deletePacienteActivo 
+  } = usePacientes(false);
+  
+  // Pacientes inactivos
+  const { 
+    pacientes: pacientesInactivos, 
+    filteredPacientes: filteredPacientesInactivos, 
+    filters: filtersInactivos, 
+    updateFilter: updateFilterInactivos, 
+    fetchPacientes: fetchPacientesInactivos,
+  } = usePacientes(true);
+  
   const { personal } = usePersonal();
   const { isAdmin } = useUserRole();
   const isMobile = useIsMobile();
@@ -51,80 +74,185 @@ const Pacientes = () => {
   const [pacienteParaAgendar, setPacienteParaAgendar] = useState<string | null>(null);
 
   // Get unique barrios for filter
-  const barrios = useMemo(() => {
-    return [...new Set(pacientes.map(p => p.barrio).filter(Boolean))].sort() as string[];
-  }, [pacientes]);
+  const barriosActivos = useMemo(() => {
+    return [...new Set(pacientesActivos.map(p => p.barrio).filter(Boolean))].sort() as string[];
+  }, [pacientesActivos]);
+
+  const barriosInactivos = useMemo(() => {
+    return [...new Set(pacientesInactivos.map(p => p.barrio).filter(Boolean))].sort() as string[];
+  }, [pacientesInactivos]);
 
   const handlePacienteCreated = () => {
     setOpen(false);
-    fetchPacientes();
+    fetchPacientesActivos();
     toast.success("Paciente agregado exitosamente con llamada agendada");
   };
 
   const handleDelete = async (id: string) => {
-    const paciente = pacientes.find(p => p.id === id);
+    const paciente = pacientesActivos.find(p => p.id === id);
     if (paciente && confirm(`¿Está seguro de eliminar a ${paciente.nombre} ${paciente.apellido}? Esta acción no se puede deshacer.`)) {
-      await deletePaciente(id);
+      await deletePacienteActivo(id);
     }
+  };
+
+  const handleEditSuccess = () => {
+    fetchPacientesActivos();
+    fetchPacientesInactivos();
   };
 
   return (
     <div className="space-y-6">
-      <PacientesHeader
-        isAdmin={isAdmin}
-        filteredPacientes={filteredPacientes}
-        onImportClick={() => setImportOpen(true)}
-        onNewPacienteClick={() => setOpen(true)}
-        onToggleFilters={() => setShowFilters(!showFilters)}
-        showFilters={showFilters}
-      />
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold">Pacientes</h1>
+              <p className="text-muted-foreground text-sm">Gestión de pacientes del programa</p>
+            </div>
+            <TabsList className="grid w-full sm:w-auto grid-cols-2">
+              <TabsTrigger value="activos" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span>Activos</span>
+                <Badge variant="secondary" className="ml-1">{pacientesActivos.length}</Badge>
+              </TabsTrigger>
+              <TabsTrigger value="inactivos" className="flex items-center gap-2">
+                <UserX className="h-4 w-4" />
+                <span>Inactivos</span>
+                <Badge variant="outline" className="ml-1">{pacientesInactivos.length}</Badge>
+              </TabsTrigger>
+            </TabsList>
+          </div>
+        </div>
 
-      {/* Filters - Toggle visibility */}
-      {showFilters && (
-        <>
-          {/* Desktop Filters */}
-          <div className="lg:block hidden">
-            <PacienteFiltersCard
-              filters={filters}
-              onFilterChange={updateFilter}
-              barrios={barrios}
-            />
+        <TabsContent value="activos" className="mt-6 space-y-6">
+          <PacientesHeader
+            isAdmin={isAdmin}
+            filteredPacientes={filteredPacientesActivos}
+            onImportClick={() => setImportOpen(true)}
+            onNewPacienteClick={() => setOpen(true)}
+            onToggleFilters={() => setShowFilters(!showFilters)}
+            showFilters={showFilters}
+            hideTitle
+          />
+
+          {showFilters && (
+            <>
+              <div className="lg:block hidden">
+                <PacienteFiltersCard
+                  filters={filtersActivos}
+                  onFilterChange={updateFilterActivos}
+                  barrios={barriosActivos}
+                />
+              </div>
+              <div className="lg:hidden">
+                <PacientesMobileFilters
+                  filters={filtersActivos}
+                  onFilterChange={updateFilterActivos}
+                  barrios={barriosActivos}
+                />
+              </div>
+            </>
+          )}
+
+          <PacientesGrid
+            pacientes={filteredPacientesActivos}
+            personal={personal}
+            isAdmin={isAdmin}
+            onViewDetail={(id) => {
+              setSelectedPacienteId(id);
+              setDetailOpen(true);
+            }}
+            onEdit={(paciente) => {
+              setSelectedPaciente(paciente);
+              setEditOpen(true);
+            }}
+            onAgendarLlamada={(id) => {
+              setPacienteParaAgendar(id);
+              setAgendarLlamadaOpen(true);
+            }}
+            onAgendarVisita={(id) => {
+              setPacienteParaAgendar(id);
+              setAgendarVisitaOpen(true);
+            }}
+            onDelete={isAdmin ? handleDelete : undefined}
+          />
+        </TabsContent>
+
+        <TabsContent value="inactivos" className="mt-6 space-y-6">
+          <div className="bg-muted/50 p-4 rounded-lg border">
+            <h3 className="font-medium mb-2">Pacientes Inactivos</h3>
+            <p className="text-sm text-muted-foreground">
+              Pacientes que han salido del programa temporalmente. Puedes reactivarlos editando su registro.
+            </p>
           </div>
 
-          {/* Mobile Filters */}
-          <div className="lg:hidden">
-            <PacientesMobileFilters
-              filters={filters}
-              onFilterChange={updateFilter}
-              barrios={barrios}
-            />
-          </div>
-        </>
-      )}
+          {showFilters && (
+            <>
+              <div className="lg:block hidden">
+                <PacienteFiltersCard
+                  filters={filtersInactivos}
+                  onFilterChange={updateFilterInactivos}
+                  barrios={barriosInactivos}
+                />
+              </div>
+              <div className="lg:hidden">
+                <PacientesMobileFilters
+                  filters={filtersInactivos}
+                  onFilterChange={updateFilterInactivos}
+                  barrios={barriosInactivos}
+                />
+              </div>
+            </>
+          )}
 
-      {/* Patient Grid */}
-      <PacientesGrid
-        pacientes={filteredPacientes}
-        personal={personal}
-        isAdmin={isAdmin}
-        onViewDetail={(id) => {
-          setSelectedPacienteId(id);
-          setDetailOpen(true);
-        }}
-        onEdit={(paciente) => {
-          setSelectedPaciente(paciente);
-          setEditOpen(true);
-        }}
-        onAgendarLlamada={(id) => {
-          setPacienteParaAgendar(id);
-          setAgendarLlamadaOpen(true);
-        }}
-        onAgendarVisita={(id) => {
-          setPacienteParaAgendar(id);
-          setAgendarVisitaOpen(true);
-        }}
-        onDelete={isAdmin ? handleDelete : undefined}
-      />
+          <div className="flex justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              {showFilters ? "Ocultar filtros" : "Mostrar filtros"}
+            </Button>
+          </div>
+
+          {filteredPacientesInactivos.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              No hay pacientes inactivos
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {filteredPacientesInactivos.map((paciente) => (
+                <div 
+                  key={paciente.id} 
+                  className="p-4 border rounded-lg bg-card hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => {
+                    setSelectedPaciente(paciente);
+                    setEditOpen(true);
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">{paciente.nombre} {paciente.apellido}</h4>
+                      <p className="text-sm text-muted-foreground">Cédula: {paciente.cedula}</p>
+                      {paciente.zona && (
+                        <p className="text-sm text-muted-foreground">Zona: {paciente.zona}</p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      {paciente.motivo_inactividad && (
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                          {MOTIVO_LABELS[paciente.motivo_inactividad] || paciente.motivo_inactividad}
+                        </Badge>
+                      )}
+                      <p className="text-xs text-muted-foreground mt-1">Click para editar</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
 
       {/* Dialogs */}
       <Dialog open={open} onOpenChange={setOpen}>
@@ -150,20 +278,20 @@ const Pacientes = () => {
         paciente={selectedPaciente}
         open={editOpen}
         onOpenChange={setEditOpen}
-        onSuccess={fetchPacientes}
+        onSuccess={handleEditSuccess}
       />
 
       <ImportPacientesDialog
         open={importOpen}
         onOpenChange={setImportOpen}
-        onSuccess={fetchPacientes}
+        onSuccess={fetchPacientesActivos}
       />
 
       {pacienteParaAgendar && (
         <AgendarLlamadaDialog
           open={agendarLlamadaOpen}
           onOpenChange={setAgendarLlamadaOpen}
-          pacientes={pacientes.map(p => ({ ...p, id: p.id }))}
+          pacientes={pacientesActivos.map(p => ({ ...p, id: p.id }))}
           personal={personal}
           onSuccess={() => {
             toast.success("Llamada agendada");

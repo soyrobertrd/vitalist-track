@@ -44,18 +44,25 @@ const defaultFilters: PacienteFilters = {
   tipo: "todos"
 };
 
-export function usePacientes() {
+export function usePacientes(includeInactive: boolean = false) {
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<PacienteFilters>(defaultFilters);
 
   const fetchPacientes = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    let query = supabase
       .from("pacientes")
       .select("*")
-      .neq("status_px", "inactivo")
       .order("nombre", { ascending: true });
+    
+    if (!includeInactive) {
+      query = query.neq("status_px", "inactivo");
+    } else {
+      query = query.eq("status_px", "inactivo");
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       toast.error("Error al cargar pacientes");
@@ -63,7 +70,7 @@ export function usePacientes() {
       setPacientes(data || []);
     }
     setLoading(false);
-  }, []);
+  }, [includeInactive]);
 
   const filteredPacientes = useMemo(() => {
     return pacientes.filter((p) => {
