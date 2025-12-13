@@ -12,6 +12,7 @@ interface PacientesHeaderProps {
   onNewPacienteClick: () => void;
   onToggleFilters?: () => void;
   showFilters?: boolean;
+  hideTitle?: boolean;
 }
 
 export function PacientesHeader({ 
@@ -20,15 +21,18 @@ export function PacientesHeader({
   onImportClick, 
   onNewPacienteClick,
   onToggleFilters,
-  showFilters = false
+  showFilters = false,
+  hideTitle = false
 }: PacientesHeaderProps) {
   return (
     <div className="space-y-4">
       {/* Header - Título y descripción */}
-      <div>
-        <h1 className="text-3xl font-bold">Pacientes</h1>
-        <p className="text-muted-foreground">Gestión de pacientes del programa</p>
-      </div>
+      {!hideTitle && (
+        <div>
+          <h1 className="text-3xl font-bold">Pacientes</h1>
+          <p className="text-muted-foreground">Gestión de pacientes del programa</p>
+        </div>
+      )}
 
       {/* Botones principales en una fila */}
       <div className="flex flex-wrap items-center gap-2">
