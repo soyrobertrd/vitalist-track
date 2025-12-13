@@ -101,6 +101,8 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [diasNoVisita, setDiasNoVisita] = useState<number[]>([]);
   const [emailPx, setEmailPx] = useState("");
   const [emailCuidador, setEmailCuidador] = useState("");
+  const [periodoLlamada, setPeriodoLlamada] = useState<number>(30);
+  const [periodoVisita, setPeriodoVisita] = useState<number>(90);
   
   // Auto-disable notifications if no email
   const hasAnyEmail = !!(emailPx.trim() || emailCuidador.trim());
@@ -144,6 +146,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       const hasValidatedData = !!(paciente.nombre && paciente.apellido && paciente.fecha_nacimiento && paciente.sexo);
       setJceValidatedOnLoad(hasValidatedData);
       fetchPersonal();
+      fetchParametrosSeguimiento();
     }
   }, [paciente, open]);
 
@@ -155,6 +158,19 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       .in("especialidad", ["Médico", "Enfermera", "Medico Internista"])
       .order("nombre", { ascending: true });
     setPersonal(data || []);
+  };
+
+  const fetchParametrosSeguimiento = async () => {
+    if (!paciente?.id) return;
+    const { data } = await supabase
+      .from("parametros_seguimiento")
+      .select("*")
+      .eq("paciente_id", paciente.id)
+      .maybeSingle();
+    if (data) {
+      setPeriodoLlamada(data.periodo_llamada_ciclico || 30);
+      setPeriodoVisita(data.periodo_visita_ciclico || 90);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -289,11 +305,38 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
 
     if (error) {
       toast.error("Error al actualizar paciente");
-    } else {
-      toast.success("Paciente actualizado exitosamente");
-      onSuccess();
-      onOpenChange(false);
+      setLoading(false);
+      return;
     }
+
+    // Update parametros_seguimiento
+    const { data: existingParams } = await supabase
+      .from("parametros_seguimiento")
+      .select("id")
+      .eq("paciente_id", paciente.id)
+      .maybeSingle();
+
+    if (existingParams) {
+      await supabase
+        .from("parametros_seguimiento")
+        .update({
+          periodo_llamada_ciclico: periodoLlamada,
+          periodo_visita_ciclico: periodoVisita,
+        })
+        .eq("id", existingParams.id);
+    } else {
+      await supabase
+        .from("parametros_seguimiento")
+        .insert({
+          paciente_id: paciente.id,
+          periodo_llamada_ciclico: periodoLlamada,
+          periodo_visita_ciclico: periodoVisita,
+        });
+    }
+
+    toast.success("Paciente actualizado exitosamente");
+    onSuccess();
+    onOpenChange(false);
     setLoading(false);
   };
 
@@ -738,6 +781,37 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             {/* Medicamentos del paciente */}
             <MedicamentosPaciente pacienteId={paciente.id} />
 
+          </div>
+
+          {/* Sección: Configuración de Seguimiento */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Configuración de Seguimiento</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="periodo_llamada" className="text-xs">Período de Llamadas (días)</Label>
+                <Input 
+                  id="periodo_llamada" 
+                  name="periodo_llamada" 
+                  type="number" 
+                  value={periodoLlamada}
+                  onChange={(e) => setPeriodoLlamada(parseInt(e.target.value) || 30)}
+                  min={1} 
+                  max={365} 
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="periodo_visita" className="text-xs">Período de Visitas (días)</Label>
+                <Input 
+                  id="periodo_visita" 
+                  name="periodo_visita" 
+                  type="number" 
+                  value={periodoVisita}
+                  onChange={(e) => setPeriodoVisita(parseInt(e.target.value) || 90)}
+                  min={1} 
+                  max={730} 
+                />
+              </div>
+            </div>
             {/* Días de restricción para visitas */}
             <DiasRestriccionPaciente
               diasNoVisita={diasNoVisita}
