@@ -11,6 +11,8 @@ interface PacienteCardProps {
     nombre: string;
     apellido: string;
     contacto_px: string | null;
+    contacto_cuidador?: string | null;
+    numero_principal?: string | null;
     status_px: string;
     grado_dificultad: string;
     zona: string | null;
@@ -65,6 +67,24 @@ export const PacienteCard = ({
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
+  // Get the phone number to display based on priority
+  const getDisplayPhone = () => {
+    // If numero_principal is set, use that
+    if (paciente.numero_principal) {
+      return paciente.numero_principal;
+    }
+    // Otherwise, prefer patient's phone, fallback to caregiver's
+    if (paciente.contacto_px) {
+      return paciente.contacto_px;
+    }
+    if (paciente.contacto_cuidador) {
+      return paciente.contacto_cuidador;
+    }
+    return null;
+  };
+
+  const displayPhone = getDisplayPhone();
+
   // Extraer primeras 2 enfermedades de la historia médica
   const getEnfermedades = () => {
     if (!paciente.historia_medica_basica) return null;
@@ -100,18 +120,18 @@ export const PacienteCard = ({
         {/* Información del paciente */}
         <div className="space-y-2 text-sm flex-1">
           {/* Teléfono */}
-          {paciente.contacto_px && (
+          {displayPhone && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <Phone className="h-3.5 w-3.5 shrink-0" />
               <a
-                href={`tel:${(paciente.contacto_px || '').replace(/\D/g, '')}`}
+                href={`tel:${displayPhone.replace(/\D/g, '')}`}
                 className="hover:text-foreground transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
-                {paciente.contacto_px}
+                {displayPhone}
               </a>
               <a
-                href={`https://wa.me/${(paciente.contacto_px || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
+                href={`https://wa.me/${displayPhone.replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
