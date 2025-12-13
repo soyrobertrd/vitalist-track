@@ -296,50 +296,18 @@ const Llamadas = () => {
 
   return (
     <div className="space-y-6">
-      {/* Mobile Layout */}
-      <div className="md:hidden space-y-4">
-        <div>
-          <h1 className="text-3xl font-bold">Gestión de Llamadas</h1>
-          <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
-        </div>
-        <div className="flex gap-2">
-          <Button onClick={() => setOpenAgendar(true)} className="flex-1">
-            <Plus className="mr-2 h-4 w-4" />
-            Agendar Llamada
-          </Button>
-        </div>
+      {/* Header - Solo título y descripción */}
+      <div>
+        <h1 className="text-3xl font-bold">Gestión de Llamadas</h1>
+        <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
       </div>
 
-      {/* Desktop Layout */}
-      <div className="hidden md:flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Gestión de Llamadas</h1>
-          <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
-        </div>
-        <div className="flex gap-2">
-          {isAdmin && (
-            <>
-              <ImportLlamadasDialog onSuccess={fetchData} />
-              <ProcesarLlamadasImportadasDialog onSuccess={fetchData} />
-            </>
-          )}
-          <ExportButton
-            data={llamadas.map(l => ({
-              paciente: `${l.pacientes?.nombre || ''} ${l.pacientes?.apellido || ''}`,
-              profesional: `${l.personal_salud?.nombre || ''} ${l.personal_salud?.apellido || ''}`,
-              fecha_agendada: l.fecha_agendada || '',
-              estado: l.estado,
-              motivo: l.motivo || '',
-              resultado: l.resultado_seguimiento || ''
-            }))}
-            filename="llamadas"
-            title="Reporte de Llamadas"
-          />
-          <Button onClick={() => setOpenAgendar(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Agendar Llamada
-          </Button>
-        </div>
+      {/* Botón principal de acción */}
+      <div className="flex flex-wrap gap-2">
+        <Button onClick={() => setOpenAgendar(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Agendar Llamada
+        </Button>
       </div>
 
       {/* Alerta de sobrecarga de profesionales */}
@@ -356,7 +324,6 @@ const Llamadas = () => {
               pacientes={listaPacientesSinLlamada}
               tipo="llamadas"
               onAgendar={(pacienteId) => {
-                // Pre-select patient and open dialog
                 setOpenAgendar(true);
               }}
             />
@@ -369,14 +336,29 @@ const Llamadas = () => {
         <IndicadoresLlamadas />
       </div>
 
-      {/* Toggle Filtros - Hidden on Mobile */}
-      <div className="hidden md:flex justify-between items-center">
-        <Button 
-          variant="outline" 
-          onClick={() => setFiltrosVisible(!filtrosVisible)}
-        >
+      {/* Botones secundarios - Debajo de stats, solo desktop */}
+      <div className="hidden md:flex gap-2">
+        {isAdmin && (
+          <>
+            <ImportLlamadasDialog onSuccess={fetchData} />
+            <ProcesarLlamadasImportadasDialog onSuccess={fetchData} />
+          </>
+        )}
+        <ExportButton
+          data={llamadas.map(l => ({
+            paciente: `${l.pacientes?.nombre || ''} ${l.pacientes?.apellido || ''}`,
+            profesional: `${l.personal_salud?.nombre || ''} ${l.personal_salud?.apellido || ''}`,
+            fecha_agendada: l.fecha_agendada || '',
+            estado: l.estado,
+            motivo: l.motivo || '',
+            resultado: l.resultado_seguimiento || ''
+          }))}
+          filename="llamadas"
+          title="Reporte de Llamadas"
+        />
+        <Button variant="outline" size="sm" onClick={() => setFiltrosVisible(!filtrosVisible)}>
           <Filter className="mr-2 h-4 w-4" />
-          {filtrosVisible ? "Ocultar Filtros" : "Mostrar Filtros"}
+          {filtrosVisible ? "Ocultar Filtros" : "Filtros"}
         </Button>
       </div>
 
