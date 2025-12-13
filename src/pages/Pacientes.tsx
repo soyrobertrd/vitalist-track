@@ -43,6 +43,7 @@ const Pacientes = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [agendarLlamadaOpen, setAgendarLlamadaOpen] = useState(false);
   const [agendarVisitaOpen, setAgendarVisitaOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Selected states
   const [selectedPacienteId, setSelectedPacienteId] = useState<string | null>(null);
@@ -74,25 +75,32 @@ const Pacientes = () => {
         filteredPacientes={filteredPacientes}
         onImportClick={() => setImportOpen(true)}
         onNewPacienteClick={() => setOpen(true)}
+        onToggleFilters={() => setShowFilters(!showFilters)}
+        showFilters={showFilters}
       />
 
-      {/* Desktop Filters */}
-      <div className="lg:block hidden">
-        <PacienteFiltersCard
-          filters={filters}
-          onFilterChange={updateFilter}
-          barrios={barrios}
-        />
-      </div>
+      {/* Filters - Toggle visibility */}
+      {showFilters && (
+        <>
+          {/* Desktop Filters */}
+          <div className="lg:block hidden">
+            <PacienteFiltersCard
+              filters={filters}
+              onFilterChange={updateFilter}
+              barrios={barrios}
+            />
+          </div>
 
-      {/* Mobile Filters */}
-      <div className="lg:hidden">
-        <PacientesMobileFilters
-          filters={filters}
-          onFilterChange={updateFilter}
-          barrios={barrios}
-        />
-      </div>
+          {/* Mobile Filters */}
+          <div className="lg:hidden">
+            <PacientesMobileFilters
+              filters={filters}
+              onFilterChange={updateFilter}
+              barrios={barrios}
+            />
+          </div>
+        </>
+      )}
 
       {/* Patient Grid */}
       <PacientesGrid
