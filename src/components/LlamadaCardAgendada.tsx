@@ -66,18 +66,29 @@ export const LlamadaCardAgendada = ({
 
   const getMainPhone = () => {
     if (!pacienteData) return null;
-    if (pacienteData.numero_principal === 'cuidador' && pacienteData.contacto_cuidador) {
-      return pacienteData.contacto_cuidador;
+    // Priority: numero_principal > contacto_px > contacto_cuidador
+    if (pacienteData.numero_principal) {
+      return pacienteData.numero_principal;
     }
-    return pacienteData.contacto_px;
+    if (pacienteData.contacto_px) {
+      return pacienteData.contacto_px;
+    }
+    return pacienteData.contacto_cuidador;
   };
 
   const hasWhatsApp = () => {
     if (!pacienteData) return false;
-    if (pacienteData.numero_principal === 'cuidador') {
+    // If numero_principal matches contacto_cuidador, use cuidador's whatsapp flag
+    if (pacienteData.numero_principal && pacienteData.numero_principal === pacienteData.contacto_cuidador) {
       return pacienteData.whatsapp_cuidador;
     }
-    return pacienteData.whatsapp_px;
+    // If numero_principal matches contacto_px or is set, use px's whatsapp flag
+    if (pacienteData.numero_principal && pacienteData.numero_principal === pacienteData.contacto_px) {
+      return pacienteData.whatsapp_px;
+    }
+    // Fallback: check which contact we're using
+    if (pacienteData.contacto_px) return pacienteData.whatsapp_px;
+    return pacienteData.whatsapp_cuidador;
   };
 
   const getWhatsAppLink = () => {
