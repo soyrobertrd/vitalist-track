@@ -3,7 +3,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Users, UserX } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Plus, Users, UserX, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 // Hooks
@@ -77,10 +79,6 @@ const Pacientes = () => {
   const barriosActivos = useMemo(() => {
     return [...new Set(pacientesActivos.map(p => p.barrio).filter(Boolean))].sort() as string[];
   }, [pacientesActivos]);
-
-  const barriosInactivos = useMemo(() => {
-    return [...new Set(pacientesInactivos.map(p => p.barrio).filter(Boolean))].sort() as string[];
-  }, [pacientesInactivos]);
 
   const handlePacienteCreated = () => {
     setOpen(false);
@@ -186,33 +184,34 @@ const Pacientes = () => {
             </p>
           </div>
 
-          {showFilters && (
-            <>
-              <div className="lg:block hidden">
-                <PacienteFiltersCard
-                  filters={filtersInactivos}
-                  onFilterChange={updateFilterInactivos}
-                  barrios={barriosInactivos}
-                />
-              </div>
-              <div className="lg:hidden">
-                <PacientesMobileFilters
-                  filters={filtersInactivos}
-                  onFilterChange={updateFilterInactivos}
-                  barrios={barriosInactivos}
-                />
-              </div>
-            </>
-          )}
-
-          <div className="flex justify-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
+          {/* Filtros para inactivos */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar por nombre o cédula..."
+                value={filtersInactivos.busqueda}
+                onChange={(e) => updateFilterInactivos("busqueda", e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select
+              value={filtersInactivos.motivo_inactividad}
+              onValueChange={(value) => updateFilterInactivos("motivo_inactividad", value)}
             >
-              {showFilters ? "Ocultar filtros" : "Mostrar filtros"}
-            </Button>
+              <SelectTrigger className="w-full sm:w-[220px]">
+                <SelectValue placeholder="Motivo de inactividad" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos los motivos</SelectItem>
+                <SelectItem value="viaje">De viaje</SelectItem>
+                <SelectItem value="cambio_ars">Cambió ARS</SelectItem>
+                <SelectItem value="referido_paliativo">Referido a paliativo</SelectItem>
+                <SelectItem value="referido_otro_programa">Referido a otro programa</SelectItem>
+                <SelectItem value="decision_paciente">Decisión del paciente</SelectItem>
+                <SelectItem value="otro">Otro motivo</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {filteredPacientesInactivos.length === 0 ? (

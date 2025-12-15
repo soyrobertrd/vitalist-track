@@ -13,6 +13,8 @@ interface PacienteCardProps {
     contacto_px: string | null;
     contacto_cuidador?: string | null;
     numero_principal?: string | null;
+    whatsapp_px?: boolean;
+    whatsapp_cuidador?: boolean;
     status_px: string;
     grado_dificultad: string;
     zona: string | null;
@@ -67,23 +69,31 @@ export const PacienteCard = ({
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
-  // Get the phone number to display based on priority
-  const getDisplayPhone = () => {
+  // Get the phone number to display based on priority and check if it has WhatsApp
+  const getDisplayPhoneWithWhatsApp = () => {
     // If numero_principal is set, use that
     if (paciente.numero_principal) {
-      return paciente.numero_principal;
+      // Check which contact matches numero_principal to determine WhatsApp flag
+      if (paciente.numero_principal === paciente.contacto_cuidador) {
+        return { phone: paciente.numero_principal, hasWhatsApp: paciente.whatsapp_cuidador };
+      }
+      if (paciente.numero_principal === paciente.contacto_px) {
+        return { phone: paciente.numero_principal, hasWhatsApp: paciente.whatsapp_px };
+      }
+      // If numero_principal doesn't match either, still return it (could be a different number)
+      return { phone: paciente.numero_principal, hasWhatsApp: false };
     }
     // Otherwise, prefer patient's phone, fallback to caregiver's
     if (paciente.contacto_px) {
-      return paciente.contacto_px;
+      return { phone: paciente.contacto_px, hasWhatsApp: paciente.whatsapp_px };
     }
     if (paciente.contacto_cuidador) {
-      return paciente.contacto_cuidador;
+      return { phone: paciente.contacto_cuidador, hasWhatsApp: paciente.whatsapp_cuidador };
     }
-    return null;
+    return { phone: null, hasWhatsApp: false };
   };
 
-  const displayPhone = getDisplayPhone();
+  const { phone: displayPhone, hasWhatsApp } = getDisplayPhoneWithWhatsApp();
 
   // Extraer primeras 2 enfermedades de la historia médica
   const getEnfermedades = () => {
@@ -130,16 +140,18 @@ export const PacienteCard = ({
               >
                 {displayPhone}
               </a>
-              <a
-                href={`https://wa.me/${displayPhone.replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="hover:opacity-80 transition-opacity"
-                title="WhatsApp"
-              >
-                <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-green-600" />
-              </a>
+              {hasWhatsApp && (
+                <a
+                  href={`https://wa.me/${displayPhone.replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="hover:opacity-80 transition-opacity"
+                  title="WhatsApp"
+                >
+                  <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-green-600" />
+                </a>
+              )}
             </div>
           )}
 
