@@ -76,18 +76,29 @@ export const VisitaCardAgendada = ({
 
   const getMainPhone = () => {
     if (!visita.pacientes) return null;
-    if (visita.pacientes.numero_principal === 'cuidador' && visita.pacientes.contacto_cuidador) {
-      return visita.pacientes.contacto_cuidador;
+    // Priority: numero_principal > contacto_px > contacto_cuidador
+    if (visita.pacientes.numero_principal) {
+      return visita.pacientes.numero_principal;
     }
-    return visita.pacientes.contacto_px;
+    if (visita.pacientes.contacto_px) {
+      return visita.pacientes.contacto_px;
+    }
+    return visita.pacientes.contacto_cuidador;
   };
 
   const hasWhatsApp = () => {
     if (!visita.pacientes) return false;
-    if (visita.pacientes.numero_principal === 'cuidador') {
+    // If numero_principal matches contacto_cuidador, use cuidador's whatsapp flag
+    if (visita.pacientes.numero_principal && visita.pacientes.numero_principal === visita.pacientes.contacto_cuidador) {
       return visita.pacientes.whatsapp_cuidador;
     }
-    return visita.pacientes.whatsapp_px;
+    // If numero_principal matches contacto_px or is set, use px's whatsapp flag
+    if (visita.pacientes.numero_principal && visita.pacientes.numero_principal === visita.pacientes.contacto_px) {
+      return visita.pacientes.whatsapp_px;
+    }
+    // Fallback: check which contact we're using
+    if (visita.pacientes.contacto_px) return visita.pacientes.whatsapp_px;
+    return visita.pacientes.whatsapp_cuidador;
   };
 
   const getWhatsAppLink = () => {
