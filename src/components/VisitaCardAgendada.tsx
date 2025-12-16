@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { format } from "date-fns";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
+import { SelectionCheckbox } from "@/components/SelectionCheckbox";
 
 interface Visita {
   id: string;
@@ -34,6 +35,10 @@ interface VisitaCardAgendadaProps {
   onVisitaClick: (visita: Visita) => void;
   isVisitOverdue: (visita: Visita) => boolean;
   isVisitToday?: (visita: Visita) => boolean;
+  // Selection props
+  selectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelect?: () => void;
 }
 
 export const VisitaCardAgendada = ({
@@ -41,6 +46,9 @@ export const VisitaCardAgendada = ({
   onVisitaClick,
   isVisitOverdue,
   isVisitToday,
+  selectionMode = false,
+  isSelected = false,
+  onToggleSelect,
 }: VisitaCardAgendadaProps) => {
   const [recordatorioOpen, setRecordatorioOpen] = useState(false);
   const overdue = isVisitOverdue(visita);
@@ -116,15 +124,24 @@ export const VisitaCardAgendada = ({
 
   return (
     <Card 
-      className={`cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full ${
-        overdue 
-          ? 'border-destructive border-2 bg-destructive/5' 
-          : today 
-            ? 'border-green-500 border-2 bg-green-500/5' 
-            : ''
+      className={`cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full relative ${
+        isSelected 
+          ? 'ring-2 ring-primary bg-primary/5' 
+          : overdue 
+            ? 'border-destructive border-2 bg-destructive/5' 
+            : today 
+              ? 'border-green-500 border-2 bg-green-500/5' 
+              : ''
       }`}
-      onClick={() => onVisitaClick(visita)}
+      onClick={() => !selectionMode && onVisitaClick(visita)}
     >
+      {/* Selection checkbox */}
+      {selectionMode && onToggleSelect && (
+        <SelectionCheckbox
+          checked={isSelected}
+          onCheckedChange={onToggleSelect}
+        />
+      )}
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-base line-clamp-2 flex-1">
