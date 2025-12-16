@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { VisitaDetailDialog } from "@/components/VisitaDetailDialog";
 import { ImportVisitasDialog } from "@/components/ImportVisitasDialog";
@@ -28,6 +29,8 @@ import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
 import { MuestraMedicaDialog } from "@/components/MuestraMedicaDialog";
 import { AlertaSobrecargaProfesional } from "@/components/AlertaSobrecargaProfesional";
 import { ExportButton } from "@/components/ExportButton";
+import { useBulkSelection } from "@/hooks/useBulkSelection";
+import { BulkActionsToolbar, VISITA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 
 interface Visita {
   id: string;
@@ -73,6 +76,7 @@ const Visitas = () => {
   const [muestraMedicaOpen, setMuestraMedicaOpen] = useState(false);
   const [visitaCreada, setVisitaCreada] = useState<any>(null);
   const { medicamentos } = useMedicamentosPaciente(selectedPatientId);
+  const [selectionMode, setSelectionMode] = useState(false);
 
   const fetchData = async () => {
     const thirtyDaysAgo = new Date();
@@ -332,11 +336,41 @@ const Visitas = () => {
   // Separate visits into pending (agendadas) and history (historial)
   const visitasAgendadas = filteredVisitas
     .filter((v: any) => v.estado === 'pendiente')
-    .sort((a: any, b: any) => new Date(a.fecha_hora_visita).getTime() - new Date(b.fecha_hora_visita).getTime()); // Ascending for pending
+    .sort((a: any, b: any) => new Date(a.fecha_hora_visita).getTime() - new Date(b.fecha_hora_visita).getTime());
 
   const visitasHistorial = filteredVisitas
     .filter((v: any) => v.estado !== 'pendiente')
-    .sort((a: any, b: any) => new Date(b.fecha_hora_visita).getTime() - new Date(a.fecha_hora_visita).getTime()); // Descending for history
+    .sort((a: any, b: any) => new Date(b.fecha_hora_visita).getTime() - new Date(a.fecha_hora_visita).getTime());
+
+  // Bulk selection
+  const bulkSelection = useBulkSelection(visitasAgendadas);
+
+  const handleBulkAction = async (action: BulkActionType, value?: string) => {
+    if (bulkSelection.selectedCount === 0) return;
+    const selectedIds = Array.from(bulkSelection.selectedIds);
+    try {
+      if (action === "assign_professional" && value) {
+        const { error } = await supabase
+          .from("control_visitas")
+          .update({ profesional_id: value })
+          .in("id", selectedIds);
+        if (error) throw error;
+        toast.success(`${selectedIds.length} visita(s) reasignadas`);
+      } else if (action === "change_status" && value) {
+        const { error } = await supabase
+          .from("control_visitas")
+          .update({ estado: value as any })
+          .in("id", selectedIds);
+        if (error) throw error;
+        toast.success(`${selectedIds.length} visita(s) actualizadas`);
+      }
+      bulkSelection.clearSelection();
+      setSelectionMode(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Error al ejecutar acción masiva");
+    }
+  };
 
   const isVisitOverdue = (visita: Visita) => {
     if (visita.estado === 'pendiente' && visita.fecha_hora_visita) {

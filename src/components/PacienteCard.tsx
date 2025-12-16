@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Phone, MapPin, Calendar, PhoneCall, Pencil, Trash2, User } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { SelectionCheckbox } from "@/components/SelectionCheckbox";
 
 interface PacienteCardProps {
   paciente: {
@@ -29,6 +30,10 @@ interface PacienteCardProps {
   onAgendarVisita: () => void;
   onDelete?: () => void;
   isAdmin?: boolean;
+  // Selection props
+  selectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelect?: () => void;
 }
 
 export const PacienteCard = ({
@@ -40,6 +45,9 @@ export const PacienteCard = ({
   onAgendarVisita,
   onDelete,
   isAdmin = false,
+  selectionMode = false,
+  isSelected = false,
+  onToggleSelect,
 }: PacienteCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -109,9 +117,19 @@ export const PacienteCard = ({
   const enfermedades = getEnfermedades();
 
   return (
-    <Card className="hover:shadow-lg transition-all hover:scale-[1.01] flex flex-col h-full group relative overflow-hidden">
+    <Card className={`hover:shadow-lg transition-all hover:scale-[1.01] flex flex-col h-full group relative overflow-hidden ${
+      isSelected ? 'ring-2 ring-primary bg-primary/5' : ''
+    }`}>
+      {/* Selection checkbox */}
+      {selectionMode && onToggleSelect && (
+        <SelectionCheckbox
+          checked={isSelected}
+          onCheckedChange={onToggleSelect}
+        />
+      )}
+      
       {/* Badge de estado en esquina superior */}
-      <div className="absolute top-3 right-3 z-10">
+      <div className={`absolute top-3 right-3 z-10 ${selectionMode ? 'ml-8' : ''}`}>
         <Badge className={`${getStatusColor(paciente.status_px)} text-xs`}>
           {capitalizeStatus(paciente.status_px)}
         </Badge>

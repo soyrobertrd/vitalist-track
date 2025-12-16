@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { format } from "date-fns";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
+import { SelectionCheckbox } from "@/components/SelectionCheckbox";
 
 interface Llamada {
   id: string;
@@ -34,6 +35,10 @@ interface LlamadaCardAgendadaProps {
   getEstadoBadgeColor: (estado: string) => string;
   getResultadoBadgeColor: (resultado: string | null) => string;
   formatearTexto: (texto: string | null) => string;
+  // Selection props
+  selectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelect?: () => void;
 }
 
 export const LlamadaCardAgendada = ({
@@ -44,6 +49,9 @@ export const LlamadaCardAgendada = ({
   getEstadoBadgeColor,
   getResultadoBadgeColor,
   formatearTexto,
+  selectionMode = false,
+  isSelected = false,
+  onToggleSelect,
 }: LlamadaCardAgendadaProps) => {
   const [pacienteData, setPacienteData] = useState<any>(null);
   const [recordatorioOpen, setRecordatorioOpen] = useState(false);
@@ -106,15 +114,24 @@ export const LlamadaCardAgendada = ({
 
   return (
     <Card 
-      className={`cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full ${
-        overdue 
-          ? 'border-destructive border-2 bg-destructive/5' 
-          : today 
-            ? 'border-green-500 border-2 bg-green-500/5' 
-            : ''
+      className={`cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full relative ${
+        isSelected 
+          ? 'ring-2 ring-primary bg-primary/5' 
+          : overdue 
+            ? 'border-destructive border-2 bg-destructive/5' 
+            : today 
+              ? 'border-green-500 border-2 bg-green-500/5' 
+              : ''
       }`}
-      onClick={() => onLlamadaClick(llamada)}
+      onClick={() => !selectionMode && onLlamadaClick(llamada)}
     >
+      {/* Selection checkbox */}
+      {selectionMode && onToggleSelect && (
+        <SelectionCheckbox
+          checked={isSelected}
+          onCheckedChange={onToggleSelect}
+        />
+      )}
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-base line-clamp-2 flex-1">

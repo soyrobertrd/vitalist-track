@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Plus, Users, UserX, Search, RotateCcw, Pencil } from "lucide-react";
+import { Plus, Users, UserX, Search, RotateCcw, Pencil, CheckSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 // Hooks
@@ -13,6 +13,7 @@ import { usePacientes } from "@/hooks/usePacientes";
 import { usePersonal } from "@/hooks/usePersonal";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useBulkSelection } from "@/hooks/useBulkSelection";
 
 // Components
 import { PacientesHeader } from "@/components/pacientes/PacientesHeader";
@@ -25,6 +26,7 @@ import { ImportPacientesDialog } from "@/components/ImportPacientesDialog";
 import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
 import { NuevoPacienteForm } from "@/components/pacientes/NuevoPacienteForm";
 import { Badge } from "@/components/ui/badge";
+import { BulkActionsToolbar, PACIENTE_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 
 const MOTIVO_LABELS: Record<string, string> = {
   viaje: "De viaje",
@@ -61,6 +63,10 @@ const Pacientes = () => {
   const { personal } = usePersonal();
   const { isAdmin } = useUserRole();
   const isMobile = useIsMobile();
+
+  // Bulk selection
+  const bulkSelection = useBulkSelection(filteredPacientesActivos);
+  const [selectionMode, setSelectionMode] = useState(false);
 
   // Dialog states
   const [open, setOpen] = useState(false);
@@ -124,6 +130,44 @@ const Pacientes = () => {
     return contadores;
   }, [pacientesInactivos]);
 
+  // Handle bulk actions
+  const handleBulkAction = async (action: BulkActionType, value?: string) => {
+    if (bulkSelection.selectedCount === 0) return;
+
+    const selectedIds = Array.from(bulkSelection.selectedIds);
+
+    try {
+      if (action === "assign_professional" && value) {
+        const { error } = await supabase
+          .from("pacientes")
+          .update({ profesional_asignado_id: value })
+          .in("id", selectedIds);
+
+        if (error) throw error;
+        toast.success(`${selectedIds.length} paciente(s) asignados al profesional`);
+      } else if (action === "change_status" && value) {
+        const updateData: any = { status_px: value };
+        if (value === "activo") {
+          updateData.motivo_inactividad = null;
+        }
+        
+        const { error } = await supabase
+          .from("pacientes")
+          .update(updateData)
+          .in("id", selectedIds);
+
+        if (error) throw error;
+        toast.success(`${selectedIds.length} paciente(s) actualizados a ${value}`);
+      }
+
+      bulkSelection.clearSelection();
+      setSelectionMode(false);
+      fetchPacientesActivos();
+      fetchPacientesInactivos();
+    } catch (error) {
+      toast.error("Error al ejecutar acción masiva");
+    }
+  };
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -149,15 +193,28 @@ const Pacientes = () => {
         </div>
 
         <TabsContent value="activos" className="mt-6 space-y-6">
-          <PacientesHeader
-            isAdmin={isAdmin}
-            filteredPacientes={filteredPacientesActivos}
-            onImportClick={() => setImportOpen(true)}
-            onNewPacienteClick={() => setOpen(true)}
-            onToggleFilters={() => setShowFilters(!showFilters)}
-            showFilters={showFilters}
-            hideTitle
-          />
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <PacientesHeader
+              isAdmin={isAdmin}
+              filteredPacientes={filteredPacientesActivos}
+              onImportClick={() => setImportOpen(true)}
+              onNewPacienteClick={() => setOpen(true)}
+              onToggleFilters={() => setShowFilters(!showFilters)}
+              showFilters={showFilters}
+              hideTitle
+            />
+            <Button
+              variant={selectionMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setSelectionMode(!selectionMode);
+                if (selectionMode) bulkSelection.clearSelection();
+              }}
+            >
+              <CheckSquare className="h-4 w-4 mr-2" />
+              {selectionMode ? "Cancelar selección" : "Selección múltiple"}
+            </Button>
+          </div>
 
           {showFilters && (
             <>
@@ -199,6 +256,23 @@ const Pacientes = () => {
               setAgendarVisitaOpen(true);
             }}
             onDelete={isAdmin ? handleDelete : undefined}
+            selectionMode={selectionMode}
+            isSelected={bulkSelection.isSelected}
+            onToggleSelect={bulkSelection.toggleSelection}
+            onToggleSelectAll={bulkSelection.toggleSelectAll}
+            isAllSelected={bulkSelection.isAllSelected}
+            isSomeSelected={bulkSelection.isSomeSelected}
+          />
+
+          {/* Bulk Actions Toolbar */}
+          <BulkActionsToolbar
+            selectedCount={bulkSelection.selectedCount}
+            onClearSelection={() => {
+              bulkSelection.clearSelection();
+              setSelectionMode(false);
+            }}
+            onAction={handleBulkAction}
+            actions={PACIENTE_BULK_ACTIONS(personal)}
           />
         </TabsContent>
 

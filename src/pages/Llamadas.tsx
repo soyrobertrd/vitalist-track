@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Plus, Calendar, Filter, TrendingUp, Clock, User, AlertTriangle } from "lucide-react";
+import { Phone, Plus, Calendar, Filter, TrendingUp, Clock, User, AlertTriangle, CheckSquare } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -22,6 +22,9 @@ import { LlamadaCardAgendada } from "@/components/LlamadaCardAgendada";
 import { PacientesSinCitasDialog } from "@/components/PacientesSinCitasDialog";
 import { AlertaSobrecargaProfesional } from "@/components/AlertaSobrecargaProfesional";
 import { ExportButton } from "@/components/ExportButton";
+import { useBulkSelection } from "@/hooks/useBulkSelection";
+import { BulkActionsToolbar, LLAMADA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Llamada {
   id: string;
@@ -61,6 +64,7 @@ const Llamadas = () => {
   const [showAllLlamadas, setShowAllLlamadas] = useState(false);
   const [pacientesSinLlamada, setPacientesSinLlamada] = useState<number>(0);
   const [listaPacientesSinLlamada, setListaPacientesSinLlamada] = useState<any[]>([]);
+  const [selectionMode, setSelectionMode] = useState(false);
 
   const fetchData = async () => {
     const [llamadasRes, pacientesRes, personalRes] = await Promise.all([
@@ -294,6 +298,47 @@ const Llamadas = () => {
     ? aplicarFiltros(llamadasHistorial) 
     : [];
 
+  // Bulk selection - use the filtered agendadas list
+  const bulkSelection = useBulkSelection(llamadasAgendadasFiltradas);
+
+  // Handle bulk actions for llamadas
+  const handleBulkAction = async (action: BulkActionType, value?: string) => {
+    if (bulkSelection.selectedCount === 0) return;
+
+    const selectedIds = Array.from(bulkSelection.selectedIds);
+
+    try {
+      if (action === "assign_professional" && value) {
+        const { error } = await supabase
+          .from("registro_llamadas")
+          .update({ profesional_id: value })
+          .in("id", selectedIds);
+
+        if (error) throw error;
+        toast.success(`${selectedIds.length} llamada(s) reasignadas`);
+      } else if (action === "change_status" && value) {
+        const updateData: any = { estado: value };
+        if (value === "realizada") {
+          updateData.fecha_hora_realizada = new Date().toISOString();
+        }
+        
+        const { error } = await supabase
+          .from("registro_llamadas")
+          .update(updateData)
+          .in("id", selectedIds);
+
+        if (error) throw error;
+        toast.success(`${selectedIds.length} llamada(s) actualizadas`);
+      }
+
+      bulkSelection.clearSelection();
+      setSelectionMode(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Error al ejecutar acción masiva");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header - Solo título y descripción */}
@@ -307,6 +352,16 @@ const Llamadas = () => {
         <Button onClick={() => setOpenAgendar(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Agendar Llamada
+        </Button>
+        <Button
+          variant={selectionMode ? "default" : "outline"}
+          onClick={() => {
+            setSelectionMode(!selectionMode);
+            if (selectionMode) bulkSelection.clearSelection();
+          }}
+        >
+          <CheckSquare className="h-4 w-4 mr-2" />
+          {selectionMode ? "Cancelar" : "Selección múltiple"}
         </Button>
       </div>
 
@@ -473,20 +528,38 @@ const Llamadas = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {llamadasAgendadasFiltradas.map((llamada) => (
-                <LlamadaCardAgendada
-                  key={llamada.id}
-                  llamada={llamada}
-                  onLlamadaClick={handleLlamadaClick}
-                  isCallOverdue={isCallOverdue}
-                  isCallToday={isCallToday}
-                  getEstadoBadgeColor={getEstadoBadgeColor}
-                  getResultadoBadgeColor={getResultadoBadgeColor}
-                  formatearTexto={formatearTexto}
-                />
-              ))}
-            </div>
+            <>
+              {/* Select All header when in selection mode */}
+              {selectionMode && (
+                <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                  <Checkbox
+                    checked={bulkSelection.isAllSelected}
+                    onCheckedChange={bulkSelection.toggleSelectAll}
+                    className="h-5 w-5"
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {bulkSelection.isAllSelected ? "Deseleccionar todos" : "Seleccionar todos"}
+                  </span>
+                </div>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {llamadasAgendadasFiltradas.map((llamada) => (
+                  <LlamadaCardAgendada
+                    key={llamada.id}
+                    llamada={llamada}
+                    onLlamadaClick={handleLlamadaClick}
+                    isCallOverdue={isCallOverdue}
+                    isCallToday={isCallToday}
+                    getEstadoBadgeColor={getEstadoBadgeColor}
+                    getResultadoBadgeColor={getResultadoBadgeColor}
+                    formatearTexto={formatearTexto}
+                    selectionMode={selectionMode}
+                    isSelected={bulkSelection.isSelected(llamada.id)}
+                    onToggleSelect={() => bulkSelection.toggleSelection(llamada.id)}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </TabsContent>
 
@@ -539,6 +612,17 @@ const Llamadas = () => {
         onSuccess={fetchData}
         pacientes={pacientes}
         personal={personal}
+      />
+
+      {/* Bulk Actions Toolbar */}
+      <BulkActionsToolbar
+        selectedCount={bulkSelection.selectedCount}
+        onClearSelection={() => {
+          bulkSelection.clearSelection();
+          setSelectionMode(false);
+        }}
+        onAction={handleBulkAction}
+        actions={LLAMADA_BULK_ACTIONS(personal)}
       />
     </div>
   );
