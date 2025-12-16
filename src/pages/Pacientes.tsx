@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Plus, Users, UserX, Search } from "lucide-react";
+import { Plus, Users, UserX, Search, RotateCcw, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 // Hooks
@@ -32,7 +32,8 @@ const MOTIVO_LABELS: Record<string, string> = {
   referido_paliativo: "Referido a paliativo",
   referido_otro_programa: "Referido a otro programa",
   decision_paciente: "Decisión del paciente",
-  otro: "Otro motivo"
+  otro: "Otro motivo",
+  sin_motivo: "Sin motivo especificado"
 };
 
 const Pacientes = () => {
@@ -97,6 +98,31 @@ const Pacientes = () => {
     fetchPacientesActivos();
     fetchPacientesInactivos();
   };
+
+  const handleReactivar = async (pacienteId: string, nombre: string) => {
+    const { error } = await supabase
+      .from("pacientes")
+      .update({ status_px: "activo", motivo_inactividad: null })
+      .eq("id", pacienteId);
+
+    if (error) {
+      toast.error("Error al reactivar paciente");
+    } else {
+      toast.success(`${nombre} ha sido reactivado`);
+      fetchPacientesActivos();
+      fetchPacientesInactivos();
+    }
+  };
+
+  // Contador por motivo de inactividad
+  const contadoresPorMotivo = useMemo(() => {
+    const contadores: Record<string, number> = {};
+    pacientesInactivos.forEach((p) => {
+      const motivo = p.motivo_inactividad || "sin_motivo";
+      contadores[motivo] = (contadores[motivo] || 0) + 1;
+    });
+    return contadores;
+  }, [pacientesInactivos]);
 
   return (
     <div className="space-y-6">
@@ -180,9 +206,25 @@ const Pacientes = () => {
           <div className="bg-muted/50 p-4 rounded-lg border">
             <h3 className="font-medium mb-2">Pacientes Inactivos</h3>
             <p className="text-sm text-muted-foreground">
-              Pacientes que han salido del programa temporalmente. Puedes reactivarlos editando su registro.
+              Pacientes que han salido del programa temporalmente. Puedes reactivarlos directamente con el botón o editar su registro.
             </p>
           </div>
+
+          {/* Contadores por motivo */}
+          {Object.keys(contadoresPorMotivo).length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(contadoresPorMotivo).map(([motivo, count]) => (
+                <Badge 
+                  key={motivo} 
+                  variant="secondary" 
+                  className="cursor-pointer hover:bg-secondary/80"
+                  onClick={() => updateFilterInactivos("motivo_inactividad", motivo === "sin_motivo" ? "todos" : motivo)}
+                >
+                  {MOTIVO_LABELS[motivo] || motivo}: {count}
+                </Badge>
+              ))}
+            </div>
+          )}
 
           {/* Filtros para inactivos */}
           <div className="flex flex-col sm:flex-row gap-3">
@@ -223,27 +265,44 @@ const Pacientes = () => {
               {filteredPacientesInactivos.map((paciente) => (
                 <div 
                   key={paciente.id} 
-                  className="p-4 border rounded-lg bg-card hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => {
-                    setSelectedPaciente(paciente);
-                    setEditOpen(true);
-                  }}
+                  className="p-4 border rounded-lg bg-card hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1 min-w-0">
                       <h4 className="font-medium">{paciente.nombre} {paciente.apellido}</h4>
                       <p className="text-sm text-muted-foreground">Cédula: {paciente.cedula}</p>
                       {paciente.zona && (
-                        <p className="text-sm text-muted-foreground">Zona: {paciente.zona}</p>
+                        <p className="text-sm text-muted-foreground">Municipio: {paciente.zona.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}</p>
                       )}
                     </div>
-                    <div className="text-right">
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
                       {paciente.motivo_inactividad && (
-                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950 dark:text-orange-300 dark:border-orange-800">
                           {MOTIVO_LABELS[paciente.motivo_inactividad] || paciente.motivo_inactividad}
                         </Badge>
                       )}
-                      <p className="text-xs text-muted-foreground mt-1">Click para editar</p>
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedPaciente(paciente);
+                            setEditOpen(true);
+                          }}
+                          title="Editar"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => handleReactivar(paciente.id, `${paciente.nombre} ${paciente.apellido}`)}
+                          className="gap-1"
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                          <span className="hidden sm:inline">Reactivar</span>
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
