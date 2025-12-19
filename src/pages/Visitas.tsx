@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Plus, Clock, User, Filter, TrendingUp, Activity, CheckSquare, Phone } from "lucide-react";
+import { Calendar, Plus, Clock, User, Filter, TrendingUp, Activity, CheckSquare, Phone, Wand2 } from "lucide-react";
 import { differenceInDays, getDay } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -31,6 +31,7 @@ import { AlertaSobrecargaProfesional } from "@/components/AlertaSobrecargaProfes
 import { ExportButton } from "@/components/ExportButton";
 import { useBulkSelection } from "@/hooks/useBulkSelection";
 import { BulkActionsToolbar, VISITA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
+import { AutoAssignDialog } from "@/components/AutoAssignDialog";
 
 interface Visita {
   id: string;
@@ -77,6 +78,9 @@ const Visitas = () => {
   const [visitaCreada, setVisitaCreada] = useState<any>(null);
   const { medicamentos } = useMedicamentosPaciente(selectedPatientId);
   const [selectionMode, setSelectionMode] = useState(false);
+  const [autoAssignOpen, setAutoAssignOpen] = useState(false);
+  const [selectedProfesionalId, setSelectedProfesionalId] = useState<string>("");
+  const [selectedFechaHora, setSelectedFechaHora] = useState<string>("");
 
   const fetchData = async () => {
     const thirtyDaysAgo = new Date();
@@ -273,7 +277,7 @@ const Visitas = () => {
     setSelectedPatientId(pacienteId);
     const { data } = await supabase
       .from("pacientes")
-      .select("zona, barrio, dias_no_visita")
+      .select("zona, barrio, dias_no_visita, nombre, apellido")
       .eq("id", pacienteId)
       .single();
     setSelectedPatientData(data);
@@ -554,18 +558,35 @@ const Visitas = () => {
               )}
               <div className="space-y-2">
                 <Label htmlFor="profesional_id">Profesional *</Label>
-                <Select name="profesional_id" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar profesional" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {personal.map((p) => (
-                      <SelectItem key={p.id} value={p.id}>
-                        {p.nombre} {p.apellido}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex gap-2">
+                  <Select 
+                    name="profesional_id" 
+                    required 
+                    value={selectedProfesionalId}
+                    onValueChange={setSelectedProfesionalId}
+                  >
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="Seleccionar profesional" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {personal.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.nombre} {p.apellido}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setAutoAssignOpen(true)}
+                    disabled={!selectedPatientId || !selectedFechaHora}
+                    title="Asignación automática"
+                  >
+                    <Wand2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="fecha_hora_visita">Fecha y Hora *</Label>
@@ -574,6 +595,8 @@ const Visitas = () => {
                   name="fecha_hora_visita"
                   type="datetime-local"
                   required
+                  value={selectedFechaHora}
+                  onChange={(e) => setSelectedFechaHora(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
@@ -895,6 +918,18 @@ const Visitas = () => {
           onComplete={handleMuestraMedicaComplete}
         />
       )}
+
+      {/* Dialog de asignación automática */}
+      <AutoAssignDialog
+        open={autoAssignOpen}
+        onOpenChange={setAutoAssignOpen}
+        pacienteId={selectedPatientId || ""}
+        pacienteNombre={selectedPatientData ? `${selectedPatientData.nombre || ''} ${selectedPatientData.apellido || ''}` : ""}
+        pacienteZona={selectedPatientData?.zona || null}
+        pacienteBarrio={selectedPatientData?.barrio || null}
+        fecha={selectedFechaHora ? new Date(selectedFechaHora) : new Date()}
+        onSelect={(profId) => setSelectedProfesionalId(profId)}
+      />
     </div>
   );
 };

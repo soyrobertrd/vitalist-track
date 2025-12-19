@@ -11,10 +11,11 @@ import { toast } from "sonner";
 import { PacienteCombobox } from "./PacienteCombobox";
 import { ProfesionalCombobox } from "./ProfesionalCombobox";
 import { ConflictoAgendamientoDialog } from "./ConflictoAgendamientoDialog";
+import { AutoAssignDialog } from "./AutoAssignDialog";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Wand2 } from "lucide-react";
 
 const MOTIVOS_LLAMADA = [
   "Seguimiento rutinario",
@@ -44,8 +45,24 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
   const [pendingSubmit, setPendingSubmit] = useState<any>(null);
   const [fechaAlerta, setFechaAlerta] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [autoAssignOpen, setAutoAssignOpen] = useState(false);
+  const [selectedPacienteData, setSelectedPacienteData] = useState<any>(null);
   
   const { validarFechaAgendamiento, siguienteDiaLaborable } = useDiasLaborables();
+
+  const handlePacienteChange = async (id: string) => {
+    setPacienteId(id);
+    if (id) {
+      const { data } = await supabase
+        .from("pacientes")
+        .select("zona, barrio, nombre, apellido")
+        .eq("id", id)
+        .single();
+      setSelectedPacienteData(data);
+    } else {
+      setSelectedPacienteData(null);
+    }
+  };
 
   const handleDateChange = (fecha: string) => {
     setSelectedDate(fecha);
@@ -162,17 +179,31 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
                 <PacienteCombobox
                   pacientes={pacientes}
                   value={pacienteId}
-                  onValueChange={setPacienteId}
+                  onValueChange={handlePacienteChange}
                   required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="profesional">Profesional Asignado</Label>
-                <ProfesionalCombobox
-                  profesionales={personal}
-                  value={profesionalId}
-                  onValueChange={setProfesionalId}
-                />
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <ProfesionalCombobox
+                      profesionales={personal}
+                      value={profesionalId}
+                      onValueChange={setProfesionalId}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setAutoAssignOpen(true)}
+                    disabled={!pacienteId || !selectedDate}
+                    title="Asignación automática"
+                  >
+                    <Wand2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -262,6 +293,17 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
         tipo="llamada"
         eventoExistente={llamadaExistente}
         pacienteNombre={paciente ? `${paciente.nombre} ${paciente.apellido}` : ""}
+      />
+
+      <AutoAssignDialog
+        open={autoAssignOpen}
+        onOpenChange={setAutoAssignOpen}
+        pacienteId={pacienteId}
+        pacienteNombre={selectedPacienteData ? `${selectedPacienteData.nombre} ${selectedPacienteData.apellido}` : ""}
+        pacienteZona={selectedPacienteData?.zona || null}
+        pacienteBarrio={selectedPacienteData?.barrio || null}
+        fecha={selectedDate ? new Date(`${selectedDate}T12:00:00`) : new Date()}
+        onSelect={(profId) => setProfesionalId(profId)}
       />
     </>
   );
