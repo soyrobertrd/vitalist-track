@@ -19,7 +19,7 @@ interface Paciente {
   id: string;
   nombre: string;
   apellido: string;
-  cedula: string;
+  cedula?: string;
 }
 
 interface PacienteComboboxProps {
@@ -28,6 +28,7 @@ interface PacienteComboboxProps {
   onValueChange: (value: string) => void;
   placeholder?: string;
   required?: boolean;
+  showCedula?: boolean;
 }
 
 export function PacienteCombobox({
@@ -36,6 +37,7 @@ export function PacienteCombobox({
   onValueChange,
   placeholder = "Seleccionar paciente...",
   required = false,
+  showCedula = true,
 }: PacienteComboboxProps) {
   const [open, setOpen] = useState(false);
 
@@ -58,7 +60,9 @@ export function PacienteCombobox({
           className="w-full justify-between"
         >
           {selectedPaciente
-            ? `${selectedPaciente.nombre} ${selectedPaciente.apellido} - ${selectedPaciente.cedula}`
+            ? showCedula && selectedPaciente.cedula
+              ? `${selectedPaciente.nombre} ${selectedPaciente.apellido} - ${selectedPaciente.cedula}`
+              : `${selectedPaciente.nombre} ${selectedPaciente.apellido}`
             : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -71,7 +75,7 @@ export function PacienteCombobox({
             {sortedPacientes.map((paciente) => (
               <CommandItem
                 key={paciente.id}
-                value={`${paciente.nombre} ${paciente.apellido} ${paciente.cedula}`}
+                value={`${paciente.nombre} ${paciente.apellido} ${paciente.cedula || ''}`}
                 onSelect={() => {
                   onValueChange(paciente.id);
                   setOpen(false);
@@ -83,7 +87,9 @@ export function PacienteCombobox({
                     value === paciente.id ? "opacity-100" : "opacity-0"
                   )}
                 />
-                {paciente.nombre} {paciente.apellido} - {paciente.cedula}
+                {showCedula && paciente.cedula 
+                  ? `${paciente.nombre} ${paciente.apellido} - ${paciente.cedula}`
+                  : `${paciente.nombre} ${paciente.apellido}`}
               </CommandItem>
             ))}
           </CommandGroup>
