@@ -181,6 +181,7 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
                   value={pacienteId}
                   onValueChange={handlePacienteChange}
                   required
+                  showCedula={false}
                 />
               </div>
               <div className="space-y-2">
