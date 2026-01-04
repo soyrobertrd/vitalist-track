@@ -521,6 +521,7 @@ const Visitas = () => {
                   value={selectedPatientId || ''}
                   onValueChange={handlePatientChange}
                   required
+                  showCedula={false}
                 />
               </div>
               
