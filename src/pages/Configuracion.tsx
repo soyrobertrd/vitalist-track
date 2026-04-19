@@ -21,6 +21,9 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { HorariosProfesionalEditor } from "@/components/HorariosProfesionalEditor";
+import { CountryTimezoneSelector } from "@/components/CountryTimezoneSelector";
+import { UserLocalePreferences } from "@/components/UserLocalePreferences";
+import { useLocale } from "@/hooks/useLocale";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -612,21 +615,8 @@ const Configuracion = () => {
 
             <div className="space-y-6">
               <div>
-                <h3 className="font-semibold mb-4">Preferencias de Usuario</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <Label className="text-base">Idioma</Label>
-                      <p className="text-sm text-muted-foreground">Español</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <Label className="text-base">Zona Horaria</Label>
-                      <p className="text-sm text-muted-foreground">America/Santo_Domingo (AST)</p>
-                    </div>
-                  </div>
-                </div>
+                <h3 className="font-semibold mb-4">Preferencias regionales</h3>
+                <UserLocalePreferences />
               </div>
 
               <Separator />

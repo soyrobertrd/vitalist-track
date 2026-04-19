@@ -9,6 +9,7 @@ import { format, subDays, startOfDay, endOfDay, startOfMonth, subMonths, eachDay
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
 import { useNavigate } from "react-router-dom";
+import { useLocale } from "@/hooks/useLocale";
 import {
   LineChart,
   Line,
@@ -29,6 +30,7 @@ import {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { timezone } = useLocale();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [stats, setStats] = useState({
@@ -215,7 +217,7 @@ const Dashboard = () => {
   }, [currentUserId]);
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--warning))"];
-  const dominicanTime = toZonedTime(currentTime, "America/Santo_Domingo");
+  const localTime = toZonedTime(currentTime, timezone);
 
   return (
     <div className="space-y-8">
@@ -228,10 +230,10 @@ const Dashboard = () => {
           <Clock className="h-5 w-5" />
           <div className="text-right">
             <div className="text-sm font-medium text-foreground">
-              {format(dominicanTime, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
+              {format(localTime, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
             </div>
             <div className="text-lg font-bold text-primary">
-              {format(dominicanTime, "hh:mm:ss a", { locale: es })}
+              {format(localTime, "hh:mm:ss a", { locale: es })}
             </div>
           </div>
         </div>
