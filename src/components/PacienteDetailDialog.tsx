@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificacionPlanAccion } from "@/components/NotificacionPlanAccion";
 import { PatientTimeline } from "@/components/PatientTimeline";
+import { FichaClinicaPaciente } from "@/components/ficha-clinica/FichaClinicaPaciente";
 
 interface PacienteDetailDialogProps {
   pacienteId: string | null;
@@ -225,6 +226,9 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
               </CardContent>
             </Card>
           )}
+
+          {/* Ficha clínica: alergias, antecedentes, seguros */}
+          {pacienteId && <FichaClinicaPaciente pacienteId={pacienteId} />}
 
           {/* Tabs para Medicamentos, Llamadas, Visitas e Historial */}
           <Tabs defaultValue="medicamentos" className="w-full">

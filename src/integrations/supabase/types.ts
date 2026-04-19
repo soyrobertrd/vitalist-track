@@ -14,6 +14,103 @@ export type Database = {
   }
   public: {
     Tables: {
+      alergias_paciente: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          notas: string | null
+          paciente_id: string
+          reaccion: string | null
+          severidad: string
+          sustancia: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          reaccion?: string | null
+          severidad?: string
+          sustancia: string
+          tipo?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          reaccion?: string | null
+          severidad?: string
+          sustancia?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alergias_paciente_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      antecedentes_medicos: {
+        Row: {
+          activo: boolean
+          ano: number | null
+          condicion: string
+          created_at: string
+          created_by: string | null
+          id: string
+          notas: string | null
+          paciente_id: string
+          parentesco: string | null
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          activo?: boolean
+          ano?: number | null
+          condicion: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          parentesco?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Update: {
+          activo?: boolean
+          ano?: number | null
+          condicion?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          parentesco?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "antecedentes_medicos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       atencion_paciente: {
         Row: {
           archivos: Json | null
@@ -1237,6 +1334,68 @@ export type Database = {
           },
           {
             foreignKeyName: "respuestas_encuestas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seguros_paciente: {
+        Row: {
+          activo: boolean
+          aseguradora: string
+          created_at: string
+          created_by: string | null
+          fecha_inicio: string | null
+          fecha_vencimiento: string | null
+          id: string
+          notas: string | null
+          numero_afiliado: string | null
+          numero_poliza: string | null
+          paciente_id: string
+          parentesco_titular: string | null
+          plan: string | null
+          titular: string | null
+          updated_at: string
+        }
+        Insert: {
+          activo?: boolean
+          aseguradora: string
+          created_at?: string
+          created_by?: string | null
+          fecha_inicio?: string | null
+          fecha_vencimiento?: string | null
+          id?: string
+          notas?: string | null
+          numero_afiliado?: string | null
+          numero_poliza?: string | null
+          paciente_id: string
+          parentesco_titular?: string | null
+          plan?: string | null
+          titular?: string | null
+          updated_at?: string
+        }
+        Update: {
+          activo?: boolean
+          aseguradora?: string
+          created_at?: string
+          created_by?: string | null
+          fecha_inicio?: string | null
+          fecha_vencimiento?: string | null
+          id?: string
+          notas?: string | null
+          numero_afiliado?: string | null
+          numero_poliza?: string | null
+          paciente_id?: string
+          parentesco_titular?: string | null
+          plan?: string | null
+          titular?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seguros_paciente_paciente_id_fkey"
             columns: ["paciente_id"]
             isOneToOne: false
             referencedRelation: "pacientes"
