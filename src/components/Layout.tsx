@@ -23,6 +23,7 @@ import {
   Cog,
   Menu,
   CalendarDays,
+  ScanLine,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -76,7 +77,8 @@ const Layout = ({ children }: LayoutProps) => {
       subItems: [
         { path: "/calendario", label: "Calendario", icon: CalendarDays },
         { path: "/llamadas", label: "Llamadas", icon: Phone },
-        { path: "/visitas", label: "Visitas", icon: Calendar }
+        { path: "/visitas", label: "Visitas", icon: Calendar },
+        { path: "/recepcion", label: "Recepción", icon: ScanLine }
       ]
     },
     {
