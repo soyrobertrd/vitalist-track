@@ -296,8 +296,9 @@ async function enviarRecordatorio(
 
   const fechaCita = tipo === "llamada" ? cita.fecha_agendada : cita.fecha_hora_visita;
   const fecha = fechaCita ? new Date(fechaCita) : new Date();
-  const citaFecha = fecha.toLocaleDateString("es-DO", { day: "2-digit", month: "long", year: "numeric" });
-  const citaHora = fecha.toLocaleTimeString("es-DO", { hour: "2-digit", minute: "2-digit", hour12: true });
+  const { timezone, locale } = await resolveWorkspaceLocale(supabase, cita.workspace_id);
+  const citaFecha = formatDateInTz(fecha, timezone, locale);
+  const citaHora = formatTimeInTz(fecha, timezone, locale);
 
   const variables: Record<string, string> = {
     "{{Logo_URL}}": config.logo_url || "",
