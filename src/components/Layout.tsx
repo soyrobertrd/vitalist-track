@@ -47,6 +47,7 @@ import { GlobalSearch } from "@/components/GlobalSearch";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ThemeCustomizer } from "@/components/ThemeCustomizer";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
 
 interface LayoutProps {
   children: ReactNode;
@@ -254,6 +255,9 @@ const Layout = ({ children }: LayoutProps) => {
 
       {/* User Profile & Theme Selector */}
       <div className="p-2 border-t border-sidebar-border space-y-2">
+        {/* Workspace Switcher */}
+        <WorkspaceSwitcher collapsed={sidebarCollapsed} />
+
         {/* Theme Selector */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
