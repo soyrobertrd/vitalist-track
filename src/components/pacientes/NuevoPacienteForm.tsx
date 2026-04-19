@@ -59,6 +59,8 @@ interface NuevoPacienteFormProps {
 
 export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacienteFormProps) {
   const [loading, setLoading] = useState(false);
+  const { countryCode } = useLocale();
+  const pacienteSchema = buildPacienteSchema(countryCode);
   const { loading: loadingCedula, data: cedulaData, lookup: lookupCedula } = useCedulaLookup();
   
   const [formData, setFormData] = useState({

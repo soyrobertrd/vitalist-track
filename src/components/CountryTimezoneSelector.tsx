@@ -51,11 +51,11 @@ export function CountryTimezoneSelector({ countryCode, timezone, onChange, disab
   const countries = useMemo(() => {
     return getCountries()
       .map((c) => {
-        let name = c;
+        let name: string = c;
         try { name = REGION_NAMES.of(c) || c; } catch { /* ignore */ }
         let code = "";
         try { code = `+${getCountryCallingCode(c)}`; } catch { /* ignore */ }
-        return { iso: c, name, code };
+        return { iso: c as string, name, code };
       })
       .sort((a, b) => a.name.localeCompare(b.name, "es"));
   }, []);
