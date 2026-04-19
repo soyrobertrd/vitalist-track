@@ -91,7 +91,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
     { path: "/personal", icon: UserCog, label: "Personal", adminOnly: true },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
-    { path: "/plantillas-whatsapp", icon: MessageSquare, label: "Plantillas WhatsApp", adminOnly: true },
+    { path: "/plantillas", icon: MessageSquare, label: "Plantillas (WhatsApp/Email)", adminOnly: true },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
     { 
       path: "/reportes", 
@@ -253,44 +253,10 @@ const Layout = ({ children }: LayoutProps) => {
         ))}
       </nav>
 
-      {/* User Profile & Theme Selector */}
+      {/* User Profile */}
       <div className="p-2 border-t border-sidebar-border space-y-2">
         {/* Workspace Switcher */}
         <WorkspaceSwitcher collapsed={sidebarCollapsed} />
-
-        {/* Theme Selector */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className={`w-full ${
-                sidebarCollapsed ? "justify-center px-2" : "justify-start"
-              } text-sidebar-foreground hover:bg-sidebar-accent`}
-            >
-              <ThemeIcon className={sidebarCollapsed ? "h-5 w-5" : "mr-2 h-4 w-4"} />
-              {!sidebarCollapsed && <span>Tema</span>}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-popover">
-            <DropdownMenuItem onClick={() => setTheme("light")}>
-              <Sun className="mr-2 h-4 w-4" />
-              Claro
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("dark")}>
-              <Moon className="mr-2 h-4 w-4" />
-              Oscuro
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("standard")}>
-              <Monitor className="mr-2 h-4 w-4" />
-              Estándar
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setThemeCustomizerOpen(true)}>
-              <Settings className="mr-2 h-4 w-4" />
-              Personalizar colores
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
 
         {/* User Profile Dropdown */}
         {profile && (
@@ -333,11 +299,11 @@ const Layout = ({ children }: LayoutProps) => {
                 Mi Perfil
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => {
-                navigate("/plantillas-correo");
+                navigate("/plantillas");
                 setMobileMenuOpen(false);
               }}>
                 <Mail className="mr-2 h-4 w-4" />
-                Plantillas de Correo
+                Plantillas de mensajes
               </DropdownMenuItem>
               {isAdmin && (
                 <DropdownMenuItem onClick={() => {
