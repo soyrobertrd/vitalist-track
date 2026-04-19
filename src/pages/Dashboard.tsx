@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, Phone, Calendar, AlertCircle, TrendingUp, Activity, Clock, CalendarDays } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveKPI } from "@/components/InteractiveKPI";
-import { format, subDays } from "date-fns";
+import { format, subDays, startOfDay, endOfDay, startOfMonth, subMonths, eachDayOfInterval } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +44,13 @@ const Dashboard = () => {
     monthlyTrend: [] as any[],
   });
 
+  const [extraStats, setExtraStats] = useState({
+    duracionPromedio: 0,
+    tasaCumplimiento: 0,
+    pacientesAltoRiesgo: 0,
+    porcentajeAltoRiesgo: 0,
+  });
+
   useEffect(() => {
     // Update time every second
     const timer = setInterval(() => {
@@ -67,14 +74,25 @@ const Dashboard = () => {
     const fetchStats = async () => {
       if (!currentUserId) return;
 
-      const thirtyDaysAgo = subDays(new Date(), 30).toISOString().split('T')[0];
-      const today = new Date().toISOString().split('T')[0];
+      const now = new Date();
+      const thirtyDaysAgo = subDays(now, 30).toISOString().split('T')[0];
+      const today = now.toISOString().split('T')[0];
+      const todayStart = startOfDay(now).toISOString();
+      const todayEnd = endOfDay(now).toISOString();
+
+      // Determinar el id de personal_salud relacionado al usuario actual (para filtros de citas)
+      const { data: personalRow } = await supabase
+        .from("personal_salud")
+        .select("id")
+        .eq("user_id", currentUserId)
+        .maybeSingle();
+      const profesionalId = personalRow?.id ?? currentUserId;
 
       const [pacientes, activos, llamadas, visitas] = await Promise.all([
-        supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("profesional_asignado_id", currentUserId),
-        supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("status_px", "activo").eq("profesional_asignado_id", currentUserId),
-        supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]).eq("profesional_id", currentUserId).gte("fecha_agendada", thirtyDaysAgo).lte("fecha_agendada", today),
-        supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").eq("profesional_id", currentUserId).gte("fecha_hora_visita", `${today}T00:00:00`).lte("fecha_hora_visita", `${today}T23:59:59`),
+        supabase.from("pacientes").select("id", { count: "exact", head: true }),
+        supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("status_px", "activo"),
+        supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]).eq("profesional_id", profesionalId).gte("fecha_agendada", thirtyDaysAgo).lte("fecha_agendada", `${today}T23:59:59`),
+        supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").eq("profesional_id", profesionalId).gte("fecha_hora_visita", todayStart).lte("fecha_hora_visita", todayEnd),
       ]);
 
       setStats({
@@ -84,52 +102,109 @@ const Dashboard = () => {
         visitasHoy: visitas.count || 0,
       });
 
-      // Fetch real chart data - últimos 30 días
-      const { data: callsData } = await supabase
-        .from("registro_llamadas")
-        .select("estado, resultado_seguimiento, fecha_hora_realizada")
-        .eq("profesional_id", currentUserId)
-        .gte("fecha_hora_realizada", thirtyDaysAgo)
-        .lte("fecha_hora_realizada", today);
+      // Fetch real chart data - últimos 30 días (TODOS los registros, no solo del profesional)
+      const sevenDaysAgo = subDays(now, 7);
+      const sixMonthsAgo = subMonths(startOfMonth(now), 5);
 
-      const { data: visitsData } = await supabase
-        .from("control_visitas")
-        .select("estado, fecha_hora_visita")
-        .eq("profesional_id", currentUserId)
-        .gte("fecha_hora_visita", thirtyDaysAgo)
-        .lte("fecha_hora_visita", today);
+      const [callsRes, visitsRes, weekCallsRes, weekVisitsRes, altoRiesgoRes, monthlyPacientesRes] = await Promise.all([
+        supabase
+          .from("registro_llamadas")
+          .select("estado, resultado_seguimiento, duracion_minutos, fecha_hora_realizada")
+          .gte("created_at", `${thirtyDaysAgo}T00:00:00`),
+        supabase
+          .from("control_visitas")
+          .select("estado, fecha_hora_visita")
+          .gte("fecha_hora_visita", `${thirtyDaysAgo}T00:00:00`),
+        supabase
+          .from("registro_llamadas")
+          .select("fecha_agendada")
+          .gte("fecha_agendada", sevenDaysAgo.toISOString())
+          .lte("fecha_agendada", todayEnd),
+        supabase
+          .from("control_visitas")
+          .select("fecha_hora_visita")
+          .gte("fecha_hora_visita", sevenDaysAgo.toISOString())
+          .lte("fecha_hora_visita", todayEnd),
+        supabase
+          .from("pacientes")
+          .select("id", { count: "exact", head: true })
+          .eq("grado_dificultad", "alto"),
+        supabase
+          .from("pacientes")
+          .select("created_at")
+          .gte("created_at", sixMonthsAgo.toISOString()),
+      ]);
 
-      // Calculate calls distribution
-      const totalCalls = callsData?.length || 0;
-      const contactadas = callsData?.filter(c => c.resultado_seguimiento === 'contactado').length || 0;
-      const noContactadas = callsData?.filter(c => c.resultado_seguimiento === 'no_contestada').length || 0;
-      const pendientes = callsData?.filter(c => c.estado === 'pendiente' || c.estado === 'agendada').length || 0;
+      const callsData = callsRes.data || [];
+      const visitsData = visitsRes.data || [];
+
+      // Distribución de llamadas
+      const totalCalls = callsData.length;
+      const contactadas = callsData.filter(c => c.resultado_seguimiento === 'contactado').length;
+      const noContactadas = callsData.filter(c => c.resultado_seguimiento === 'no_contestada').length;
+      const pendientesCalls = callsData.filter(c => c.estado === 'pendiente' || c.estado === 'agendada').length;
+
+      // Actividad semanal (últimos 7 días)
+      const days = eachDayOfInterval({ start: sevenDaysAgo, end: now });
+      const dayLabels = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+      const weeklyActivity = days.map(d => {
+        const dateStr = format(d, 'yyyy-MM-dd');
+        const llamadasCount = (weekCallsRes.data || []).filter(c =>
+          c.fecha_agendada && c.fecha_agendada.startsWith(dateStr)
+        ).length;
+        const visitasCount = (weekVisitsRes.data || []).filter(v =>
+          v.fecha_hora_visita && v.fecha_hora_visita.startsWith(dateStr)
+        ).length;
+        return { name: dayLabels[d.getDay()], llamadas: llamadasCount, visitas: visitasCount };
+      });
+
+      // Tendencia mensual de pacientes (acumulado por mes)
+      const monthlyPacientes = monthlyPacientesRes.data || [];
+      const monthlyTrend = Array.from({ length: 6 }, (_, i) => {
+        const monthDate = subMonths(now, 5 - i);
+        const monthStart = startOfMonth(monthDate);
+        const nextMonthStart = startOfMonth(subMonths(now, 4 - i));
+        const count = monthlyPacientes.filter(p => {
+          const created = new Date(p.created_at);
+          return created < (i === 5 ? now : nextMonthStart);
+        }).length;
+        return { name: format(monthDate, 'MMM', { locale: es }), pacientes: count };
+      });
+
+      // Stats adicionales
+      const llamadasConDuracion = callsData.filter(c => c.duracion_minutos && c.duracion_minutos > 0);
+      const duracionPromedio = llamadasConDuracion.length > 0
+        ? llamadasConDuracion.reduce((sum, c) => sum + (c.duracion_minutos || 0), 0) / llamadasConDuracion.length
+        : 0;
+
+      const visitasRealizadas = visitsData.filter(v => v.estado === 'realizada').length;
+      const visitasTotal = visitsData.filter(v => v.estado === 'realizada' || v.estado === 'cancelada' || v.estado === 'no_realizada').length;
+      const tasaCumplimiento = visitasTotal > 0 ? Math.round((visitasRealizadas / visitasTotal) * 100) : 0;
+
+      const totalPacientesCount = pacientes.count || 0;
+      const altoRiesgoCount = altoRiesgoRes.count || 0;
+      const porcentajeAltoRiesgo = totalPacientesCount > 0 ? Math.round((altoRiesgoCount / totalPacientesCount) * 100) : 0;
+
+      setExtraStats({
+        duracionPromedio: Math.round(duracionPromedio * 10) / 10,
+        tasaCumplimiento,
+        pacientesAltoRiesgo: altoRiesgoCount,
+        porcentajeAltoRiesgo,
+      });
 
       setChartData({
-        weeklyActivity: [
-          { name: "Lun", llamadas: 12, visitas: 8 },
-          { name: "Mar", llamadas: 19, visitas: 12 },
-          { name: "Mié", llamadas: 15, visitas: 10 },
-          { name: "Jue", llamadas: 22, visitas: 15 },
-          { name: "Vie", llamadas: 18, visitas: 11 },
-        ],
+        weeklyActivity,
         callsDistribution: [
-          { name: "Contestadas", value: Math.round((contactadas / totalCalls) * 100) || 0, color: "hsl(var(--success))" },
-          { name: "No Contestadas", value: Math.round((noContactadas / totalCalls) * 100) || 0, color: "hsl(var(--warning))" },
-          { name: "Pendientes", value: Math.round((pendientes / totalCalls) * 100) || 0, color: "hsl(var(--muted))" },
+          { name: "Contestadas", value: totalCalls > 0 ? Math.round((contactadas / totalCalls) * 100) : 0, color: "hsl(var(--success))" },
+          { name: "No Contestadas", value: totalCalls > 0 ? Math.round((noContactadas / totalCalls) * 100) : 0, color: "hsl(var(--warning))" },
+          { name: "Pendientes", value: totalCalls > 0 ? Math.round((pendientesCalls / totalCalls) * 100) : 0, color: "hsl(var(--muted))" },
         ],
         visitsStatus: [
-          { name: "Realizadas", value: visitsData?.filter(v => v.estado === 'realizada').length || 0 },
-          { name: "Pendientes", value: visitsData?.filter(v => v.estado === 'pendiente').length || 0 },
-          { name: "Canceladas", value: visitsData?.filter(v => v.estado === 'cancelada').length || 0 },
+          { name: "Realizadas", value: visitsData.filter(v => v.estado === 'realizada').length },
+          { name: "Pendientes", value: visitsData.filter(v => v.estado === 'pendiente').length },
+          { name: "Canceladas", value: visitsData.filter(v => v.estado === 'cancelada').length },
         ],
-        monthlyTrend: [
-          { name: "Ene", pacientes: 120 },
-          { name: "Feb", pacientes: 135 },
-          { name: "Mar", pacientes: 148 },
-          { name: "Abr", pacientes: 162 },
-          { name: "May", pacientes: 175 },
-        ],
+        monthlyTrend,
       });
     };
 
@@ -302,10 +377,10 @@ const Dashboard = () => {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">8.5 min</div>
-            <p className="text-xs text-muted-foreground">+2.1 min desde el mes pasado</p>
+            <div className="text-2xl font-bold">{extraStats.duracionPromedio} min</div>
+            <p className="text-xs text-muted-foreground">Promedio últimos 30 días</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-primary" style={{ width: "75%" }} />
+              <div className="h-full bg-primary" style={{ width: `${Math.min(extraStats.duracionPromedio * 10, 100)}%` }} />
             </div>
           </CardContent>
         </Card>
@@ -316,10 +391,10 @@ const Dashboard = () => {
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">92%</div>
+            <div className="text-2xl font-bold">{extraStats.tasaCumplimiento}%</div>
             <p className="text-xs text-muted-foreground">Tasa de cumplimiento</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-success" style={{ width: "92%" }} />
+              <div className="h-full bg-success" style={{ width: `${extraStats.tasaCumplimiento}%` }} />
             </div>
           </CardContent>
         </Card>
@@ -330,10 +405,10 @@ const Dashboard = () => {
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
+            <div className="text-2xl font-bold">{extraStats.pacientesAltoRiesgo}</div>
             <p className="text-xs text-muted-foreground">Requieren atención urgente</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-destructive" style={{ width: "15%" }} />
+              <div className="h-full bg-destructive" style={{ width: `${extraStats.porcentajeAltoRiesgo}%` }} />
             </div>
           </CardContent>
         </Card>
