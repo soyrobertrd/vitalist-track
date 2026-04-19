@@ -19,7 +19,9 @@ import { ZonaSelect } from "@/components/ZonaSelect";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { DiasRestriccionPaciente } from "@/components/DiasRestriccionPaciente";
 import { formatPhoneDR, handlePhoneInput } from "@/lib/phoneUtils";
-import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
+import { isValidIntlPhone } from "@/lib/intlPhone";
+import { useLocale } from "@/hooks/useLocale";
+import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import type { Personal } from "@/hooks/usePersonal";
 
 // Validation schema
