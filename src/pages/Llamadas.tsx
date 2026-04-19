@@ -26,6 +26,8 @@ import { useBulkSelection } from "@/hooks/useBulkSelection";
 import { BulkActionsToolbar, LLAMADA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import type { Paciente, Personal } from "@/types/db";
+
 interface Llamada {
   id: string;
   fecha_agendada: string | null;
@@ -46,8 +48,8 @@ const Llamadas = () => {
   const [llamadas, setLlamadas] = useState<Llamada[]>([]);
   const [llamadasAgendadas, setLlamadasAgendadas] = useState<Llamada[]>([]);
   const [llamadasHistorial, setLlamadasHistorial] = useState<Llamada[]>([]);
-  const [pacientes, setPacientes] = useState<any[]>([]);
-  const [personal, setPersonal] = useState<any[]>([]);
+  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [personal, setPersonal] = useState<Personal[]>([]);
   const [openAgendar, setOpenAgendar] = useState(false);
   const [openDetail, setOpenDetail] = useState(false);
   const [selectedLlamada, setSelectedLlamada] = useState<Llamada | null>(null);
