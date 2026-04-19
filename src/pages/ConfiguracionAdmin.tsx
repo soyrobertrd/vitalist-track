@@ -412,9 +412,10 @@ const ConfiguracionAdmin = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="admin">Admin</SelectItem>
-                        <SelectItem value="moderator">Moderador</SelectItem>
-                        <SelectItem value="user">Usuario</SelectItem>
+                        <SelectItem value="admin">Administrador</SelectItem>
+                        <SelectItem value="coordinador">Coordinador</SelectItem>
+                        <SelectItem value="medico">Médico</SelectItem>
+                        <SelectItem value="enfermera">Enfermera</SelectItem>
                       </SelectContent>
                     </Select>
                     <Button 
