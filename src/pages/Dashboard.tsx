@@ -9,6 +9,7 @@ import { format, subDays, startOfDay, endOfDay, startOfMonth, subMonths, eachDay
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
 import { useNavigate } from "react-router-dom";
+import { useLocale } from "@/hooks/useLocale";
 import {
   LineChart,
   Line,
