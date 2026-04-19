@@ -12,8 +12,9 @@ import { toast } from "sonner";
 import { 
   ArrowLeft, Upload, Lock, User, HelpCircle, Bell, Eye, Shield, 
   Briefcase, Calendar, FileText, TrendingUp, MessageSquare, 
-  Clock, Settings, Zap, Phone, MapPin, CheckCircle2
+  Clock, Settings, Zap, Phone, MapPin, CheckCircle2, CreditCard, Sparkles
 } from "lucide-react";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Badge } from "@/components/ui/badge";
