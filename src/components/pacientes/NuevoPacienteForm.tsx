@@ -207,7 +207,21 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       return;
     }
 
-    // Insert medications
+    // Insert informed consent (required by law before storing PHI)
+    if (paciente) {
+      const { data: { user } } = await supabase.auth.getUser();
+      await supabase.from("consentimientos_paciente").insert({
+        paciente_id: paciente.id,
+        tipo: "tratamiento_datos",
+        version_documento: consent.version_documento,
+        contenido_firmado: `Consentimiento informado ${consent.version_documento} aceptado para el tratamiento de datos clínicos.`,
+        firmado_por: consent.firmado_por.trim(),
+        parentesco_firmante: consent.parentesco_firmante,
+        user_agent: navigator.userAgent,
+        created_by: user?.id ?? null,
+      });
+    }
+
     const medicamentosValidos = medicamentos.filter(m => m.nombre.trim() !== "");
     if (medicamentosValidos.length > 0 && paciente) {
       await supabase.from("medicamentos_paciente").insert(
@@ -634,9 +648,19 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
           <DiasRestriccionPaciente diasNoVisita={diasNoVisita} onChange={setDiasNoVisita} />
         </div>
 
+        {/* Informed consent (mandatory) */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Consentimiento informado</h3>
+          <ConsentimientoInformado
+            value={consent}
+            onChange={setConsent}
+            defaultFirmante={`${formData.nombre} ${formData.apellido}`.trim()}
+          />
+        </div>
+
         <div className="flex justify-end gap-2 pt-4">
           <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading || !consent.aceptado}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Guardar Paciente
           </Button>
