@@ -2177,7 +2177,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "coordinador" | "medico" | "enfermera"
+      app_role: "admin" | "coordinador" | "medico" | "enfermera" | "recepcion"
       estado_llamada:
         | "agendada"
         | "realizada"
@@ -2215,6 +2215,7 @@ export type Database = {
         | "medico"
         | "enfermera"
         | "coordinador"
+        | "recepcion"
       workspace_member_role: "owner" | "admin" | "member"
       zona_distrito:
         | "santo_domingo_oeste"
@@ -2351,7 +2352,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "coordinador", "medico", "enfermera"],
+      app_role: ["admin", "coordinador", "medico", "enfermera", "recepcion"],
       estado_llamada: [
         "agendada",
         "realizada",
@@ -2393,6 +2394,7 @@ export const Constants = {
         "medico",
         "enfermera",
         "coordinador",
+        "recepcion",
       ],
       workspace_member_role: ["owner", "admin", "member"],
       zona_distrito: [
