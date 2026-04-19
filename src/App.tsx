@@ -23,8 +23,7 @@ const Personal = lazy(() => import("./pages/Personal"));
 const Llamadas = lazy(() => import("./pages/Llamadas"));
 const Configuracion = lazy(() => import("./pages/Configuracion"));
 const ConfiguracionAdmin = lazy(() => import("./pages/ConfiguracionAdmin"));
-const PlantillasCorreo = lazy(() => import("./pages/PlantillasCorreo"));
-const PlantillasWhatsApp = lazy(() => import("./pages/PlantillasWhatsApp"));
+const Plantillas = lazy(() => import("./pages/Plantillas"));
 const Automatizaciones = lazy(() => import("./pages/Automatizaciones"));
 const Encuestas = lazy(() => import("./pages/Encuestas"));
 const AtencionPaciente = lazy(() => import("./pages/AtencionPaciente"));
@@ -117,9 +116,12 @@ const App = () => {
                   element={session ? <Layout><ConfiguracionAdmin /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
-                  path="/plantillas-correo"
-                  element={session ? <Layout><PlantillasCorreo /></Layout> : <Navigate to="/auth" />}
+                  path="/plantillas"
+                  element={session ? <Layout><Plantillas /></Layout> : <Navigate to="/auth" />}
                 />
+                {/* Redirects desde rutas antiguas */}
+                <Route path="/plantillas-correo" element={<Navigate to="/plantillas" replace />} />
+                <Route path="/plantillas-whatsapp" element={<Navigate to="/plantillas" replace />} />
                 <Route
                   path="/automatizaciones"
                   element={session ? <Layout><Automatizaciones /></Layout> : <Navigate to="/auth" />}
@@ -151,10 +153,6 @@ const App = () => {
                 <Route
                   path="/planes"
                   element={session ? <Layout><Planes /></Layout> : <Navigate to="/auth" />}
-                />
-                <Route
-                  path="/plantillas-whatsapp"
-                  element={session ? <Layout><PlantillasWhatsApp /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -12,8 +12,9 @@ import { toast } from "sonner";
 import { 
   ArrowLeft, Upload, Lock, User, HelpCircle, Bell, Eye, Shield, 
   Briefcase, Calendar, FileText, TrendingUp, MessageSquare, 
-  Clock, Settings, Zap, Phone, MapPin, CheckCircle2
+  Clock, Settings, Zap, Phone, MapPin, CheckCircle2, CreditCard, Sparkles
 } from "lucide-react";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,7 @@ const Configuracion = () => {
   const { profile, loading: profileLoading, updateProfile } = useUserProfile();
   const { theme, setTheme } = useTheme();
   const { isAdmin } = useUserRole();
+  const { currentWorkspace, currentPlan } = useWorkspace();
   const [uploading, setUploading] = useState(false);
   const [profesionalId, setProfesionalId] = useState<string | null>(null);
   const [changingPassword, setChangingPassword] = useState(false);
@@ -442,7 +444,7 @@ const Configuracion = () => {
       </div>
 
       <Tabs defaultValue="personal" className="space-y-6">
-        <TabsList className="grid grid-cols-5 lg:grid-cols-10 gap-2">
+        <TabsList className="grid grid-cols-5 lg:grid-cols-11 gap-2">
           <TabsTrigger value="personal">
             <User className="mr-2 h-4 w-4" />
             <span className="hidden lg:inline">Personal</span>
@@ -465,7 +467,11 @@ const Configuracion = () => {
           </TabsTrigger>
           <TabsTrigger value="interfaz">
             <Eye className="mr-2 h-4 w-4" />
-            <span className="hidden lg:inline">Interfaz</span>
+            <span className="hidden lg:inline">Apariencia</span>
+          </TabsTrigger>
+          <TabsTrigger value="plan">
+            <CreditCard className="mr-2 h-4 w-4" />
+            <span className="hidden lg:inline">Plan</span>
           </TabsTrigger>
           <TabsTrigger value="notificaciones">
             <Bell className="mr-2 h-4 w-4" />
@@ -952,7 +958,89 @@ const Configuracion = () => {
           </GlassCard>
         </TabsContent>
 
-        {/* 7. Notificaciones */}
+        {/* 6b. Plan / Suscripción */}
+        <TabsContent value="plan">
+          <GlassCard className="p-6 space-y-6">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+                  <CreditCard className="h-6 w-6 text-primary" />
+                  Mi Plan
+                </h2>
+                <p className="text-muted-foreground">
+                  Información del plan activo en tu organización.
+                </p>
+              </div>
+              <Button onClick={() => navigate("/planes")} className="gap-2">
+                <Sparkles className="h-4 w-4" />
+                Ver planes y mejorar
+              </Button>
+            </div>
+
+            {currentWorkspace ? (
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="border rounded-lg p-4 space-y-2">
+                  <p className="text-xs uppercase text-muted-foreground tracking-wide">
+                    Organización
+                  </p>
+                  <p className="font-semibold text-lg">{currentWorkspace.nombre}</p>
+                  <Badge variant="outline" className="capitalize">
+                    Rol: {currentWorkspace.role}
+                  </Badge>
+                </div>
+                <div className="border rounded-lg p-4 space-y-2">
+                  <p className="text-xs uppercase text-muted-foreground tracking-wide">
+                    Plan actual
+                  </p>
+                  <p className="font-semibold text-lg flex items-center gap-2">
+                    {currentPlan?.nombre ?? currentWorkspace.plan_codigo}
+                    <Badge className="bg-gradient-to-r from-primary to-primary/70">
+                      {currentWorkspace.plan_codigo}
+                    </Badge>
+                  </p>
+                  {currentPlan && (
+                    <p className="text-sm text-muted-foreground">
+                      {currentPlan.precio_mensual_usd
+                        ? `USD $${currentPlan.precio_mensual_usd}/mes`
+                        : "Gratis"}
+                    </p>
+                  )}
+                </div>
+
+                {currentPlan && (
+                  <div className="border rounded-lg p-4 md:col-span-2 space-y-3">
+                    <p className="text-xs uppercase text-muted-foreground tracking-wide">
+                      Límites de tu plan
+                    </p>
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <p className="text-2xl font-bold">
+                          {currentPlan.limite_pacientes ?? "∞"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Pacientes</p>
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold">
+                          {currentPlan.limite_profesionales ?? "∞"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Profesionales</p>
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold">
+                          {currentPlan.limite_usuarios ?? "∞"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Usuarios</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-muted-foreground">No hay un workspace seleccionado.</p>
+            )}
+          </GlassCard>
+        </TabsContent>
+
         <TabsContent value="notificaciones">
           <GlassCard className="p-6 space-y-6">
             <div>
