@@ -13,23 +13,23 @@ import { NotificationsProvider } from "./components/NotificationsProvider";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
-import Pacientes from "./pages/Pacientes";
-import Personal from "./pages/Personal";
-import Llamadas from "./pages/Llamadas";
-import Configuracion from "./pages/Configuracion";
-import ConfiguracionAdmin from "./pages/ConfiguracionAdmin";
-import PlantillasCorreo from "./pages/PlantillasCorreo";
-import Automatizaciones from "./pages/Automatizaciones";
-import Encuestas from "./pages/Encuestas";
-import AtencionPaciente from "./pages/AtencionPaciente";
-import Reportes from "./pages/Reportes";
-import Soporte from "./pages/Soporte";
 import NotFound from "./pages/NotFound";
 import ConfirmarCita from "./pages/ConfirmarCita";
-import ReporteSospechosos from "./pages/ReporteSospechosos";
-import DashboardGeografico from "./pages/DashboardGeografico";
 
-// Lazy loaded components for better performance
+// Lazy loaded pages for better performance & smaller initial bundle
+const Pacientes = lazy(() => import("./pages/Pacientes"));
+const Personal = lazy(() => import("./pages/Personal"));
+const Llamadas = lazy(() => import("./pages/Llamadas"));
+const Configuracion = lazy(() => import("./pages/Configuracion"));
+const ConfiguracionAdmin = lazy(() => import("./pages/ConfiguracionAdmin"));
+const PlantillasCorreo = lazy(() => import("./pages/PlantillasCorreo"));
+const Automatizaciones = lazy(() => import("./pages/Automatizaciones"));
+const Encuestas = lazy(() => import("./pages/Encuestas"));
+const AtencionPaciente = lazy(() => import("./pages/AtencionPaciente"));
+const Reportes = lazy(() => import("./pages/Reportes"));
+const Soporte = lazy(() => import("./pages/Soporte"));
+const ReporteSospechosos = lazy(() => import("./pages/ReporteSospechosos"));
+const DashboardGeografico = lazy(() => import("./pages/DashboardGeografico"));
 const Visitas = lazy(() => import("./pages/Visitas"));
 const Calendario = lazy(() => import("./pages/Calendario"));
 
