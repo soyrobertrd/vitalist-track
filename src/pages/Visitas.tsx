@@ -33,6 +33,8 @@ import { useBulkSelection } from "@/hooks/useBulkSelection";
 import { BulkActionsToolbar, VISITA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 import { AutoAssignDialog } from "@/components/AutoAssignDialog";
 
+import type { Paciente, Personal } from "@/types/db";
+
 interface Visita {
   id: string;
   fecha_hora_visita: string;
@@ -46,8 +48,8 @@ interface Visita {
 
 const Visitas = () => {
   const [visitas, setVisitas] = useState<Visita[]>([]);
-  const [pacientes, setPacientes] = useState<any[]>([]);
-  const [personal, setPersonal] = useState<any[]>([]);
+  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  const [personal, setPersonal] = useState<Personal[]>([]);
   const [open, setOpen] = useState(false);
   const [unscheduledOpen, setUnscheduledOpen] = useState(false);
   const [loading, setLoading] = useState(false);

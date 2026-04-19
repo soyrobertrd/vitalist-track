@@ -34,6 +34,8 @@ import {
 } from "recharts";
 import * as XLSX from "xlsx";
 
+import type { Personal, LlamadaReporte, VisitaReporte, Paciente } from "@/types/db";
+
 interface DateRange {
   from: Date | undefined;
   to: Date | undefined;
@@ -45,17 +47,13 @@ const Reportes = () => {
     from: subDays(new Date(), 30),
     to: new Date(),
   });
-  const [profesionales, setProfesionales] = useState<any[]>([]);
-  const [dataLlamadas, setDataLlamadas] = useState<any[]>([]);
-  const [dataVisitas, setDataVisitas] = useState<any[]>([]);
-  const [dataPacientes, setDataPacientes] = useState<any[]>([]);
+  const [profesionales, setProfesionales] = useState<Personal[]>([]);
+  const [dataLlamadas, setDataLlamadas] = useState<LlamadaReporte[]>([]);
+  const [dataVisitas, setDataVisitas] = useState<VisitaReporte[]>([]);
+  const [dataPacientes, setDataPacientes] = useState<Paciente[]>([]);
   const [observaciones, setObservaciones] = useState("");
   const [recomendaciones, setRecomendaciones] = useState("");
   const [exportingPDF, setExportingPDF] = useState(false);
-
-  useEffect(() => {
-    fetchData();
-  }, [profesionalId, dateRange]);
 
   const fetchData = async () => {
     const fromDate = dateRange.from ? startOfDay(dateRange.from).toISOString() : null;
@@ -63,11 +61,15 @@ const Reportes = () => {
 
     let llamadasQuery = supabase
       .from("registro_llamadas")
-      .select("*, personal_salud(nombre, apellido), pacientes(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)");
-    
+      .select(
+        "*, personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido), pacientes!registro_llamadas_paciente_id_fkey(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)"
+      );
+
     let visitasQuery = supabase
       .from("control_visitas")
-      .select("*, personal_salud(nombre, apellido), pacientes(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)");
+      .select(
+        "*, personal_salud!control_visitas_profesional_id_fkey(nombre, apellido), pacientes!control_visitas_paciente_id_fkey(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)"
+      );
 
     if (profesionalId !== "todos") {
       llamadasQuery = llamadasQuery.eq("profesional_id", profesionalId);
@@ -96,6 +98,11 @@ const Reportes = () => {
     if (visitasRes.data) setDataVisitas(visitasRes.data);
     if (pacientesRes.data) setDataPacientes(pacientesRes.data);
   };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profesionalId, dateRange]);
 
   const calcularEdad = (fechaNacimiento: string) => {
     if (!fechaNacimiento) return 0;
