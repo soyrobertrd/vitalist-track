@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { WorkspaceProvider } from "./contexts/WorkspaceContext";
 import Layout from "./components/Layout";
 import { InstallPWAPrompt } from "./components/InstallPWAPrompt";
 import { NotificationsProvider } from "./components/NotificationsProvider";
@@ -33,6 +34,7 @@ const ReporteSospechosos = lazy(() => import("./pages/ReporteSospechosos"));
 const DashboardGeografico = lazy(() => import("./pages/DashboardGeografico"));
 const Visitas = lazy(() => import("./pages/Visitas"));
 const Calendario = lazy(() => import("./pages/Calendario"));
+const Planes = lazy(() => import("./pages/Planes"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -70,6 +72,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
+        <WorkspaceProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -145,11 +148,20 @@ const App = () => {
                   path="/dashboard-geografico"
                   element={session ? <Layout><DashboardGeografico /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route
+                  path="/planes"
+                  element={session ? <Layout><Planes /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/plantillas-whatsapp"
+                  element={session ? <Layout><PlantillasWhatsApp /></Layout> : <Navigate to="/auth" />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
           </BrowserRouter>
         </TooltipProvider>
+        </WorkspaceProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
