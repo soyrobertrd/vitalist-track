@@ -118,8 +118,8 @@ const Auth = () => {
           <div className="flex justify-center mb-4">
             <Activity className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl">HealthCRM</CardTitle>
-          <CardDescription>Sistema de Gestión para Centro de Salud</CardDescription>
+          <CardTitle className="text-2xl">Health App</CardTitle>
+          <CardDescription>Gestión clínica y atención domiciliaria</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">

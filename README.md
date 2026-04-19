@@ -1,6 +1,6 @@
-# Health App - Sistema de Gestión de Salud
+# Health App — Sistema inteligente de gestión clínica y atención domiciliaria
 
-Sistema integral de gestión de pacientes, visitas, llamadas y atención médica desarrollado con React, TypeScript, Tailwind CSS y Supabase.
+Plataforma integral para la gestión de pacientes, llamadas de seguimiento, visitas (domiciliarias y ambulatorias), cobros, encuestas y automatizaciones. Construida con React, TypeScript, Tailwind CSS y Lovable Cloud.
 
 ![Health App Logo](src/assets/logo-horizontal.png)
 
@@ -617,11 +617,9 @@ Desarrollado con ❤️ por el equipo de Health App
 
 ---
 
-**Versión:** 2.0.0.0  
+**Versión:** 2.1.0  
 **Última actualización:** Abril 2026
 
-### 📌 Changelog v2.0.0.0
-- **Fase 1**: Ficha clínica unificada del paciente (alergias, antecedentes, seguros)
-- **Fase 2**: Vinculación masiva de pacientes a profesional asignado
-- **Fase 3**: Módulo de Cobros (facturas, pagos, automatización de estados)
-- **Fase 4**: PWA instalable + Gestión de roles UI (admin, coordinador, médico, enfermera)
+### 📌 Changelog
+- **v2.1.0** — Unificación de marca a "Health App", versionado SemVer estándar, nombre de paquete `health-app`.
+- **v2.0.0** — Fase 1 ficha clínica unificada, Fase 2 vinculación masiva paciente↔profesional, Fase 3 módulo de Cobros, Fase 4 PWA + gestión de roles UI, hardening de RLS, lazy loading y tipado estricto.
