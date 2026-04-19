@@ -20,6 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { DiasNoLaborablesCalendar } from "@/components/DiasNoLaborablesCalendar";
 import { ModulePermissionsManager } from "@/components/ModulePermissionsManager";
 import { AuditoriaCambiosViewer } from "@/components/AuditoriaCambiosViewer";
+import { WorkspaceLocaleEditor } from "@/components/WorkspaceLocaleEditor";
 
 const ConfiguracionAdmin = () => {
   const navigate = useNavigate();
