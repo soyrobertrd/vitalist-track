@@ -182,7 +182,18 @@ export default function Recepcion() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {llegadaTarde && (
+              <Alert variant="destructive" className="border-amber-500/60 bg-amber-500/10 text-amber-900 dark:text-amber-200 [&>svg]:text-amber-600">
+                <AlertTriangle className="h-5 w-5" />
+                <AlertTitle>Cita en retraso</AlertTitle>
+                <AlertDescription className="text-sm">
+                  El paciente llegó <strong>{minutosTarde} min tarde</strong>
+                  {profesionalNombre ? <> a su cita con <strong>{profesionalNombre}</strong></> : null}.
+                  La atención queda <strong>sujeta a la disponibilidad del profesional</strong>.
+                </AlertDescription>
+              </Alert>
+            )}
+
               <div className="bg-muted/50 p-3 rounded-lg">
                 <p className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="h-3 w-3" /> Fecha</p>
                 <p className="font-semibold">
