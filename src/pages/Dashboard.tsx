@@ -230,10 +230,10 @@ const Dashboard = () => {
           <Clock className="h-5 w-5" />
           <div className="text-right">
             <div className="text-sm font-medium text-foreground">
-              {format(dominicanTime, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
+              {format(localTime, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
             </div>
             <div className="text-lg font-bold text-primary">
-              {format(dominicanTime, "hh:mm:ss a", { locale: es })}
+              {format(localTime, "hh:mm:ss a", { locale: es })}
             </div>
           </div>
         </div>
