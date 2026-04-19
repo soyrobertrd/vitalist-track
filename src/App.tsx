@@ -18,6 +18,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ConfirmarCita from "./pages/ConfirmarCita";
 import TicketPublico from "./pages/TicketPublico";
+import Landing from "./pages/Landing";
 
 // Lazy loaded pages for better performance & smaller initial bundle
 const Recepcion = lazy(() => import("./pages/Recepcion"));
@@ -85,7 +86,8 @@ const App = () => {
           <BrowserRouter>
             <Suspense fallback={<PageLoader />}>
               <Routes>
-                <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/" />} />
+                <Route path="/" element={<Landing />} />
+                <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/confirmar-cita" element={<ConfirmarCita />} />
                 <Route path="/ticket/:token" element={<TicketPublico />} />
@@ -98,7 +100,7 @@ const App = () => {
                   element={session ? <Onboarding /> : <Navigate to="/auth" />}
                 />
                 <Route
-                  path="/"
+                  path="/dashboard"
                   element={session ? <Layout><Dashboard /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
