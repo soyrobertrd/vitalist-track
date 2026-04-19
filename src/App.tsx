@@ -75,79 +75,78 @@ const App = () => {
           {session && <NotificationsProvider />}
           {session && <InstallPWAPrompt />}
           <BrowserRouter>
-            <Routes>
-              <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/" />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route
-                path="/"
-                element={session ? <Layout><Dashboard /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/pacientes"
-                element={session ? <Layout><Pacientes /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/personal"
-                element={session ? <Layout><Personal /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/llamadas"
-                element={session ? <Layout><Llamadas /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/visitas"
-                element={session ? <Layout><Suspense fallback={<PageLoader />}><Visitas /></Suspense></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/calendario"
-                element={session ? <Layout><Suspense fallback={<PageLoader />}><Calendario /></Suspense></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/configuracion"
-                element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/configuracion-admin"
-                element={session ? <Layout><ConfiguracionAdmin /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/plantillas-correo"
-                element={session ? <Layout><PlantillasCorreo /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/automatizaciones"
-                element={session ? <Layout><Automatizaciones /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/encuestas"
-                element={session ? <Layout><Encuestas /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/atencion-paciente"
-                element={session ? <Layout><AtencionPaciente /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/reportes"
-                element={session ? <Layout><Reportes /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/soporte"
-                element={session ? <Layout><Soporte /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/confirmar-cita"
-                element={<ConfirmarCita />}
-              />
-              <Route
-                path="/sospechosos"
-                element={session ? <Layout><ReporteSospechosos /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route
-                path="/dashboard-geografico"
-                element={session ? <Layout><DashboardGeografico /></Layout> : <Navigate to="/auth" />}
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/" />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/confirmar-cita" element={<ConfirmarCita />} />
+                <Route
+                  path="/"
+                  element={session ? <Layout><Dashboard /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/pacientes"
+                  element={session ? <Layout><Pacientes /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/personal"
+                  element={session ? <Layout><Personal /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/llamadas"
+                  element={session ? <Layout><Llamadas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/visitas"
+                  element={session ? <Layout><Visitas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/calendario"
+                  element={session ? <Layout><Calendario /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/configuracion"
+                  element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/configuracion-admin"
+                  element={session ? <Layout><ConfiguracionAdmin /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/plantillas-correo"
+                  element={session ? <Layout><PlantillasCorreo /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/automatizaciones"
+                  element={session ? <Layout><Automatizaciones /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/encuestas"
+                  element={session ? <Layout><Encuestas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/atencion-paciente"
+                  element={session ? <Layout><AtencionPaciente /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/reportes"
+                  element={session ? <Layout><Reportes /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/soporte"
+                  element={session ? <Layout><Soporte /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/sospechosos"
+                  element={session ? <Layout><ReporteSospechosos /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/dashboard-geografico"
+                  element={session ? <Layout><DashboardGeografico /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </BrowserRouter>
         </TooltipProvider>
       </ThemeProvider>
