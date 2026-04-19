@@ -84,7 +84,15 @@ const AtencionPaciente = () => {
   };
 
   const handleSubmit = async () => {
-    const { error } = await supabase.from("atencion_paciente").insert([formData]);
+    // Convertir datetime-local (string sin TZ) a ISO con TZ local
+    // para que Postgres no lo interprete como UTC y desplace la hora
+    const fechaProgramadaISO = formData.fecha_programada
+      ? new Date(formData.fecha_programada).toISOString()
+      : formData.fecha_programada;
+
+    const { error } = await supabase
+      .from("atencion_paciente")
+      .insert([{ ...formData, fecha_programada: fechaProgramadaISO }]);
 
     if (error) {
       toast({ title: "Error al crear atención", variant: "destructive" });
@@ -94,7 +102,7 @@ const AtencionPaciente = () => {
         const visitaData = {
           paciente_id: formData.paciente_id,
           profesional_id: formData.profesional_id,
-          fecha_hora_visita: formData.fecha_programada,
+          fecha_hora_visita: fechaProgramadaISO,
           tipo_visita: "domicilio" as any,
           motivo_visita: `${getTipoLabel(formData.tipo)} - ${formData.descripcion}`,
           estado: "pendiente" as any,

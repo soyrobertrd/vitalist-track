@@ -91,11 +91,15 @@ export function ReportePacientesSinCitas() {
     
     setLoadingVisita(true);
     const formData = new FormData(e.currentTarget);
-    
+    const fechaHoraInput = formData.get("fecha_hora_visita") as string;
+    // Convertir datetime-local (string sin TZ) a ISO con TZ local
+    // para que Postgres no lo interprete como UTC y desplace la hora
+    const fechaHoraISO = fechaHoraInput ? new Date(fechaHoraInput).toISOString() : fechaHoraInput;
+
     const data = {
       paciente_id: selectedPacienteId,
       profesional_id: formData.get("profesional_id") as string,
-      fecha_hora_visita: formData.get("fecha_hora_visita") as string,
+      fecha_hora_visita: fechaHoraISO,
       tipo_visita: formData.get("tipo_visita") as any,
       motivo_visita: formData.get("motivo_visita") as string,
       estado: "pendiente" as any,
