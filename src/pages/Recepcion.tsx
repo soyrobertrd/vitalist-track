@@ -87,6 +87,12 @@ export default function Recepcion() {
 
   const cita = ticket?.visita || ticket?.llamada;
   const fechaCita = ticket?.visita?.fecha_hora_visita || ticket?.llamada?.fecha_agendada;
+  const minutosTarde = fechaCita ? differenceInMinutes(new Date(), new Date(fechaCita)) : 0;
+  const llegadaTarde =
+    ticket && fechaCita && minutosTarde > 0 && ticket.estado_checkin === "pendiente";
+  const profesionalNombre = cita?.personal_salud
+    ? `${cita.personal_salud.nombre} ${cita.personal_salud.apellido}`
+    : null;
 
   const estadoBadge = (estado: string) => {
     const cfg: Record<string, { label: string; cls: string }> = {
