@@ -56,6 +56,7 @@ const Personal = () => {
   const [selectedZona, setSelectedZona] = useState<string>("");
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
   const [createUserAccount, setCreateUserAccount] = useState(true);
+  const [contacto, setContacto] = useState("");
 
   const fetchPersonal = async () => {
     const { data, error } = await supabase
@@ -237,16 +238,12 @@ const Personal = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contacto">Teléfono</Label>
-                <Input 
-                  id="contacto" 
-                  name="contacto" 
-                  type="tel"
-                  placeholder="809-123-4567"
-                  onChange={(e) => {
-                    e.target.value = handlePhoneInput(e.target.value);
-                  }}
+                <IntlPhoneInput
+                  id="contacto"
+                  name="contacto"
+                  value={contacto}
+                  onChange={setContacto}
                 />
-                <p className="text-xs text-muted-foreground">Formato: 829-123-1234 (10 dígitos)</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email_contacto">Email {createUserAccount ? "*" : ""}</Label>
@@ -371,8 +368,8 @@ const Personal = () => {
               {p.contacto && (
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Phone className="mr-2 h-4 w-4" />
-                  <a href={`tel:${p.contacto.replace(/-/g, '')}`} className="hover:text-primary">
-                    {formatPhoneDR(p.contacto)}
+                  <a href={`tel:${p.contacto.replace(/[^\d+]/g, '')}`} className="hover:text-primary">
+                    {p.contacto}
                   </a>
                 </div>
               )}
