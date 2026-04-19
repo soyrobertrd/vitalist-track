@@ -16,8 +16,11 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ConfirmarCita from "./pages/ConfirmarCita";
+import TicketPublico from "./pages/TicketPublico";
 
 // Lazy loaded pages for better performance & smaller initial bundle
+const Recepcion = lazy(() => import("./pages/Recepcion"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Pacientes = lazy(() => import("./pages/Pacientes"));
 const Personal = lazy(() => import("./pages/Personal"));
 const Llamadas = lazy(() => import("./pages/Llamadas"));
@@ -83,6 +86,15 @@ const App = () => {
                 <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/" />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/confirmar-cita" element={<ConfirmarCita />} />
+                <Route path="/ticket/:token" element={<TicketPublico />} />
+                <Route
+                  path="/recepcion"
+                  element={session ? <Layout><Recepcion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/onboarding"
+                  element={session ? <Onboarding /> : <Navigate to="/auth" />}
+                />
                 <Route
                   path="/"
                   element={session ? <Layout><Dashboard /></Layout> : <Navigate to="/auth" />}

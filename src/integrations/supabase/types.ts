@@ -366,6 +366,98 @@ export type Database = {
           },
         ]
       }
+      cita_tickets: {
+        Row: {
+          checkin_por: string | null
+          codigo_corto: string
+          created_at: string
+          enviado_email: boolean | null
+          enviado_whatsapp: boolean | null
+          estado_checkin: string
+          fecha_atencion: string | null
+          fecha_llegada: string | null
+          id: string
+          impreso: boolean | null
+          llamada_id: string | null
+          notas_checkin: string | null
+          paciente_id: string | null
+          tipo_cita: string
+          token: string
+          updated_at: string
+          visita_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          checkin_por?: string | null
+          codigo_corto: string
+          created_at?: string
+          enviado_email?: boolean | null
+          enviado_whatsapp?: boolean | null
+          estado_checkin?: string
+          fecha_atencion?: string | null
+          fecha_llegada?: string | null
+          id?: string
+          impreso?: boolean | null
+          llamada_id?: string | null
+          notas_checkin?: string | null
+          paciente_id?: string | null
+          tipo_cita: string
+          token?: string
+          updated_at?: string
+          visita_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          checkin_por?: string | null
+          codigo_corto?: string
+          created_at?: string
+          enviado_email?: boolean | null
+          enviado_whatsapp?: boolean | null
+          estado_checkin?: string
+          fecha_atencion?: string | null
+          fecha_llegada?: string | null
+          id?: string
+          impreso?: boolean | null
+          llamada_id?: string | null
+          notas_checkin?: string | null
+          paciente_id?: string | null
+          tipo_cita?: string
+          token?: string
+          updated_at?: string
+          visita_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cita_tickets_llamada_id_fkey"
+            columns: ["llamada_id"]
+            isOneToOne: false
+            referencedRelation: "registro_llamadas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cita_tickets_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cita_tickets_visita_id_fkey"
+            columns: ["visita_id"]
+            isOneToOne: false
+            referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cita_tickets_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       configuracion_sistema: {
         Row: {
           clave: string
@@ -1958,36 +2050,54 @@ export type Database = {
         Row: {
           configuracion: Json
           created_at: string
+          direccion: string | null
+          email_contacto: string | null
           estado: string
           id: string
+          instrucciones_cita: string | null
+          logo_url: string | null
           nombre: string
           owner_id: string
           plan_codigo: string
+          sitio_web: string | null
           slug: string
+          telefono: string | null
           trial_ends_at: string | null
           updated_at: string
         }
         Insert: {
           configuracion?: Json
           created_at?: string
+          direccion?: string | null
+          email_contacto?: string | null
           estado?: string
           id?: string
+          instrucciones_cita?: string | null
+          logo_url?: string | null
           nombre: string
           owner_id: string
           plan_codigo?: string
+          sitio_web?: string | null
           slug: string
+          telefono?: string | null
           trial_ends_at?: string | null
           updated_at?: string
         }
         Update: {
           configuracion?: Json
           created_at?: string
+          direccion?: string | null
+          email_contacto?: string | null
           estado?: string
           id?: string
+          instrucciones_cita?: string | null
+          logo_url?: string | null
           nombre?: string
           owner_id?: string
           plan_codigo?: string
+          sitio_web?: string | null
           slug?: string
+          telefono?: string | null
           trial_ends_at?: string | null
           updated_at?: string
         }
@@ -2023,6 +2133,7 @@ export type Database = {
           total_llamadas: number
         }[]
       }
+      generar_codigo_ticket: { Args: never; Returns: string }
       get_user_module_permissions: {
         Args: { _user_id: string }
         Returns: {
