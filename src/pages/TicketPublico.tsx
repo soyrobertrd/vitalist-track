@@ -134,11 +134,15 @@ export default function TicketPublico() {
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-primary/5 p-2 rounded-lg">
                   <p className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="h-3 w-3" />Fecha</p>
-                  <p className="font-semibold text-sm">{format(new Date(fechaCita), "dd/MM/yyyy", { locale: es })}</p>
+                  <p className="font-semibold text-sm">
+                    {data.fecha_cita_formatted || format(new Date(fechaCita), "dd/MM/yyyy", { locale: es })}
+                  </p>
                 </div>
                 <div className="bg-primary/5 p-2 rounded-lg">
                   <p className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" />Hora</p>
-                  <p className="font-semibold text-sm">{format(new Date(fechaCita), "HH:mm")}</p>
+                  <p className="font-semibold text-sm">
+                    {data.hora_cita_formatted || format(new Date(fechaCita), "HH:mm")}
+                  </p>
                 </div>
               </div>
               <p><span className="text-muted-foreground">Tipo:</span> <strong className="capitalize">{data.tipo_cita}</strong></p>
