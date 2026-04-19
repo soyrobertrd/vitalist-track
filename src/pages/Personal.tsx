@@ -12,12 +12,11 @@ import { toast } from "sonner";
 import { PersonalDetailDialog } from "@/components/PersonalDetailDialog";
 import { EditPersonalDialog } from "@/components/EditPersonalDialog";
 import { AusenciasProfesionalDialog } from "@/components/AusenciasProfesionalDialog";
-import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { MobileFilters } from "@/components/MobileFilters";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ZonaSelect } from "@/components/ZonaSelect";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
-import { handlePhoneInput, formatPhoneDR } from "@/lib/phoneUtils";
+import { IntlPhoneInput } from "@/components/IntlPhoneInput";
 import { Switch } from "@/components/ui/switch";
 
 interface Personal {
