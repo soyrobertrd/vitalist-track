@@ -6,8 +6,10 @@ import { Phone, Calendar, User, Mail } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
 import { SelectionCheckbox } from "@/components/SelectionCheckbox";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 interface Visita {
   id: string;
