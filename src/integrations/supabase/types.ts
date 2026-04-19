@@ -550,6 +550,60 @@ export type Database = {
           },
         ]
       }
+      contactos_landing: {
+        Row: {
+          created_at: string
+          email: string
+          empresa: string | null
+          estado: string
+          id: string
+          ip_address: string | null
+          mensaje: string
+          nombre: string
+          notas_internas: string | null
+          pais: string | null
+          plan_interes: string | null
+          tamano_clinica: string | null
+          telefono: string | null
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          empresa?: string | null
+          estado?: string
+          id?: string
+          ip_address?: string | null
+          mensaje: string
+          nombre: string
+          notas_internas?: string | null
+          pais?: string | null
+          plan_interes?: string | null
+          tamano_clinica?: string | null
+          telefono?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          empresa?: string | null
+          estado?: string
+          id?: string
+          ip_address?: string | null
+          mensaje?: string
+          nombre?: string
+          notas_internas?: string | null
+          pais?: string | null
+          plan_interes?: string | null
+          tamano_clinica?: string | null
+          telefono?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       control_visitas: {
         Row: {
           confirmado_por_recordatorio: boolean | null

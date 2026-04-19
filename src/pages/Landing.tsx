@@ -1,21 +1,136 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Check, Crown, Loader2, ArrowRight, Shield, Calendar, MessageCircle, Users, Activity, Zap } from "lucide-react";
+import {
+  Check,
+  Crown,
+  Loader2,
+  ArrowRight,
+  Shield,
+  Calendar,
+  MessageCircle,
+  Users,
+  Activity,
+  Zap,
+  Mail,
+  Phone,
+  MapPin,
+  Sparkles,
+  HelpCircle,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Plan } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { toast } from "sonner";
+import { z } from "zod";
 
 /**
  * Public landing page for Vitalist Track.
  * Style: Clinical Ceramic — clean, authoritative, trust-first.
- *
- * SEO note: this is the public face of the app. Title/meta/H1 are tuned
- * for "software de gestión de pacientes domiciliarios LATAM".
  */
+
+const contactSchema = z.object({
+  nombre: z.string().trim().min(2, "Mínimo 2 caracteres").max(120),
+  email: z.string().trim().email("Email inválido").max(200),
+  empresa: z.string().trim().max(150).optional().or(z.literal("")),
+  telefono: z.string().trim().max(40).optional().or(z.literal("")),
+  pais: z.string().trim().max(60).optional().or(z.literal("")),
+  tamano_clinica: z.string().optional(),
+  plan_interes: z.string().optional(),
+  mensaje: z.string().trim().min(10, "Mínimo 10 caracteres").max(2000),
+});
+
+type ContactValues = z.infer<typeof contactSchema>;
+
+const PLAN_FEATURES: Record<string, string[]> = {
+  free: [
+    "Agenda y calendario",
+    "Recordatorios por email",
+    "Ficha clínica básica",
+    "Soporte por email",
+  ],
+  basico: [
+    "Todo lo de Free",
+    "WhatsApp de recordatorios",
+    "Ficha clínica completa",
+    "Importación masiva",
+    "Reportes operativos",
+  ],
+  pro: [
+    "Todo lo de Básico",
+    "Multi-clínica (workspaces)",
+    "Automatizaciones por evento",
+    "Encuestas de satisfacción",
+    "Geolocalización y mapas",
+    "Soporte prioritario",
+  ],
+  enterprise: [
+    "Todo lo de Pro",
+    "SSO y dominio propio",
+    "Auditoría avanzada exportable",
+    "SLA 99.9% y onboarding dedicado",
+    "Integraciones a medida",
+    "Account manager",
+  ],
+};
+
+const FAQS = [
+  {
+    q: "¿Necesito instalar algo?",
+    a: "No. Vitalist Track es 100% web y funciona en cualquier navegador moderno. También se instala como PWA en móvil con un toque.",
+  },
+  {
+    q: "¿Mis datos clínicos están seguros?",
+    a: "Sí. Cada workspace está aislado con Row-Level Security, todas las acciones quedan auditadas, y guardamos consentimiento informado por paciente con IP y firmante.",
+  },
+  {
+    q: "¿Puedo migrar mis pacientes desde Excel?",
+    a: "Sí. Tenemos importadores guiados para pacientes, llamadas y visitas. El equipo te ayuda en el onboarding sin costo adicional.",
+  },
+  {
+    q: "¿Funciona fuera de República Dominicana?",
+    a: "Sí. Multi-país, multi-zona horaria y multi-moneda. Configuras feriados y días no laborables por país.",
+  },
+  {
+    q: "¿Qué pasa si supero el límite de mi plan?",
+    a: "Te avisamos con tiempo. Puedes subir de plan en cualquier momento sin perder datos ni interrumpir el servicio.",
+  },
+  {
+    q: "¿Cancelo cuando quiera?",
+    a: "Sí, sin contratos. Cancelas desde tu panel y tus datos quedan disponibles para exportar durante 90 días.",
+  },
+];
+
 export default function Landing() {
   const navigate = useNavigate();
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [loadingPlanes, setLoadingPlanes] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState<ContactValues>({
+    nombre: "",
+    email: "",
+    empresa: "",
+    telefono: "",
+    pais: "",
+    tamano_clinica: "",
+    plan_interes: "",
+    mensaje: "",
+  });
 
   useEffect(() => {
     document.title = "Vitalist Track — Plataforma clínica para atención domiciliaria";
@@ -42,6 +157,38 @@ export default function Landing() {
       setLoadingPlanes(false);
     })();
   }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const parsed = contactSchema.safeParse(form);
+    if (!parsed.success) {
+      toast.error(parsed.error.errors[0]?.message || "Revisa los campos");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const { error } = await supabase.functions.invoke("contacto-landing", {
+        body: parsed.data,
+      });
+      if (error) throw error;
+      toast.success("¡Gracias! Te contactamos en menos de 24 horas.");
+      setForm({
+        nombre: "",
+        email: "",
+        empresa: "",
+        telefono: "",
+        pais: "",
+        tamano_clinica: "",
+        plan_interes: "",
+        mensaje: "",
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("No se pudo enviar el mensaje. Intenta de nuevo.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div className="min-h-dvh bg-background text-foreground antialiased relative overflow-hidden font-sans">
@@ -73,6 +220,12 @@ export default function Landing() {
           </a>
           <a href="#seguridad" className="text-muted-foreground hover:text-foreground transition-colors">
             Seguridad
+          </a>
+          <a href="#faq" className="text-muted-foreground hover:text-foreground transition-colors">
+            FAQ
+          </a>
+          <a href="#contacto" className="text-muted-foreground hover:text-foreground transition-colors">
+            Contacto
           </a>
         </nav>
         <div className="flex items-center gap-3">
@@ -158,6 +311,9 @@ export default function Landing() {
         {/* Pricing */}
         <section id="planes" className="mt-32">
           <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-4">
+              <Sparkles className="h-4 w-4" /> Precios transparentes
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Planes para cada etapa</h2>
             <p className="text-muted-foreground mt-3">
               Empieza gratis, escala cuando necesites. Sin contratos, cancela cuando quieras.
@@ -172,6 +328,7 @@ export default function Landing() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {planes.map((plan) => {
                 const isPro = plan.codigo === "pro";
+                const features = PLAN_FEATURES[plan.codigo] || [];
                 return (
                   <div
                     key={plan.codigo}
@@ -213,19 +370,40 @@ export default function Landing() {
                             : "Profesionales ilimitados"}
                         </span>
                       </li>
+                      {features.map((f) => (
+                        <li key={f} className="flex items-start gap-2">
+                          <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                          <span>{f}</span>
+                        </li>
+                      ))}
                     </ul>
                     <Button
                       className="mt-6 w-full"
                       variant={isPro ? "default" : "outline"}
-                      onClick={() => navigate("/auth")}
+                      onClick={() => {
+                        if (plan.codigo === "enterprise") {
+                          setForm((f) => ({ ...f, plan_interes: plan.nombre }));
+                          document
+                            .getElementById("contacto")
+                            ?.scrollIntoView({ behavior: "smooth" });
+                        } else {
+                          navigate("/auth");
+                        }
+                      }}
                     >
-                      Empezar con {plan.nombre}
+                      {plan.codigo === "enterprise"
+                        ? "Hablar con ventas"
+                        : `Empezar con ${plan.nombre}`}
                     </Button>
                   </div>
                 );
               })}
             </div>
           )}
+
+          <p className="text-center text-xs text-muted-foreground mt-6">
+            Precios en USD. Pagos con tarjeta o transferencia. Facturación con NCF para RD.
+          </p>
         </section>
 
         {/* Security band */}
@@ -266,6 +444,200 @@ export default function Landing() {
           </div>
         </section>
 
+        {/* FAQ */}
+        <section id="faq" className="mt-32 max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-4">
+              <HelpCircle className="h-4 w-4" /> Preguntas frecuentes
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">¿Tienes dudas?</h2>
+            <p className="text-muted-foreground mt-3">Lo que más nos preguntan antes de empezar.</p>
+          </div>
+          <Accordion type="single" collapsible className="rounded-2xl border bg-card divide-y">
+            {FAQS.map((item, i) => (
+              <AccordionItem key={i} value={`faq-${i}`} className="border-b-0 px-5">
+                <AccordionTrigger className="text-left font-semibold hover:no-underline">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  {item.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </section>
+
+        {/* Contacto */}
+        <section id="contacto" className="mt-32 grid lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-4">
+              <Mail className="h-4 w-4" /> Contacto
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              ¿Hablamos de tu clínica?
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+              Cuéntanos qué necesitas y te respondemos en menos de 24 horas. Si prefieres, agenda una
+              demo de 20 minutos con nuestro equipo.
+            </p>
+            <ul className="space-y-4 text-sm">
+              <li className="flex items-center gap-3">
+                <span className="size-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                  <Mail className="h-4 w-4" />
+                </span>
+                <a href="mailto:ventas@vitalist-track.com" className="hover:text-primary">
+                  ventas@vitalist-track.com
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <span className="size-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                  <Phone className="h-4 w-4" />
+                </span>
+                <span className="text-muted-foreground">
+                  Atención lunes a viernes, 8:00 — 18:00 (GMT-4)
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <span className="size-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                  <MapPin className="h-4 w-4" />
+                </span>
+                <span className="text-muted-foreground">Santo Domingo, República Dominicana</span>
+              </li>
+            </ul>
+          </div>
+
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-2xl border bg-card p-6 md:p-8 space-y-4"
+          >
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="nombre">Nombre *</Label>
+                <Input
+                  id="nombre"
+                  required
+                  maxLength={120}
+                  value={form.nombre}
+                  onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+                  placeholder="Dra. María Pérez"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="email">Email *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  maxLength={200}
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  placeholder="tu@clinica.com"
+                />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="empresa">Clínica / Empresa</Label>
+                <Input
+                  id="empresa"
+                  maxLength={150}
+                  value={form.empresa}
+                  onChange={(e) => setForm({ ...form, empresa: e.target.value })}
+                  placeholder="Centro Médico XYZ"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="telefono">Teléfono / WhatsApp</Label>
+                <Input
+                  id="telefono"
+                  maxLength={40}
+                  value={form.telefono}
+                  onChange={(e) => setForm({ ...form, telefono: e.target.value })}
+                  placeholder="+1 809 000 0000"
+                />
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="pais">País</Label>
+                <Input
+                  id="pais"
+                  maxLength={60}
+                  value={form.pais}
+                  onChange={(e) => setForm({ ...form, pais: e.target.value })}
+                  placeholder="República Dominicana"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="tamano">Tamaño de clínica</Label>
+                <Select
+                  value={form.tamano_clinica}
+                  onValueChange={(v) => setForm({ ...form, tamano_clinica: v })}
+                >
+                  <SelectTrigger id="tamano">
+                    <SelectValue placeholder="Selecciona" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-5">1 — 5 profesionales</SelectItem>
+                    <SelectItem value="6-20">6 — 20 profesionales</SelectItem>
+                    <SelectItem value="21-50">21 — 50 profesionales</SelectItem>
+                    <SelectItem value="50+">Más de 50</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="plan">Plan de interés</Label>
+              <Select
+                value={form.plan_interes}
+                onValueChange={(v) => setForm({ ...form, plan_interes: v })}
+              >
+                <SelectTrigger id="plan">
+                  <SelectValue placeholder="No estoy seguro / Quiero asesoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  {planes.map((p) => (
+                    <SelectItem key={p.codigo} value={p.nombre}>
+                      {p.nombre}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="Asesoría">No estoy seguro / Quiero asesoría</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="mensaje">Mensaje *</Label>
+              <Textarea
+                id="mensaje"
+                required
+                rows={4}
+                maxLength={2000}
+                value={form.mensaje}
+                onChange={(e) => setForm({ ...form, mensaje: e.target.value })}
+                placeholder="Cuéntanos brevemente qué necesitas resolver..."
+              />
+              <p className="text-xs text-muted-foreground text-right">
+                {form.mensaje.length}/2000
+              </p>
+            </div>
+            <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+              {submitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Enviando...
+                </>
+              ) : (
+                <>
+                  Enviar mensaje <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+            <p className="text-xs text-muted-foreground text-center">
+              Al enviar aceptas nuestra política de privacidad. Solo usamos tus datos para
+              contactarte sobre Vitalist Track.
+            </p>
+          </form>
+        </section>
+
         {/* Final CTA */}
         <section className="mt-32 text-center">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
@@ -282,9 +654,9 @@ export default function Landing() {
               size="lg"
               variant="outline"
               className="h-12 px-8 rounded-full"
-              asChild
+              onClick={() => document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" })}
             >
-              <a href="mailto:ventas@vitalist-track.com">Agendar demo</a>
+              Agendar demo
             </Button>
           </div>
         </section>
@@ -299,6 +671,7 @@ export default function Landing() {
             <span>© {new Date().getFullYear()}</span>
           </div>
           <div className="flex items-center gap-6">
+            <a href="#contacto" className="hover:text-foreground">Contacto</a>
             <a href="mailto:soporte@vitalist-track.com" className="hover:text-foreground">Soporte</a>
             <Link to="/auth" className="hover:text-foreground">Iniciar sesión</Link>
           </div>
