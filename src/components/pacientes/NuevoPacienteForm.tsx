@@ -24,8 +24,10 @@ import { useLocale } from "@/hooks/useLocale";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import type { Personal } from "@/hooks/usePersonal";
 
-// Validation schema
-const pacienteSchema = z.object({
+// Validation schema (country-aware factory)
+import type { CountryCode } from "libphonenumber-js";
+
+const buildPacienteSchema = (country: CountryCode) => z.object({
   cedula: z.string()
     .trim()
     .length(11, { message: "La cédula debe tener exactamente 11 dígitos" })
@@ -43,7 +45,7 @@ const pacienteSchema = z.object({
     .trim()
     .max(20, { message: "El contacto debe tener menos de 20 caracteres" })
     .refine(
-      (val) => !val || TELEFONO_DOMINICANO_REGEX.test(val.replace(/\s+/g, '')),
+      (val) => !val || isValidIntlPhone(val, country),
       { message: TELEFONO_ERROR_MESSAGE }
     )
     .optional(),
