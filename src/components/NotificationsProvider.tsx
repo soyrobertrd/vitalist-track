@@ -264,6 +264,7 @@ export const NotificationsProvider = () => {
       supabase.removeChannel(llamadasConfirmacionChannel);
       supabase.removeChannel(visitasChannel);
       supabase.removeChannel(visitasConfirmacionChannel);
+      supabase.removeChannel(ticketsChannel);
     };
   }, [profile?.id]);
 
