@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface ModulePermission {
   id: string;
   module_name: string;
-  role: "admin" | "coordinador" | "medico" | "enfermera";
+  role: "admin" | "coordinador" | "medico" | "enfermera" | "recepcion";
   can_view: boolean;
   can_create: boolean;
   can_edit: boolean;
@@ -23,6 +23,8 @@ const MODULE_LABELS: Record<string, string> = {
   pacientes: "Pacientes",
   llamadas: "Llamadas",
   visitas: "Visitas",
+  calendario: "Calendario",
+  recepcion: "Recepción",
   personal: "Personal",
   atencion_paciente: "Atención al Paciente",
   reportes: "Reportes",
@@ -38,9 +40,10 @@ const ROLE_LABELS: Record<string, string> = {
   coordinador: "Coordinador",
   medico: "Médico",
   enfermera: "Enfermera",
+  recepcion: "Recepción",
 };
 
-const ROLES = ["admin", "coordinador", "medico", "enfermera"];
+const ROLES = ["admin", "coordinador", "medico", "enfermera", "recepcion"];
 
 export const ModulePermissionsManager = () => {
   const [permissions, setPermissions] = useState<ModulePermission[]>([]);
