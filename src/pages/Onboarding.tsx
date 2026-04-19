@@ -162,12 +162,12 @@ export default function Onboarding() {
 
   const finalizar = () => {
     localStorage.setItem("onboarding_completed", "true");
-    navigate("/");
+    navigate("/dashboard");
   };
 
   const skip = () => {
     localStorage.setItem("onboarding_completed", "true");
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (

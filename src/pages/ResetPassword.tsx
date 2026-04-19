@@ -52,7 +52,7 @@ const ResetPassword = () => {
       
       // Esperar un momento antes de redirigir
       setTimeout(() => {
-        navigate("/");
+        navigate("/dashboard");
       }, 1500);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
