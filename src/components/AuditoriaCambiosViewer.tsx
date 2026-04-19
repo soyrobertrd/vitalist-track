@@ -219,7 +219,7 @@ export const AuditoriaCambiosViewer = () => {
 
               {selected.datos_anteriores && (
                 <div>
-                  <h4 className="text-sm font-semibold mb-2 text-red-600 dark:text-red-400">Datos anteriores</h4>
+                  <h4 className="text-sm font-semibold mb-2 text-destructive">Datos anteriores</h4>
                   <pre className="bg-muted p-3 rounded text-xs overflow-x-auto max-h-64">
                     {JSON.stringify(selected.datos_anteriores, null, 2)}
                   </pre>
@@ -228,7 +228,7 @@ export const AuditoriaCambiosViewer = () => {
 
               {selected.datos_nuevos && (
                 <div>
-                  <h4 className="text-sm font-semibold mb-2 text-green-600 dark:text-green-400">Datos nuevos</h4>
+                  <h4 className="text-sm font-semibold mb-2 text-primary">Datos nuevos</h4>
                   <pre className="bg-muted p-3 rounded text-xs overflow-x-auto max-h-64">
                     {JSON.stringify(selected.datos_nuevos, null, 2)}
                   </pre>
