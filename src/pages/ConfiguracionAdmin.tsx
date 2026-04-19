@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Settings, Users, Shield, Mail, FileText, 
-  BarChart, Lock, Palette, Database, Workflow, Plus, CalendarDays, Key
+  BarChart, Lock, Palette, Database, Workflow, Plus, CalendarDays, Key, History
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DiasNoLaborablesCalendar } from "@/components/DiasNoLaborablesCalendar";
 import { ModulePermissionsManager } from "@/components/ModulePermissionsManager";
+import { AuditoriaCambiosViewer } from "@/components/AuditoriaCambiosViewer";
 
 const ConfiguracionAdmin = () => {
   const navigate = useNavigate();
@@ -268,7 +269,7 @@ const ConfiguracionAdmin = () => {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid grid-cols-5 lg:grid-cols-11 gap-2">
+        <TabsList className="grid grid-cols-5 lg:grid-cols-12 gap-2">
           <TabsTrigger value="general">
             <Settings className="mr-2 h-4 w-4" />
             General
@@ -312,6 +313,10 @@ const ConfiguracionAdmin = () => {
           <TabsTrigger value="calendario">
             <CalendarDays className="mr-2 h-4 w-4" />
             Días Feriados
+          </TabsTrigger>
+          <TabsTrigger value="auditoria">
+            <History className="mr-2 h-4 w-4" />
+            Auditoría
           </TabsTrigger>
         </TabsList>
 
@@ -813,6 +818,13 @@ const ConfiguracionAdmin = () => {
         <TabsContent value="calendario">
           <GlassCard className="p-6">
             <DiasNoLaborablesCalendar />
+          </GlassCard>
+        </TabsContent>
+
+        {/* Auditoría de Cambios */}
+        <TabsContent value="auditoria">
+          <GlassCard className="p-6">
+            <AuditoriaCambiosViewer />
           </GlassCard>
         </TabsContent>
       </Tabs>
