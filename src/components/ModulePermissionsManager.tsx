@@ -65,7 +65,7 @@ export const ModulePermissionsManager = () => {
         .order("module_name");
 
       if (error) throw error;
-      setPermissions(data || []);
+      setPermissions((data || []) as ModulePermission[]);
     } catch (error) {
       console.error("Error fetching permissions:", error);
       toast.error("Error al cargar permisos");
