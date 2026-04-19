@@ -30,6 +30,7 @@ import {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { timezone } = useLocale();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [stats, setStats] = useState({
@@ -216,7 +217,7 @@ const Dashboard = () => {
   }, [currentUserId]);
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--warning))"];
-  const dominicanTime = toZonedTime(currentTime, "America/Santo_Domingo");
+  const localTime = toZonedTime(currentTime, timezone);
 
   return (
     <div className="space-y-8">
