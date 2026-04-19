@@ -218,10 +218,14 @@ const Visitas = () => {
       return;
     }
     
+    // Convertir datetime-local (string sin TZ) a ISO con TZ local
+    // Esto evita que Postgres lo interprete como UTC y desplace la hora
+    const fechaHoraISO = fechaHoraVisita ? new Date(fechaHoraVisita).toISOString() : fechaHoraVisita;
+
     const data = {
       paciente_id: pacienteId,
       profesional_id: formData.get("profesional_id") as string,
-      fecha_hora_visita: fechaHoraVisita,
+      fecha_hora_visita: fechaHoraISO,
       tipo_visita: formData.get("tipo_visita") as any,
       motivo_visita: formData.get("motivo_visita") as string,
       estado: "pendiente" as any,
