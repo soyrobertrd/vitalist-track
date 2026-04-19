@@ -184,7 +184,6 @@ const Dashboard = () => {
       const visitasTotal = visitsData.filter(v => v.estado === 'realizada' || v.estado === 'cancelada' || v.estado === 'no_realizada').length;
       const tasaCumplimiento = visitasTotal > 0 ? Math.round((visitasRealizadas / visitasTotal) * 100) : 0;
 
-      const totalPacientesCount = pacientes.count || 0;
       const altoRiesgoCount = altoRiesgoRes.count || 0;
       const porcentajeAltoRiesgo = totalPacientesCount > 0 ? Math.round((altoRiesgoCount / totalPacientesCount) * 100) : 0;
 
