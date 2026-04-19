@@ -12,6 +12,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "@/hooks/use-toast";
 import { Plus, DollarSign, Receipt, Trash2, CreditCard } from "lucide-react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useLocale } from "@/hooks/useLocale";
+import { resolveCurrency, formatCurrency } from "@/lib/currency";
+import { localeFromCountry } from "@/lib/dateFormat";
 
 interface Factura {
   id: string;
@@ -48,6 +52,12 @@ const estadoColor: Record<string, string> = {
 };
 
 export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
+  const { currentWorkspace } = useWorkspace();
+  const { countryCode } = useLocale();
+  const currency = resolveCurrency(currentWorkspace, countryCode);
+  const locale = localeFromCountry(countryCode);
+  const fmt = (n: number | string) => formatCurrency(n, currency, locale);
+
   const [facturas, setFacturas] = useState<Factura[]>([]);
   const [pagos, setPagos] = useState<Record<string, Pago[]>>({});
   const [loading, setLoading] = useState(true);
