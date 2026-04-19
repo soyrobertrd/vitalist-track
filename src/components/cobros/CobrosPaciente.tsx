@@ -190,7 +190,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
               <Receipt className="h-8 w-8 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Total facturado</p>
-                <p className="text-xl font-bold">RD${totalFacturado.toFixed(2)}</p>
+                <p className="text-xl font-bold">{fmt(totalFacturado)}</p>
               </div>
             </div>
           </CardContent>
@@ -201,7 +201,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
               <DollarSign className="h-8 w-8 text-green-600" />
               <div>
                 <p className="text-xs text-muted-foreground">Total pagado</p>
-                <p className="text-xl font-bold">RD${totalPagado.toFixed(2)}</p>
+                <p className="text-xl font-bold">{fmt(totalPagado)}</p>
               </div>
             </div>
           </CardContent>
@@ -212,7 +212,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
               <CreditCard className="h-8 w-8 text-yellow-600" />
               <div>
                 <p className="text-xs text-muted-foreground">Pendiente</p>
-                <p className="text-xl font-bold">RD${totalPendiente.toFixed(2)}</p>
+                <p className="text-xl font-bold">{fmt(totalPendiente)}</p>
               </div>
             </div>
           </CardContent>
