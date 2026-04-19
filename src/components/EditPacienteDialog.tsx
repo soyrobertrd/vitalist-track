@@ -81,6 +81,8 @@ interface EditPacienteDialogProps {
 
 export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: EditPacienteDialogProps) {
   const [loading, setLoading] = useState(false);
+  const { countryCode } = useLocale();
+  const editPacienteSchema = buildEditPacienteSchema(countryCode);
   const [loadingCedula, setLoadingCedula] = useState(false);
   const [selectedZona, setSelectedZona] = useState<string | null>(null);
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
