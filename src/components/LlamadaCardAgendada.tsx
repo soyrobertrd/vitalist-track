@@ -224,18 +224,44 @@ export const LlamadaCardAgendada = ({
           </p>
         )}
         
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full mt-2"
-          onClick={(e) => {
-            e.stopPropagation();
-            setRecordatorioOpen(true);
-          }}
-        >
-          <Mail className="h-4 w-4 mr-2" />
-          Enviar Recordatorio
-        </Button>
+        <div className="flex flex-col gap-2 mt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={(e) => {
+              e.stopPropagation();
+              setRecordatorioOpen(true);
+            }}
+          >
+            <Mail className="h-4 w-4 mr-2" />
+            Enviar Recordatorio
+          </Button>
+
+          {llamada.fecha_agendada && (
+            <WhatsAppButton
+              size="sm"
+              variant="outline"
+              label="WhatsApp recordatorio"
+              categoria="recordatorio_cita"
+              telefono={pacienteData?.numero_principal || pacienteData?.contacto_px}
+              telefonoCuidador={pacienteData?.contacto_cuidador}
+              pacienteId={pacienteData?.id}
+              citaId={llamada.id}
+              tipoCita="llamada"
+              variables={{
+                paciente_nombre: llamada.pacientes?.nombre,
+                paciente_apellido: llamada.pacientes?.apellido,
+                profesional_nombre: llamada.personal_salud
+                  ? `${llamada.personal_salud.nombre} ${llamada.personal_salud.apellido}`
+                  : "su profesional",
+                tipo_visita: "telefónica",
+                fecha: format(new Date(llamada.fecha_agendada), "dd/MM/yyyy", { locale: es }),
+                hora: format(new Date(llamada.fecha_agendada), "h:mm a", { locale: es }),
+              }}
+            />
+          )}
+        </div>
       </CardContent>
 
       <EnviarRecordatorioDialog
