@@ -88,16 +88,19 @@ const Dashboard = () => {
         .maybeSingle();
       const profesionalId = personalRow?.id ?? currentUserId;
 
-      const [pacientes, activos, llamadas, visitas] = await Promise.all([
-        supabase.from("pacientes").select("id", { count: "exact", head: true }),
-        supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("status_px", "activo"),
+      const [pacientesRes, llamadas, visitas] = await Promise.all([
+        supabase.from("pacientes").select("id, status_px"),
         supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]).eq("profesional_id", profesionalId).gte("fecha_agendada", thirtyDaysAgo).lte("fecha_agendada", `${today}T23:59:59`),
         supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").eq("profesional_id", profesionalId).gte("fecha_hora_visita", todayStart).lte("fecha_hora_visita", todayEnd),
       ]);
 
+      const pacientesAll = pacientesRes.data || [];
+      const totalPacientesCount = pacientesAll.length;
+      const pacientesActivosCount = pacientesAll.filter(p => p.status_px === 'activo').length;
+
       setStats({
-        totalPacientes: pacientes.count || 0,
-        pacientesActivos: activos.count || 0,
+        totalPacientes: totalPacientesCount,
+        pacientesActivos: pacientesActivosCount,
         llamadasPendientes: llamadas.count || 0,
         visitasHoy: visitas.count || 0,
       });
@@ -181,7 +184,6 @@ const Dashboard = () => {
       const visitasTotal = visitsData.filter(v => v.estado === 'realizada' || v.estado === 'cancelada' || v.estado === 'no_realizada').length;
       const tasaCumplimiento = visitasTotal > 0 ? Math.round((visitasRealizadas / visitasTotal) * 100) : 0;
 
-      const totalPacientesCount = pacientes.count || 0;
       const altoRiesgoCount = altoRiesgoRes.count || 0;
       const porcentajeAltoRiesgo = totalPacientesCount > 0 ? Math.round((altoRiesgoCount / totalPacientesCount) * 100) : 0;
 
