@@ -53,6 +53,13 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
   const [loading, setLoading] = useState(true);
   const [openFactura, setOpenFactura] = useState(false);
   const [openPago, setOpenPago] = useState<string | null>(null);
+  const [paciente, setPaciente] = useState<{
+    nombre: string;
+    apellido: string;
+    numero_principal: string | null;
+    contacto_px: string | null;
+    contacto_cuidador: string | null;
+  } | null>(null);
 
   const [nuevaFactura, setNuevaFactura] = useState({
     monto_total: "",
@@ -98,6 +105,12 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
 
   useEffect(() => {
     cargar();
+    supabase
+      .from("pacientes")
+      .select("nombre, apellido, numero_principal, contacto_px, contacto_cuidador")
+      .eq("id", pacienteId)
+      .maybeSingle()
+      .then(({ data }) => setPaciente(data as any));
   }, [pacienteId]);
 
   const crearFactura = async () => {
