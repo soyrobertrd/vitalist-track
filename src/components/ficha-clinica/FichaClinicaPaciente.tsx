@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2 } from "lucide-react";
+import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2, Receipt } from "lucide-react";
 import { toast } from "sonner";
+import { CobrosPaciente } from "@/components/cobros/CobrosPaciente";
 
 interface Props {
   pacienteId: string;
@@ -198,7 +199,7 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="alergias" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="alergias" className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" />
               Alergias ({alergias.length})
@@ -210,6 +211,10 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
             <TabsTrigger value="seguros" className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4" />
               Seguros ({seguros.length})
+            </TabsTrigger>
+            <TabsTrigger value="cobros" className="flex items-center gap-2">
+              <Receipt className="h-4 w-4" />
+              Cobros
             </TabsTrigger>
           </TabsList>
 
@@ -322,6 +327,11 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
                 </div>
               ))
             )}
+          </TabsContent>
+
+          {/* COBROS */}
+          <TabsContent value="cobros" className="space-y-2 mt-4">
+            <CobrosPaciente pacienteId={pacienteId} />
           </TabsContent>
         </Tabs>
       </CardContent>
