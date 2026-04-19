@@ -158,7 +158,7 @@ const Layout = ({ children }: LayoutProps) => {
             <Activity className="h-8 w-8 text-primary" />
             <div>
               <h1 className="text-xl font-bold text-sidebar-foreground">HealthCRM</h1>
-              <p className="text-xs text-sidebar-foreground/60">Centro de Salud</p>
+              <p className="text-xs text-sidebar-foreground/60">Centro de Salud · v2.0.0.0</p>
             </div>
           </div>
         )}
