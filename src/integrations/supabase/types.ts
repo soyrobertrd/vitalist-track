@@ -485,6 +485,71 @@ export type Database = {
         }
         Relationships: []
       }
+      consentimientos_paciente: {
+        Row: {
+          contenido_firmado: string
+          created_at: string
+          created_by: string | null
+          fecha_aceptacion: string
+          fecha_revocacion: string | null
+          firmado_por: string
+          id: string
+          ip_address: string | null
+          motivo_revocacion: string | null
+          paciente_id: string
+          parentesco_firmante: string | null
+          revocado: boolean
+          tipo: string
+          updated_at: string
+          user_agent: string | null
+          version_documento: string
+        }
+        Insert: {
+          contenido_firmado: string
+          created_at?: string
+          created_by?: string | null
+          fecha_aceptacion?: string
+          fecha_revocacion?: string | null
+          firmado_por: string
+          id?: string
+          ip_address?: string | null
+          motivo_revocacion?: string | null
+          paciente_id: string
+          parentesco_firmante?: string | null
+          revocado?: boolean
+          tipo?: string
+          updated_at?: string
+          user_agent?: string | null
+          version_documento?: string
+        }
+        Update: {
+          contenido_firmado?: string
+          created_at?: string
+          created_by?: string | null
+          fecha_aceptacion?: string
+          fecha_revocacion?: string | null
+          firmado_por?: string
+          id?: string
+          ip_address?: string | null
+          motivo_revocacion?: string | null
+          paciente_id?: string
+          parentesco_firmante?: string | null
+          revocado?: boolean
+          tipo?: string
+          updated_at?: string
+          user_agent?: string | null
+          version_documento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consentimientos_paciente_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       control_visitas: {
         Row: {
           confirmado_por_recordatorio: boolean | null
@@ -1218,6 +1283,72 @@ export type Database = {
           },
         ]
       }
+      pagos_workspace: {
+        Row: {
+          created_at: string
+          estado: string
+          fecha_pago: string | null
+          id: string
+          metadata: Json
+          metodo: string | null
+          moneda: string
+          monto: number
+          proveedor: string
+          proveedor_invoice_id: string | null
+          proveedor_payment_id: string | null
+          recibo_url: string | null
+          subscripcion_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          estado?: string
+          fecha_pago?: string | null
+          id?: string
+          metadata?: Json
+          metodo?: string | null
+          moneda?: string
+          monto: number
+          proveedor: string
+          proveedor_invoice_id?: string | null
+          proveedor_payment_id?: string | null
+          recibo_url?: string | null
+          subscripcion_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          estado?: string
+          fecha_pago?: string | null
+          id?: string
+          metadata?: Json
+          metodo?: string | null
+          moneda?: string
+          monto?: number
+          proveedor?: string
+          proveedor_invoice_id?: string | null
+          proveedor_payment_id?: string | null
+          recibo_url?: string | null
+          subscripcion_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pagos_workspace_subscripcion_id_fkey"
+            columns: ["subscripcion_id"]
+            isOneToOne: false
+            referencedRelation: "subscripciones_workspace"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pagos_workspace_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       parametros_seguimiento: {
         Row: {
           contador_llamadas_no_contestadas: number | null
@@ -1881,6 +2012,68 @@ export type Database = {
           },
           {
             foreignKeyName: "subscripciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscripciones_workspace: {
+        Row: {
+          cancelar_al_finalizar: boolean
+          created_at: string
+          estado: string
+          fecha_fin: string | null
+          fecha_inicio: string
+          id: string
+          metadata: Json
+          periodo_actual_fin: string | null
+          periodo_actual_inicio: string | null
+          plan_codigo: string
+          proveedor: string
+          proveedor_customer_id: string | null
+          proveedor_subscription_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          cancelar_al_finalizar?: boolean
+          created_at?: string
+          estado?: string
+          fecha_fin?: string | null
+          fecha_inicio?: string
+          id?: string
+          metadata?: Json
+          periodo_actual_fin?: string | null
+          periodo_actual_inicio?: string | null
+          plan_codigo: string
+          proveedor?: string
+          proveedor_customer_id?: string | null
+          proveedor_subscription_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          cancelar_al_finalizar?: boolean
+          created_at?: string
+          estado?: string
+          fecha_fin?: string | null
+          fecha_inicio?: string
+          id?: string
+          metadata?: Json
+          periodo_actual_fin?: string | null
+          periodo_actual_inicio?: string | null
+          plan_codigo?: string
+          proveedor?: string
+          proveedor_customer_id?: string | null
+          proveedor_subscription_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscripciones_workspace_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
