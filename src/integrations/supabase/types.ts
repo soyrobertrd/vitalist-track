@@ -127,6 +127,7 @@ export type Database = {
           proxima_fecha: string | null
           tipo: string
           updated_at: string | null
+          workspace_id: string | null
         }
         Insert: {
           archivos?: Json | null
@@ -143,6 +144,7 @@ export type Database = {
           proxima_fecha?: string | null
           tipo: string
           updated_at?: string | null
+          workspace_id?: string | null
         }
         Update: {
           archivos?: Json | null
@@ -159,6 +161,7 @@ export type Database = {
           proxima_fecha?: string | null
           tipo?: string
           updated_at?: string | null
+          workspace_id?: string | null
         }
         Relationships: [
           {
@@ -173,6 +176,13 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atencion_paciente_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -301,6 +311,7 @@ export type Database = {
           tiempo_ejecucion: string | null
           trigger_evento: string
           updated_at: string | null
+          workspace_id: string | null
         }
         Insert: {
           accion: string
@@ -318,6 +329,7 @@ export type Database = {
           tiempo_ejecucion?: string | null
           trigger_evento: string
           updated_at?: string | null
+          workspace_id?: string | null
         }
         Update: {
           accion?: string
@@ -335,6 +347,7 @@ export type Database = {
           tiempo_ejecucion?: string | null
           trigger_evento?: string
           updated_at?: string | null
+          workspace_id?: string | null
         }
         Relationships: [
           {
@@ -342,6 +355,13 @@ export type Database = {
             columns: ["plantilla_correo_id"]
             isOneToOne: false
             referencedRelation: "plantillas_correo"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automatizaciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -387,6 +407,7 @@ export type Database = {
           profesional_id: string | null
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at: string | null
+          workspace_id: string | null
         }
         Insert: {
           confirmado_por_recordatorio?: boolean | null
@@ -401,6 +422,7 @@ export type Database = {
           profesional_id?: string | null
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
+          workspace_id?: string | null
         }
         Update: {
           confirmado_por_recordatorio?: boolean | null
@@ -415,6 +437,7 @@ export type Database = {
           profesional_id?: string | null
           tipo_visita?: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
+          workspace_id?: string | null
         }
         Relationships: [
           {
@@ -429,6 +452,13 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_visitas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
           {
@@ -481,6 +511,7 @@ export type Database = {
           servicio_asociado: string | null
           tipo: string
           updated_at: string | null
+          workspace_id: string | null
         }
         Insert: {
           activo?: boolean | null
@@ -497,6 +528,7 @@ export type Database = {
           servicio_asociado?: string | null
           tipo: string
           updated_at?: string | null
+          workspace_id?: string | null
         }
         Update: {
           activo?: boolean | null
@@ -513,6 +545,7 @@ export type Database = {
           servicio_asociado?: string | null
           tipo?: string
           updated_at?: string | null
+          workspace_id?: string | null
         }
         Relationships: [
           {
@@ -520,6 +553,13 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "encuestas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -582,6 +622,7 @@ export type Database = {
           paciente_id: string
           updated_at: string
           visita_id: string | null
+          workspace_id: string | null
         }
         Insert: {
           aseguradora?: string | null
@@ -602,6 +643,7 @@ export type Database = {
           paciente_id: string
           updated_at?: string
           visita_id?: string | null
+          workspace_id?: string | null
         }
         Update: {
           aseguradora?: string | null
@@ -622,6 +664,7 @@ export type Database = {
           paciente_id?: string
           updated_at?: string
           visita_id?: string | null
+          workspace_id?: string | null
         }
         Relationships: [
           {
@@ -636,6 +679,13 @@ export type Database = {
             columns: ["visita_id"]
             isOneToOne: false
             referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "facturas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -935,6 +985,7 @@ export type Database = {
           updated_at: string | null
           whatsapp_cuidador: boolean | null
           whatsapp_px: boolean | null
+          workspace_id: string | null
           zona: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Insert: {
@@ -971,6 +1022,7 @@ export type Database = {
           updated_at?: string | null
           whatsapp_cuidador?: boolean | null
           whatsapp_px?: boolean | null
+          workspace_id?: string | null
           zona?: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Update: {
@@ -1007,6 +1059,7 @@ export type Database = {
           updated_at?: string | null
           whatsapp_cuidador?: boolean | null
           whatsapp_px?: boolean | null
+          workspace_id?: string | null
           zona?: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Relationships: [
@@ -1015,6 +1068,13 @@ export type Database = {
             columns: ["profesional_asignado_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pacientes_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -1161,6 +1221,7 @@ export type Database = {
           notificaciones_activas: boolean | null
           updated_at: string | null
           user_id: string | null
+          workspace_id: string | null
           zona: string | null
         }
         Insert: {
@@ -1178,6 +1239,7 @@ export type Database = {
           notificaciones_activas?: boolean | null
           updated_at?: string | null
           user_id?: string | null
+          workspace_id?: string | null
           zona?: string | null
         }
         Update: {
@@ -1195,7 +1257,67 @@ export type Database = {
           notificaciones_activas?: boolean | null
           updated_at?: string | null
           user_id?: string | null
+          workspace_id?: string | null
           zona?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "personal_salud_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      planes: {
+        Row: {
+          activo: boolean
+          caracteristicas: Json
+          codigo: string
+          created_at: string
+          descripcion: string | null
+          id: string
+          limite_pacientes: number | null
+          limite_profesionales: number | null
+          limite_usuarios: number | null
+          nombre: string
+          orden: number
+          precio_mensual_dop: number | null
+          precio_mensual_usd: number | null
+          updated_at: string
+        }
+        Insert: {
+          activo?: boolean
+          caracteristicas?: Json
+          codigo: string
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          limite_pacientes?: number | null
+          limite_profesionales?: number | null
+          limite_usuarios?: number | null
+          nombre: string
+          orden?: number
+          precio_mensual_dop?: number | null
+          precio_mensual_usd?: number | null
+          updated_at?: string
+        }
+        Update: {
+          activo?: boolean
+          caracteristicas?: Json
+          codigo?: string
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          limite_pacientes?: number | null
+          limite_profesionales?: number | null
+          limite_usuarios?: number | null
+          nombre?: string
+          orden?: number
+          precio_mensual_dop?: number | null
+          precio_mensual_usd?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1213,6 +1335,7 @@ export type Database = {
           updated_at: string | null
           variables: Json | null
           version: number | null
+          workspace_id: string | null
         }
         Insert: {
           activo?: boolean | null
@@ -1227,6 +1350,7 @@ export type Database = {
           updated_at?: string | null
           variables?: Json | null
           version?: number | null
+          workspace_id?: string | null
         }
         Update: {
           activo?: boolean | null
@@ -1241,8 +1365,17 @@ export type Database = {
           updated_at?: string | null
           variables?: Json | null
           version?: number | null
+          workspace_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "plantillas_correo_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       plantillas_whatsapp: {
         Row: {
@@ -1258,6 +1391,7 @@ export type Database = {
           updated_at: string
           variables: Json | null
           version: number
+          workspace_id: string | null
         }
         Insert: {
           activo?: boolean
@@ -1272,6 +1406,7 @@ export type Database = {
           updated_at?: string
           variables?: Json | null
           version?: number
+          workspace_id?: string | null
         }
         Update: {
           activo?: boolean
@@ -1286,8 +1421,17 @@ export type Database = {
           updated_at?: string
           variables?: Json | null
           version?: number
+          workspace_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "plantillas_whatsapp_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -1367,6 +1511,7 @@ export type Database = {
           resultado_seguimiento:
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
+          workspace_id: string | null
         }
         Insert: {
           archivos_adjuntos?: Json | null
@@ -1391,6 +1536,7 @@ export type Database = {
           resultado_seguimiento?:
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
+          workspace_id?: string | null
         }
         Update: {
           archivos_adjuntos?: Json | null
@@ -1415,6 +1561,7 @@ export type Database = {
           resultado_seguimiento?:
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
+          workspace_id?: string | null
         }
         Relationships: [
           {
@@ -1450,6 +1597,13 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registro_llamadas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -1569,6 +1723,69 @@ export type Database = {
             columns: ["paciente_id"]
             isOneToOne: false
             referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscripciones: {
+        Row: {
+          created_at: string
+          estado: string
+          fecha_fin: string | null
+          fecha_inicio: string
+          id: string
+          metadata: Json | null
+          moneda: string | null
+          monto: number | null
+          plan_codigo: string
+          proveedor: string
+          proveedor_subscription_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          estado?: string
+          fecha_fin?: string | null
+          fecha_inicio?: string
+          id?: string
+          metadata?: Json | null
+          moneda?: string | null
+          monto?: number | null
+          plan_codigo: string
+          proveedor?: string
+          proveedor_subscription_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          estado?: string
+          fecha_fin?: string | null
+          fecha_inicio?: string
+          id?: string
+          metadata?: Json | null
+          moneda?: string | null
+          monto?: number | null
+          plan_codigo?: string
+          proveedor?: string
+          proveedor_subscription_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscripciones_plan_codigo_fkey"
+            columns: ["plan_codigo"]
+            isOneToOne: false
+            referencedRelation: "planes"
+            referencedColumns: ["codigo"]
+          },
+          {
+            foreignKeyName: "subscripciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -1702,6 +1919,88 @@ export type Database = {
           },
         ]
       }
+      workspace_members: {
+        Row: {
+          id: string
+          invited_by: string | null
+          joined_at: string
+          role: Database["public"]["Enums"]["workspace_member_role"]
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          id?: string
+          invited_by?: string | null
+          joined_at?: string
+          role?: Database["public"]["Enums"]["workspace_member_role"]
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          id?: string
+          invited_by?: string | null
+          joined_at?: string
+          role?: Database["public"]["Enums"]["workspace_member_role"]
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspaces: {
+        Row: {
+          configuracion: Json
+          created_at: string
+          estado: string
+          id: string
+          nombre: string
+          owner_id: string
+          plan_codigo: string
+          slug: string
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          configuracion?: Json
+          created_at?: string
+          estado?: string
+          id?: string
+          nombre: string
+          owner_id: string
+          plan_codigo?: string
+          slug: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          configuracion?: Json
+          created_at?: string
+          estado?: string
+          id?: string
+          nombre?: string
+          owner_id?: string
+          plan_codigo?: string
+          slug?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspaces_plan_codigo_fkey"
+            columns: ["plan_codigo"]
+            isOneToOne: false
+            referencedRelation: "planes"
+            referencedColumns: ["codigo"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1734,6 +2033,13 @@ export type Database = {
           module_name: string
         }[]
       }
+      get_user_workspaces: {
+        Args: { _user_id: string }
+        Returns: {
+          role: Database["public"]["Enums"]["workspace_member_role"]
+          workspace_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1748,6 +2054,14 @@ export type Database = {
       }
       is_staff_clinico_de_profesional: {
         Args: { _profesional_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_workspace_admin: {
+        Args: { _user_id: string; _workspace_id: string }
+        Returns: boolean
+      }
+      is_workspace_member: {
+        Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
       }
     }
@@ -1790,6 +2104,7 @@ export type Database = {
         | "medico"
         | "enfermera"
         | "coordinador"
+      workspace_member_role: "owner" | "admin" | "member"
       zona_distrito:
         | "santo_domingo_oeste"
         | "santo_domingo_este"
@@ -1968,6 +2283,7 @@ export const Constants = {
         "enfermera",
         "coordinador",
       ],
+      workspace_member_role: ["owner", "admin", "member"],
       zona_distrito: [
         "santo_domingo_oeste",
         "santo_domingo_este",
