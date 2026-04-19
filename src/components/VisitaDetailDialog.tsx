@@ -82,10 +82,14 @@ export function VisitaDetailDialog({
     const profesionalId = formData.get("profesional_id") as string;
     const motivo = formData.get("motivo_reagendar") as string;
 
+    // Convertir datetime-local (string sin TZ) a ISO con TZ local
+    // para que Postgres no lo interprete como UTC y desplace la hora
+    const fechaHoraISO = fechaHoraVisita ? new Date(fechaHoraVisita).toISOString() : fechaHoraVisita;
+
     const { error } = await supabase
       .from("control_visitas")
       .update({
-        fecha_hora_visita: fechaHoraVisita,
+        fecha_hora_visita: fechaHoraISO,
         profesional_id: profesionalId,
         motivo_visita: motivo,
         estado: "pendiente",
