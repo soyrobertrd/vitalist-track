@@ -8,10 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { ZonaSelect } from "@/components/ZonaSelect";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
-import { handlePhoneInput } from "@/lib/phoneUtils";
+import { IntlPhoneInput } from "@/components/IntlPhoneInput";
 import { HorariosProfesionalEditor } from "@/components/HorariosProfesionalEditor";
 import { Clock } from "lucide-react";
 
@@ -161,18 +160,12 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
           </div>
           <div className="space-y-2">
             <Label htmlFor="contacto">Teléfono</Label>
-            <Input
+            <IntlPhoneInput
               id="contacto"
               name="contacto"
-              type="tel"
               value={formData.contacto}
-              onChange={(e) => {
-                const formatted = handlePhoneInput(e.target.value);
-                setFormData({ ...formData, contacto: formatted });
-              }}
-              placeholder="829-123-1234"
+              onChange={(v) => setFormData({ ...formData, contacto: v })}
             />
-            <p className="text-xs text-muted-foreground">Formato: 829-123-1234 (10 dígitos)</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="email_contacto">Email</Label>

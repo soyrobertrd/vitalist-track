@@ -12,12 +12,11 @@ import { toast } from "sonner";
 import { PersonalDetailDialog } from "@/components/PersonalDetailDialog";
 import { EditPersonalDialog } from "@/components/EditPersonalDialog";
 import { AusenciasProfesionalDialog } from "@/components/AusenciasProfesionalDialog";
-import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import { MobileFilters } from "@/components/MobileFilters";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ZonaSelect } from "@/components/ZonaSelect";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
-import { handlePhoneInput, formatPhoneDR } from "@/lib/phoneUtils";
+import { IntlPhoneInput } from "@/components/IntlPhoneInput";
 import { Switch } from "@/components/ui/switch";
 
 interface Personal {
@@ -57,6 +56,7 @@ const Personal = () => {
   const [selectedZona, setSelectedZona] = useState<string>("");
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
   const [createUserAccount, setCreateUserAccount] = useState(true);
+  const [contacto, setContacto] = useState("");
 
   const fetchPersonal = async () => {
     const { data, error } = await supabase
@@ -113,7 +113,7 @@ const Personal = () => {
       nombre: formData.get("nombre") as string,
       apellido: formData.get("apellido") as string,
       especialidad: formData.get("especialidad") as string,
-      contacto: formData.get("contacto") as string,
+      contacto: contacto || null,
       email_contacto: email,
       zona: selectedZona || null,
       barrio: selectedBarrio || null,
@@ -162,6 +162,7 @@ const Personal = () => {
       setCedulaData(null);
       setSelectedZona("");
       setSelectedBarrio("");
+      setContacto("");
       setCreateUserAccount(true);
       (e.target as HTMLFormElement).reset();
     } catch (error: any) {
@@ -238,16 +239,12 @@ const Personal = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contacto">Teléfono</Label>
-                <Input 
-                  id="contacto" 
-                  name="contacto" 
-                  type="tel"
-                  placeholder="809-123-4567"
-                  onChange={(e) => {
-                    e.target.value = handlePhoneInput(e.target.value);
-                  }}
+                <IntlPhoneInput
+                  id="contacto"
+                  name="contacto"
+                  value={contacto}
+                  onChange={setContacto}
                 />
-                <p className="text-xs text-muted-foreground">Formato: 829-123-1234 (10 dígitos)</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email_contacto">Email {createUserAccount ? "*" : ""}</Label>
@@ -372,8 +369,8 @@ const Personal = () => {
               {p.contacto && (
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Phone className="mr-2 h-4 w-4" />
-                  <a href={`tel:${p.contacto.replace(/-/g, '')}`} className="hover:text-primary">
-                    {formatPhoneDR(p.contacto)}
+                  <a href={`tel:${p.contacto.replace(/[^\d+]/g, '')}`} className="hover:text-primary">
+                    {p.contacto}
                   </a>
                 </div>
               )}
