@@ -58,6 +58,7 @@ const Configuracion = () => {
   const { profile, loading: profileLoading, updateProfile } = useUserProfile();
   const { theme, setTheme } = useTheme();
   const { isAdmin } = useUserRole();
+  const { currentWorkspace, currentPlan } = useWorkspace();
   const [uploading, setUploading] = useState(false);
   const [profesionalId, setProfesionalId] = useState<string | null>(null);
   const [changingPassword, setChangingPassword] = useState(false);
@@ -443,7 +444,7 @@ const Configuracion = () => {
       </div>
 
       <Tabs defaultValue="personal" className="space-y-6">
-        <TabsList className="grid grid-cols-5 lg:grid-cols-10 gap-2">
+        <TabsList className="grid grid-cols-5 lg:grid-cols-11 gap-2">
           <TabsTrigger value="personal">
             <User className="mr-2 h-4 w-4" />
             <span className="hidden lg:inline">Personal</span>
@@ -466,7 +467,11 @@ const Configuracion = () => {
           </TabsTrigger>
           <TabsTrigger value="interfaz">
             <Eye className="mr-2 h-4 w-4" />
-            <span className="hidden lg:inline">Interfaz</span>
+            <span className="hidden lg:inline">Apariencia</span>
+          </TabsTrigger>
+          <TabsTrigger value="plan">
+            <CreditCard className="mr-2 h-4 w-4" />
+            <span className="hidden lg:inline">Plan</span>
           </TabsTrigger>
           <TabsTrigger value="notificaciones">
             <Bell className="mr-2 h-4 w-4" />
