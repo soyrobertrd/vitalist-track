@@ -2057,6 +2057,7 @@ export type Database = {
           configuracion: Json
           country_code: string | null
           created_at: string
+          currency_code: string | null
           direccion: string | null
           email_contacto: string | null
           estado: string
@@ -2077,6 +2078,7 @@ export type Database = {
           configuracion?: Json
           country_code?: string | null
           created_at?: string
+          currency_code?: string | null
           direccion?: string | null
           email_contacto?: string | null
           estado?: string
@@ -2097,6 +2099,7 @@ export type Database = {
           configuracion?: Json
           country_code?: string | null
           created_at?: string
+          currency_code?: string | null
           direccion?: string | null
           email_contacto?: string | null
           estado?: string
