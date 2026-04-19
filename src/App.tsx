@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Layout from "./components/Layout";
+import { InstallPWAPrompt } from "./components/InstallPWAPrompt";
 import { NotificationsProvider } from "./components/NotificationsProvider";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
@@ -72,6 +73,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           {session && <NotificationsProvider />}
+          {session && <InstallPWAPrompt />}
           <BrowserRouter>
             <Routes>
               <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/" />} />
