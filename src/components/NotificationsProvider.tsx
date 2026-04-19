@@ -145,6 +145,71 @@ export const NotificationsProvider = () => {
       )
       .subscribe();
 
+    // Subscribe to ticket check-ins (paciente llegó a recepción)
+    const ticketsChannel = supabase
+      .channel('tickets-checkin-notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'cita_tickets',
+        },
+        async (payload) => {
+          const ticket = payload.new as any;
+          const oldTicket = payload.old as any;
+
+          // Solo notificar cuando cambia a "llegado"
+          if (ticket.estado_checkin !== 'llegado' || oldTicket.estado_checkin === 'llegado') return;
+
+          // Verificar si el profesional asignado a la cita es el usuario actual
+          let profesionalId: string | null = null;
+          let fechaCita: string | null = null;
+          let tipoLabel = ticket.tipo_cita;
+
+          if (ticket.tipo_cita === 'visita' && ticket.visita_id) {
+            const { data: v } = await supabase
+              .from('control_visitas')
+              .select('profesional_id, fecha_hora_visita, tipo_visita')
+              .eq('id', ticket.visita_id)
+              .maybeSingle();
+            profesionalId = v?.profesional_id ?? null;
+            fechaCita = v?.fecha_hora_visita ?? null;
+            tipoLabel = v?.tipo_visita === 'domicilio' ? 'visita domiciliaria' : 'visita';
+          } else if (ticket.tipo_cita === 'llamada' && ticket.llamada_id) {
+            const { data: l } = await supabase
+              .from('registro_llamadas')
+              .select('profesional_id, fecha_agendada')
+              .eq('id', ticket.llamada_id)
+              .maybeSingle();
+            profesionalId = l?.profesional_id ?? null;
+            fechaCita = l?.fecha_agendada ?? null;
+            tipoLabel = 'llamada';
+          }
+
+          if (!profesionalId || profesionalId !== profile.id) return;
+
+          const { data: paciente } = await supabase
+            .from('pacientes')
+            .select('nombre, apellido')
+            .eq('id', ticket.paciente_id)
+            .maybeSingle();
+
+          const horaStr = fechaCita
+            ? new Date(fechaCita).toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' })
+            : '';
+          const tarde = fechaCita ? new Date(fechaCita).getTime() < Date.now() : false;
+
+          const titulo = tarde
+            ? `⚠️ Paciente llegó tarde`
+            : `🟢 Paciente en recepción`;
+          const cuerpo = `${paciente?.nombre ?? ''} ${paciente?.apellido ?? ''} — ${tipoLabel} a las ${horaStr}${tarde ? ' (cita ya pasada)' : ''}`;
+
+          showPushNotification(titulo, cuerpo);
+        }
+      )
+      .subscribe();
+
     // Subscribe to visit confirmations and reschedules
     const visitasConfirmacionChannel = supabase
       .channel('visitas-confirmacion-notifications')
