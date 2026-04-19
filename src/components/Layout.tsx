@@ -90,6 +90,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
     { path: "/personal", icon: UserCog, label: "Personal", adminOnly: true },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
+    { path: "/plantillas-whatsapp", icon: MessageSquare, label: "Plantillas WhatsApp", adminOnly: true },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
     { 
       path: "/reportes", 

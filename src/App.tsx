@@ -23,6 +23,7 @@ const Llamadas = lazy(() => import("./pages/Llamadas"));
 const Configuracion = lazy(() => import("./pages/Configuracion"));
 const ConfiguracionAdmin = lazy(() => import("./pages/ConfiguracionAdmin"));
 const PlantillasCorreo = lazy(() => import("./pages/PlantillasCorreo"));
+const PlantillasWhatsApp = lazy(() => import("./pages/PlantillasWhatsApp"));
 const Automatizaciones = lazy(() => import("./pages/Automatizaciones"));
 const Encuestas = lazy(() => import("./pages/Encuestas"));
 const AtencionPaciente = lazy(() => import("./pages/AtencionPaciente"));

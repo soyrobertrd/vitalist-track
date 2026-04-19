@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { Plus, DollarSign, Receipt, Trash2, CreditCard } from "lucide-react";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 interface Factura {
   id: string;
@@ -52,6 +53,13 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
   const [loading, setLoading] = useState(true);
   const [openFactura, setOpenFactura] = useState(false);
   const [openPago, setOpenPago] = useState<string | null>(null);
+  const [paciente, setPaciente] = useState<{
+    nombre: string;
+    apellido: string;
+    numero_principal: string | null;
+    contacto_px: string | null;
+    contacto_cuidador: string | null;
+  } | null>(null);
 
   const [nuevaFactura, setNuevaFactura] = useState({
     monto_total: "",
@@ -97,6 +105,12 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
 
   useEffect(() => {
     cargar();
+    supabase
+      .from("pacientes")
+      .select("nombre, apellido, numero_principal, contacto_px, contacto_cuidador")
+      .eq("id", pacienteId)
+      .maybeSingle()
+      .then(({ data }) => setPaciente(data as any));
   }, [pacienteId]);
 
   const crearFactura = async () => {
@@ -323,6 +337,24 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
                                 </DialogFooter>
                               </DialogContent>
                             </Dialog>
+                          )}
+                          {f.estado === "pendiente" && paciente && (
+                            <WhatsAppButton
+                              size="sm"
+                              variant="outline"
+                              categoria="cobro_pendiente"
+                              telefono={paciente.numero_principal || paciente.contacto_px}
+                              telefonoCuidador={paciente.contacto_cuidador}
+                              pacienteId={pacienteId}
+                              citaId={f.id}
+                              tipoCita="factura"
+                              variables={{
+                                paciente_nombre: paciente.nombre,
+                                numero_factura: f.numero_factura,
+                                monto: Number(f.monto_total - f.monto_pagado).toFixed(2),
+                                fecha_vencimiento: f.fecha_vencimiento ?? "—",
+                              }}
+                            />
                           )}
                           {f.estado !== "anulada" && (
                             <Button size="sm" variant="ghost" onClick={() => anularFactura(f.id)}><Trash2 className="h-3 w-3" /></Button>

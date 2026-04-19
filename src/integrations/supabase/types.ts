@@ -1244,6 +1244,51 @@ export type Database = {
         }
         Relationships: []
       }
+      plantillas_whatsapp: {
+        Row: {
+          activo: boolean
+          categoria: string
+          contenido: string
+          created_at: string
+          created_by: string | null
+          descripcion: string | null
+          destinatario_default: string
+          id: string
+          nombre: string
+          updated_at: string
+          variables: Json | null
+          version: number
+        }
+        Insert: {
+          activo?: boolean
+          categoria?: string
+          contenido: string
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          destinatario_default?: string
+          id?: string
+          nombre: string
+          updated_at?: string
+          variables?: Json | null
+          version?: number
+        }
+        Update: {
+          activo?: boolean
+          categoria?: string
+          contenido?: string
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          destinatario_default?: string
+          id?: string
+          nombre?: string
+          updated_at?: string
+          variables?: Json | null
+          version?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           activo: boolean | null

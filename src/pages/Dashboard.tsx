@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users, Phone, Calendar, AlertCircle, TrendingUp, Activity, Clock, CalendarDays } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveKPI } from "@/components/InteractiveKPI";
+import { RecordatoriosDiariosWhatsApp } from "@/components/RecordatoriosDiariosWhatsApp";
 import { format, subDays, startOfDay, endOfDay, startOfMonth, subMonths, eachDayOfInterval } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
@@ -235,6 +236,9 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Recordatorios WhatsApp del día siguiente */}
+      <RecordatoriosDiariosWhatsApp />
 
       {/* Stats Grid with Interactive KPIs */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
