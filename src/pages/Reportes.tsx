@@ -93,6 +93,11 @@ const Reportes = () => {
     if (pacientesRes.data) setDataPacientes(pacientesRes.data);
   };
 
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profesionalId, dateRange]);
+
   const calcularEdad = (fechaNacimiento: string) => {
     if (!fechaNacimiento) return 0;
     const hoy = new Date();
