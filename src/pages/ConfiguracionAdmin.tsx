@@ -333,18 +333,8 @@ const ConfiguracionAdmin = () => {
                 <Label>Nombre del CRM</Label>
                 <Input placeholder="Health CRM" defaultValue="Health CRM" />
               </div>
-              <div className="space-y-2">
-                <Label>Zona Horaria</Label>
-                <Select defaultValue="america/santo_domingo">
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="america/santo_domingo">América/Santo Domingo (GMT-4)</SelectItem>
-                    <SelectItem value="america/new_york">América/Nueva York (GMT-5)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <WorkspaceLocaleEditor />
+
               <div className="space-y-2">
                 <Label>Formato de Fecha</Label>
                 <Select defaultValue="dd/mm/yyyy">
