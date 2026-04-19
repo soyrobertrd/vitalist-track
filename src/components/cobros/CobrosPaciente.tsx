@@ -301,9 +301,9 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
                       <TableRow key={f.id}>
                         <TableCell className="font-medium">{f.numero_factura}</TableCell>
                         <TableCell>{f.fecha_emision}</TableCell>
-                        <TableCell>RD${Number(f.monto_total).toFixed(2)}</TableCell>
-                        <TableCell>RD${Number(f.monto_pagado).toFixed(2)}</TableCell>
-                        <TableCell>RD${saldo.toFixed(2)}</TableCell>
+                        <TableCell>{fmt(f.monto_total)}</TableCell>
+                        <TableCell>{fmt(f.monto_pagado)}</TableCell>
+                        <TableCell>{fmt(saldo)}</TableCell>
                         <TableCell><Badge variant="outline" className={estadoColor[f.estado]}>{f.estado}</Badge></TableCell>
                         <TableCell className="text-right space-x-1">
                           {f.estado !== "pagada" && f.estado !== "anulada" && (
@@ -315,7 +315,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
                                 <DialogHeader><DialogTitle>Registrar pago - {f.numero_factura}</DialogTitle></DialogHeader>
                                 <div className="space-y-3">
                                   <div>
-                                    <Label>Monto * (saldo: RD${saldo.toFixed(2)})</Label>
+                                    <Label>Monto * (saldo: {fmt(saldo)})</Label>
                                     <Input type="number" step="0.01" value={nuevoPago.monto} onChange={e => setNuevoPago({ ...nuevoPago, monto: e.target.value })} />
                                   </div>
                                   <div>
@@ -379,7 +379,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
                               {pagos[f.id].map(p => (
                                 <div key={p.id} className="flex justify-between">
                                   <span>{p.fecha_pago} • {p.metodo} {p.referencia && `(${p.referencia})`}</span>
-                                  <span className="font-medium">RD${Number(p.monto).toFixed(2)}</span>
+                                  <span className="font-medium">{fmt(p.monto)}</span>
                                 </div>
                               ))}
                             </div>
