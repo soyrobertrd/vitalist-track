@@ -617,5 +617,11 @@ Desarrollado con ❤️ por el equipo de Health App
 
 ---
 
-**Versión:** 1.0.0  
-**Última actualización:** Noviembre 2024
+**Versión:** 2.0.0.0  
+**Última actualización:** Abril 2026
+
+### 📌 Changelog v2.0.0.0
+- **Fase 1**: Ficha clínica unificada del paciente (alergias, antecedentes, seguros)
+- **Fase 2**: Vinculación masiva de pacientes a profesional asignado
+- **Fase 3**: Módulo de Cobros (facturas, pagos, automatización de estados)
+- **Fase 4**: PWA instalable + Gestión de roles UI (admin, coordinador, médico, enfermera)
