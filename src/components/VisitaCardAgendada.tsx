@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Calendar, User, Mail } from "lucide-react";
+import { Phone, Calendar, User, Mail, Ticket } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { format } from "date-fns";
@@ -10,6 +10,7 @@ import { es } from "date-fns/locale";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
 import { SelectionCheckbox } from "@/components/SelectionCheckbox";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { CitaTicketDialog } from "@/components/CitaTicketDialog";
 
 interface Visita {
   id: string;
@@ -53,6 +54,7 @@ export const VisitaCardAgendada = ({
   onToggleSelect,
 }: VisitaCardAgendadaProps) => {
   const [recordatorioOpen, setRecordatorioOpen] = useState(false);
+  const [ticketOpen, setTicketOpen] = useState(false);
   const overdue = isVisitOverdue(visita);
   const today = isVisitToday ? isVisitToday(visita) : false;
 
@@ -233,18 +235,30 @@ export const VisitaCardAgendada = ({
           </p>
         )}
         
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full mt-2"
-          onClick={(e) => {
-            e.stopPropagation();
-            setRecordatorioOpen(true);
-          }}
-        >
-          <Mail className="h-4 w-4 mr-2" />
-          Enviar Recordatorio
-        </Button>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              setRecordatorioOpen(true);
+            }}
+          >
+            <Mail className="h-4 w-4 mr-1" />
+            Recordatorio
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              setTicketOpen(true);
+            }}
+          >
+            <Ticket className="h-4 w-4 mr-1" />
+            Ticket
+          </Button>
+        </div>
       </CardContent>
 
       <EnviarRecordatorioDialog
@@ -254,6 +268,23 @@ export const VisitaCardAgendada = ({
         citaId={visita.id}
         pacienteNombre={`${visita.pacientes?.nombre} ${visita.pacientes?.apellido}`}
       />
+
+      {visita.paciente_id && (
+        <CitaTicketDialog
+          open={ticketOpen}
+          onOpenChange={setTicketOpen}
+          tipo="visita"
+          citaId={visita.id}
+          pacienteId={visita.paciente_id}
+          pacienteNombre={`${visita.pacientes?.nombre || ""} ${visita.pacientes?.apellido || ""}`}
+          pacienteTelefono={mainPhone}
+          whatsappEnabled={!!whatsAppEnabled}
+          fechaCita={visita.fecha_hora_visita}
+          profesionalNombre={visita.personal_salud ? `${visita.personal_salud.nombre} ${visita.personal_salud.apellido}` : undefined}
+          motivoCita={visita.motivo_visita || undefined}
+          tipoVisita={visita.tipo_visita}
+        />
+      )}
     </Card>
   );
 };
