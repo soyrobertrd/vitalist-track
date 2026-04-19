@@ -80,6 +80,39 @@ export type Database = {
           },
         ]
       }
+      auditoria_cambios: {
+        Row: {
+          accion: string
+          created_at: string
+          datos_anteriores: Json | null
+          datos_nuevos: Json | null
+          id: string
+          registro_id: string | null
+          tabla: string
+          usuario_id: string | null
+        }
+        Insert: {
+          accion: string
+          created_at?: string
+          datos_anteriores?: Json | null
+          datos_nuevos?: Json | null
+          id?: string
+          registro_id?: string | null
+          tabla: string
+          usuario_id?: string | null
+        }
+        Update: {
+          accion?: string
+          created_at?: string
+          datos_anteriores?: Json | null
+          datos_nuevos?: Json | null
+          id?: string
+          registro_id?: string | null
+          tabla?: string
+          usuario_id?: string | null
+        }
+        Relationships: []
+      }
       auditoria_unificaciones: {
         Row: {
           created_at: string
@@ -1377,6 +1410,15 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_admin_or_coordinador: { Args: { _user_id: string }; Returns: boolean }
+      is_staff_clinico_de_paciente: {
+        Args: { _paciente_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_staff_clinico_de_profesional: {
+        Args: { _profesional_id: string; _user_id: string }
         Returns: boolean
       }
     }
