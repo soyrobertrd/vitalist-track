@@ -304,10 +304,14 @@ export function ReportePacientesSinCitas() {
             if (!selectedPacienteId) return;
             
             const formData = new FormData(e.currentTarget);
+            const fechaAgendadaInput = formData.get("fecha_agendada") as string;
+            // Convertir datetime-local (string sin TZ) a ISO con TZ local
+            // para que Postgres no lo interprete como UTC y desplace la hora
+            const fechaAgendadaISO = fechaAgendadaInput ? new Date(fechaAgendadaInput).toISOString() : fechaAgendadaInput;
             const data = {
               paciente_id: selectedPacienteId,
               profesional_id: formData.get("profesional_id") as string,
-              fecha_agendada: formData.get("fecha_agendada") as string,
+              fecha_agendada: fechaAgendadaISO,
               motivo: formData.get("motivo") as string,
               estado: "agendada" as any,
             };
