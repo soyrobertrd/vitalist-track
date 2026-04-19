@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { WorkspaceProvider } from "./contexts/WorkspaceContext";
+import { LocaleProvider } from "./hooks/useLocale";
 import Layout from "./components/Layout";
 import { InstallPWAPrompt } from "./components/InstallPWAPrompt";
 import { NotificationsProvider } from "./components/NotificationsProvider";
@@ -75,6 +76,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <WorkspaceProvider>
+        <LocaleProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -171,6 +173,7 @@ const App = () => {
             </Suspense>
           </BrowserRouter>
         </TooltipProvider>
+        </LocaleProvider>
         </WorkspaceProvider>
       </ThemeProvider>
     </QueryClientProvider>
