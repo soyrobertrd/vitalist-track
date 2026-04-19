@@ -562,6 +562,84 @@ export type Database = {
           },
         ]
       }
+      facturas: {
+        Row: {
+          aseguradora: string | null
+          created_at: string
+          created_by: string | null
+          descripcion: string | null
+          estado: string
+          fecha_emision: string
+          fecha_vencimiento: string | null
+          id: string
+          metodo_pago: string | null
+          monto_pagado: number
+          monto_seguro: number
+          monto_total: number
+          notas: string | null
+          numero_autorizacion: string | null
+          numero_factura: string
+          paciente_id: string
+          updated_at: string
+          visita_id: string | null
+        }
+        Insert: {
+          aseguradora?: string | null
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          estado?: string
+          fecha_emision?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          metodo_pago?: string | null
+          monto_pagado?: number
+          monto_seguro?: number
+          monto_total?: number
+          notas?: string | null
+          numero_autorizacion?: string | null
+          numero_factura: string
+          paciente_id: string
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Update: {
+          aseguradora?: string | null
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          estado?: string
+          fecha_emision?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          metodo_pago?: string | null
+          monto_pagado?: number
+          monto_seguro?: number
+          monto_total?: number
+          notas?: string | null
+          numero_autorizacion?: string | null
+          numero_factura?: string
+          paciente_id?: string
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facturas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "facturas_visita_id_fkey"
+            columns: ["visita_id"]
+            isOneToOne: false
+            referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       historial_recordatorios: {
         Row: {
           canal: string
@@ -937,6 +1015,53 @@ export type Database = {
             columns: ["profesional_asignado_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pagos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          factura_id: string
+          fecha_pago: string
+          id: string
+          metodo: string
+          monto: number
+          notas: string | null
+          referencia: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          factura_id: string
+          fecha_pago?: string
+          id?: string
+          metodo?: string
+          monto: number
+          notas?: string | null
+          referencia?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          factura_id?: string
+          fecha_pago?: string
+          id?: string
+          metodo?: string
+          monto?: number
+          notas?: string | null
+          referencia?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pagos_factura_id_fkey"
+            columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "facturas"
             referencedColumns: ["id"]
           },
         ]
