@@ -25,7 +25,7 @@ export type HorarioProfesional = Tables<"horarios_profesionales">;
 export interface VisitaConRelaciones extends Visita {
   pacientes: Pick<
     Paciente,
-    "nombre" | "apellido" | "contacto_px" | "contacto_cuidador" | "whatsapp_px" | "whatsapp_cuidador" | "numero_principal"
+    "nombre" | "apellido" | "contacto_px" | "contacto_cuidador" | "whatsapp_px" | "whatsapp_cuidador" | "numero_principal" | "sexo" | "fecha_nacimiento" | "grado_dificultad"
   > | null;
   personal_salud: Pick<Personal, "nombre" | "apellido"> | null;
   profesionales_adicionales?: Array<{
@@ -35,7 +35,10 @@ export interface VisitaConRelaciones extends Visita {
 }
 
 export interface LlamadaConRelaciones extends Llamada {
-  pacientes: Pick<Paciente, "nombre" | "apellido"> | null;
+  pacientes: Pick<
+    Paciente,
+    "nombre" | "apellido" | "sexo" | "fecha_nacimiento" | "grado_dificultad"
+  > | null;
   personal_salud: Pick<Personal, "nombre" | "apellido"> | null;
 }
 

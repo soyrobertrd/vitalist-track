@@ -61,11 +61,15 @@ const Reportes = () => {
 
     let llamadasQuery = supabase
       .from("registro_llamadas")
-      .select("*, personal_salud(nombre, apellido), pacientes(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)");
-    
+      .select(
+        "*, personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido), pacientes!registro_llamadas_paciente_id_fkey(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)"
+      );
+
     let visitasQuery = supabase
       .from("control_visitas")
-      .select("*, personal_salud(nombre, apellido), pacientes(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)");
+      .select(
+        "*, personal_salud!control_visitas_profesional_id_fkey(nombre, apellido), pacientes!control_visitas_paciente_id_fkey(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)"
+      );
 
     if (profesionalId !== "todos") {
       llamadasQuery = llamadasQuery.eq("profesional_id", profesionalId);
