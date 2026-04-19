@@ -1,0 +1,1 @@
+UPDATE public.registro_llamadas SET fecha_agendada = '2026-04-20 14:00:00+00' WHERE id = '80868293-5ce8-41db-a705-89a7d1556e9a';
