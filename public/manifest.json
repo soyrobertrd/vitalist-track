@@ -1,7 +1,7 @@
 {
-  "name": "HealthCRM - Centro de Salud",
-  "short_name": "HealthCRM",
-  "description": "CRM para gestión de pacientes, llamadas y visitas médicas",
+  "name": "Health App - Gestión clínica",
+  "short_name": "Health App",
+  "description": "Sistema inteligente de gestión clínica y atención domiciliaria",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
