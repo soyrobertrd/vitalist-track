@@ -113,7 +113,7 @@ const Personal = () => {
       nombre: formData.get("nombre") as string,
       apellido: formData.get("apellido") as string,
       especialidad: formData.get("especialidad") as string,
-      contacto: formData.get("contacto") as string,
+      contacto: contacto || null,
       email_contacto: email,
       zona: selectedZona || null,
       barrio: selectedBarrio || null,
@@ -162,6 +162,7 @@ const Personal = () => {
       setCedulaData(null);
       setSelectedZona("");
       setSelectedBarrio("");
+      setContacto("");
       setCreateUserAccount(true);
       (e.target as HTMLFormElement).reset();
     } catch (error: any) {
