@@ -21,6 +21,8 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { HorariosProfesionalEditor } from "@/components/HorariosProfesionalEditor";
+import { CountryTimezoneSelector } from "@/components/CountryTimezoneSelector";
+import { useLocale } from "@/hooks/useLocale";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 

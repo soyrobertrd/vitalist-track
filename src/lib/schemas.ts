@@ -1,18 +1,23 @@
 import { z } from "zod";
+import { isValidIntlPhone } from "./intlPhone";
+import type { CountryCode } from "libphonenumber-js";
 
-// Regex patterns
+// Legacy export (kept for compatibility — prefer libphonenumber-js)
 export const TELEFONO_DOMINICANO_REGEX = /^(809|829|849)[-\s]?\d{3}[-\s]?\d{4}$/;
-export const TELEFONO_ERROR_MESSAGE = "Formato inválido. Use: 809/829/849-XXX-XXXX";
+export const TELEFONO_ERROR_MESSAGE = "Número de teléfono inválido";
 
-// Reusable phone validation
-const phoneSchema = z.string()
+// Reusable phone validation factory (country-aware). When `country` is omitted
+// it defaults to DR to keep existing behavior.
+export const buildPhoneSchema = (country: CountryCode = "DO") => z.string()
   .trim()
   .max(20, { message: "El contacto debe tener menos de 20 caracteres" })
   .refine(
-    (val) => !val || TELEFONO_DOMINICANO_REGEX.test(val.replace(/\s+/g, '')),
+    (val) => !val || isValidIntlPhone(val, country),
     { message: TELEFONO_ERROR_MESSAGE }
   )
   .optional();
+
+const phoneSchema = buildPhoneSchema("DO");
 
 // Paciente Schema
 export const pacienteSchema = z.object({
