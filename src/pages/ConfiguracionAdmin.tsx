@@ -416,6 +416,7 @@ const ConfiguracionAdmin = () => {
                         <SelectItem value="coordinador">Coordinador</SelectItem>
                         <SelectItem value="medico">Médico</SelectItem>
                         <SelectItem value="enfermera">Enfermera</SelectItem>
+                        <SelectItem value="recepcion">Recepción</SelectItem>
                       </SelectContent>
                     </Select>
                     <Button 
