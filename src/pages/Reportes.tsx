@@ -34,7 +34,7 @@ import {
 } from "recharts";
 import * as XLSX from "xlsx";
 
-import type { Personal, LlamadaConRelaciones, VisitaConRelaciones, Paciente } from "@/types/db";
+import type { Personal, LlamadaReporte, VisitaReporte, Paciente } from "@/types/db";
 
 interface DateRange {
   from: Date | undefined;
@@ -48,8 +48,8 @@ const Reportes = () => {
     to: new Date(),
   });
   const [profesionales, setProfesionales] = useState<Personal[]>([]);
-  const [dataLlamadas, setDataLlamadas] = useState<LlamadaConRelaciones[]>([]);
-  const [dataVisitas, setDataVisitas] = useState<VisitaConRelaciones[]>([]);
+  const [dataLlamadas, setDataLlamadas] = useState<LlamadaReporte[]>([]);
+  const [dataVisitas, setDataVisitas] = useState<VisitaReporte[]>([]);
   const [dataPacientes, setDataPacientes] = useState<Paciente[]>([]);
   const [observaciones, setObservaciones] = useState("");
   const [recomendaciones, setRecomendaciones] = useState("");

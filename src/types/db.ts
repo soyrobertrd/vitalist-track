@@ -1,10 +1,8 @@
 /**
  * Tipos derivados del esquema de Supabase para uso en componentes.
- * Centraliza los tipos de filas de tablas para evitar `any[]` disperso.
  */
 import type { Tables } from "@/integrations/supabase/types";
 
-// Tipos directos de filas
 export type Paciente = Tables<"pacientes">;
 export type Personal = Tables<"personal_salud">;
 export type Visita = Tables<"control_visitas">;
@@ -21,27 +19,44 @@ export type Medicamento = Tables<"medicamentos_paciente">;
 export type Ausencia = Tables<"ausencias_profesionales">;
 export type HorarioProfesional = Tables<"horarios_profesionales">;
 
-// Embeds frecuentes (relaciones)
+// Pacientes embebidos para reportes (con datos demográficos)
+type PacienteReporte = Pick<
+  Paciente,
+  "nombre" | "apellido" | "sexo" | "fecha_nacimiento" | "grado_dificultad"
+>;
+
+// Pacientes embebidos para listados de visitas (con contactos)
+type PacienteContacto = Pick<
+  Paciente,
+  "nombre" | "apellido" | "contacto_px" | "contacto_cuidador" | "whatsapp_px" | "whatsapp_cuidador" | "numero_principal"
+>;
+
+type PersonalMin = Pick<Personal, "nombre" | "apellido">;
+
 export interface VisitaConRelaciones extends Visita {
-  pacientes: Pick<
-    Paciente,
-    "nombre" | "apellido" | "contacto_px" | "contacto_cuidador" | "whatsapp_px" | "whatsapp_cuidador" | "numero_principal" | "sexo" | "fecha_nacimiento" | "grado_dificultad"
-  > | null;
-  personal_salud: Pick<Personal, "nombre" | "apellido"> | null;
+  pacientes: PacienteContacto | null;
+  personal_salud: PersonalMin | null;
   profesionales_adicionales?: Array<{
     profesional_id: string | null;
-    personal_salud: Pick<Personal, "nombre" | "apellido"> | null;
+    personal_salud: PersonalMin | null;
   }>;
 }
 
+export interface VisitaReporte extends Visita {
+  pacientes: PacienteReporte | null;
+  personal_salud: PersonalMin | null;
+}
+
 export interface LlamadaConRelaciones extends Llamada {
-  pacientes: Pick<
-    Paciente,
-    "nombre" | "apellido" | "sexo" | "fecha_nacimiento" | "grado_dificultad"
-  > | null;
-  personal_salud: Pick<Personal, "nombre" | "apellido"> | null;
+  pacientes: Pick<Paciente, "nombre" | "apellido"> | null;
+  personal_salud: PersonalMin | null;
+}
+
+export interface LlamadaReporte extends Llamada {
+  pacientes: PacienteReporte | null;
+  personal_salud: PersonalMin | null;
 }
 
 export interface PacienteConProfesional extends Paciente {
-  personal_salud?: Pick<Personal, "nombre" | "apellido"> | null;
+  personal_salud?: PersonalMin | null;
 }
