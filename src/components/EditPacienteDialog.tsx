@@ -11,7 +11,10 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { differenceInYears } from "date-fns";
 import { Loader2, CheckCircle2, RefreshCw } from "lucide-react";
-import { TELEFONO_DOMINICANO_REGEX, TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
+import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
+import { isValidIntlPhone } from "@/lib/intlPhone";
+import { useLocale } from "@/hooks/useLocale";
+import type { CountryCode } from "libphonenumber-js";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { ZonaSelect } from "@/components/ZonaSelect";
 import { useDetectarDuplicados } from "@/hooks/useDetectarDuplicados";
@@ -22,7 +25,7 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { MedicamentosPaciente } from "@/components/MedicamentosPaciente";
 import { DiasRestriccionPaciente } from "@/components/DiasRestriccionPaciente";
 
-const editPacienteSchema = z.object({
+const buildEditPacienteSchema = (country: CountryCode) => z.object({
   cedula: z.string()
     .trim()
     .length(11, { message: "La cédula debe tener exactamente 11 dígitos" })
@@ -39,7 +42,7 @@ const editPacienteSchema = z.object({
     .trim()
     .max(20, { message: "El contacto debe tener menos de 20 caracteres" })
     .refine(
-      (val) => !val || TELEFONO_DOMINICANO_REGEX.test(val.replace(/\s+/g, '')),
+      (val) => !val || isValidIntlPhone(val, country),
       { message: TELEFONO_ERROR_MESSAGE }
     )
     .optional(),
@@ -51,7 +54,7 @@ const editPacienteSchema = z.object({
     .trim()
     .max(20, { message: "El contacto debe tener menos de 20 caracteres" })
     .refine(
-      (val) => !val || TELEFONO_DOMINICANO_REGEX.test(val.replace(/\s+/g, '')),
+      (val) => !val || isValidIntlPhone(val, country),
       { message: TELEFONO_ERROR_MESSAGE }
     )
     .optional(),
