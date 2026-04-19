@@ -143,6 +143,18 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       }
     }
 
+    // Mandatory: informed consent (HIPAA / GDPR / RD Ley 172-13)
+    if (!consent.aceptado) {
+      toast.error("Debe aceptar el consentimiento informado del paciente");
+      setLoading(false);
+      return;
+    }
+    if (!consent.firmado_por.trim()) {
+      toast.error("Indique el nombre del firmante del consentimiento");
+      setLoading(false);
+      return;
+    }
+
     const gradoDificultad = (formDataObj.get("grado_dificultad") as string) || "medio";
     // zona is stored as string - cast to any to allow new municipalities not in enum yet
     const zonaValue = (selectedZona as any) || null;
