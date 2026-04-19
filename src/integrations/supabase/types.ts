@@ -1532,6 +1532,7 @@ export type Database = {
           approved: boolean | null
           avatar_url: string | null
           cedula: string
+          country_code: string | null
           created_at: string | null
           created_by: string | null
           email: string
@@ -1541,6 +1542,7 @@ export type Database = {
           nombre: string
           rol: Database["public"]["Enums"]["user_role"]
           telefono: string | null
+          timezone: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1549,6 +1551,7 @@ export type Database = {
           approved?: boolean | null
           avatar_url?: string | null
           cedula: string
+          country_code?: string | null
           created_at?: string | null
           created_by?: string | null
           email: string
@@ -1558,6 +1561,7 @@ export type Database = {
           nombre: string
           rol?: Database["public"]["Enums"]["user_role"]
           telefono?: string | null
+          timezone?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1566,6 +1570,7 @@ export type Database = {
           approved?: boolean | null
           avatar_url?: string | null
           cedula?: string
+          country_code?: string | null
           created_at?: string | null
           created_by?: string | null
           email?: string
@@ -1575,6 +1580,7 @@ export type Database = {
           nombre?: string
           rol?: Database["public"]["Enums"]["user_role"]
           telefono?: string | null
+          timezone?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -2049,6 +2055,7 @@ export type Database = {
       workspaces: {
         Row: {
           configuracion: Json
+          country_code: string | null
           created_at: string
           direccion: string | null
           email_contacto: string | null
@@ -2062,11 +2069,13 @@ export type Database = {
           sitio_web: string | null
           slug: string
           telefono: string | null
+          timezone: string | null
           trial_ends_at: string | null
           updated_at: string
         }
         Insert: {
           configuracion?: Json
+          country_code?: string | null
           created_at?: string
           direccion?: string | null
           email_contacto?: string | null
@@ -2080,11 +2089,13 @@ export type Database = {
           sitio_web?: string | null
           slug: string
           telefono?: string | null
+          timezone?: string | null
           trial_ends_at?: string | null
           updated_at?: string
         }
         Update: {
           configuracion?: Json
+          country_code?: string | null
           created_at?: string
           direccion?: string | null
           email_contacto?: string | null
@@ -2098,6 +2109,7 @@ export type Database = {
           sitio_web?: string | null
           slug?: string
           telefono?: string | null
+          timezone?: string | null
           trial_ends_at?: string | null
           updated_at?: string
         }
