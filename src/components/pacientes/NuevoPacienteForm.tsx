@@ -23,6 +23,7 @@ import { isValidIntlPhone } from "@/lib/intlPhone";
 import { useLocale } from "@/hooks/useLocale";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import type { Personal } from "@/hooks/usePersonal";
+import { ConsentimientoInformado, TERMS_VERSION_CURRENT, type ConsentimientoData } from "@/components/ConsentimientoInformado";
 
 // Validation schema (country-aware factory)
 import type { CountryCode } from "libphonenumber-js";
@@ -78,6 +79,12 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
   const [diasNoVisita, setDiasNoVisita] = useState<number[]>([]);
   const [medicamentos, setMedicamentos] = useState<{nombre: string, dosis: string, frecuencia: string}[]>([{nombre: "", dosis: "", frecuencia: ""}]);
   const [notificacionesActivas, setNotificacionesActivas] = useState(true);
+  const [consent, setConsent] = useState<ConsentimientoData>({
+    aceptado: false,
+    firmado_por: "",
+    parentesco_firmante: null,
+    version_documento: TERMS_VERSION_CURRENT,
+  });
   
   // Auto-disable notifications if no email
   const hasAnyEmail = !!(formData.email_px.trim() || formData.email_cuidador.trim());
