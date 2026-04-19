@@ -53,10 +53,6 @@ const Reportes = () => {
   const [recomendaciones, setRecomendaciones] = useState("");
   const [exportingPDF, setExportingPDF] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, [profesionalId, dateRange]);
-
   const fetchData = async () => {
     const fromDate = dateRange.from ? startOfDay(dateRange.from).toISOString() : null;
     const toDate = dateRange.to ? endOfDay(dateRange.to).toISOString() : null;

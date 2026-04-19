@@ -30,7 +30,6 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useModulePermissions } from "@/hooks/useModulePermissions";
 import { useNotificacionesSospechosos } from "@/hooks/useNotificacionesSospechosos";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -60,7 +59,6 @@ const Layout = ({ children }: LayoutProps) => {
   const { profile } = useUserProfile();
   const { isAdmin } = useUserRole();
   const isMobile = useIsMobile();
-  const permissions = useModulePermissions();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
 
