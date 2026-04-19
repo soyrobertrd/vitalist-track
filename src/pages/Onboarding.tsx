@@ -7,18 +7,37 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, ArrowLeft, Check, Sparkles, Building2, UserCog, Users } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, Sparkles, Building2, UserCog, Users, Globe, Calendar, Ticket, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { CountryTimezoneSelector } from "@/components/CountryTimezoneSelector";
+import { getCurrencyFromCountry } from "@/lib/currency";
 
-const STEPS = ["Clínica", "Profesional", "Paciente", "Listo"] as const;
+const STEPS = ["Clínica", "Región", "Profesional", "Paciente", "Listo"] as const;
+
+function detectBrowserDefaults() {
+  let country = "DO";
+  let timezone = "America/Santo_Domingo";
+  try {
+    const lang = navigator.language;
+    const parts = lang.split("-");
+    if (parts.length >= 2) {
+      const cc = parts[parts.length - 1].toUpperCase();
+      if (/^[A-Z]{2}$/.test(cc)) country = cc;
+    }
+    timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || timezone;
+  } catch { /* ignore */ }
+  return { country, timezone };
+}
 
 export default function Onboarding() {
   const navigate = useNavigate();
   const { currentWorkspace, refresh } = useWorkspace();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+
+  const browserDefaults = detectBrowserDefaults();
 
   const [clinica, setClinica] = useState({
     nombre: currentWorkspace?.nombre || "",
@@ -27,6 +46,10 @@ export default function Onboarding() {
     email_contacto: "",
     sitio_web: "",
     instrucciones_cita: "Por favor llegue 15 minutos antes de su cita y traiga su documento de identidad.",
+  });
+  const [region, setRegion] = useState({
+    country_code: browserDefaults.country,
+    timezone: browserDefaults.timezone,
   });
   const [profesional, setProfesional] = useState({
     nombre: "",
@@ -64,7 +87,7 @@ export default function Onboarding() {
         email_contacto: clinica.email_contacto || null,
         sitio_web: clinica.sitio_web || null,
         instrucciones_cita: clinica.instrucciones_cita || null,
-      })
+      } as any)
       .eq("id", currentWorkspace.id);
     setSaving(false);
     if (error) {
@@ -74,6 +97,28 @@ export default function Onboarding() {
     await refresh();
     toast.success("Clínica configurada");
     setStep(1);
+  };
+
+  const guardarRegion = async () => {
+    if (!currentWorkspace) return;
+    setSaving(true);
+    const currency = getCurrencyFromCountry(region.country_code);
+    const { error } = await supabase
+      .from("workspaces")
+      .update({
+        country_code: region.country_code,
+        timezone: region.timezone,
+        currency_code: currency,
+      } as any)
+      .eq("id", currentWorkspace.id);
+    setSaving(false);
+    if (error) {
+      toast.error("Error al guardar región: " + error.message);
+      return;
+    }
+    await refresh();
+    toast.success(`Región configurada (moneda: ${currency})`);
+    setStep(2);
   };
 
   const guardarProfesional = async () => {
@@ -93,7 +138,7 @@ export default function Onboarding() {
       return;
     }
     toast.success("Profesional creado");
-    setStep(2);
+    setStep(3);
   };
 
   const guardarPaciente = async () => {
@@ -112,7 +157,7 @@ export default function Onboarding() {
       return;
     }
     toast.success("Paciente creado");
-    setStep(3);
+    setStep(4);
   };
 
   const finalizar = () => {
@@ -190,6 +235,28 @@ export default function Onboarding() {
           {step === 1 && (
             <>
               <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Globe className="h-5 w-5" /> Región y zona horaria</CardTitle>
+                <CardDescription>
+                  Esto define la zona horaria de las citas, el formato de fechas, la moneda de facturación
+                  y la validación de números de teléfono.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <CountryTimezoneSelector
+                  countryCode={region.country_code}
+                  timezone={region.timezone}
+                  onChange={({ countryCode, timezone }) => setRegion({ country_code: countryCode, timezone })}
+                />
+                <div className="rounded-lg bg-muted/50 p-3 text-sm text-muted-foreground">
+                  Moneda detectada: <strong className="text-foreground">{getCurrencyFromCountry(region.country_code)}</strong>
+                </div>
+              </CardContent>
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2"><UserCog className="h-5 w-5" /> Primer profesional</CardTitle>
                 <CardDescription>Agregue al menos un profesional de salud.</CardDescription>
               </CardHeader>
@@ -224,7 +291,7 @@ export default function Onboarding() {
             </>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2"><Users className="h-5 w-5" /> Primer paciente</CardTitle>
@@ -249,14 +316,14 @@ export default function Onboarding() {
                     <Input value={paciente.contacto_px} onChange={(e) => setPaciente({ ...paciente, contacto_px: e.target.value })} />
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setStep(3)} className="w-full">
+                <Button variant="ghost" size="sm" onClick={() => setStep(4)} className="w-full">
                   Saltar este paso
                 </Button>
               </CardContent>
             </>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-primary">
@@ -291,15 +358,16 @@ export default function Onboarding() {
               Saltar configuración
             </Button>
             <div className="flex gap-2">
-              {step > 0 && step < 3 && (
+              {step > 0 && step < 4 && (
                 <Button variant="outline" onClick={() => setStep(step - 1)}>
                   <ArrowLeft className="h-4 w-4 mr-2" /> Atrás
                 </Button>
               )}
               {step === 0 && <Button onClick={guardarClinica} disabled={saving}>Continuar <ArrowRight className="h-4 w-4 ml-2" /></Button>}
-              {step === 1 && <Button onClick={guardarProfesional} disabled={saving}>Continuar <ArrowRight className="h-4 w-4 ml-2" /></Button>}
-              {step === 2 && <Button onClick={guardarPaciente} disabled={saving}>Continuar <ArrowRight className="h-4 w-4 ml-2" /></Button>}
-              {step === 3 && <Button onClick={finalizar}>Ir al Dashboard <ArrowRight className="h-4 w-4 ml-2" /></Button>}
+              {step === 1 && <Button onClick={guardarRegion} disabled={saving}>Continuar <ArrowRight className="h-4 w-4 ml-2" /></Button>}
+              {step === 2 && <Button onClick={guardarProfesional} disabled={saving}>Continuar <ArrowRight className="h-4 w-4 ml-2" /></Button>}
+              {step === 3 && <Button onClick={guardarPaciente} disabled={saving}>Continuar <ArrowRight className="h-4 w-4 ml-2" /></Button>}
+              {step === 4 && <Button onClick={finalizar}>Ir al Dashboard <ArrowRight className="h-4 w-4 ml-2" /></Button>}
             </div>
           </div>
         </Card>
@@ -307,6 +375,3 @@ export default function Onboarding() {
     </div>
   );
 }
-
-// Iconos extra usados en el último paso
-import { Calendar, Ticket, ScanLine } from "lucide-react";

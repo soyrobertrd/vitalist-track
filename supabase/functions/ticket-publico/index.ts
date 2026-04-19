@@ -1,6 +1,7 @@
 // Edge Function pública para validar y mostrar tickets de citas por token.
-// No requiere autenticación.
+// No requiere autenticación. Devuelve fechas formateadas según TZ del workspace.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { resolveWorkspaceLocale, formatDateInTz, formatTimeInTz } from "../_shared/locale.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -49,14 +50,26 @@ Deno.serve(async (req: Request) => {
     const fechaCita = (ticket as any).visita?.fecha_hora_visita || (ticket as any).llamada?.fecha_agendada;
     const profesional = cita?.personal_salud;
 
+    // Resolve workspace locale for date/time formatting
+    const { timezone, locale, countryCode } = await resolveWorkspaceLocale(supabase, ticket.workspace_id);
+
     let workspace = null;
     if (ticket.workspace_id) {
       const { data: ws } = await supabase
         .from("workspaces")
-        .select("nombre, logo_url, direccion, telefono, email_contacto, sitio_web, instrucciones_cita")
+        .select("nombre, logo_url, direccion, telefono, email_contacto, sitio_web, instrucciones_cita, country_code, timezone")
         .eq("id", ticket.workspace_id)
         .maybeSingle();
       workspace = ws;
+    }
+
+    // Format the appointment date/time using workspace timezone
+    let fechaCitaFormatted: string | null = null;
+    let horaCitaFormatted: string | null = null;
+    if (fechaCita) {
+      const d = new Date(fechaCita);
+      fechaCitaFormatted = formatDateInTz(d, timezone, locale);
+      horaCitaFormatted = formatTimeInTz(d, timezone, locale);
     }
 
     const payload = {
@@ -65,12 +78,15 @@ Deno.serve(async (req: Request) => {
         estado_checkin: ticket.estado_checkin,
         tipo_cita: ticket.tipo_cita,
         fecha_cita: fechaCita,
+        fecha_cita_formatted: fechaCitaFormatted,
+        hora_cita_formatted: horaCitaFormatted,
         paciente_nombre: `${(ticket as any).pacientes?.nombre || ""} ${(ticket as any).pacientes?.apellido || ""}`.trim(),
         paciente_cedula: (ticket as any).pacientes?.cedula || null,
         profesional_nombre: profesional ? `${profesional.nombre} ${profesional.apellido}` : null,
         motivo: cita?.motivo_visita || cita?.motivo || null,
       },
       workspace,
+      locale: { timezone, locale, countryCode },
     };
 
     return new Response(JSON.stringify(payload), {

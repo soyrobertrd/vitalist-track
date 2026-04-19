@@ -12,6 +12,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "@/hooks/use-toast";
 import { Plus, DollarSign, Receipt, Trash2, CreditCard } from "lucide-react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useLocale } from "@/hooks/useLocale";
+import { resolveCurrency, formatCurrency } from "@/lib/currency";
+import { localeFromCountry } from "@/lib/dateFormat";
 
 interface Factura {
   id: string;
@@ -48,6 +52,12 @@ const estadoColor: Record<string, string> = {
 };
 
 export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
+  const { currentWorkspace } = useWorkspace();
+  const { countryCode } = useLocale();
+  const currency = resolveCurrency(currentWorkspace, countryCode);
+  const locale = localeFromCountry(countryCode);
+  const fmt = (n: number | string) => formatCurrency(n, currency, locale);
+
   const [facturas, setFacturas] = useState<Factura[]>([]);
   const [pagos, setPagos] = useState<Record<string, Pago[]>>({});
   const [loading, setLoading] = useState(true);
@@ -180,7 +190,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
               <Receipt className="h-8 w-8 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Total facturado</p>
-                <p className="text-xl font-bold">RD${totalFacturado.toFixed(2)}</p>
+                <p className="text-xl font-bold">{fmt(totalFacturado)}</p>
               </div>
             </div>
           </CardContent>
@@ -191,7 +201,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
               <DollarSign className="h-8 w-8 text-green-600" />
               <div>
                 <p className="text-xs text-muted-foreground">Total pagado</p>
-                <p className="text-xl font-bold">RD${totalPagado.toFixed(2)}</p>
+                <p className="text-xl font-bold">{fmt(totalPagado)}</p>
               </div>
             </div>
           </CardContent>
@@ -202,7 +212,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
               <CreditCard className="h-8 w-8 text-yellow-600" />
               <div>
                 <p className="text-xs text-muted-foreground">Pendiente</p>
-                <p className="text-xl font-bold">RD${totalPendiente.toFixed(2)}</p>
+                <p className="text-xl font-bold">{fmt(totalPendiente)}</p>
               </div>
             </div>
           </CardContent>
@@ -291,9 +301,9 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
                       <TableRow key={f.id}>
                         <TableCell className="font-medium">{f.numero_factura}</TableCell>
                         <TableCell>{f.fecha_emision}</TableCell>
-                        <TableCell>RD${Number(f.monto_total).toFixed(2)}</TableCell>
-                        <TableCell>RD${Number(f.monto_pagado).toFixed(2)}</TableCell>
-                        <TableCell>RD${saldo.toFixed(2)}</TableCell>
+                        <TableCell>{fmt(f.monto_total)}</TableCell>
+                        <TableCell>{fmt(f.monto_pagado)}</TableCell>
+                        <TableCell>{fmt(saldo)}</TableCell>
                         <TableCell><Badge variant="outline" className={estadoColor[f.estado]}>{f.estado}</Badge></TableCell>
                         <TableCell className="text-right space-x-1">
                           {f.estado !== "pagada" && f.estado !== "anulada" && (
@@ -305,7 +315,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
                                 <DialogHeader><DialogTitle>Registrar pago - {f.numero_factura}</DialogTitle></DialogHeader>
                                 <div className="space-y-3">
                                   <div>
-                                    <Label>Monto * (saldo: RD${saldo.toFixed(2)})</Label>
+                                    <Label>Monto * (saldo: {fmt(saldo)})</Label>
                                     <Input type="number" step="0.01" value={nuevoPago.monto} onChange={e => setNuevoPago({ ...nuevoPago, monto: e.target.value })} />
                                   </div>
                                   <div>
@@ -369,7 +379,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
                               {pagos[f.id].map(p => (
                                 <div key={p.id} className="flex justify-between">
                                   <span>{p.fecha_pago} • {p.metodo} {p.referencia && `(${p.referencia})`}</span>
-                                  <span className="font-medium">RD${Number(p.monto).toFixed(2)}</span>
+                                  <span className="font-medium">{fmt(p.monto)}</span>
                                 </div>
                               ))}
                             </div>
