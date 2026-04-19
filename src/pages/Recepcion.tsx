@@ -194,6 +194,7 @@ export default function Recepcion() {
               </Alert>
             )}
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="bg-muted/50 p-3 rounded-lg">
                 <p className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="h-3 w-3" /> Fecha</p>
                 <p className="font-semibold">
