@@ -69,7 +69,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   // Menu items configuration
   const menuItems = [
-    { path: "/", icon: LayoutDashboard, label: "Dashboard" },
+    { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     {
       path: "/agenda",
       icon: CalendarDays,

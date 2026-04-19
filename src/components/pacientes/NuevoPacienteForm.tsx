@@ -23,6 +23,7 @@ import { isValidIntlPhone } from "@/lib/intlPhone";
 import { useLocale } from "@/hooks/useLocale";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import type { Personal } from "@/hooks/usePersonal";
+import { ConsentimientoInformado, TERMS_VERSION_CURRENT, type ConsentimientoData } from "@/components/ConsentimientoInformado";
 
 // Validation schema (country-aware factory)
 import type { CountryCode } from "libphonenumber-js";
@@ -78,6 +79,12 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
   const [diasNoVisita, setDiasNoVisita] = useState<number[]>([]);
   const [medicamentos, setMedicamentos] = useState<{nombre: string, dosis: string, frecuencia: string}[]>([{nombre: "", dosis: "", frecuencia: ""}]);
   const [notificacionesActivas, setNotificacionesActivas] = useState(true);
+  const [consent, setConsent] = useState<ConsentimientoData>({
+    aceptado: false,
+    firmado_por: "",
+    parentesco_firmante: null,
+    version_documento: TERMS_VERSION_CURRENT,
+  });
   
   // Auto-disable notifications if no email
   const hasAnyEmail = !!(formData.email_px.trim() || formData.email_cuidador.trim());
@@ -136,6 +143,18 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       }
     }
 
+    // Mandatory: informed consent (HIPAA / GDPR / RD Ley 172-13)
+    if (!consent.aceptado) {
+      toast.error("Debe aceptar el consentimiento informado del paciente");
+      setLoading(false);
+      return;
+    }
+    if (!consent.firmado_por.trim()) {
+      toast.error("Indique el nombre del firmante del consentimiento");
+      setLoading(false);
+      return;
+    }
+
     const gradoDificultad = (formDataObj.get("grado_dificultad") as string) || "medio";
     // zona is stored as string - cast to any to allow new municipalities not in enum yet
     const zonaValue = (selectedZona as any) || null;
@@ -188,7 +207,21 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       return;
     }
 
-    // Insert medications
+    // Insert informed consent (required by law before storing PHI)
+    if (paciente) {
+      const { data: { user } } = await supabase.auth.getUser();
+      await supabase.from("consentimientos_paciente").insert({
+        paciente_id: paciente.id,
+        tipo: "tratamiento_datos",
+        version_documento: consent.version_documento,
+        contenido_firmado: `Consentimiento informado ${consent.version_documento} aceptado para el tratamiento de datos clínicos.`,
+        firmado_por: consent.firmado_por.trim(),
+        parentesco_firmante: consent.parentesco_firmante,
+        user_agent: navigator.userAgent,
+        created_by: user?.id ?? null,
+      });
+    }
+
     const medicamentosValidos = medicamentos.filter(m => m.nombre.trim() !== "");
     if (medicamentosValidos.length > 0 && paciente) {
       await supabase.from("medicamentos_paciente").insert(
@@ -615,9 +648,19 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
           <DiasRestriccionPaciente diasNoVisita={diasNoVisita} onChange={setDiasNoVisita} />
         </div>
 
+        {/* Informed consent (mandatory) */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Consentimiento informado</h3>
+          <ConsentimientoInformado
+            value={consent}
+            onChange={setConsent}
+            defaultFirmante={`${formData.nombre} ${formData.apellido}`.trim()}
+          />
+        </div>
+
         <div className="flex justify-end gap-2 pt-4">
           <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading || !consent.aceptado}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Guardar Paciente
           </Button>
