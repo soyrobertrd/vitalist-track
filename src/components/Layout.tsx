@@ -155,8 +155,8 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="flex items-center gap-2">
             <Activity className="h-8 w-8 text-primary" />
             <div>
-              <h1 className="text-xl font-bold text-sidebar-foreground">HealthCRM</h1>
-              <p className="text-xs text-sidebar-foreground/60">Centro de Salud · v2.0.0.0</p>
+              <h1 className="text-xl font-bold text-sidebar-foreground">Health App</h1>
+              <p className="text-xs text-sidebar-foreground/60">Gestión clínica · v2.1.0</p>
             </div>
           </div>
         )}
@@ -376,7 +376,7 @@ const Layout = ({ children }: LayoutProps) => {
         <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-sidebar border-b border-sidebar-border flex items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <Activity className="h-6 w-6 text-primary" />
-            <span className="font-bold text-sidebar-foreground">HealthCRM</span>
+            <span className="font-bold text-sidebar-foreground">Health App</span>
           </div>
           <div className="flex items-center gap-2">
             <OfflineIndicator />

@@ -76,7 +76,7 @@ export const InstallPWAPrompt = () => {
             <Smartphone className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1">
-            <h3 className="text-sm font-semibold">Instalar HealthCRM</h3>
+            <h3 className="text-sm font-semibold">Instalar Health App</h3>
             {isIOS ? (
               <p className="mt-1 text-xs text-muted-foreground">
                 Toca <Share className="inline h-3 w-3" /> y luego{" "}
