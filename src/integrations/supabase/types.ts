@@ -616,6 +616,7 @@ export type Database = {
           notas_visita: string | null
           paciente_id: string | null
           profesional_id: string | null
+          sucursal_id: string | null
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at: string | null
           workspace_id: string | null
@@ -631,6 +632,7 @@ export type Database = {
           notas_visita?: string | null
           paciente_id?: string | null
           profesional_id?: string | null
+          sucursal_id?: string | null
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
           workspace_id?: string | null
@@ -646,6 +648,7 @@ export type Database = {
           notas_visita?: string | null
           paciente_id?: string | null
           profesional_id?: string | null
+          sucursal_id?: string | null
           tipo_visita?: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
           workspace_id?: string | null
@@ -663,6 +666,13 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_visitas_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
             referencedColumns: ["id"]
           },
           {
@@ -1384,7 +1394,7 @@ export type Database = {
         Row: {
           apellido: string
           barrio: string | null
-          cedula: string
+          cedula: string | null
           contacto_cuidador: string | null
           contacto_px: string | null
           created_at: string | null
@@ -1403,15 +1413,19 @@ export type Database = {
           latitud: number | null
           longitud: number | null
           motivo_inactividad: string | null
+          nacionalidad: string
           nombre: string
           nombre_cuidador: string | null
           notificaciones_activas: boolean | null
+          numero_documento: string | null
           numero_principal: string | null
           parentesco_cuidador: string | null
           profesional_asignado_id: string | null
           sexo: string | null
           status_px: Database["public"]["Enums"]["status_paciente"] | null
+          sucursal_id: string | null
           tipo_atencion: string | null
+          tipo_documento: string
           updated_at: string | null
           whatsapp_cuidador: boolean | null
           whatsapp_px: boolean | null
@@ -1421,7 +1435,7 @@ export type Database = {
         Insert: {
           apellido: string
           barrio?: string | null
-          cedula: string
+          cedula?: string | null
           contacto_cuidador?: string | null
           contacto_px?: string | null
           created_at?: string | null
@@ -1440,15 +1454,19 @@ export type Database = {
           latitud?: number | null
           longitud?: number | null
           motivo_inactividad?: string | null
+          nacionalidad?: string
           nombre: string
           nombre_cuidador?: string | null
           notificaciones_activas?: boolean | null
+          numero_documento?: string | null
           numero_principal?: string | null
           parentesco_cuidador?: string | null
           profesional_asignado_id?: string | null
           sexo?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
+          sucursal_id?: string | null
           tipo_atencion?: string | null
+          tipo_documento?: string
           updated_at?: string | null
           whatsapp_cuidador?: boolean | null
           whatsapp_px?: boolean | null
@@ -1458,7 +1476,7 @@ export type Database = {
         Update: {
           apellido?: string
           barrio?: string | null
-          cedula?: string
+          cedula?: string | null
           contacto_cuidador?: string | null
           contacto_px?: string | null
           created_at?: string | null
@@ -1477,15 +1495,19 @@ export type Database = {
           latitud?: number | null
           longitud?: number | null
           motivo_inactividad?: string | null
+          nacionalidad?: string
           nombre?: string
           nombre_cuidador?: string | null
           notificaciones_activas?: boolean | null
+          numero_documento?: string | null
           numero_principal?: string | null
           parentesco_cuidador?: string | null
           profesional_asignado_id?: string | null
           sexo?: string | null
           status_px?: Database["public"]["Enums"]["status_paciente"] | null
+          sucursal_id?: string | null
           tipo_atencion?: string | null
+          tipo_documento?: string
           updated_at?: string | null
           whatsapp_cuidador?: boolean | null
           whatsapp_px?: boolean | null
@@ -1498,6 +1520,13 @@ export type Database = {
             columns: ["profesional_asignado_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pacientes_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
             referencedColumns: ["id"]
           },
           {
@@ -1715,6 +1744,7 @@ export type Database = {
           id: string
           nombre: string
           notificaciones_activas: boolean | null
+          sucursal_id: string | null
           updated_at: string | null
           user_id: string | null
           workspace_id: string | null
@@ -1733,6 +1763,7 @@ export type Database = {
           id?: string
           nombre: string
           notificaciones_activas?: boolean | null
+          sucursal_id?: string | null
           updated_at?: string | null
           user_id?: string | null
           workspace_id?: string | null
@@ -1751,12 +1782,20 @@ export type Database = {
           id?: string
           nombre?: string
           notificaciones_activas?: boolean | null
+          sucursal_id?: string | null
           updated_at?: string | null
           user_id?: string | null
           workspace_id?: string | null
           zona?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "personal_salud_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "personal_salud_workspace_id_fkey"
             columns: ["workspace_id"]
@@ -2013,6 +2052,7 @@ export type Database = {
           resultado_seguimiento:
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
+          sucursal_id: string | null
           workspace_id: string | null
         }
         Insert: {
@@ -2038,6 +2078,7 @@ export type Database = {
           resultado_seguimiento?:
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
+          sucursal_id?: string | null
           workspace_id?: string | null
         }
         Update: {
@@ -2063,6 +2104,7 @@ export type Database = {
           resultado_seguimiento?:
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
+          sucursal_id?: string | null
           workspace_id?: string | null
         }
         Relationships: [
@@ -2099,6 +2141,13 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registro_llamadas_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
             referencedColumns: ["id"]
           },
           {
@@ -2347,6 +2396,74 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "subscripciones_workspace_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sucursales: {
+        Row: {
+          activo: boolean
+          ciudad: string | null
+          codigo: string | null
+          configuracion: Json
+          created_at: string
+          direccion: string | null
+          email: string | null
+          es_principal: boolean
+          id: string
+          latitud: number | null
+          longitud: number | null
+          nombre: string
+          pais: string | null
+          telefono: string | null
+          updated_at: string
+          workspace_id: string
+          zona: string | null
+        }
+        Insert: {
+          activo?: boolean
+          ciudad?: string | null
+          codigo?: string | null
+          configuracion?: Json
+          created_at?: string
+          direccion?: string | null
+          email?: string | null
+          es_principal?: boolean
+          id?: string
+          latitud?: number | null
+          longitud?: number | null
+          nombre: string
+          pais?: string | null
+          telefono?: string | null
+          updated_at?: string
+          workspace_id: string
+          zona?: string | null
+        }
+        Update: {
+          activo?: boolean
+          ciudad?: string | null
+          codigo?: string | null
+          configuracion?: Json
+          created_at?: string
+          direccion?: string | null
+          email?: string | null
+          es_principal?: boolean
+          id?: string
+          latitud?: number | null
+          longitud?: number | null
+          nombre?: string
+          pais?: string | null
+          telefono?: string | null
+          updated_at?: string
+          workspace_id?: string
+          zona?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sucursales_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -2640,6 +2757,10 @@ export type Database = {
         Returns: boolean
       }
       is_admin_or_coordinador: { Args: { _user_id: string }; Returns: boolean }
+      is_member_of_sucursal: {
+        Args: { _sucursal_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_staff_clinico_de_paciente: {
         Args: { _paciente_id: string; _user_id: string }
         Returns: boolean
