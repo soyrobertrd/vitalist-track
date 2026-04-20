@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 export interface Personal {
   id: string;
@@ -15,6 +16,7 @@ export interface Personal {
 }
 
 export function usePersonal(excludeAdmin = true) {
+  const { currentWorkspace } = useWorkspace();
   const [personal, setPersonal] = useState<Personal[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,17 +28,21 @@ export function usePersonal(excludeAdmin = true) {
       .eq("activo", true)
       .order("nombre", { ascending: true });
 
+    if (currentWorkspace) {
+      query = query.eq("workspace_id", currentWorkspace.id);
+    }
+
     if (excludeAdmin) {
       query = query.in("especialidad", ["Médico", "Enfermera", "Medico Internista"]);
     }
 
     const { data, error } = await query;
-    
+
     if (!error) {
       setPersonal(data || []);
     }
     setLoading(false);
-  }, [excludeAdmin]);
+  }, [excludeAdmin, currentWorkspace]);
 
   useEffect(() => {
     fetchPersonal();
@@ -45,6 +51,6 @@ export function usePersonal(excludeAdmin = true) {
   return {
     personal,
     loading,
-    fetchPersonal
+    fetchPersonal,
   };
 }
