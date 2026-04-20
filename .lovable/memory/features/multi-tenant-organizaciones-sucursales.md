@@ -1,6 +1,6 @@
 ---
 name: Multi-tenant Organizations and Branches
-description: Workspaces, branches (sucursales), member roles, patient nationality/document, branch selector in forms, and global branch filter for lists/dashboard/reports
+description: Workspaces, branches (sucursales), member roles, patient nationality/document, branch selector in forms, global branch filter for lists/dashboard/reports, auto-workspace on signup, strict workspace RLS
 type: feature
 ---
 
@@ -37,11 +37,23 @@ type: feature
 - Formularios de creación/edición (NuevoPacienteForm, EditPacienteDialog, AgendarLlamadaDialog, Visitas) escriben `workspace_id` y `sucursal_id` en cada insert/update.
 - Default de sucursal en inserts: si el usuario no eligió, se usa la sucursal `es_principal` del workspace (si existe).
 
+## Auto-workspace en signup (Fase 3)
+- Trigger `on_auth_user_created_workspace` en `auth.users` ejecuta `handle_new_user_workspace()` que:
+  - Crea automáticamente un workspace "Mi Clínica" (o nombre del metadata) y agrega al usuario como `owner` en `workspace_members`.
+  - Se omite si el usuario fue creado por un admin (`raw_user_meta_data.created_by_admin = true`) o si ya tiene workspace.
+- Garantiza que ningún usuario quede huérfano sin organización al hacer signup público.
+
+## RLS estricto por workspace (Fase 4 — defensa en profundidad)
+Las políticas SELECT/INSERT/UPDATE de `pacientes`, `personal_salud`, `control_visitas`, `registro_llamadas` ahora exigen además:
+`(workspace_id IS NULL OR is_workspace_member(auth.uid(), workspace_id))`
+- Permite legacy rows (workspace_id NULL) por compatibilidad.
+- Para rows con workspace, el usuario DEBE ser miembro del workspace además de cumplir las reglas clínicas previas (admin/coordinador, profesional asignado, etc.).
+- Esto previene que un cliente malicioso vea/modifique datos de otra organización aunque se salte el filtro client-side.
+
 ## Reglas de negocio
 - Una sucursal puede marcarse como `es_principal=true` (informativo + default en formularios).
 - Eliminar sucursal hace SET NULL en pacientes/personal/visitas/llamadas.
-- RLS de control_visitas/registro_llamadas todavía se basa en ownership clínico (no en workspace). El filtrado por workspace/sucursal es client-side; reforzar a nivel BD es una fase pendiente.
 
-## Pendiente (próximas fases)
-- Backfill: migrar registros sin `workspace_id` a un workspace por defecto y forzar onboarding de workspace para usuarios nuevos.
-- RLS estricto por workspace: políticas Supabase que filtren por `workspace_id` para defensa en profundidad.
+## Pendiente
+- Backfill ya completado (0 registros sin workspace_id al momento de Fase 4).
+- Filtrado por sucursal en BD (RLS) — actualmente solo client-side. Refuerzo opcional para futuras fases.
