@@ -10,6 +10,8 @@ import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
 import { useNavigate } from "react-router-dom";
 import { useLocale } from "@/hooks/useLocale";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import {
   LineChart,
   Line,
@@ -31,6 +33,8 @@ import {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { timezone } = useLocale();
+  const { currentWorkspace } = useWorkspace();
+  const { activeSucursalId } = useActiveSucursal();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [stats, setStats] = useState({
@@ -91,10 +95,18 @@ const Dashboard = () => {
         .maybeSingle();
       const profesionalId = personalRow?.id ?? currentUserId;
 
+      const wsId = currentWorkspace?.id;
+      const applyScope = <T extends { eq: (col: string, val: any) => T }>(q: T): T => {
+        let qq = q;
+        if (wsId) qq = qq.eq("workspace_id", wsId);
+        if (activeSucursalId) qq = qq.eq("sucursal_id", activeSucursalId);
+        return qq;
+      };
+
       const [pacientesRes, llamadas, visitas] = await Promise.all([
-        supabase.from("pacientes").select("id, status_px"),
-        supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]).eq("profesional_id", profesionalId).gte("fecha_agendada", thirtyDaysAgo).lte("fecha_agendada", `${today}T23:59:59`),
-        supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").eq("profesional_id", profesionalId).gte("fecha_hora_visita", todayStart).lte("fecha_hora_visita", todayEnd),
+        applyScope(supabase.from("pacientes").select("id, status_px") as any),
+        applyScope(supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]).eq("profesional_id", profesionalId).gte("fecha_agendada", thirtyDaysAgo).lte("fecha_agendada", `${today}T23:59:59`) as any),
+        applyScope(supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").eq("profesional_id", profesionalId).gte("fecha_hora_visita", todayStart).lte("fecha_hora_visita", todayEnd) as any),
       ]);
 
       const pacientesAll = pacientesRes.data || [];
@@ -113,32 +125,44 @@ const Dashboard = () => {
       const sixMonthsAgo = subMonths(startOfMonth(now), 5);
 
       const [callsRes, visitsRes, weekCallsRes, weekVisitsRes, altoRiesgoRes, monthlyPacientesRes] = await Promise.all([
-        supabase
-          .from("registro_llamadas")
-          .select("estado, resultado_seguimiento, duracion_minutos, fecha_hora_realizada")
-          .gte("created_at", `${thirtyDaysAgo}T00:00:00`),
-        supabase
-          .from("control_visitas")
-          .select("estado, fecha_hora_visita")
-          .gte("fecha_hora_visita", `${thirtyDaysAgo}T00:00:00`),
-        supabase
-          .from("registro_llamadas")
-          .select("fecha_agendada")
-          .gte("fecha_agendada", sevenDaysAgo.toISOString())
-          .lte("fecha_agendada", todayEnd),
-        supabase
-          .from("control_visitas")
-          .select("fecha_hora_visita")
-          .gte("fecha_hora_visita", sevenDaysAgo.toISOString())
-          .lte("fecha_hora_visita", todayEnd),
-        supabase
-          .from("pacientes")
-          .select("id", { count: "exact", head: true })
-          .eq("grado_dificultad", "alto"),
-        supabase
-          .from("pacientes")
-          .select("created_at")
-          .gte("created_at", sixMonthsAgo.toISOString()),
+        applyScope(
+          supabase
+            .from("registro_llamadas")
+            .select("estado, resultado_seguimiento, duracion_minutos, fecha_hora_realizada")
+            .gte("created_at", `${thirtyDaysAgo}T00:00:00`) as any
+        ),
+        applyScope(
+          supabase
+            .from("control_visitas")
+            .select("estado, fecha_hora_visita")
+            .gte("fecha_hora_visita", `${thirtyDaysAgo}T00:00:00`) as any
+        ),
+        applyScope(
+          supabase
+            .from("registro_llamadas")
+            .select("fecha_agendada")
+            .gte("fecha_agendada", sevenDaysAgo.toISOString())
+            .lte("fecha_agendada", todayEnd) as any
+        ),
+        applyScope(
+          supabase
+            .from("control_visitas")
+            .select("fecha_hora_visita")
+            .gte("fecha_hora_visita", sevenDaysAgo.toISOString())
+            .lte("fecha_hora_visita", todayEnd) as any
+        ),
+        applyScope(
+          supabase
+            .from("pacientes")
+            .select("id", { count: "exact", head: true })
+            .eq("grado_dificultad", "alto") as any
+        ),
+        applyScope(
+          supabase
+            .from("pacientes")
+            .select("created_at")
+            .gte("created_at", sixMonthsAgo.toISOString()) as any
+        ),
       ]);
 
       const callsData = callsRes.data || [];
@@ -214,7 +238,7 @@ const Dashboard = () => {
     };
 
     fetchStats();
-  }, [currentUserId]);
+  }, [currentUserId, currentWorkspace?.id, activeSucursalId]);
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--warning))"];
   const localTime = toZonedTime(currentTime, timezone);
