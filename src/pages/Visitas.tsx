@@ -33,6 +33,8 @@ import { useBulkSelection } from "@/hooks/useBulkSelection";
 import { BulkActionsToolbar, VISITA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 import { AutoAssignDialog } from "@/components/AutoAssignDialog";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useSucursales } from "@/hooks/useSucursales";
+import { SucursalSelect } from "@/components/SucursalSelect";
 
 import type { Paciente, Personal } from "@/types/db";
 
@@ -49,6 +51,9 @@ interface Visita {
 
 const Visitas = () => {
   const { currentWorkspace } = useWorkspace();
+  const { sucursales } = useSucursales();
+  const [sucursalId, setSucursalId] = useState<string | null>(null);
+  const [sucursalIdUnscheduled, setSucursalIdUnscheduled] = useState<string | null>(null);
   const [visitas, setVisitas] = useState<Visita[]>([]);
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [personal, setPersonal] = useState<Personal[]>([]);
