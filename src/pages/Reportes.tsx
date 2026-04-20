@@ -35,6 +35,8 @@ import {
 import * as XLSX from "xlsx";
 
 import type { Personal, LlamadaReporte, VisitaReporte, Paciente } from "@/types/db";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 
 interface DateRange {
   from: Date | undefined;
@@ -42,6 +44,8 @@ interface DateRange {
 }
 
 const Reportes = () => {
+  const { currentWorkspace } = useWorkspace();
+  const { activeSucursalId } = useActiveSucursal();
   const [profesionalId, setProfesionalId] = useState<string>("todos");
   const [dateRange, setDateRange] = useState<DateRange>({
     from: subDays(new Date(), 30),
@@ -76,6 +80,15 @@ const Reportes = () => {
       visitasQuery = visitasQuery.eq("profesional_id", profesionalId);
     }
 
+    if (currentWorkspace?.id) {
+      llamadasQuery = llamadasQuery.eq("workspace_id", currentWorkspace.id);
+      visitasQuery = visitasQuery.eq("workspace_id", currentWorkspace.id);
+    }
+    if (activeSucursalId) {
+      llamadasQuery = llamadasQuery.eq("sucursal_id", activeSucursalId);
+      visitasQuery = visitasQuery.eq("sucursal_id", activeSucursalId);
+    }
+
     if (fromDate) {
       llamadasQuery = llamadasQuery.gte("created_at", fromDate);
       visitasQuery = visitasQuery.gte("created_at", fromDate);
@@ -86,11 +99,22 @@ const Reportes = () => {
       visitasQuery = visitasQuery.lte("created_at", toDate);
     }
 
+    let personalQuery = supabase.from("personal_salud").select("*").eq("activo", true);
+    let pacientesQuery = supabase.from("pacientes").select("*");
+    if (currentWorkspace?.id) {
+      personalQuery = personalQuery.eq("workspace_id", currentWorkspace.id);
+      pacientesQuery = pacientesQuery.eq("workspace_id", currentWorkspace.id);
+    }
+    if (activeSucursalId) {
+      personalQuery = personalQuery.eq("sucursal_id", activeSucursalId);
+      pacientesQuery = pacientesQuery.eq("sucursal_id", activeSucursalId);
+    }
+
     const [profRes, llamadasRes, visitasRes, pacientesRes] = await Promise.all([
-      supabase.from("personal_salud").select("*").eq("activo", true),
+      personalQuery,
       llamadasQuery,
       visitasQuery,
-      supabase.from("pacientes").select("*"),
+      pacientesQuery,
     ]);
 
     if (profRes.data) setProfesionales(profRes.data);
@@ -102,7 +126,7 @@ const Reportes = () => {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profesionalId, dateRange]);
+  }, [profesionalId, dateRange, currentWorkspace?.id, activeSucursalId]);
 
   const calcularEdad = (fechaNacimiento: string) => {
     if (!fechaNacimiento) return 0;
