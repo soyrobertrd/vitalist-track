@@ -32,6 +32,7 @@ import { ExportButton } from "@/components/ExportButton";
 import { useBulkSelection } from "@/hooks/useBulkSelection";
 import { BulkActionsToolbar, VISITA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 import { AutoAssignDialog } from "@/components/AutoAssignDialog";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 import type { Paciente, Personal } from "@/types/db";
 
@@ -47,6 +48,7 @@ interface Visita {
 }
 
 const Visitas = () => {
+  const { currentWorkspace } = useWorkspace();
   const [visitas, setVisitas] = useState<Visita[]>([]);
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [personal, setPersonal] = useState<Personal[]>([]);
@@ -88,25 +90,34 @@ const Visitas = () => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
+    const wsId = currentWorkspace?.id;
+    let visitasQuery = supabase
+      .from("control_visitas")
+      .select(`
+        *,
+        pacientes!control_visitas_paciente_id_fkey(
+          nombre, 
+          apellido, 
+          contacto_px, 
+          contacto_cuidador, 
+          whatsapp_px, 
+          whatsapp_cuidador, 
+          numero_principal
+        ),
+        personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)
+      `)
+      .order("fecha_hora_visita", { ascending: false });
+    let pacientesQuery = supabase.from("pacientes").select("*").eq("status_px", "activo");
+    let personalQuery = supabase.from("personal_salud").select("*").eq("activo", true);
+    if (wsId) {
+      visitasQuery = visitasQuery.eq("workspace_id", wsId);
+      pacientesQuery = pacientesQuery.eq("workspace_id", wsId);
+      personalQuery = personalQuery.eq("workspace_id", wsId);
+    }
     const [visitasRes, pacientesRes, personalRes] = await Promise.all([
-      supabase
-        .from("control_visitas")
-        .select(`
-          *,
-          pacientes!control_visitas_paciente_id_fkey(
-            nombre, 
-            apellido, 
-            contacto_px, 
-            contacto_cuidador, 
-            whatsapp_px, 
-            whatsapp_cuidador, 
-            numero_principal
-          ),
-          personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)
-        `)
-        .order("fecha_hora_visita", { ascending: false }),
-      supabase.from("pacientes").select("*").eq("status_px", "activo"),
-      supabase.from("personal_salud").select("*").eq("activo", true),
+      visitasQuery,
+      pacientesQuery,
+      personalQuery,
     ]);
 
     if (visitasRes.data) {
@@ -231,6 +242,7 @@ const Visitas = () => {
       tipo_visita: formData.get("tipo_visita") as any,
       motivo_visita: formData.get("motivo_visita") as string,
       estado: "pendiente" as any,
+      workspace_id: currentWorkspace?.id ?? null,
     };
 
     const { data: visitaData, error } = await supabase
@@ -303,6 +315,7 @@ const Visitas = () => {
       motivo_visita: formData.get("motivo_visita") as string,
       estado: "realizada" as any,
       notas_visita: "Visita no agendada - " + (formData.get("razon") as string || ""),
+      workspace_id: currentWorkspace?.id ?? null,
     };
 
     const { error } = await supabase.from("control_visitas").insert([data]);
