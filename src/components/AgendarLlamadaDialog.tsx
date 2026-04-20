@@ -16,6 +16,7 @@ import { SugerenciasHorarioInline } from "./SugerenciasHorarioInline";
 import { AlertaConflictoEnVivo } from "./AlertaConflictoEnVivo";
 import { useConflictoEnVivo } from "@/hooks/useConflictoEnVivo";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { AlertTriangle, Wand2 } from "lucide-react";
@@ -39,6 +40,7 @@ interface AgendarLlamadaDialogProps {
 }
 
 export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, onSuccess }: AgendarLlamadaDialogProps) {
+  const { currentWorkspace } = useWorkspace();
   const [loading, setLoading] = useState(false);
   const [pacienteId, setPacienteId] = useState<string>("");
   const [profesionalId, setProfesionalId] = useState<string>("");
@@ -143,6 +145,7 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
       motivo: motivo,
       duracion_estimada: parseInt(formData.get("duracion_estimada") as string) || null,
       notas_adicionales: formData.get("notas_adicionales") as string,
+      workspace_id: currentWorkspace?.id ?? null,
     };
 
     const { error } = await supabase
