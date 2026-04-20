@@ -249,6 +249,7 @@ const Visitas = () => {
       motivo_visita: formData.get("motivo_visita") as string,
       estado: "pendiente" as any,
       workspace_id: currentWorkspace?.id ?? null,
+      sucursal_id: sucursalId ?? sucursales.find(s => s.es_principal)?.id ?? null,
     };
 
     const { data: visitaData, error } = await supabase
@@ -322,6 +323,7 @@ const Visitas = () => {
       estado: "realizada" as any,
       notas_visita: "Visita no agendada - " + (formData.get("razon") as string || ""),
       workspace_id: currentWorkspace?.id ?? null,
+      sucursal_id: sucursalIdUnscheduled ?? sucursales.find(s => s.es_principal)?.id ?? null,
     };
 
     const { error } = await supabase.from("control_visitas").insert([data]);
