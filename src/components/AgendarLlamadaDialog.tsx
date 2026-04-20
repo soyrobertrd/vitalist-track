@@ -150,6 +150,7 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
       duracion_estimada: parseInt(formData.get("duracion_estimada") as string) || null,
       notas_adicionales: formData.get("notas_adicionales") as string,
       workspace_id: currentWorkspace?.id ?? null,
+      sucursal_id: sucursalId ?? sucursales.find(s => s.es_principal)?.id ?? null,
     };
 
     const { error } = await supabase
