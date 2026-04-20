@@ -669,6 +669,7 @@ const Visitas = () => {
                 <Label htmlFor="motivo_visita">Motivo</Label>
                 <Textarea id="motivo_visita" name="motivo_visita" placeholder="Motivo de la visita" />
               </div>
+              <SucursalSelect value={sucursalId} onChange={setSucursalId} />
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Programando..." : "Programar Visita"}
               </Button>
