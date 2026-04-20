@@ -33,6 +33,7 @@ import { useBulkSelection } from "@/hooks/useBulkSelection";
 import { BulkActionsToolbar, VISITA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 import { AutoAssignDialog } from "@/components/AutoAssignDialog";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { useSucursales } from "@/hooks/useSucursales";
 import { SucursalSelect } from "@/components/SucursalSelect";
 
@@ -51,6 +52,7 @@ interface Visita {
 
 const Visitas = () => {
   const { currentWorkspace } = useWorkspace();
+  const { activeSucursalId } = useActiveSucursal();
   const { sucursales } = useSucursales();
   const [sucursalId, setSucursalId] = useState<string | null>(null);
   const [sucursalIdUnscheduled, setSucursalIdUnscheduled] = useState<string | null>(null);
@@ -118,6 +120,11 @@ const Visitas = () => {
       visitasQuery = visitasQuery.eq("workspace_id", wsId);
       pacientesQuery = pacientesQuery.eq("workspace_id", wsId);
       personalQuery = personalQuery.eq("workspace_id", wsId);
+    }
+    if (activeSucursalId) {
+      visitasQuery = visitasQuery.eq("sucursal_id", activeSucursalId);
+      pacientesQuery = pacientesQuery.eq("sucursal_id", activeSucursalId);
+      personalQuery = personalQuery.eq("sucursal_id", activeSucursalId);
     }
     const [visitasRes, pacientesRes, personalRes] = await Promise.all([
       visitasQuery,
@@ -187,7 +194,7 @@ const Visitas = () => {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentWorkspace?.id]);
+  }, [currentWorkspace?.id, activeSucursalId]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
