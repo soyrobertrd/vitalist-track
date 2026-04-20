@@ -301,6 +301,8 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
               </Select>
             </div>
 
+            <SucursalSelect value={sucursalId} onChange={setSucursalId} />
+
             <div className="space-y-2">
               <Label htmlFor="notas_adicionales">Comentarios Adicionales</Label>
               <Textarea
