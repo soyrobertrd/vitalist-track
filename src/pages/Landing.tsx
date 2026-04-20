@@ -384,7 +384,7 @@ export default function Landing() {
                       className="mt-6 w-full"
                       variant={isPro ? "default" : "outline"}
                       onClick={() => {
-                        if (plan.codigo === "enterprise") {
+                        if (plan.codigo === "business" || plan.codigo === "enterprise") {
                           setForm((f) => ({ ...f, plan_interes: plan.nombre }));
                           document
                             .getElementById("contacto")
@@ -394,7 +394,7 @@ export default function Landing() {
                         }
                       }}
                     >
-                      {plan.codigo === "enterprise"
+                      {plan.codigo === "business" || plan.codigo === "enterprise"
                         ? "Hablar con ventas"
                         : `Empezar con ${plan.nombre}`}
                     </Button>
