@@ -158,39 +158,36 @@ const Layout = ({ children }: LayoutProps) => {
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-sidebar-border flex items-center justify-between">
+      <div className={cn(
+        "p-4 border-b border-sidebar-border flex items-center",
+        sidebarCollapsed ? "justify-center" : "justify-between gap-2"
+      )}>
         {!sidebarCollapsed && (
-          <div className="flex items-center gap-2">
-            <Activity className="h-8 w-8 text-primary" />
-            <div>
-              <h1 className="text-xl font-bold text-sidebar-foreground">Health App</h1>
-              <p className="text-xs text-sidebar-foreground/60">Gestión clínica · v2.1.0</p>
+          <div className="flex items-center gap-2 min-w-0">
+            <Activity className="h-8 w-8 text-primary shrink-0" />
+            <div className="min-w-0">
+              <h1 className="text-xl font-bold text-sidebar-foreground truncate">Health App</h1>
+              <p className="text-xs text-sidebar-foreground/60 truncate">Gestión clínica · v2.1.0</p>
             </div>
           </div>
         )}
-        {sidebarCollapsed && <Activity className="h-6 w-6 text-primary mx-auto" />}
-      </div>
-
-      {/* Toggle Button - Solo en desktop */}
-      {!isMobile && (
-        <div className="p-2">
+        {!isMobile && (
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="w-full text-sidebar-foreground hover:bg-sidebar-accent"
+            className="h-8 w-8 shrink-0 text-sidebar-foreground hover:bg-sidebar-accent"
+            aria-label={sidebarCollapsed ? "Expandir menú" : "Colapsar menú"}
           >
             {sidebarCollapsed ? (
               <ChevronRight className="h-4 w-4" />
             ) : (
-              <>
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                Colapsar
-              </>
+              <ChevronLeft className="h-4 w-4" />
             )}
           </Button>
-        </div>
-      )}
+        )}
+        {sidebarCollapsed && isMobile && <Activity className="h-6 w-6 text-primary" />}
+      </div>
 
       {/* Navigation */}
       <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
