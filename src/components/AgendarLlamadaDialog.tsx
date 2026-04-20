@@ -12,6 +12,9 @@ import { PacienteCombobox } from "./PacienteCombobox";
 import { ProfesionalCombobox } from "./ProfesionalCombobox";
 import { ConflictoAgendamientoDialog } from "./ConflictoAgendamientoDialog";
 import { AutoAssignDialog } from "./AutoAssignDialog";
+import { SugerenciasHorarioInline } from "./SugerenciasHorarioInline";
+import { AlertaConflictoEnVivo } from "./AlertaConflictoEnVivo";
+import { useConflictoEnVivo } from "@/hooks/useConflictoEnVivo";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -45,10 +48,18 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
   const [pendingSubmit, setPendingSubmit] = useState<any>(null);
   const [fechaAlerta, setFechaAlerta] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedHora, setSelectedHora] = useState<string>("");
+  const [selectedDuracion, setSelectedDuracion] = useState<string>("15");
   const [autoAssignOpen, setAutoAssignOpen] = useState(false);
   const [selectedPacienteData, setSelectedPacienteData] = useState<any>(null);
   
   const { validarFechaAgendamiento, siguienteDiaLaborable } = useDiasLaborables();
+  const { conflictos, checking } = useConflictoEnVivo(
+    profesionalId,
+    selectedDate,
+    selectedHora,
+    parseInt(selectedDuracion) || 15
+  );
 
   const handlePacienteChange = async (id: string) => {
     setPacienteId(id);
@@ -228,6 +239,8 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
                   name="hora"
                   type="time"
                   required
+                  value={selectedHora}
+                  onChange={(e) => setSelectedHora(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
@@ -238,10 +251,25 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
                   type="number"
                   min="5"
                   max="120"
-                  defaultValue="15"
+                  value={selectedDuracion}
+                  onChange={(e) => setSelectedDuracion(e.target.value)}
                 />
               </div>
             </div>
+
+            {profesionalId && (
+              <SugerenciasHorarioInline
+                profesionalId={profesionalId}
+                fechaBase={selectedDate ? new Date(`${selectedDate}T12:00:00`) : new Date()}
+                duracionMinutos={parseInt(selectedDuracion) || 15}
+                onSelect={(fecha, hora) => {
+                  setSelectedDate(format(fecha, "yyyy-MM-dd"));
+                  setSelectedHora(hora);
+                }}
+              />
+            )}
+
+            <AlertaConflictoEnVivo conflictos={conflictos} checking={checking} />
 
             {fechaAlerta && (
               <Alert variant="destructive">

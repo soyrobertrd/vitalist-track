@@ -24,6 +24,7 @@ import {
   Menu,
   CalendarDays,
   ScanLine,
+  Route,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -78,6 +79,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/calendario", label: "Calendario", icon: CalendarDays },
         { path: "/llamadas", label: "Llamadas", icon: Phone },
         { path: "/visitas", label: "Visitas", icon: Calendar },
+        { path: "/rutas", label: "Rutas Optimizadas", icon: Route },
         { path: "/recepcion", label: "Recepción", icon: ScanLine }
       ]
     },
