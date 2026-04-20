@@ -518,6 +518,7 @@ const Visitas = () => {
                     placeholder="Motivo de la visita" 
                   />
                 </div>
+                <SucursalSelect value={sucursalIdUnscheduled} onChange={setSucursalIdUnscheduled} />
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Registrando..." : "Registrar Visita"}
                 </Button>
