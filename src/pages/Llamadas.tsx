@@ -25,6 +25,7 @@ import { ExportButton } from "@/components/ExportButton";
 import { useBulkSelection } from "@/hooks/useBulkSelection";
 import { BulkActionsToolbar, LLAMADA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 import type { Paciente, Personal } from "@/types/db";
 
@@ -45,6 +46,7 @@ interface Llamada {
 }
 
 const Llamadas = () => {
+  const { currentWorkspace } = useWorkspace();
   const [llamadas, setLlamadas] = useState<Llamada[]>([]);
   const [llamadasAgendadas, setLlamadasAgendadas] = useState<Llamada[]>([]);
   const [llamadasHistorial, setLlamadasHistorial] = useState<Llamada[]>([]);
@@ -69,13 +71,22 @@ const Llamadas = () => {
   const [selectionMode, setSelectionMode] = useState(false);
 
   const fetchData = async () => {
+    const wsId = currentWorkspace?.id;
+    let llamadasQuery = supabase
+      .from("registro_llamadas")
+      .select("*, pacientes!registro_llamadas_paciente_id_fkey(nombre, apellido), personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
+      .order("fecha_agendada", { ascending: true });
+    let pacientesQuery = supabase.from("pacientes").select("*").eq("status_px", "activo");
+    let personalQuery = supabase.from("personal_salud").select("*").eq("activo", true);
+    if (wsId) {
+      llamadasQuery = llamadasQuery.eq("workspace_id", wsId);
+      pacientesQuery = pacientesQuery.eq("workspace_id", wsId);
+      personalQuery = personalQuery.eq("workspace_id", wsId);
+    }
     const [llamadasRes, pacientesRes, personalRes] = await Promise.all([
-      supabase
-        .from("registro_llamadas")
-        .select("*, pacientes!registro_llamadas_paciente_id_fkey(nombre, apellido), personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
-        .order("fecha_agendada", { ascending: true }),
-      supabase.from("pacientes").select("*").eq("status_px", "activo"),
-      supabase.from("personal_salud").select("*").eq("activo", true),
+      llamadasQuery,
+      pacientesQuery,
+      personalQuery,
     ]);
 
     if (llamadasRes.data) {
@@ -138,7 +149,8 @@ const Llamadas = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkspace?.id]);
 
   const formatearTexto = (texto: string | null) => {
     if (!texto) return 'N/A';
