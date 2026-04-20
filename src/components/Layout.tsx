@@ -51,6 +51,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ThemeCustomizer } from "@/components/ThemeCustomizer";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
+import { SucursalSwitcher } from "@/components/SucursalSwitcher";
 
 interface LayoutProps {
   children: ReactNode;
@@ -354,6 +355,7 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
           <div className="flex items-center gap-2">
             <OfflineIndicator />
+            <SucursalSwitcher compact />
             <GlobalSearch />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -378,6 +380,7 @@ const Layout = ({ children }: LayoutProps) => {
               <Breadcrumbs />
               <div className="flex items-center gap-3">
                 <OfflineIndicator />
+                <SucursalSwitcher />
                 <GlobalSearch />
               </div>
             </div>
