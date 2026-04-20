@@ -26,6 +26,7 @@ import { useBulkSelection } from "@/hooks/useBulkSelection";
 import { BulkActionsToolbar, LLAMADA_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 
 import type { Paciente, Personal } from "@/types/db";
 
@@ -47,6 +48,7 @@ interface Llamada {
 
 const Llamadas = () => {
   const { currentWorkspace } = useWorkspace();
+  const { activeSucursalId } = useActiveSucursal();
   const [llamadas, setLlamadas] = useState<Llamada[]>([]);
   const [llamadasAgendadas, setLlamadasAgendadas] = useState<Llamada[]>([]);
   const [llamadasHistorial, setLlamadasHistorial] = useState<Llamada[]>([]);
@@ -82,6 +84,11 @@ const Llamadas = () => {
       llamadasQuery = llamadasQuery.eq("workspace_id", wsId);
       pacientesQuery = pacientesQuery.eq("workspace_id", wsId);
       personalQuery = personalQuery.eq("workspace_id", wsId);
+    }
+    if (activeSucursalId) {
+      llamadasQuery = llamadasQuery.eq("sucursal_id", activeSucursalId);
+      pacientesQuery = pacientesQuery.eq("sucursal_id", activeSucursalId);
+      personalQuery = personalQuery.eq("sucursal_id", activeSucursalId);
     }
     const [llamadasRes, pacientesRes, personalRes] = await Promise.all([
       llamadasQuery,
@@ -150,7 +157,7 @@ const Llamadas = () => {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentWorkspace?.id]);
+  }, [currentWorkspace?.id, activeSucursalId]);
 
   const formatearTexto = (texto: string | null) => {
     if (!texto) return 'N/A';
