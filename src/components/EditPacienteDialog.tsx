@@ -517,7 +517,6 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
               </div>
               <div className="space-y-1 invisible" />
             </div>
-            </div>
           </div>
 
           {/* Sección: Contacto del Paciente */}
