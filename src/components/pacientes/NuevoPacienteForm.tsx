@@ -23,6 +23,7 @@ import { isValidIntlPhone } from "@/lib/intlPhone";
 import { useLocale } from "@/hooks/useLocale";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import type { Personal } from "@/hooks/usePersonal";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { ConsentimientoInformado, TERMS_VERSION_CURRENT, type ConsentimientoData } from "@/components/ConsentimientoInformado";
 
 // Validation schema (country-aware factory)
