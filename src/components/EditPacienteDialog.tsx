@@ -108,6 +108,10 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [emailCuidador, setEmailCuidador] = useState("");
   const [periodoLlamada, setPeriodoLlamada] = useState<number>(30);
   const [periodoVisita, setPeriodoVisita] = useState<number>(90);
+  const [nacionalidad, setNacionalidad] = useState<string>("Dominicana");
+  const [tipoDocumento, setTipoDocumento] = useState<string>("cedula");
+  const [numeroDocumento, setNumeroDocumento] = useState<string>("");
+  const isDominicano = nacionalidad === "Dominicana" && tipoDocumento === "cedula";
   
   // Auto-disable notifications if no email
   const hasAnyEmail = !!(emailPx.trim() || emailCuidador.trim());
@@ -147,7 +151,9 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       setEmailCuidador(paciente.email_cuidador || "");
       setStatusPx(paciente.status_px || "activo");
       setMotivoInactividad(paciente.motivo_inactividad || "");
-      // If patient already has nombre, apellido, fecha_nacimiento and sexo, consider it validated
+      setNacionalidad(paciente.nacionalidad || "Dominicana");
+      setTipoDocumento(paciente.tipo_documento || "cedula");
+      setNumeroDocumento(paciente.numero_documento || "");
       const hasValidatedData = !!(paciente.nombre && paciente.apellido && paciente.fecha_nacimiento && paciente.sexo);
       setJceValidatedOnLoad(hasValidatedData);
       fetchPersonal();
@@ -273,7 +279,10 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
     const longitudNum = longitudStr && !isNaN(parseFloat(longitudStr)) ? parseFloat(longitudStr) : null;
 
     const updateData = {
-      cedula: formValues.cedula,
+      nacionalidad,
+      tipo_documento: tipoDocumento,
+      cedula: isDominicano ? formValues.cedula : (formValues.cedula || ''),
+      numero_documento: !isDominicano ? (numeroDocumento.trim() || null) : null,
       nombre: formValues.nombre,
       apellido: formValues.apellido,
       fecha_nacimiento: fechaNacimiento || null,
@@ -364,62 +373,85 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
           {/* Sección: Datos de Identificación */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Datos de Identificación</h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1">
-                <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
-                <div className="relative">
-                  <Input 
-                    id="cedula" 
-                    name="cedula" 
-                    value={formData.cedula}
-                    maxLength={11}
-                    required
-                    onBlur={(e) => {
-                      // If NOT validated yet, fetch data automatically on blur
-                      if (!jceValidatedOnLoad && !cedulaData) {
-                        fetchCedulaData(e.target.value);
-                      }
-                    }}
-                    disabled={loadingCedula}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, '');
-                      e.target.value = value;
-                      handleInputChange("cedula", value);
-                      // If cedula changes, reset validation status
-                      if (value !== paciente?.cedula) {
-                        setJceValidatedOnLoad(false);
-                        setCedulaData(null);
-                      }
-                    }}
-                    className="pr-8"
-                  />
-                  {loadingCedula && (
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                    </div>
-                  )}
-                  {!loadingCedula && (cedulaData || jceValidatedOnLoad) && (
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2" title="Validado con JCE">
-                      <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    </div>
-                  )}
+                <Label className="text-xs">Nacionalidad *</Label>
+                <Select
+                  value={nacionalidad}
+                  onValueChange={(v) => {
+                    setNacionalidad(v);
+                    setTipoDocumento(v === "Dominicana" ? "cedula" : "pasaporte");
+                  }}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Dominicana">Dominicana</SelectItem>
+                    <SelectItem value="Haitiana">Haitiana</SelectItem>
+                    <SelectItem value="Venezolana">Venezolana</SelectItem>
+                    <SelectItem value="Colombiana">Colombiana</SelectItem>
+                    <SelectItem value="Estadounidense">Estadounidense</SelectItem>
+                    <SelectItem value="Española">Española</SelectItem>
+                    <SelectItem value="Otra">Otra</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {!isDominicano && (
+                <div className="space-y-1">
+                  <Label className="text-xs">Tipo de documento *</Label>
+                  <Select value={tipoDocumento} onValueChange={setTipoDocumento}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pasaporte">Pasaporte</SelectItem>
+                      <SelectItem value="id_extranjero">ID extranjero</SelectItem>
+                      <SelectItem value="licencia">Licencia de conducir</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                {loadingCedula && (
-                  <div className="flex items-center gap-2 text-xs text-primary">
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                    Consultando datos de la JCE...
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {isDominicano ? (
+                <div className="space-y-1">
+                  <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
+                  <div className="relative">
+                    <Input
+                      id="cedula"
+                      name="cedula"
+                      value={formData.cedula}
+                      maxLength={11}
+                      required
+                      onBlur={(e) => {
+                        if (!jceValidatedOnLoad && !cedulaData) {
+                          fetchCedulaData(e.target.value);
+                        }
+                      }}
+                      disabled={loadingCedula}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '');
+                        handleInputChange("cedula", value);
+                        if (value !== paciente?.cedula) {
+                          setJceValidatedOnLoad(false);
+                          setCedulaData(null);
+                        }
+                      }}
+                      className="pr-8"
+                    />
+                    {loadingCedula && (
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      </div>
+                    )}
+                    {!loadingCedula && (cedulaData || jceValidatedOnLoad) && (
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2" title="Validado con JCE">
+                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                      </div>
+                    )}
                   </div>
-                )}
-                {(cedulaData || jceValidatedOnLoad) && !loadingCedula && (
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-xs text-green-600">
-                      <CheckCircle2 className="h-3 w-3" />
-                      Datos validados con JCE
-                    </div>
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
-                      size="sm"
+                  {(cedulaData || jceValidatedOnLoad) && !loadingCedula && (
+                    <Button
+                      type="button" variant="ghost" size="sm"
                       className="h-6 text-xs px-2 w-fit"
                       onClick={() => {
                         setJceValidatedOnLoad(false);
@@ -428,49 +460,43 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                       }}
                       disabled={loadingCedula || formData.cedula.length !== 11}
                     >
-                      <RefreshCw className="h-3 w-3 mr-1" />
-                      Re-validar
+                      <RefreshCw className="h-3 w-3 mr-1" /> Re-validar JCE
                     </Button>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <Label htmlFor="numero_documento" className="text-xs">Número de documento *</Label>
+                  <Input
+                    value={numeroDocumento}
+                    onChange={(e) => setNumeroDocumento(e.target.value)}
+                    maxLength={50}
+                    required
+                  />
+                </div>
+              )}
               <div className="md:col-span-2 space-y-1">
                 <Label htmlFor="nombre" className="text-xs">Nombre *</Label>
-                <Input 
-                  id="nombre" 
-                  name="nombre" 
-                  value={formData.nombre}
-                  maxLength={100}
-                  required
-                  readOnly
-                  className="bg-muted"
+                <Input
+                  id="nombre" name="nombre"
+                  value={formData.nombre} maxLength={100} required
+                  onChange={(e) => handleInputChange("nombre", e.target.value)}
                 />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="apellido" className="text-xs">Apellido *</Label>
-                <Input 
-                  id="apellido" 
-                  name="apellido" 
-                  value={formData.apellido}
-                  maxLength={100}
-                  required
-                  readOnly
-                  className="bg-muted"
+                <Input
+                  id="apellido" name="apellido"
+                  value={formData.apellido} maxLength={100} required
+                  onChange={(e) => handleInputChange("apellido", e.target.value)}
                 />
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-1">
                 <Label htmlFor="sexo" className="text-xs">Sexo</Label>
-                <Select 
-                  name="sexo" 
-                  value={selectedSexo}
-                  onValueChange={setSelectedSexo}
-                  disabled
-                >
-                  <SelectTrigger className="bg-muted">
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
+                <Select name="sexo" value={selectedSexo} onValueChange={setSelectedSexo}>
+                  <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="M">Masculino</SelectItem>
                     <SelectItem value="F">Femenino</SelectItem>
@@ -479,26 +505,18 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
               </div>
               <div className="space-y-1">
                 <Label htmlFor="fecha_nacimiento" className="text-xs">Fecha Nacimiento</Label>
-                <Input 
-                  id="fecha_nacimiento" 
-                  name="fecha_nacimiento" 
-                  type="date"
+                <Input
+                  id="fecha_nacimiento" name="fecha_nacimiento" type="date"
                   value={fechaNacimiento}
-                  readOnly
-                  className="bg-muted"
+                  onChange={(e) => setFechaNacimiento(e.target.value)}
                 />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Edad</Label>
-                <Input 
-                  readOnly
-                  className="bg-muted"
-                  value={calculateAge()}
-                />
+                <Input readOnly className="bg-muted" value={calculateAge()} />
               </div>
-              <div className="space-y-1 invisible">
-                {/* Placeholder para alinear */}
-              </div>
+              <div className="space-y-1 invisible" />
+            </div>
             </div>
           </div>
 

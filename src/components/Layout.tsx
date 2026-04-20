@@ -25,6 +25,7 @@ import {
   CalendarDays,
   ScanLine,
   Route,
+  Building2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -94,6 +95,7 @@ const Layout = ({ children }: LayoutProps) => {
       ]
     },
     { path: "/personal", icon: UserCog, label: "Personal", adminOnly: true },
+    { path: "/organizaciones", icon: Building2, label: "Organizaciones", adminOnly: true },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
     { path: "/plantillas", icon: MessageSquare, label: "Plantillas (WhatsApp/Email)", adminOnly: true },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
