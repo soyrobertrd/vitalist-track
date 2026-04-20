@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 export interface Paciente {
   id: string;
@@ -47,6 +48,7 @@ const defaultFilters: PacienteFilters = {
 };
 
 export function usePacientes(includeInactive: boolean = false) {
+  const { currentWorkspace } = useWorkspace();
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<PacienteFilters>(defaultFilters);
@@ -57,7 +59,11 @@ export function usePacientes(includeInactive: boolean = false) {
       .from("pacientes")
       .select("*")
       .order("nombre", { ascending: true });
-    
+
+    if (currentWorkspace) {
+      query = query.eq("workspace_id", currentWorkspace.id);
+    }
+
     if (!includeInactive) {
       query = query.neq("status_px", "inactivo");
     } else {
@@ -72,7 +78,7 @@ export function usePacientes(includeInactive: boolean = false) {
       setPacientes(data || []);
     }
     setLoading(false);
-  }, [includeInactive]);
+  }, [includeInactive, currentWorkspace]);
 
   const filteredPacientes = useMemo(() => {
     return pacientes.filter((p) => {
