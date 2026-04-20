@@ -151,7 +151,9 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       setEmailCuidador(paciente.email_cuidador || "");
       setStatusPx(paciente.status_px || "activo");
       setMotivoInactividad(paciente.motivo_inactividad || "");
-      // If patient already has nombre, apellido, fecha_nacimiento and sexo, consider it validated
+      setNacionalidad(paciente.nacionalidad || "Dominicana");
+      setTipoDocumento(paciente.tipo_documento || "cedula");
+      setNumeroDocumento(paciente.numero_documento || "");
       const hasValidatedData = !!(paciente.nombre && paciente.apellido && paciente.fecha_nacimiento && paciente.sexo);
       setJceValidatedOnLoad(hasValidatedData);
       fetchPersonal();
@@ -277,7 +279,10 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
     const longitudNum = longitudStr && !isNaN(parseFloat(longitudStr)) ? parseFloat(longitudStr) : null;
 
     const updateData = {
-      cedula: formValues.cedula,
+      nacionalidad,
+      tipo_documento: tipoDocumento,
+      cedula: isDominicano ? formValues.cedula : (formValues.cedula || ''),
+      numero_documento: !isDominicano ? (numeroDocumento.trim() || null) : null,
       nombre: formValues.nombre,
       apellido: formValues.apellido,
       fecha_nacimiento: fechaNacimiento || null,
