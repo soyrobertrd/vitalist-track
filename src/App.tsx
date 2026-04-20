@@ -39,6 +39,7 @@ const DashboardGeografico = lazy(() => import("./pages/DashboardGeografico"));
 const Visitas = lazy(() => import("./pages/Visitas"));
 const Calendario = lazy(() => import("./pages/Calendario"));
 const Planes = lazy(() => import("./pages/Planes"));
+const RutasOptimizadas = lazy(() => import("./pages/RutasOptimizadas"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -169,6 +170,10 @@ const App = () => {
                 <Route
                   path="/planes"
                   element={session ? <Layout><Planes /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/rutas"
+                  element={session ? <Layout><RutasOptimizadas /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
