@@ -224,6 +224,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       status_px: "activo" as const,
       dias_no_visita: diasNoVisita,
       workspace_id: currentWorkspace?.id ?? null,
+      sucursal_id: sucursalId ?? sucursales.find(s => s.es_principal)?.id ?? null,
     };
 
     const { data: paciente, error: pacienteError } = await supabase
