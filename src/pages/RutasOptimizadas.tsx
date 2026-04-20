@@ -51,7 +51,7 @@ const RutasOptimizadas = () => {
       )
       .gte("fecha_hora_visita", `${fecha}T00:00:00`)
       .lt("fecha_hora_visita", `${fecha}T23:59:59`)
-      .eq("tipo_visita", "Domicilio")
+      .eq("tipo_visita", "domicilio")
       .neq("estado", "cancelada");
 
     if (profesionalId !== "all") {
@@ -142,9 +142,9 @@ const RutasOptimizadas = () => {
       </Card>
 
       {totalConCoords < totalParadas && totalParadas > 0 && (
-        <Card className="border-amber-500/40 bg-amber-500/5">
+        <Card className="border-warning/40 bg-warning/5">
           <CardContent className="pt-4 text-sm">
-            <Sparkles className="h-4 w-4 inline mr-1 text-amber-600" />
+            <Sparkles className="h-4 w-4 inline mr-1 text-warning" />
             <strong>{totalParadas - totalConCoords}</strong> visita(s) sin coordenadas geográficas — no se incluirán en la optimización por distancia. Edita el paciente para agregar latitud/longitud.
           </CardContent>
         </Card>
