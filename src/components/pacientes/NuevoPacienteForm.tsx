@@ -24,6 +24,8 @@ import { useLocale } from "@/hooks/useLocale";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import type { Personal } from "@/hooks/usePersonal";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useSucursales } from "@/hooks/useSucursales";
+import { SucursalSelect } from "@/components/SucursalSelect";
 import { ConsentimientoInformado, TERMS_VERSION_CURRENT, type ConsentimientoData } from "@/components/ConsentimientoInformado";
 
 // Validation schema (country-aware factory)
@@ -93,6 +95,8 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
   const [selectedSexo, setSelectedSexo] = useState<string>("");
   const [diasNoVisita, setDiasNoVisita] = useState<number[]>([]);
+  const [sucursalId, setSucursalId] = useState<string | null>(null);
+  const { sucursales } = useSucursales();
   const [medicamentos, setMedicamentos] = useState<{nombre: string, dosis: string, frecuencia: string}[]>([{nombre: "", dosis: "", frecuencia: ""}]);
   const [notificacionesActivas, setNotificacionesActivas] = useState(true);
   const [consent, setConsent] = useState<ConsentimientoData>({
