@@ -24,6 +24,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { MedicamentosPaciente } from "@/components/MedicamentosPaciente";
 import { DiasRestriccionPaciente } from "@/components/DiasRestriccionPaciente";
+import { SucursalSelect } from "@/components/SucursalSelect";
 
 const buildEditPacienteSchema = (country: CountryCode) => z.object({
   cedula: z.string()
@@ -111,6 +112,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [nacionalidad, setNacionalidad] = useState<string>("Dominicana");
   const [tipoDocumento, setTipoDocumento] = useState<string>("cedula");
   const [numeroDocumento, setNumeroDocumento] = useState<string>("");
+  const [sucursalId, setSucursalId] = useState<string | null>(null);
   const isDominicano = nacionalidad === "Dominicana" && tipoDocumento === "cedula";
   
   // Auto-disable notifications if no email
@@ -154,6 +156,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       setNacionalidad(paciente.nacionalidad || "Dominicana");
       setTipoDocumento(paciente.tipo_documento || "cedula");
       setNumeroDocumento(paciente.numero_documento || "");
+      setSucursalId(paciente.sucursal_id || null);
       const hasValidatedData = !!(paciente.nombre && paciente.apellido && paciente.fecha_nacimiento && paciente.sexo);
       setJceValidatedOnLoad(hasValidatedData);
       fetchPersonal();
@@ -310,6 +313,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       status_px: statusPx as any,
       dias_no_visita: diasNoVisita,
       motivo_inactividad: statusPx === 'inactivo' ? motivoInactividad : null,
+      sucursal_id: sucursalId,
     };
 
     const { error } = await supabase
@@ -757,6 +761,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                   </SelectContent>
                 </Select>
               </div>
+              <SucursalSelect value={sucursalId} onChange={setSucursalId} />
             </div>
             
             {/* Motivo de inactividad - solo visible cuando status es inactivo */}
