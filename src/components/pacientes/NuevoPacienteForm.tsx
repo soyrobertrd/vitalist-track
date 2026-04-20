@@ -314,70 +314,128 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
         {/* Identification Section */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Datos de Identificación</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+          {/* Nationality + document type */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-1">
-              <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
-              <div className="relative">
-                <Input 
-                  id="cedula" 
-                  name="cedula" 
-                  required 
-                  maxLength={11}
-                  pattern="\d{11}"
-                  onBlur={(e) => handleCedulaBlur(e.target.value)}
-                  disabled={loadingCedula}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '');
-                    e.target.value = value;
-                    handleInputChange("cedula", value);
-                  }}
-                  className="pr-8"
-                />
+              <Label htmlFor="nacionalidad" className="text-xs">Nacionalidad *</Label>
+              <Select
+                value={formData.nacionalidad}
+                onValueChange={(v) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    nacionalidad: v,
+                    tipo_documento: v === "Dominicana" ? "cedula" : "pasaporte",
+                    cedula: v === "Dominicana" ? prev.cedula : "",
+                    numero_documento: v === "Dominicana" ? "" : prev.numero_documento,
+                  }));
+                }}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Dominicana">Dominicana</SelectItem>
+                  <SelectItem value="Haitiana">Haitiana</SelectItem>
+                  <SelectItem value="Venezolana">Venezolana</SelectItem>
+                  <SelectItem value="Colombiana">Colombiana</SelectItem>
+                  <SelectItem value="Estadounidense">Estadounidense</SelectItem>
+                  <SelectItem value="Española">Española</SelectItem>
+                  <SelectItem value="Otra">Otra</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {!isDominicano && (
+              <div className="space-y-1">
+                <Label htmlFor="tipo_documento" className="text-xs">Tipo de documento *</Label>
+                <Select
+                  value={formData.tipo_documento}
+                  onValueChange={(v) => setFormData(prev => ({ ...prev, tipo_documento: v }))}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pasaporte">Pasaporte</SelectItem>
+                    <SelectItem value="id_extranjero">ID extranjero</SelectItem>
+                    <SelectItem value="licencia">Licencia de conducir</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {isDominicano ? (
+              <div className="space-y-1">
+                <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
+                <div className="relative">
+                  <Input
+                    id="cedula"
+                    name="cedula"
+                    required
+                    maxLength={11}
+                    pattern="\d{11}"
+                    value={formData.cedula}
+                    onBlur={(e) => handleCedulaBlur(e.target.value)}
+                    disabled={loadingCedula}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      handleInputChange("cedula", value);
+                    }}
+                    className="pr-8"
+                  />
+                  {loadingCedula && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    </div>
+                  )}
+                  {!loadingCedula && cedulaData && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2" title="Validado con JCE">
+                      <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    </div>
+                  )}
+                </div>
                 {loadingCedula && (
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  <div className="flex items-center gap-2 text-xs text-primary">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    Consultando datos de la JCE...
                   </div>
                 )}
-                {!loadingCedula && cedulaData && (
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2" title="Validado con JCE">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                {cedulaData && !loadingCedula && (
+                  <div className="flex items-center gap-2 text-xs text-green-600">
+                    <CheckCircle2 className="h-3 w-3" />
+                    Datos cargados (puede editarlos manualmente)
                   </div>
                 )}
               </div>
-              {loadingCedula && (
-                <div className="flex items-center gap-2 text-xs text-primary">
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  Consultando datos de la JCE...
-                </div>
-              )}
-              {cedulaData && !loadingCedula && (
-                <div className="flex items-center gap-2 text-xs text-green-600">
-                  <CheckCircle2 className="h-3 w-3" />
-                  Datos validados con JCE
-                </div>
-              )}
-            </div>
+            ) : (
+              <div className="space-y-1">
+                <Label htmlFor="numero_documento" className="text-xs">Número de documento *</Label>
+                <Input
+                  id="numero_documento"
+                  name="numero_documento"
+                  required
+                  maxLength={50}
+                  value={formData.numero_documento}
+                  onChange={(e) => handleInputChange("numero_documento", e.target.value)}
+                  placeholder={formData.tipo_documento === "pasaporte" ? "AB1234567" : "Número del documento"}
+                />
+              </div>
+            )}
             <div className="md:col-span-2 space-y-1">
               <Label htmlFor="nombre" className="text-xs">Nombre *</Label>
-              <Input 
-                id="nombre" 
-                name="nombre" 
-                required 
-                value={cedulaData?.nombres || formData.nombre}
-                readOnly={!!cedulaData}
-                className={cedulaData ? 'bg-muted' : ''}
+              <Input
+                id="nombre"
+                name="nombre"
+                required
+                value={formData.nombre}
                 onChange={(e) => handleInputChange("nombre", e.target.value)}
               />
             </div>
             <div className="space-y-1">
               <Label htmlFor="apellido" className="text-xs">Apellido *</Label>
-              <Input 
-                id="apellido" 
-                name="apellido" 
-                required 
-                value={cedulaData ? `${cedulaData.apellido1} ${cedulaData.apellido2}`.trim() : formData.apellido}
-                readOnly={!!cedulaData}
-                className={cedulaData ? 'bg-muted' : ''}
+              <Input
+                id="apellido"
+                name="apellido"
+                required
+                value={formData.apellido}
                 onChange={(e) => handleInputChange("apellido", e.target.value)}
               />
             </div>
@@ -385,8 +443,8 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-1">
               <Label htmlFor="sexo" className="text-xs">Sexo</Label>
-              <Select name="sexo" value={selectedSexo} onValueChange={setSelectedSexo} disabled={!!cedulaData}>
-                <SelectTrigger className={cedulaData ? 'bg-muted' : ''}>
+              <Select name="sexo" value={selectedSexo} onValueChange={setSelectedSexo}>
+                <SelectTrigger>
                   <SelectValue placeholder="Seleccionar" />
                 </SelectTrigger>
                 <SelectContent>
@@ -397,13 +455,12 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
             </div>
             <div className="space-y-1">
               <Label htmlFor="fecha_nacimiento" className="text-xs">Fecha Nacimiento</Label>
-              <Input 
-                id="fecha_nacimiento" 
-                name="fecha_nacimiento" 
-                type="date" 
-                defaultValue={cedulaData?.fecha_nac || ''}
-                readOnly={!!cedulaData}
-                className={cedulaData ? 'bg-muted' : ''}
+              <Input
+                id="fecha_nacimiento"
+                name="fecha_nacimiento"
+                type="date"
+                value={formData.fecha_nacimiento}
+                onChange={(e) => handleInputChange("fecha_nacimiento", e.target.value)}
               />
             </div>
             <div className="space-y-1">
