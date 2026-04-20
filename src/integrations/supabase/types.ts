@@ -688,6 +688,79 @@ export type Database = {
           },
         ]
       }
+      diagnosticos_paciente: {
+        Row: {
+          codigo_cie10: string | null
+          created_at: string
+          created_by: string | null
+          descripcion: string
+          diagnosticado_por: string | null
+          estado: string
+          evolucion_id: string | null
+          fecha_diagnostico: string
+          fecha_resolucion: string | null
+          id: string
+          notas: string | null
+          paciente_id: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          codigo_cie10?: string | null
+          created_at?: string
+          created_by?: string | null
+          descripcion: string
+          diagnosticado_por?: string | null
+          estado?: string
+          evolucion_id?: string | null
+          fecha_diagnostico?: string
+          fecha_resolucion?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          tipo?: string
+          updated_at?: string
+        }
+        Update: {
+          codigo_cie10?: string | null
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string
+          diagnosticado_por?: string | null
+          estado?: string
+          evolucion_id?: string | null
+          fecha_diagnostico?: string
+          fecha_resolucion?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diagnosticos_paciente_diagnosticado_por_fkey"
+            columns: ["diagnosticado_por"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "diagnosticos_paciente_evolucion_id_fkey"
+            columns: ["evolucion_id"]
+            isOneToOne: false
+            referencedRelation: "evoluciones_soap"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "diagnosticos_paciente_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dias_no_laborables: {
         Row: {
           descripcion: string
@@ -705,6 +778,79 @@ export type Database = {
           fecha?: string
         }
         Relationships: []
+      }
+      documentos_clinicos: {
+        Row: {
+          categoria: string
+          created_at: string
+          descripcion: string | null
+          evolucion_id: string | null
+          fecha_documento: string | null
+          id: string
+          mime_type: string | null
+          paciente_id: string
+          storage_path: string
+          subido_por: string | null
+          tamano_bytes: number | null
+          titulo: string
+          updated_at: string
+          visita_id: string | null
+        }
+        Insert: {
+          categoria?: string
+          created_at?: string
+          descripcion?: string | null
+          evolucion_id?: string | null
+          fecha_documento?: string | null
+          id?: string
+          mime_type?: string | null
+          paciente_id: string
+          storage_path: string
+          subido_por?: string | null
+          tamano_bytes?: number | null
+          titulo: string
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          descripcion?: string | null
+          evolucion_id?: string | null
+          fecha_documento?: string | null
+          id?: string
+          mime_type?: string | null
+          paciente_id?: string
+          storage_path?: string
+          subido_por?: string | null
+          tamano_bytes?: number | null
+          titulo?: string
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_clinicos_evolucion_id_fkey"
+            columns: ["evolucion_id"]
+            isOneToOne: false
+            referencedRelation: "evoluciones_soap"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_clinicos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_clinicos_visita_id_fkey"
+            columns: ["visita_id"]
+            isOneToOne: false
+            referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       encuestas: {
         Row: {
@@ -771,6 +917,79 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evoluciones_soap: {
+        Row: {
+          analisis: string | null
+          created_at: string
+          created_by: string | null
+          fecha_evolucion: string
+          id: string
+          motivo_consulta: string | null
+          objetivo: string | null
+          paciente_id: string
+          plan: string | null
+          profesional_id: string | null
+          signos_vitales: Json | null
+          subjetivo: string | null
+          updated_at: string
+          visita_id: string | null
+        }
+        Insert: {
+          analisis?: string | null
+          created_at?: string
+          created_by?: string | null
+          fecha_evolucion?: string
+          id?: string
+          motivo_consulta?: string | null
+          objetivo?: string | null
+          paciente_id: string
+          plan?: string | null
+          profesional_id?: string | null
+          signos_vitales?: Json | null
+          subjetivo?: string | null
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Update: {
+          analisis?: string | null
+          created_at?: string
+          created_by?: string | null
+          fecha_evolucion?: string
+          id?: string
+          motivo_consulta?: string | null
+          objetivo?: string | null
+          paciente_id?: string
+          plan?: string | null
+          profesional_id?: string | null
+          signos_vitales?: Json | null
+          subjetivo?: string | null
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evoluciones_soap_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evoluciones_soap_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evoluciones_soap_visita_id_fkey"
+            columns: ["visita_id"]
+            isOneToOne: false
+            referencedRelation: "control_visitas"
             referencedColumns: ["id"]
           },
         ]
