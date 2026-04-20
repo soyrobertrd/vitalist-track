@@ -29,10 +29,10 @@ import { ConsentimientoInformado, TERMS_VERSION_CURRENT, type ConsentimientoData
 import type { CountryCode } from "libphonenumber-js";
 
 const buildPacienteSchema = (country: CountryCode) => z.object({
-  cedula: z.string()
-    .trim()
-    .length(11, { message: "La cédula debe tener exactamente 11 dígitos" })
-    .regex(/^\d+$/, { message: "La cédula solo debe contener números" }),
+  nacionalidad: z.string().trim().min(1, { message: "La nacionalidad es requerida" }),
+  tipo_documento: z.string().trim().min(1, { message: "El tipo de documento es requerido" }),
+  cedula: z.string().trim().optional(),
+  numero_documento: z.string().trim().max(50).optional(),
   nombre: z.string()
     .trim()
     .min(1, { message: "El nombre es requerido" })
@@ -50,6 +50,16 @@ const buildPacienteSchema = (country: CountryCode) => z.object({
       { message: TELEFONO_ERROR_MESSAGE }
     )
     .optional(),
+}).superRefine((data, ctx) => {
+  if (data.nacionalidad === "Dominicana" && data.tipo_documento === "cedula") {
+    if (!data.cedula || data.cedula.length !== 11 || !/^\d+$/.test(data.cedula)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "La cédula debe tener exactamente 11 dígitos numéricos", path: ["cedula"] });
+    }
+  } else {
+    if (!data.numero_documento || data.numero_documento.length < 3) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "El número de documento es requerido", path: ["numero_documento"] });
+    }
+  }
 });
 
 interface NuevoPacienteFormProps {
@@ -65,9 +75,13 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
   const { loading: loadingCedula, data: cedulaData, lookup: lookupCedula } = useCedulaLookup();
   
   const [formData, setFormData] = useState({
+    nacionalidad: "Dominicana",
+    tipo_documento: "cedula",
     cedula: "",
+    numero_documento: "",
     nombre: "",
     apellido: "",
+    fecha_nacimiento: "",
     contacto_px: "",
     contacto_cuidador: "",
     email_px: "",
@@ -110,13 +124,17 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
   };
 
   const handleCedulaBlur = async (cedula: string) => {
+    if (formData.nacionalidad !== "Dominicana") return;
     const result = await lookupCedula(cedula);
     if (result) {
       handleInputChange('nombre', result.nombres || '');
       handleInputChange('apellido', `${result.apellido1 || ''} ${result.apellido2 || ''}`.trim());
+      if (result.fecha_nac) handleInputChange('fecha_nacimiento', result.fecha_nac);
       if (result.sexo) setSelectedSexo(result.sexo);
     }
   };
+
+  const isDominicano = formData.nacionalidad === "Dominicana" && formData.tipo_documento === "cedula";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
