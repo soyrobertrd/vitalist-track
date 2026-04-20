@@ -17,6 +17,8 @@ import { AlertaConflictoEnVivo } from "./AlertaConflictoEnVivo";
 import { useConflictoEnVivo } from "@/hooks/useConflictoEnVivo";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useSucursales } from "@/hooks/useSucursales";
+import { SucursalSelect } from "@/components/SucursalSelect";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { AlertTriangle, Wand2 } from "lucide-react";
@@ -41,10 +43,12 @@ interface AgendarLlamadaDialogProps {
 
 export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, onSuccess }: AgendarLlamadaDialogProps) {
   const { currentWorkspace } = useWorkspace();
+  const { sucursales } = useSucursales();
   const [loading, setLoading] = useState(false);
   const [pacienteId, setPacienteId] = useState<string>("");
   const [profesionalId, setProfesionalId] = useState<string>("");
   const [motivo, setMotivo] = useState<string>("");
+  const [sucursalId, setSucursalId] = useState<string | null>(null);
   const [conflictoOpen, setConflictoOpen] = useState(false);
   const [llamadaExistente, setLlamadaExistente] = useState<any>(null);
   const [pendingSubmit, setPendingSubmit] = useState<any>(null);
@@ -146,6 +150,7 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
       duracion_estimada: parseInt(formData.get("duracion_estimada") as string) || null,
       notas_adicionales: formData.get("notas_adicionales") as string,
       workspace_id: currentWorkspace?.id ?? null,
+      sucursal_id: sucursalId ?? sucursales.find(s => s.es_principal)?.id ?? null,
     };
 
     const { error } = await supabase
@@ -295,6 +300,8 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
                 </SelectContent>
               </Select>
             </div>
+
+            <SucursalSelect value={sucursalId} onChange={setSucursalId} />
 
             <div className="space-y-2">
               <Label htmlFor="notas_adicionales">Comentarios Adicionales</Label>
