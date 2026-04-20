@@ -72,6 +72,7 @@ interface NuevoPacienteFormProps {
 export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacienteFormProps) {
   const [loading, setLoading] = useState(false);
   const { countryCode } = useLocale();
+  const { currentWorkspace } = useWorkspace();
   const pacienteSchema = buildPacienteSchema(countryCode);
   const { loading: loadingCedula, data: cedulaData, lookup: lookupCedula } = useCedulaLookup();
   
@@ -218,6 +219,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       notificaciones_activas: hasAnyEmail ? notificacionesActivas : false,
       status_px: "activo" as const,
       dias_no_visita: diasNoVisita,
+      workspace_id: currentWorkspace?.id ?? null,
     };
 
     const { data: paciente, error: pacienteError } = await supabase
@@ -280,6 +282,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
         estado: "agendada",
         motivo: "Llamada inicial de seguimiento",
         duracion_estimada: 15,
+        workspace_id: currentWorkspace?.id ?? null,
       }]);
     }
 
