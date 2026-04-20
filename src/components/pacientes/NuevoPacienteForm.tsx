@@ -465,10 +465,10 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Edad</Label>
-              <Input 
+              <Input
                 readOnly
                 className="bg-muted"
-                value={cedulaData?.fecha_nac ? `${differenceInYears(new Date(), new Date(cedulaData.fecha_nac))} años` : ''}
+                value={formData.fecha_nacimiento ? `${differenceInYears(new Date(), new Date(formData.fecha_nacimiento + 'T12:00:00'))} años` : ''}
               />
             </div>
           </div>

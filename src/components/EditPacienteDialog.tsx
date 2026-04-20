@@ -108,6 +108,10 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [emailCuidador, setEmailCuidador] = useState("");
   const [periodoLlamada, setPeriodoLlamada] = useState<number>(30);
   const [periodoVisita, setPeriodoVisita] = useState<number>(90);
+  const [nacionalidad, setNacionalidad] = useState<string>("Dominicana");
+  const [tipoDocumento, setTipoDocumento] = useState<string>("cedula");
+  const [numeroDocumento, setNumeroDocumento] = useState<string>("");
+  const isDominicano = nacionalidad === "Dominicana" && tipoDocumento === "cedula";
   
   // Auto-disable notifications if no email
   const hasAnyEmail = !!(emailPx.trim() || emailCuidador.trim());
