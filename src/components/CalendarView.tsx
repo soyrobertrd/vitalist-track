@@ -36,6 +36,8 @@ import { cn } from "@/lib/utils";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { CalendarEventDialog } from "@/components/CalendarEventDialog";
 import { DayAgendaDialog } from "@/components/DayAgendaDialog";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 
 export interface CalendarEvent {
   id: string;
@@ -53,6 +55,8 @@ interface CalendarViewProps {
 }
 
 export function CalendarView({ onEventClick }: CalendarViewProps) {
+  const { currentWorkspace } = useWorkspace();
+  const { activeSucursalId } = useActiveSucursal();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,7 +75,8 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
 
   useEffect(() => {
     fetchEvents();
-  }, [currentDate, view]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentDate, view, currentWorkspace?.id, activeSucursalId]);
 
   const fetchEvents = async () => {
     setLoading(true);
@@ -89,7 +94,7 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
 
     try {
       // Fetch visitas
-      const { data: visitas } = await supabase
+      let visitasQuery = supabase
         .from("control_visitas")
         .select(`
           id,
@@ -103,7 +108,7 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
         .lte("fecha_hora_visita", endDate.toISOString());
 
       // Fetch llamadas
-      const { data: llamadas } = await supabase
+      let llamadasQuery = supabase
         .from("registro_llamadas")
         .select(`
           id,
@@ -114,6 +119,20 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
         `)
         .gte("fecha_agendada", startDate.toISOString())
         .lte("fecha_agendada", endDate.toISOString());
+
+      if (currentWorkspace?.id) {
+        visitasQuery = visitasQuery.eq("workspace_id", currentWorkspace.id);
+        llamadasQuery = llamadasQuery.eq("workspace_id", currentWorkspace.id);
+      }
+      if (activeSucursalId) {
+        visitasQuery = visitasQuery.eq("sucursal_id", activeSucursalId);
+        llamadasQuery = llamadasQuery.eq("sucursal_id", activeSucursalId);
+      }
+
+      const [{ data: visitas }, { data: llamadas }] = await Promise.all([
+        visitasQuery,
+        llamadasQuery,
+      ]);
 
       const calendarEvents: CalendarEvent[] = [];
 
