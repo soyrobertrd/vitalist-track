@@ -144,10 +144,13 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
     const formDataObj = new FormData(formElement);
     
     const formValues = {
-      cedula: (formDataObj.get("cedula") as string || "").trim(),
-      nombre: (formDataObj.get("nombre") as string || "").trim(),
-      apellido: (formDataObj.get("apellido") as string || "").trim(),
-      fecha_nacimiento: formDataObj.get("fecha_nacimiento") as string || undefined,
+      nacionalidad: formData.nacionalidad,
+      tipo_documento: formData.tipo_documento,
+      cedula: formData.cedula.trim(),
+      numero_documento: formData.numero_documento.trim() || undefined,
+      nombre: formData.nombre.trim() || ((formDataObj.get("nombre") as string || "").trim()),
+      apellido: formData.apellido.trim() || ((formDataObj.get("apellido") as string || "").trim()),
+      fecha_nacimiento: formData.fecha_nacimiento || (formDataObj.get("fecha_nacimiento") as string) || undefined,
       contacto_px: (formDataObj.get("contacto_px") as string || "").trim() || undefined,
     };
 
@@ -183,11 +186,14 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
     const longitudNum = longitudStr && !isNaN(parseFloat(longitudStr)) ? parseFloat(longitudStr) : null;
     
     const dataPaciente = {
-      cedula: formValues.cedula,
+      nacionalidad: formValues.nacionalidad,
+      tipo_documento: formValues.tipo_documento,
+      cedula: isDominicano ? formValues.cedula : (formValues.cedula || ''),
+      numero_documento: !isDominicano ? (formValues.numero_documento || null) : null,
       nombre: formValues.nombre,
       apellido: formValues.apellido,
       fecha_nacimiento: formValues.fecha_nacimiento || null,
-      sexo: formDataObj.get("sexo") as string || null,
+      sexo: selectedSexo || (formDataObj.get("sexo") as string) || null,
       foto_url: cedulaData?.foto_encoded ? `data:image/jpeg;base64,${cedulaData.foto_encoded}` : null,
       contacto_px: formData.contacto_px ? formatPhoneDR(formData.contacto_px) : null,
       whatsapp_px: formDataObj.get("whatsapp_px") === "on",
