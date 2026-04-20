@@ -59,33 +59,36 @@ type ContactValues = z.infer<typeof contactSchema>;
 
 const PLAN_FEATURES: Record<string, string[]> = {
   free: [
-    "Agenda y calendario",
+    "Agenda y calendario básico",
     "Recordatorios por email",
     "Ficha clínica básica",
-    "Soporte por email",
+    "Soporte por comunidad",
   ],
-  basico: [
+  solo: [
     "Todo lo de Free",
     "WhatsApp de recordatorios",
     "Ficha clínica completa",
-    "Importación masiva",
+    "Importación masiva desde Excel",
     "Reportes operativos",
+    "Soporte por email",
   ],
   pro: [
-    "Todo lo de Básico",
+    "Todo lo de Solo Doctor",
     "Multi-clínica (workspaces)",
     "Automatizaciones por evento",
     "Encuestas de satisfacción",
-    "Geolocalización y mapas",
+    "Geolocalización y mapas de rutas",
+    "Auditoría completa de cambios",
     "Soporte prioritario",
   ],
-  enterprise: [
+  business: [
     "Todo lo de Pro",
-    "SSO y dominio propio",
+    "SSO / SAML empresarial",
+    "Acceso a API",
     "Auditoría avanzada exportable",
     "SLA 99.9% y onboarding dedicado",
     "Integraciones a medida",
-    "Account manager",
+    "Account manager dedicado",
   ],
 };
 
@@ -381,7 +384,7 @@ export default function Landing() {
                       className="mt-6 w-full"
                       variant={isPro ? "default" : "outline"}
                       onClick={() => {
-                        if (plan.codigo === "enterprise") {
+                        if (plan.codigo === "business" || plan.codigo === "enterprise") {
                           setForm((f) => ({ ...f, plan_interes: plan.nombre }));
                           document
                             .getElementById("contacto")
@@ -391,7 +394,7 @@ export default function Landing() {
                         }
                       }}
                     >
-                      {plan.codigo === "enterprise"
+                      {plan.codigo === "business" || plan.codigo === "enterprise"
                         ? "Hablar con ventas"
                         : `Empezar con ${plan.nombre}`}
                     </Button>
