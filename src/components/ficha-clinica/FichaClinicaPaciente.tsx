@@ -9,9 +9,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2, Receipt } from "lucide-react";
+import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2, Receipt, FileText, Stethoscope, Paperclip, History } from "lucide-react";
 import { toast } from "sonner";
 import { CobrosPaciente } from "@/components/cobros/CobrosPaciente";
+import { EvolucionesSOAP } from "@/components/ficha-clinica/EvolucionesSOAP";
+import { DiagnosticosPaciente } from "@/components/ficha-clinica/DiagnosticosPaciente";
+import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinicos";
+import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
 
 interface Props {
   pacienteId: string;
@@ -198,25 +202,57 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="alergias" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="alergias" className="flex items-center gap-2">
+        <Tabs defaultValue="timeline" className="w-full">
+          <TabsList className="flex flex-wrap h-auto justify-start gap-1">
+            <TabsTrigger value="timeline" className="flex items-center gap-1.5">
+              <History className="h-4 w-4" />
+              Timeline
+            </TabsTrigger>
+            <TabsTrigger value="evoluciones" className="flex items-center gap-1.5">
+              <FileText className="h-4 w-4" />
+              Evoluciones SOAP
+            </TabsTrigger>
+            <TabsTrigger value="diagnosticos" className="flex items-center gap-1.5">
+              <Stethoscope className="h-4 w-4" />
+              Diagnósticos
+            </TabsTrigger>
+            <TabsTrigger value="documentos" className="flex items-center gap-1.5">
+              <Paperclip className="h-4 w-4" />
+              Documentos
+            </TabsTrigger>
+            <TabsTrigger value="alergias" className="flex items-center gap-1.5">
               <AlertTriangle className="h-4 w-4" />
               Alergias ({alergias.length})
             </TabsTrigger>
-            <TabsTrigger value="antecedentes" className="flex items-center gap-2">
+            <TabsTrigger value="antecedentes" className="flex items-center gap-1.5">
               <ClipboardList className="h-4 w-4" />
               Antecedentes ({antecedentes.length})
             </TabsTrigger>
-            <TabsTrigger value="seguros" className="flex items-center gap-2">
+            <TabsTrigger value="seguros" className="flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4" />
               Seguros ({seguros.length})
             </TabsTrigger>
-            <TabsTrigger value="cobros" className="flex items-center gap-2">
+            <TabsTrigger value="cobros" className="flex items-center gap-1.5">
               <Receipt className="h-4 w-4" />
               Cobros
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="timeline" className="mt-4">
+            <TimelineClinica pacienteId={pacienteId} />
+          </TabsContent>
+
+          <TabsContent value="evoluciones" className="mt-4">
+            <EvolucionesSOAP pacienteId={pacienteId} />
+          </TabsContent>
+
+          <TabsContent value="diagnosticos" className="mt-4">
+            <DiagnosticosPaciente pacienteId={pacienteId} />
+          </TabsContent>
+
+          <TabsContent value="documentos" className="mt-4">
+            <DocumentosClinicos pacienteId={pacienteId} />
+          </TabsContent>
 
           {/* ALERGIAS */}
           <TabsContent value="alergias" className="space-y-2 mt-4">
