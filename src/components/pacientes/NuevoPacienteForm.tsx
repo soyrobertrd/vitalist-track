@@ -678,6 +678,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
                 </SelectContent>
               </Select>
             </div>
+            <SucursalSelect value={sucursalId} onChange={setSucursalId} />
             <div className="flex items-end pb-1">
               <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer text-xs">
                 <Input id="es_sospechoso" name="es_sospechoso" type="checkbox" className="w-4 h-4" />
