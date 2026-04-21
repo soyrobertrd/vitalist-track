@@ -2600,6 +2600,59 @@ export type Database = {
           },
         ]
       }
+      workspace_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          email: string
+          estado: string
+          expires_at: string
+          id: string
+          invited_by: string | null
+          role: Database["public"]["Enums"]["workspace_member_role"]
+          token: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email: string
+          estado?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["workspace_member_role"]
+          token?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email?: string
+          estado?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["workspace_member_role"]
+          token?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_invitations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workspace_members: {
         Row: {
           id: string
@@ -2714,6 +2767,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_workspace_invitation: { Args: { _token: string }; Returns: Json }
       calcular_indicadores_llamadas: {
         Args: {
           fecha_fin?: string
@@ -2732,6 +2786,7 @@ export type Database = {
         }[]
       }
       generar_codigo_ticket: { Args: never; Returns: string }
+      get_invitation_details: { Args: { _token: string }; Returns: Json }
       get_user_module_permissions: {
         Args: { _user_id: string }
         Returns: {
