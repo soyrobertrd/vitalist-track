@@ -23,10 +23,20 @@ interface Member {
   nombre?: string;
 }
 
+interface Invitation {
+  id: string;
+  email: string;
+  role: string;
+  estado: string;
+  expires_at: string;
+  created_at: string;
+}
+
 export default function Organizaciones() {
   const { workspaces, currentWorkspace, switchWorkspace, refresh } = useWorkspace();
   const { sucursales, refetch: refetchSucursales, loading: loadingSucursales } = useSucursales();
   const [members, setMembers] = useState<Member[]>([]);
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
 
   // Workspace dialog
@@ -44,12 +54,27 @@ export default function Organizaciones() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<"admin" | "member">("member");
+  const [inviting, setInviting] = useState(false);
 
   const isOwnerOrAdmin = currentWorkspace?.role === "owner" || currentWorkspace?.role === "admin";
 
   useEffect(() => {
-    if (currentWorkspace) loadMembers();
+    if (currentWorkspace) {
+      loadMembers();
+      loadInvitations();
+    }
   }, [currentWorkspace]);
+
+  const loadInvitations = async () => {
+    if (!currentWorkspace) return;
+    const { data } = await supabase
+      .from("workspace_invitations" as any)
+      .select("id, email, role, estado, expires_at, created_at")
+      .eq("workspace_id", currentWorkspace.id)
+      .eq("estado", "pendiente")
+      .order("created_at", { ascending: false });
+    setInvitations((data as unknown as Invitation[]) || []);
+  };
 
   const loadMembers = async () => {
     if (!currentWorkspace) return;
@@ -172,31 +197,36 @@ export default function Organizaciones() {
 
   const handleInviteMember = async () => {
     if (!currentWorkspace || !inviteEmail.trim()) return;
-    // Find user by email in profiles
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("email", inviteEmail.trim().toLowerCase())
-      .maybeSingle();
-    if (!profile) {
-      toast.error("Usuario no encontrado. Debe registrarse primero.");
-      return;
-    }
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("workspace_members").insert({
-      workspace_id: currentWorkspace.id,
-      user_id: profile.id,
-      role: inviteRole,
-      invited_by: user?.id,
+    setInviting(true);
+    const { data, error } = await supabase.functions.invoke("send-workspace-invitation", {
+      body: {
+        workspace_id: currentWorkspace.id,
+        email: inviteEmail.trim().toLowerCase(),
+        role: inviteRole,
+      },
     });
-    if (error) {
-      toast.error(error.message);
+    setInviting(false);
+    if (error || (data as any)?.error) {
+      toast.error((data as any)?.error || error?.message || "No se pudo enviar la invitación");
       return;
     }
-    toast.success("Miembro agregado");
+    toast.success(`Invitación enviada a ${inviteEmail}`);
     setInviteOpen(false);
     setInviteEmail("");
-    loadMembers();
+    loadInvitations();
+  };
+
+  const handleRevokeInvitation = async (id: string) => {
+    if (!confirm("¿Revocar esta invitación pendiente?")) return;
+    const { error } = await supabase
+      .from("workspace_invitations" as any)
+      .update({ estado: "revocada" })
+      .eq("id", id);
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Invitación revocada");
+      loadInvitations();
+    }
   };
 
   const handleChangeMemberRole = async (memberId: string, newRole: Member["role"]) => {
