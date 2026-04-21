@@ -416,15 +416,15 @@ export default function Organizaciones() {
               {isOwnerOrAdmin && (
                 <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
                   <DialogTrigger asChild>
-                    <Button><Plus className="h-4 w-4 mr-1" /> Agregar miembro</Button>
+                    <Button><Plus className="h-4 w-4 mr-1" /> Invitar miembro</Button>
                   </DialogTrigger>
                   <DialogContent>
-                    <DialogHeader><DialogTitle>Agregar miembro</DialogTitle></DialogHeader>
+                    <DialogHeader><DialogTitle>Invitar miembro por email</DialogTitle></DialogHeader>
                     <div className="space-y-3">
                       <div>
-                        <Label>Email del usuario</Label>
+                        <Label>Email</Label>
                         <Input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="usuario@ejemplo.com" />
-                        <p className="text-xs text-muted-foreground mt-1">El usuario debe estar registrado previamente.</p>
+                        <p className="text-xs text-muted-foreground mt-1">Recibirá un correo con un link para unirse. El link expira en 7 días.</p>
                       </div>
                       <div>
                         <Label>Rol</Label>
@@ -436,12 +436,41 @@ export default function Organizaciones() {
                           </SelectContent>
                         </Select>
                       </div>
-                      <Button onClick={handleInviteMember} className="w-full">Agregar</Button>
+                      <Button onClick={handleInviteMember} className="w-full" disabled={inviting || !inviteEmail.trim()}>
+                        {inviting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                        Enviar invitación
+                      </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
               )}
             </div>
+
+            {/* Invitaciones pendientes */}
+            {invitations.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Invitaciones pendientes ({invitations.length})</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {invitations.map((inv) => (
+                    <div key={inv.id} className="flex items-center justify-between border rounded-md p-3 text-sm">
+                      <div>
+                        <div className="font-medium">{inv.email}</div>
+                        <div className="text-xs text-muted-foreground">
+                          Rol: {inv.role === "admin" ? "Administrador" : "Miembro"} · Expira {new Date(inv.expires_at).toLocaleDateString("es-DO")}
+                        </div>
+                      </div>
+                      {isOwnerOrAdmin && (
+                        <Button size="sm" variant="ghost" onClick={() => handleRevokeInvitation(inv.id)}>
+                          Revocar
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
             {loadingMembers ? (
               <div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
             ) : (
