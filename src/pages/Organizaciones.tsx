@@ -23,10 +23,20 @@ interface Member {
   nombre?: string;
 }
 
+interface Invitation {
+  id: string;
+  email: string;
+  role: string;
+  estado: string;
+  expires_at: string;
+  created_at: string;
+}
+
 export default function Organizaciones() {
   const { workspaces, currentWorkspace, switchWorkspace, refresh } = useWorkspace();
   const { sucursales, refetch: refetchSucursales, loading: loadingSucursales } = useSucursales();
   const [members, setMembers] = useState<Member[]>([]);
+  const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
 
   // Workspace dialog
@@ -44,12 +54,27 @@ export default function Organizaciones() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<"admin" | "member">("member");
+  const [inviting, setInviting] = useState(false);
 
   const isOwnerOrAdmin = currentWorkspace?.role === "owner" || currentWorkspace?.role === "admin";
 
   useEffect(() => {
-    if (currentWorkspace) loadMembers();
+    if (currentWorkspace) {
+      loadMembers();
+      loadInvitations();
+    }
   }, [currentWorkspace]);
+
+  const loadInvitations = async () => {
+    if (!currentWorkspace) return;
+    const { data } = await supabase
+      .from("workspace_invitations" as any)
+      .select("id, email, role, estado, expires_at, created_at")
+      .eq("workspace_id", currentWorkspace.id)
+      .eq("estado", "pendiente")
+      .order("created_at", { ascending: false });
+    setInvitations((data as unknown as Invitation[]) || []);
+  };
 
   const loadMembers = async () => {
     if (!currentWorkspace) return;
@@ -172,31 +197,36 @@ export default function Organizaciones() {
 
   const handleInviteMember = async () => {
     if (!currentWorkspace || !inviteEmail.trim()) return;
-    // Find user by email in profiles
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("email", inviteEmail.trim().toLowerCase())
-      .maybeSingle();
-    if (!profile) {
-      toast.error("Usuario no encontrado. Debe registrarse primero.");
-      return;
-    }
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("workspace_members").insert({
-      workspace_id: currentWorkspace.id,
-      user_id: profile.id,
-      role: inviteRole,
-      invited_by: user?.id,
+    setInviting(true);
+    const { data, error } = await supabase.functions.invoke("send-workspace-invitation", {
+      body: {
+        workspace_id: currentWorkspace.id,
+        email: inviteEmail.trim().toLowerCase(),
+        role: inviteRole,
+      },
     });
-    if (error) {
-      toast.error(error.message);
+    setInviting(false);
+    if (error || (data as any)?.error) {
+      toast.error((data as any)?.error || error?.message || "No se pudo enviar la invitación");
       return;
     }
-    toast.success("Miembro agregado");
+    toast.success(`Invitación enviada a ${inviteEmail}`);
     setInviteOpen(false);
     setInviteEmail("");
-    loadMembers();
+    loadInvitations();
+  };
+
+  const handleRevokeInvitation = async (id: string) => {
+    if (!confirm("¿Revocar esta invitación pendiente?")) return;
+    const { error } = await supabase
+      .from("workspace_invitations" as any)
+      .update({ estado: "revocada" })
+      .eq("id", id);
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Invitación revocada");
+      loadInvitations();
+    }
   };
 
   const handleChangeMemberRole = async (memberId: string, newRole: Member["role"]) => {
@@ -386,15 +416,15 @@ export default function Organizaciones() {
               {isOwnerOrAdmin && (
                 <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
                   <DialogTrigger asChild>
-                    <Button><Plus className="h-4 w-4 mr-1" /> Agregar miembro</Button>
+                    <Button><Plus className="h-4 w-4 mr-1" /> Invitar miembro</Button>
                   </DialogTrigger>
                   <DialogContent>
-                    <DialogHeader><DialogTitle>Agregar miembro</DialogTitle></DialogHeader>
+                    <DialogHeader><DialogTitle>Invitar miembro por email</DialogTitle></DialogHeader>
                     <div className="space-y-3">
                       <div>
-                        <Label>Email del usuario</Label>
+                        <Label>Email</Label>
                         <Input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="usuario@ejemplo.com" />
-                        <p className="text-xs text-muted-foreground mt-1">El usuario debe estar registrado previamente.</p>
+                        <p className="text-xs text-muted-foreground mt-1">Recibirá un correo con un link para unirse. El link expira en 7 días.</p>
                       </div>
                       <div>
                         <Label>Rol</Label>
@@ -406,12 +436,41 @@ export default function Organizaciones() {
                           </SelectContent>
                         </Select>
                       </div>
-                      <Button onClick={handleInviteMember} className="w-full">Agregar</Button>
+                      <Button onClick={handleInviteMember} className="w-full" disabled={inviting || !inviteEmail.trim()}>
+                        {inviting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                        Enviar invitación
+                      </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
               )}
             </div>
+
+            {/* Invitaciones pendientes */}
+            {invitations.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Invitaciones pendientes ({invitations.length})</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {invitations.map((inv) => (
+                    <div key={inv.id} className="flex items-center justify-between border rounded-md p-3 text-sm">
+                      <div>
+                        <div className="font-medium">{inv.email}</div>
+                        <div className="text-xs text-muted-foreground">
+                          Rol: {inv.role === "admin" ? "Administrador" : "Miembro"} · Expira {new Date(inv.expires_at).toLocaleDateString("es-DO")}
+                        </div>
+                      </div>
+                      {isOwnerOrAdmin && (
+                        <Button size="sm" variant="ghost" onClick={() => handleRevokeInvitation(inv.id)}>
+                          Revocar
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
             {loadingMembers ? (
               <div className="flex justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
             ) : (
