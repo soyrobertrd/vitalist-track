@@ -44,7 +44,7 @@ export default function AceptarInvitacion() {
       if (error) {
         setDetails({ valid: false, error: error.message });
       } else {
-        setDetails(data as InvitationDetails);
+        setDetails(data as unknown as InvitationDetails);
       }
       setLoading(false);
     })();
@@ -59,7 +59,7 @@ export default function AceptarInvitacion() {
       toast.error(error.message);
       return;
     }
-    const result = data as { success: boolean; workspace_id?: string; error?: string; already_member?: boolean };
+    const result = data as unknown as { success: boolean; workspace_id?: string; error?: string; already_member?: boolean };
     if (!result.success) {
       toast.error(result.error || "No se pudo aceptar la invitación");
       return;

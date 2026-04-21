@@ -42,6 +42,8 @@ const Calendario = lazy(() => import("./pages/Calendario"));
 const Planes = lazy(() => import("./pages/Planes"));
 const RutasOptimizadas = lazy(() => import("./pages/RutasOptimizadas"));
 const Organizaciones = lazy(() => import("./pages/Organizaciones"));
+const AceptarInvitacion = lazy(() => import("./pages/AceptarInvitacion"));
+const OnboardingWizard = lazy(() => import("./pages/OnboardingWizard"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -181,6 +183,11 @@ const App = () => {
                 <Route
                   path="/organizaciones"
                   element={session ? <Layout><Organizaciones /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route path="/aceptar-invitacion" element={<AceptarInvitacion />} />
+                <Route
+                  path="/onboarding-wizard"
+                  element={session ? <OnboardingWizard /> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
