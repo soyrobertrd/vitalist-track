@@ -14,6 +14,7 @@ import { usePersonal } from "@/hooks/usePersonal";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useBulkSelection } from "@/hooks/useBulkSelection";
+import { useEnforcePlanLimit } from "@/hooks/useEnforcePlanLimit";
 
 // Components
 import { PacientesHeader } from "@/components/pacientes/PacientesHeader";
@@ -63,6 +64,7 @@ const Pacientes = () => {
   const { personal } = usePersonal();
   const { isAdmin } = useUserRole();
   const isMobile = useIsMobile();
+  const { canCreate } = useEnforcePlanLimit();
 
   // Bulk selection
   const bulkSelection = useBulkSelection(filteredPacientesActivos);
@@ -197,8 +199,12 @@ const Pacientes = () => {
             <PacientesHeader
               isAdmin={isAdmin}
               filteredPacientes={filteredPacientesActivos}
-              onImportClick={() => setImportOpen(true)}
-              onNewPacienteClick={() => setOpen(true)}
+              onImportClick={() => {
+                if (canCreate("pacientes")) setImportOpen(true);
+              }}
+              onNewPacienteClick={() => {
+                if (canCreate("pacientes")) setOpen(true);
+              }}
               onToggleFilters={() => setShowFilters(!showFilters)}
               showFilters={showFilters}
               hideTitle
