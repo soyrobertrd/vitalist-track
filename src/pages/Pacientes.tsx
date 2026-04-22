@@ -64,6 +64,7 @@ const Pacientes = () => {
   const { personal } = usePersonal();
   const { isAdmin } = useUserRole();
   const isMobile = useIsMobile();
+  const { canCreate } = useEnforcePlanLimit();
 
   // Bulk selection
   const bulkSelection = useBulkSelection(filteredPacientesActivos);
