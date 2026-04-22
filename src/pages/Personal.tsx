@@ -18,6 +18,7 @@ import { ZonaSelect } from "@/components/ZonaSelect";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { IntlPhoneInput } from "@/components/IntlPhoneInput";
 import { Switch } from "@/components/ui/switch";
+import { useEnforcePlanLimit } from "@/hooks/useEnforcePlanLimit";
 
 interface Personal {
   id: string;
@@ -57,6 +58,7 @@ const Personal = () => {
   const [selectedBarrio, setSelectedBarrio] = useState<string>("");
   const [createUserAccount, setCreateUserAccount] = useState(true);
   const [contacto, setContacto] = useState("");
+  const { canCreate } = useEnforcePlanLimit();
 
   const fetchPersonal = async () => {
     const { data, error } = await supabase
@@ -179,7 +181,19 @@ const Personal = () => {
           <h1 className="text-3xl font-bold">Personal de Salud</h1>
           <p className="text-muted-foreground">Gestión del equipo médico</p>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog
+          open={open}
+          onOpenChange={(next) => {
+            if (next) {
+              const limitKey = createUserAccount ? "usuarios" : "profesionales";
+              if (!canCreate("profesionales") || (createUserAccount && !canCreate("usuarios"))) {
+                return;
+              }
+              void limitKey;
+            }
+            setOpen(next);
+          }}
+        >
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
