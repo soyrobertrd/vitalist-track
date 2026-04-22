@@ -27,7 +27,14 @@ type: feature
 - Cuenta pacientes/usuarios/profesionales del workspace activo y compara con `currentPlan.limite_*`.
 - Devuelve `{ used, max, reached, pctUsed }` por recurso. `max=null` significa ilimitado.
 - Componente con barras de progreso (amber ≥80%, destructive si reached) + CTA "Mejorar plan" → `/planes`.
+- `<PlanLimitsPanel />` está embebido en la pestaña "Plan" de `/configuracion`.
+
+## Hook `useEnforcePlanLimit`
+- Wrapper de `usePlanLimits` que devuelve `canCreate(key)` (true/false). Si el límite del plan está alcanzado, dispara `toast.error` con acción "Mejorar plan" → `/planes` y devuelve false.
+- Usado para bloquear la creación antes de abrir formularios:
+  - `src/pages/Pacientes.tsx`: `canCreate("pacientes")` antes de abrir el dialog de nuevo paciente o el de importación masiva.
+  - `src/pages/Personal.tsx`: `canCreate("profesionales")` (y `"usuarios"` si `createUserAccount`) en el `onOpenChange` del dialog "Nuevo Personal".
 
 ## Pendiente
-- Aplicar `usePlanLimits` como guard real en NuevoPacienteForm, alta de profesional y dialog de invitar miembro (bloquear cuando `reached=true` y mostrar el panel).
-- Integrar Stripe payments para cobros recurrentes de planes (skeleton ya existe en `pagos_workspace`/`subscripciones_workspace`).
+- Integrar Stripe/Paddle para cobros recurrentes (skeleton ya existe en `pagos_workspace` / `subscripciones_workspace` y en las edge functions `payments-checkout` / `payments-webhook`). El usuario pidió **dejar el esqueleto** por ahora.
+
