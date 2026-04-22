@@ -23,6 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { HorariosProfesionalEditor } from "@/components/HorariosProfesionalEditor";
 import { CountryTimezoneSelector } from "@/components/CountryTimezoneSelector";
 import { UserLocalePreferences } from "@/components/UserLocalePreferences";
+import { PlanLimitsPanel } from "@/components/PlanLimitsPanel";
 import { useLocale } from "@/hooks/useLocale";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -998,30 +999,8 @@ const Configuracion = () => {
                 </div>
 
                 {currentPlan && (
-                  <div className="border rounded-lg p-4 md:col-span-2 space-y-3">
-                    <p className="text-xs uppercase text-muted-foreground tracking-wide">
-                      Límites de tu plan
-                    </p>
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                      <div>
-                        <p className="text-2xl font-bold">
-                          {currentPlan.limite_pacientes ?? "∞"}
-                        </p>
-                        <p className="text-xs text-muted-foreground">Pacientes</p>
-                      </div>
-                      <div>
-                        <p className="text-2xl font-bold">
-                          {currentPlan.limite_profesionales ?? "∞"}
-                        </p>
-                        <p className="text-xs text-muted-foreground">Profesionales</p>
-                      </div>
-                      <div>
-                        <p className="text-2xl font-bold">
-                          {currentPlan.limite_usuarios ?? "∞"}
-                        </p>
-                        <p className="text-xs text-muted-foreground">Usuarios</p>
-                      </div>
-                    </div>
+                  <div className="md:col-span-2">
+                    <PlanLimitsPanel />
                   </div>
                 )}
               </div>
