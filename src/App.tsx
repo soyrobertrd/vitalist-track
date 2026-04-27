@@ -44,6 +44,9 @@ const RutasOptimizadas = lazy(() => import("./pages/RutasOptimizadas"));
 const Organizaciones = lazy(() => import("./pages/Organizaciones"));
 const AceptarInvitacion = lazy(() => import("./pages/AceptarInvitacion"));
 const OnboardingWizard = lazy(() => import("./pages/OnboardingWizard"));
+const Inventario = lazy(() => import("./pages/Inventario"));
+const AuditoriaHIPAA = lazy(() => import("./pages/AuditoriaHIPAA"));
+const ReportesProgramados = lazy(() => import("./pages/ReportesProgramados"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -188,6 +191,18 @@ const App = () => {
                 <Route
                   path="/onboarding-wizard"
                   element={session ? <OnboardingWizard /> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/inventario"
+                  element={session ? <Layout><Inventario /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/auditoria"
+                  element={session ? <Layout><AuditoriaHIPAA /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/reportes-programados"
+                  element={session ? <Layout><ReportesProgramados /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
