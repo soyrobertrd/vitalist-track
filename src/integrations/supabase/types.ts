@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      acceso_fichas_log: {
+        Row: {
+          accion: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          metadata: Json
+          paciente_id: string
+          recurso: string
+          user_agent: string | null
+          user_id: string
+          workspace_id: string | null
+        }
+        Insert: {
+          accion?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          paciente_id: string
+          recurso: string
+          user_agent?: string | null
+          user_id: string
+          workspace_id?: string | null
+        }
+        Update: {
+          accion?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          paciente_id?: string
+          recurso?: string
+          user_agent?: string | null
+          user_id?: string
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
       alergias_paciente: {
         Row: {
           created_at: string
@@ -612,6 +651,7 @@ export type Database = {
           fecha_confirmacion: string | null
           fecha_hora_visita: string
           id: string
+          modalidad: string
           motivo_visita: string | null
           notas_visita: string | null
           paciente_id: string | null
@@ -619,6 +659,9 @@ export type Database = {
           sucursal_id: string | null
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at: string | null
+          video_enlace: string | null
+          video_notas: string | null
+          video_proveedor: string | null
           workspace_id: string | null
         }
         Insert: {
@@ -628,6 +671,7 @@ export type Database = {
           fecha_confirmacion?: string | null
           fecha_hora_visita: string
           id?: string
+          modalidad?: string
           motivo_visita?: string | null
           notas_visita?: string | null
           paciente_id?: string | null
@@ -635,6 +679,9 @@ export type Database = {
           sucursal_id?: string | null
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
+          video_enlace?: string | null
+          video_notas?: string | null
+          video_proveedor?: string | null
           workspace_id?: string | null
         }
         Update: {
@@ -644,6 +691,7 @@ export type Database = {
           fecha_confirmacion?: string | null
           fecha_hora_visita?: string
           id?: string
+          modalidad?: string
           motivo_visita?: string | null
           notas_visita?: string | null
           paciente_id?: string | null
@@ -651,6 +699,9 @@ export type Database = {
           sucursal_id?: string | null
           tipo_visita?: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
+          video_enlace?: string | null
+          video_notas?: string | null
+          video_proveedor?: string | null
           workspace_id?: string | null
         }
         Relationships: [
@@ -1258,6 +1309,161 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventario_items: {
+        Row: {
+          activo: boolean
+          categoria: string
+          created_at: string
+          created_by: string | null
+          descripcion: string | null
+          id: string
+          metadata: Json
+          nombre: string
+          requiere_lotes: boolean
+          stock_actual: number
+          stock_minimo: number
+          sucursal_id: string | null
+          unidad_medida: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          categoria?: string
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          id?: string
+          metadata?: Json
+          nombre: string
+          requiere_lotes?: boolean
+          stock_actual?: number
+          stock_minimo?: number
+          sucursal_id?: string | null
+          unidad_medida?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          categoria?: string
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          id?: string
+          metadata?: Json
+          nombre?: string
+          requiere_lotes?: boolean
+          stock_actual?: number
+          stock_minimo?: number
+          sucursal_id?: string | null
+          unidad_medida?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      inventario_lotes: {
+        Row: {
+          cantidad_disponible: number
+          created_at: string
+          fecha_vencimiento: string | null
+          id: string
+          item_id: string
+          notas: string | null
+          numero_lote: string
+          proveedor: string | null
+          updated_at: string
+        }
+        Insert: {
+          cantidad_disponible?: number
+          created_at?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          item_id: string
+          notas?: string | null
+          numero_lote: string
+          proveedor?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cantidad_disponible?: number
+          created_at?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          item_id?: string
+          notas?: string | null
+          numero_lote?: string
+          proveedor?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventario_lotes_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "inventario_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventario_movimientos: {
+        Row: {
+          cantidad: number
+          created_at: string
+          id: string
+          item_id: string
+          lote_id: string | null
+          motivo: string | null
+          notas: string | null
+          paciente_id: string | null
+          realizado_por: string | null
+          tipo: string
+          visita_id: string | null
+        }
+        Insert: {
+          cantidad: number
+          created_at?: string
+          id?: string
+          item_id: string
+          lote_id?: string | null
+          motivo?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          realizado_por?: string | null
+          tipo: string
+          visita_id?: string | null
+        }
+        Update: {
+          cantidad?: number
+          created_at?: string
+          id?: string
+          item_id?: string
+          lote_id?: string | null
+          motivo?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          realizado_por?: string | null
+          tipo?: string
+          visita_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventario_movimientos_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "inventario_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventario_movimientos_lote_id_fkey"
+            columns: ["lote_id"]
+            isOneToOne: false
+            referencedRelation: "inventario_lotes"
             referencedColumns: ["id"]
           },
         ]
@@ -1968,6 +2174,45 @@ export type Database = {
           },
         ]
       }
+      politicas_retencion: {
+        Row: {
+          activo: boolean
+          anonimizar_inactivos_meses: number
+          created_at: string
+          id: string
+          notas: string | null
+          notificar_antes_dias: number
+          retencion_anos: number
+          ultima_revision: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          anonimizar_inactivos_meses?: number
+          created_at?: string
+          id?: string
+          notas?: string | null
+          notificar_antes_dias?: number
+          retencion_anos?: number
+          ultima_revision?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          anonimizar_inactivos_meses?: number
+          created_at?: string
+          id?: string
+          notas?: string | null
+          notificar_antes_dias?: number
+          retencion_anos?: number
+          ultima_revision?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           activo: boolean | null
@@ -2158,6 +2403,104 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      reportes_envios_log: {
+        Row: {
+          archivo_url: string | null
+          created_at: string
+          destinatarios: Json
+          error_mensaje: string | null
+          estado: string
+          id: string
+          metadata: Json
+          reporte_id: string
+        }
+        Insert: {
+          archivo_url?: string | null
+          created_at?: string
+          destinatarios?: Json
+          error_mensaje?: string | null
+          estado?: string
+          id?: string
+          metadata?: Json
+          reporte_id: string
+        }
+        Update: {
+          archivo_url?: string | null
+          created_at?: string
+          destinatarios?: Json
+          error_mensaje?: string | null
+          estado?: string
+          id?: string
+          metadata?: Json
+          reporte_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reportes_envios_log_reporte_id_fkey"
+            columns: ["reporte_id"]
+            isOneToOne: false
+            referencedRelation: "reportes_programados"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reportes_programados: {
+        Row: {
+          activo: boolean
+          created_at: string
+          created_by: string | null
+          destinatarios: Json
+          dia_envio: number | null
+          filtros: Json
+          formato: string
+          frecuencia: string
+          hora_envio: string
+          id: string
+          nombre: string
+          proximo_envio: string | null
+          tipo_reporte: string
+          ultimo_envio: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          created_by?: string | null
+          destinatarios?: Json
+          dia_envio?: number | null
+          filtros?: Json
+          formato?: string
+          frecuencia?: string
+          hora_envio?: string
+          id?: string
+          nombre: string
+          proximo_envio?: string | null
+          tipo_reporte: string
+          ultimo_envio?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          created_by?: string | null
+          destinatarios?: Json
+          dia_envio?: number | null
+          filtros?: Json
+          formato?: string
+          frecuencia?: string
+          hora_envio?: string
+          id?: string
+          nombre?: string
+          proximo_envio?: string | null
+          tipo_reporte?: string
+          ultimo_envio?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
       }
       respuestas_encuestas: {
         Row: {
@@ -2831,6 +3174,15 @@ export type Database = {
       is_workspace_member: {
         Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
+      }
+      registrar_acceso_ficha: {
+        Args: {
+          _accion?: string
+          _metadata?: Json
+          _paciente_id: string
+          _recurso: string
+        }
+        Returns: string
       }
     }
     Enums: {

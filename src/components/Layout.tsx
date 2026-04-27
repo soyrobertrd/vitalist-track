@@ -26,6 +26,8 @@ import {
   ScanLine,
   Route,
   Building2,
+  Boxes,
+  Shield,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -106,9 +108,12 @@ const Layout = ({ children }: LayoutProps) => {
       label: "Reportes",
       subItems: [
         { path: "/reportes", label: "Reportes Generales" },
-        { path: "/dashboard-geografico", label: "Dashboard Geográfico" }
+        { path: "/dashboard-geografico", label: "Dashboard Geográfico" },
+        { path: "/reportes-programados", label: "Reportes Programados" }
       ]
     },
+    { path: "/inventario", icon: Boxes, label: "Inventario" },
+    { path: "/auditoria", icon: Shield, label: "Auditoría", adminOnly: true },
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
 
