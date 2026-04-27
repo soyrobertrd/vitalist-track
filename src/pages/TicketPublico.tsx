@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { QRCodeSVG } from "qrcode.react";
-import { Calendar, Clock, MapPin, Phone, Globe, Loader2, AlertCircle, Printer } from "lucide-react";
+import { Calendar, Clock, MapPin, Phone, Globe, Loader2, AlertCircle, Printer, Video } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
@@ -153,6 +153,23 @@ export default function TicketPublico() {
                 <p><span className="text-muted-foreground">Motivo:</span> {data.motivo}</p>
               )}
             </div>
+
+            {data.video_enlace && (
+              <>
+                <Separator />
+                <div className="rounded-lg border-2 border-primary/40 bg-primary/5 p-3 space-y-2 text-center">
+                  <p className="text-xs font-semibold text-primary flex items-center justify-center gap-1">
+                    <Video className="h-4 w-4" /> Videoconsulta {data.video_proveedor ? `· ${data.video_proveedor}` : ""}
+                  </p>
+                  <Button asChild className="w-full" size="sm">
+                    <a href={data.video_enlace} target="_blank" rel="noreferrer">
+                      <Video className="h-4 w-4 mr-2" /> Unirse a la sala
+                    </a>
+                  </Button>
+                  <p className="text-[10px] text-muted-foreground break-all">{data.video_enlace}</p>
+                </div>
+              </>
+            )}
 
             {workspace?.instrucciones_cita && (
               <>
