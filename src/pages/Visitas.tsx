@@ -299,6 +299,8 @@ const Visitas = () => {
       toast.success("Visita programada exitosamente");
       setOpen(false);
       setSelectedProfessionals([]);
+      setModalidad("presencial");
+      setVideoCfg({ proveedor: null, enlace: "", notas: "" });
       
       // Check if patient has medications and show dialog
       if (medicamentos.length > 0 && visitaData) {
