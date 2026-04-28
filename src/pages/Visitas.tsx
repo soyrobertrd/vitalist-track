@@ -668,6 +668,25 @@ const Visitas = () => {
                 </Select>
               </div>
               <div className="space-y-2">
+                <Label>Modalidad *</Label>
+                <Select value={modalidad} onValueChange={(v) => setModalidad(v as "presencial" | "virtual")}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="presencial">Presencial</SelectItem>
+                    <SelectItem value="virtual">Virtual (videoconsulta)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {modalidad === "virtual" && (
+                <VideoConsultaFields
+                  proveedor={videoCfg.proveedor}
+                  enlace={videoCfg.enlace}
+                  notas={videoCfg.notas}
+                  workspaceSlug={currentWorkspace?.nombre ?? null}
+                  onChange={setVideoCfg}
+                />
+              )}
+              <div className="space-y-2">
                 <Label>Profesionales Adicionales (Opcional)</Label>
                 <div className="space-y-2 max-h-32 overflow-y-auto border rounded p-2">
                   {personal.map((p) => (
