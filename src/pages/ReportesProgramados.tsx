@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Mail, Trash2, CalendarClock, FileText } from "lucide-react";
+import { Plus, Mail, Trash2, CalendarClock, FileText, Download, Send } from "lucide-react";
 import {
   useReportesProgramados,
   useCrearReporteProgramado,
@@ -21,6 +21,8 @@ import {
 import { useUserRole } from "@/hooks/useUserRole";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const TIPOS: { value: TipoReporte; label: string }[] = [
   { value: "kpi_profesionales", label: "KPIs por profesional" },
