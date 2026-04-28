@@ -258,10 +258,55 @@ export function VisitaDetailDialog({
                 {visita.tipo_visita === "domicilio" ? <Home className="h-4 w-4" /> : <Building className="h-4 w-4" />}
                 <span>Tipo de Visita</span>
               </div>
-              <Badge variant="secondary">
-                {visita.tipo_visita === "domicilio" ? "Domicilio" : "Ambulatorio"}
-              </Badge>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="secondary">
+                  {visita.tipo_visita === "domicilio" ? "Domicilio" : "Ambulatorio"}
+                </Badge>
+                {visita.modalidad === "virtual" && (
+                  <Badge className="bg-primary/10 text-primary border-primary/30">📹 Virtual</Badge>
+                )}
+              </div>
             </div>
+
+            {visita.modalidad === "virtual" && visita.video_enlace && (
+              <Alert className="border-primary/30 bg-primary/5">
+                <AlertDescription className="space-y-2">
+                  <div className="font-medium text-primary text-sm">Sala de videoconsulta</div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <a
+                      href={visita.video_enlace}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm underline break-all flex-1 min-w-0"
+                    >
+                      {visita.video_enlace}
+                    </a>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        navigator.clipboard.writeText(visita.video_enlace);
+                        toast.success("Enlace copiado");
+                      }}
+                    >
+                      Copiar
+                    </Button>
+                    <Button type="button" size="sm" asChild>
+                      <a href={visita.video_enlace} target="_blank" rel="noreferrer">Abrir sala</a>
+                    </Button>
+                  </div>
+                  {visita.video_proveedor && (
+                    <div className="text-xs text-muted-foreground">
+                      Proveedor: {visita.video_proveedor}
+                    </div>
+                  )}
+                  {visita.video_notas && (
+                    <div className="text-xs text-muted-foreground">📝 {visita.video_notas}</div>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )}
 
             {visita.motivo_visita && (
               <div className="space-y-2">
