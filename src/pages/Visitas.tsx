@@ -94,6 +94,12 @@ const Visitas = () => {
   const [autoAssignOpen, setAutoAssignOpen] = useState(false);
   const [selectedProfesionalId, setSelectedProfesionalId] = useState<string>("");
   const [selectedFechaHora, setSelectedFechaHora] = useState<string>("");
+  const [modalidad, setModalidad] = useState<"presencial" | "virtual">("presencial");
+  const [videoCfg, setVideoCfg] = useState<{ proveedor: VideoProveedor | null; enlace: string; notas: string }>({
+    proveedor: null,
+    enlace: "",
+    notas: "",
+  });
 
   const fetchData = async () => {
     const thirtyDaysAgo = new Date();
