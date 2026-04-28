@@ -991,6 +991,7 @@ const Visitas = () => {
           medicamentos={medicamentos}
           pacienteId={selectedPatientId}
           pacienteNombre={pacientes.find(p => p.id === selectedPatientId)?.nombre + " " + pacientes.find(p => p.id === selectedPatientId)?.apellido || "Paciente"}
+          visitaId={visitaCreada?.id ?? null}
           onComplete={handleMuestraMedicaComplete}
         />
       )}
