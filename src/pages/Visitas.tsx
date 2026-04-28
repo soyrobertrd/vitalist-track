@@ -265,7 +265,17 @@ const Visitas = () => {
       estado: "pendiente" as any,
       workspace_id: currentWorkspace?.id ?? null,
       sucursal_id: sucursalId ?? sucursales.find(s => s.es_principal)?.id ?? null,
+      modalidad,
+      video_proveedor: modalidad === "virtual" ? videoCfg.proveedor : null,
+      video_enlace: modalidad === "virtual" ? videoCfg.enlace || null : null,
+      video_notas: modalidad === "virtual" ? videoCfg.notas || null : null,
     };
+
+    if (modalidad === "virtual" && (!videoCfg.proveedor || !videoCfg.enlace)) {
+      toast.error("Para visita virtual debes configurar el enlace de la sala");
+      setLoading(false);
+      return;
+    }
 
     const { data: visitaData, error } = await supabase
       .from("control_visitas")
