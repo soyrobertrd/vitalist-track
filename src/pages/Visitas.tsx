@@ -682,7 +682,7 @@ const Visitas = () => {
                   proveedor={videoCfg.proveedor}
                   enlace={videoCfg.enlace}
                   notas={videoCfg.notas}
-                  workspaceSlug={currentWorkspace?.nombre ?? null}
+                  workspaceSlug={currentWorkspace?.slug ?? null}
                   onChange={setVideoCfg}
                 />
               )}
