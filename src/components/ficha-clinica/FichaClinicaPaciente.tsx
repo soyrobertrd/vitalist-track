@@ -9,13 +9,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2, Receipt, FileText, Stethoscope, Paperclip, History } from "lucide-react";
+import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2, Receipt, FileText, Stethoscope, Paperclip, History, Video } from "lucide-react";
 import { toast } from "sonner";
 import { CobrosPaciente } from "@/components/cobros/CobrosPaciente";
 import { EvolucionesSOAP } from "@/components/ficha-clinica/EvolucionesSOAP";
 import { DiagnosticosPaciente } from "@/components/ficha-clinica/DiagnosticosPaciente";
 import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinicos";
 import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
+import { HistorialVideoConsultas } from "@/components/HistorialVideoConsultas";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
 
 interface Props {
@@ -239,6 +240,10 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
             <TabsTrigger value="cobros" className="flex items-center gap-1.5">
               <Receipt className="h-4 w-4" />
               Cobros
+            </TabsTrigger>
+            <TabsTrigger value="telemedicina" className="flex items-center gap-1.5">
+              <Video className="h-4 w-4" />
+              Telemedicina
             </TabsTrigger>
           </TabsList>
 
