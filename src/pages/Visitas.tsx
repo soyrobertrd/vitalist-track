@@ -36,6 +36,8 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { useSucursales } from "@/hooks/useSucursales";
 import { SucursalSelect } from "@/components/SucursalSelect";
+import { VideoConsultaFields } from "@/components/VideoConsultaFields";
+import type { VideoProveedor } from "@/lib/videoLinks";
 
 import type { Paciente, Personal } from "@/types/db";
 
