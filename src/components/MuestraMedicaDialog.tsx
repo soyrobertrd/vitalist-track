@@ -46,6 +46,65 @@ export function MuestraMedicaDialog({
     );
   };
 
+  const descontarStockInventario = async (medicamentosNombres: string[]) => {
+    if (!currentWorkspace?.id) return { sinStock: [] as string[], descontados: [] as string[] };
+
+    const { data: userData } = await supabase.auth.getUser();
+    const sinStock: string[] = [];
+    const descontados: string[] = [];
+
+    for (const nombre of medicamentosNombres) {
+      // Buscar item por nombre + workspace + categoría muestra_medica
+      const { data: items } = await (supabase as any)
+        .from("inventario_items")
+        .select("id, stock_actual, nombre")
+        .eq("workspace_id", currentWorkspace.id)
+        .eq("categoria", "muestra_medica")
+        .ilike("nombre", nombre)
+        .limit(1);
+
+      let itemId: string | null = items?.[0]?.id ?? null;
+
+      // Si no existe, crear el item con stock 0 para tener trazabilidad
+      if (!itemId) {
+        const { data: nuevo } = await (supabase as any)
+          .from("inventario_items")
+          .insert({
+            workspace_id: currentWorkspace.id,
+            categoria: "muestra_medica",
+            nombre,
+            unidad_medida: "unidad",
+            stock_actual: 0,
+            stock_minimo: 1,
+          })
+          .select("id, stock_actual")
+          .single();
+        itemId = nuevo?.id ?? null;
+        if (itemId) sinStock.push(nombre);
+      } else if ((items![0].stock_actual ?? 0) < 1) {
+        sinStock.push(nombre);
+      }
+
+      if (!itemId) continue;
+
+      // Registrar movimiento de salida (trigger actualiza stock)
+      const { error: movErr } = await (supabase as any)
+        .from("inventario_movimientos")
+        .insert({
+          item_id: itemId,
+          tipo: "salida",
+          cantidad: 1,
+          paciente_id: pacienteId,
+          visita_id: visitaId ?? null,
+          motivo: "Entrega de muestra médica",
+          realizado_por: userData.user?.id,
+        });
+      if (!movErr) descontados.push(nombre);
+    }
+
+    return { sinStock, descontados };
+  };
+
   const handleConfirm = async () => {
     if (selectedMedicamentos.length === 0) {
       onComplete();
@@ -54,12 +113,12 @@ export function MuestraMedicaDialog({
     }
 
     setLoading(true);
-    
-    // Create atencion_paciente record for medical samples
+
     const medicamentosSeleccionados = medicamentos
       .filter(m => selectedMedicamentos.includes(m.id))
       .map(m => m.nombre_medicamento);
 
+    // 1. Crear registro de atención (entrega)
     const { error } = await supabase.from("atencion_paciente").insert({
       paciente_id: pacienteId,
       tipo: "muestra_medica",
@@ -72,7 +131,17 @@ export function MuestraMedicaDialog({
       toast.error("Error al registrar muestra médica");
       console.error(error);
     } else {
-      toast.success("Muestra médica registrada para entrega");
+      // 2. Descontar del inventario
+      const { sinStock, descontados } = await descontarStockInventario(medicamentosSeleccionados);
+
+      if (descontados.length > 0) {
+        toast.success(`Muestra registrada y ${descontados.length} ítem(s) descontado(s) del inventario`);
+      } else {
+        toast.success("Muestra médica registrada para entrega");
+      }
+      if (sinStock.length > 0) {
+        toast.warning(`Sin stock previo: ${sinStock.join(", ")}. Stock quedará en negativo, regularizar en Inventario.`);
+      }
     }
 
     setLoading(false);
