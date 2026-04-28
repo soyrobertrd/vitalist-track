@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Mail, Trash2, CalendarClock, FileText } from "lucide-react";
+import { Plus, Mail, Trash2, CalendarClock, FileText, Download, Send } from "lucide-react";
 import {
   useReportesProgramados,
   useCrearReporteProgramado,
@@ -21,6 +21,8 @@ import {
 import { useUserRole } from "@/hooks/useUserRole";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const TIPOS: { value: TipoReporte; label: string }[] = [
   { value: "kpi_profesionales", label: "KPIs por profesional" },
@@ -65,6 +67,38 @@ export default function ReportesProgramados() {
     });
     setOpen(false);
     setForm({ ...form, nombre: "", destinatariosTexto: "" });
+  };
+
+  const ejecutarAhora = async (r: any, soloDescargar: boolean) => {
+    toast.loading(soloDescargar ? "Generando reporte…" : "Generando y enviando…", { id: "gen-rep" });
+    const { data, error } = await supabase.functions.invoke("generar-reporte", {
+      body: {
+        workspace_id: r.workspace_id,
+        tipo_reporte: r.tipo_reporte,
+        filtros: r.filtros ?? {},
+        destinatarios: r.destinatarios ?? [],
+        enviar_email: !soloDescargar,
+        reporte_id: soloDescargar ? null : r.id,
+      },
+    });
+    toast.dismiss("gen-rep");
+    if (error || !data?.ok) {
+      toast.error("No se pudo generar el reporte");
+      return;
+    }
+    // Descargar siempre
+    const blob = new Blob([data.csv ?? ""], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = data.filename ?? "reporte.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(
+      soloDescargar
+        ? `Reporte descargado (${data.filas} filas)`
+        : `Enviado a ${(r.destinatarios ?? []).length} destinatarios`
+    );
   };
 
   if (!isAdmin) {
@@ -189,9 +223,17 @@ export default function ReportesProgramados() {
                     <Switch checked={r.activo} onCheckedChange={(v) => toggle.mutate({ id: r.id, activo: v })} />
                   </TableCell>
                   <TableCell>
-                    <Button size="icon" variant="ghost" onClick={() => eliminar.mutate(r.id)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button size="icon" variant="ghost" title="Descargar CSV ahora" onClick={() => ejecutarAhora(r, true)}>
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      <Button size="icon" variant="ghost" title="Enviar por email ahora" onClick={() => ejecutarAhora(r, false)}>
+                        <Send className="h-4 w-4 text-primary" />
+                      </Button>
+                      <Button size="icon" variant="ghost" onClick={() => eliminar.mutate(r.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

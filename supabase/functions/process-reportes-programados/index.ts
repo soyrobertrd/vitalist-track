@@ -1,5 +1,5 @@
-// Edge function esqueleto: procesa reportes programados pendientes y los envía por email.
-// Se invocará desde un cron job (a configurar). Por ahora MVP: marca enviados sin generar PDF aún.
+// Edge function: procesa reportes programados pendientes y los envía por email
+// usando la función generar-reporte.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -11,10 +11,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
     const ahora = new Date().toISOString();
 
@@ -30,14 +29,33 @@ Deno.serve(async (req) => {
     const procesados: any[] = [];
 
     for (const r of pendientes ?? []) {
-      // TODO Fase A.2: generar PDF/CSV real según tipo_reporte y enviar via Resend.
-      // Por ahora MVP: registra envío "simulado" para que la UI muestre actividad.
-      await supabase.from("reportes_envios_log").insert({
-        reporte_id: r.id,
-        estado: "enviado",
-        destinatarios: r.destinatarios,
-        metadata: { mvp: true, mensaje: "Esqueleto MVP - generación pendiente" },
-      });
+      // Llamar a generar-reporte
+      try {
+        const resp = await fetch(`${SUPABASE_URL}/functions/v1/generar-reporte`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${SERVICE_KEY}`,
+          },
+          body: JSON.stringify({
+            workspace_id: r.workspace_id,
+            tipo_reporte: r.tipo_reporte,
+            filtros: r.filtros ?? {},
+            destinatarios: r.destinatarios ?? [],
+            enviar_email: true,
+            reporte_id: r.id,
+          }),
+        });
+        const data = await resp.json().catch(() => ({}));
+        procesados.push({ id: r.id, nombre: r.nombre, ok: resp.ok, filas: data?.filas });
+      } catch (e) {
+        await supabase.from("reportes_envios_log").insert({
+          reporte_id: r.id,
+          estado: "error",
+          destinatarios: r.destinatarios,
+          metadata: { error: String(e) },
+        });
+      }
 
       // Calcular próximo envío
       const next = new Date();
@@ -52,8 +70,6 @@ Deno.serve(async (req) => {
         .from("reportes_programados")
         .update({ ultimo_envio: ahora, proximo_envio: next.toISOString() })
         .eq("id", r.id);
-
-      procesados.push({ id: r.id, nombre: r.nombre });
     }
 
     return new Response(JSON.stringify({ ok: true, procesados }), {

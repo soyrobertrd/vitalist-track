@@ -16,6 +16,7 @@ import { EvolucionesSOAP } from "@/components/ficha-clinica/EvolucionesSOAP";
 import { DiagnosticosPaciente } from "@/components/ficha-clinica/DiagnosticosPaciente";
 import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinicos";
 import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
+import { useAuditAccess } from "@/hooks/useAuditAccess";
 
 interface Props {
   pacienteId: string;
@@ -65,6 +66,9 @@ const SEVERIDAD_COLORS: Record<string, string> = {
 };
 
 export function FichaClinicaPaciente({ pacienteId }: Props) {
+  // Auditoría HIPAA-like: registrar acceso de lectura a la ficha clínica
+  useAuditAccess({ pacienteId, recurso: "ficha_clinica", accion: "view" });
+
   const [alergias, setAlergias] = useState<Alergia[]>([]);
   const [antecedentes, setAntecedentes] = useState<Antecedente[]>([]);
   const [seguros, setSeguros] = useState<Seguro[]>([]);

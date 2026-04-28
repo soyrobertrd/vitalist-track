@@ -36,6 +36,8 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { useSucursales } from "@/hooks/useSucursales";
 import { SucursalSelect } from "@/components/SucursalSelect";
+import { VideoConsultaFields } from "@/components/VideoConsultaFields";
+import type { VideoProveedor } from "@/lib/videoLinks";
 
 import type { Paciente, Personal } from "@/types/db";
 
@@ -92,6 +94,12 @@ const Visitas = () => {
   const [autoAssignOpen, setAutoAssignOpen] = useState(false);
   const [selectedProfesionalId, setSelectedProfesionalId] = useState<string>("");
   const [selectedFechaHora, setSelectedFechaHora] = useState<string>("");
+  const [modalidad, setModalidad] = useState<"presencial" | "virtual">("presencial");
+  const [videoCfg, setVideoCfg] = useState<{ proveedor: VideoProveedor | null; enlace: string; notas: string }>({
+    proveedor: null,
+    enlace: "",
+    notas: "",
+  });
 
   const fetchData = async () => {
     const thirtyDaysAgo = new Date();
@@ -257,7 +265,17 @@ const Visitas = () => {
       estado: "pendiente" as any,
       workspace_id: currentWorkspace?.id ?? null,
       sucursal_id: sucursalId ?? sucursales.find(s => s.es_principal)?.id ?? null,
+      modalidad,
+      video_proveedor: modalidad === "virtual" ? videoCfg.proveedor : null,
+      video_enlace: modalidad === "virtual" ? videoCfg.enlace || null : null,
+      video_notas: modalidad === "virtual" ? videoCfg.notas || null : null,
     };
+
+    if (modalidad === "virtual" && (!videoCfg.proveedor || !videoCfg.enlace)) {
+      toast.error("Para visita virtual debes configurar el enlace de la sala");
+      setLoading(false);
+      return;
+    }
 
     const { data: visitaData, error } = await supabase
       .from("control_visitas")
@@ -281,6 +299,8 @@ const Visitas = () => {
       toast.success("Visita programada exitosamente");
       setOpen(false);
       setSelectedProfessionals([]);
+      setModalidad("presencial");
+      setVideoCfg({ proveedor: null, enlace: "", notas: "" });
       
       // Check if patient has medications and show dialog
       if (medicamentos.length > 0 && visitaData) {
@@ -648,6 +668,25 @@ const Visitas = () => {
                 </Select>
               </div>
               <div className="space-y-2">
+                <Label>Modalidad *</Label>
+                <Select value={modalidad} onValueChange={(v) => setModalidad(v as "presencial" | "virtual")}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="presencial">Presencial</SelectItem>
+                    <SelectItem value="virtual">Virtual (videoconsulta)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {modalidad === "virtual" && (
+                <VideoConsultaFields
+                  proveedor={videoCfg.proveedor}
+                  enlace={videoCfg.enlace}
+                  notas={videoCfg.notas}
+                  workspaceSlug={currentWorkspace?.slug ?? null}
+                  onChange={setVideoCfg}
+                />
+              )}
+              <div className="space-y-2">
                 <Label>Profesionales Adicionales (Opcional)</Label>
                 <div className="space-y-2 max-h-32 overflow-y-auto border rounded p-2">
                   {personal.map((p) => (
@@ -952,6 +991,7 @@ const Visitas = () => {
           medicamentos={medicamentos}
           pacienteId={selectedPatientId}
           pacienteNombre={pacientes.find(p => p.id === selectedPatientId)?.nombre + " " + pacientes.find(p => p.id === selectedPatientId)?.apellido || "Paciente"}
+          visitaId={visitaCreada?.id ?? null}
           onComplete={handleMuestraMedicaComplete}
         />
       )}
