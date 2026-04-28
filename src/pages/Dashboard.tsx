@@ -5,6 +5,7 @@ import { Users, Phone, Calendar, AlertCircle, TrendingUp, Activity, Clock, Calen
 import { Badge } from "@/components/ui/badge";
 import { InteractiveKPI } from "@/components/InteractiveKPI";
 import { RecordatoriosDiariosWhatsApp } from "@/components/RecordatoriosDiariosWhatsApp";
+import { InventarioAlertasWidget } from "@/components/InventarioAlertasWidget";
 import { format, subDays, startOfDay, endOfDay, startOfMonth, subMonths, eachDayOfInterval } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
