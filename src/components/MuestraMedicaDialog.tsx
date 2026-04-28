@@ -31,10 +31,12 @@ export function MuestraMedicaDialog({
   medicamentos,
   pacienteId,
   pacienteNombre,
+  visitaId,
   onComplete
 }: MuestraMedicaDialogProps) {
   const [selectedMedicamentos, setSelectedMedicamentos] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const { currentWorkspace } = useWorkspace();
 
   const handleToggleMedicamento = (id: string) => {
     setSelectedMedicamentos(prev =>
