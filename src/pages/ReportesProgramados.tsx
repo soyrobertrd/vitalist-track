@@ -223,9 +223,17 @@ export default function ReportesProgramados() {
                     <Switch checked={r.activo} onCheckedChange={(v) => toggle.mutate({ id: r.id, activo: v })} />
                   </TableCell>
                   <TableCell>
-                    <Button size="icon" variant="ghost" onClick={() => eliminar.mutate(r.id)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button size="icon" variant="ghost" title="Descargar CSV ahora" onClick={() => ejecutarAhora(r, true)}>
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      <Button size="icon" variant="ghost" title="Enviar por email ahora" onClick={() => ejecutarAhora(r, false)}>
+                        <Send className="h-4 w-4 text-primary" />
+                      </Button>
+                      <Button size="icon" variant="ghost" onClick={() => eliminar.mutate(r.id)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
