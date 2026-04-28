@@ -16,6 +16,7 @@ import { EvolucionesSOAP } from "@/components/ficha-clinica/EvolucionesSOAP";
 import { DiagnosticosPaciente } from "@/components/ficha-clinica/DiagnosticosPaciente";
 import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinicos";
 import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
+import { useAuditAccess } from "@/hooks/useAuditAccess";
 
 interface Props {
   pacienteId: string;
