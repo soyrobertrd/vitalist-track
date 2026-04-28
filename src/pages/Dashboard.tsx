@@ -267,6 +267,9 @@ const Dashboard = () => {
       {/* Recordatorios WhatsApp del día siguiente */}
       <RecordatoriosDiariosWhatsApp />
 
+      {/* Alertas de inventario (bajo stock + vencimientos) */}
+      <InventarioAlertasWidget />
+
       {/* Stats Grid with Interactive KPIs */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <InteractiveKPI
