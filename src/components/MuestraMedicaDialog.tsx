@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Pill, Package } from "lucide-react";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 interface Medicamento {
   id: string;
@@ -20,6 +21,7 @@ interface MuestraMedicaDialogProps {
   medicamentos: Medicamento[];
   pacienteId: string;
   pacienteNombre: string;
+  visitaId?: string | null;
   onComplete: () => void;
 }
 
