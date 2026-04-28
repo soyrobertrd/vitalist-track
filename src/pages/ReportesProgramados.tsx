@@ -69,6 +69,38 @@ export default function ReportesProgramados() {
     setForm({ ...form, nombre: "", destinatariosTexto: "" });
   };
 
+  const ejecutarAhora = async (r: any, soloDescargar: boolean) => {
+    toast.loading(soloDescargar ? "Generando reporte…" : "Generando y enviando…", { id: "gen-rep" });
+    const { data, error } = await supabase.functions.invoke("generar-reporte", {
+      body: {
+        workspace_id: r.workspace_id,
+        tipo_reporte: r.tipo_reporte,
+        filtros: r.filtros ?? {},
+        destinatarios: r.destinatarios ?? [],
+        enviar_email: !soloDescargar,
+        reporte_id: soloDescargar ? null : r.id,
+      },
+    });
+    toast.dismiss("gen-rep");
+    if (error || !data?.ok) {
+      toast.error("No se pudo generar el reporte");
+      return;
+    }
+    // Descargar siempre
+    const blob = new Blob([data.csv ?? ""], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = data.filename ?? "reporte.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(
+      soloDescargar
+        ? `Reporte descargado (${data.filas} filas)`
+        : `Enviado a ${(r.destinatarios ?? []).length} destinatarios`
+    );
+  };
+
   if (!isAdmin) {
     return (
       <Card>
