@@ -47,6 +47,7 @@ const OnboardingWizard = lazy(() => import("./pages/OnboardingWizard"));
 const Inventario = lazy(() => import("./pages/Inventario"));
 const AuditoriaHIPAA = lazy(() => import("./pages/AuditoriaHIPAA"));
 const ReportesProgramados = lazy(() => import("./pages/ReportesProgramados"));
+const SalaVirtual = lazy(() => import("./pages/SalaVirtual"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -100,6 +101,7 @@ const App = () => {
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/confirmar-cita" element={<ConfirmarCita />} />
                 <Route path="/ticket/:token" element={<TicketPublico />} />
+                <Route path="/sala/:token" element={<SalaVirtual />} />
                 <Route
                   path="/recepcion"
                   element={session ? <Layout><Recepcion /></Layout> : <Navigate to="/auth" />}

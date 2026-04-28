@@ -268,34 +268,74 @@ export function VisitaDetailDialog({
               </div>
             </div>
 
-            {visita.modalidad === "virtual" && visita.video_enlace && (
+            {visita.modalidad === "virtual" && (
               <Alert className="border-primary/30 bg-primary/5">
                 <AlertDescription className="space-y-2">
-                  <div className="font-medium text-primary text-sm">Sala de videoconsulta</div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <a
-                      href={visita.video_enlace}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-sm underline break-all flex-1 min-w-0"
-                    >
-                      {visita.video_enlace}
-                    </a>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        navigator.clipboard.writeText(visita.video_enlace);
-                        toast.success("Enlace copiado");
-                      }}
-                    >
-                      Copiar
-                    </Button>
-                    <Button type="button" size="sm" asChild>
-                      <a href={visita.video_enlace} target="_blank" rel="noreferrer">Abrir sala</a>
-                    </Button>
+                  <div className="font-medium text-primary text-sm flex items-center gap-2">
+                    📹 Sala de videoconsulta
+                    {visita.video_iniciado_at && (
+                      <Badge variant="outline" className="text-xs bg-emerald-500/10 text-emerald-700 border-emerald-300">
+                        Atendida
+                      </Badge>
+                    )}
                   </div>
+                  {visita.video_enlace ? (
+                    <>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <a
+                          href={visita.video_enlace}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sm underline break-all flex-1 min-w-0"
+                        >
+                          {visita.video_enlace}
+                        </a>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            navigator.clipboard.writeText(visita.video_enlace);
+                            toast.success("Enlace copiado");
+                          }}
+                        >
+                          Copiar
+                        </Button>
+                        <Button type="button" size="sm" asChild>
+                          <a href={visita.video_enlace} target="_blank" rel="noreferrer">Abrir sala</a>
+                        </Button>
+                      </div>
+                      {visita.video_token && (
+                        <div className="flex items-center gap-2 flex-wrap text-xs">
+                          <span className="text-muted-foreground">Sala pública del paciente:</span>
+                          <a
+                            href={`/sala/${visita.video_token}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-primary underline"
+                          >
+                            {window.location.origin}/sala/{visita.video_token.slice(0, 8)}…
+                          </a>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            className="h-6 text-xs"
+                            onClick={() => {
+                              navigator.clipboard.writeText(`${window.location.origin}/sala/${visita.video_token}`);
+                              toast.success("Enlace de sala copiado");
+                            }}
+                          >
+                            Copiar
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Aún no se ha configurado un enlace de videoconsulta para esta visita.
+                    </p>
+                  )}
                   {visita.video_proveedor && (
                     <div className="text-xs text-muted-foreground">
                       Proveedor: {visita.video_proveedor}

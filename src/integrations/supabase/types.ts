@@ -226,6 +226,51 @@ export type Database = {
           },
         ]
       }
+      auditoria_alertas: {
+        Row: {
+          created_at: string
+          descripcion: string
+          id: string
+          metadata: Json
+          notas_resolucion: string | null
+          resuelto: boolean
+          resuelto_at: string | null
+          resuelto_por: string | null
+          severidad: string
+          tipo: string
+          user_id: string
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          descripcion: string
+          id?: string
+          metadata?: Json
+          notas_resolucion?: string | null
+          resuelto?: boolean
+          resuelto_at?: string | null
+          resuelto_por?: string | null
+          severidad?: string
+          tipo: string
+          user_id: string
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string
+          id?: string
+          metadata?: Json
+          notas_resolucion?: string | null
+          resuelto?: boolean
+          resuelto_at?: string | null
+          resuelto_por?: string | null
+          severidad?: string
+          tipo?: string
+          user_id?: string
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
       auditoria_cambios: {
         Row: {
           accion: string
@@ -256,6 +301,45 @@ export type Database = {
           registro_id?: string | null
           tabla?: string
           usuario_id?: string | null
+        }
+        Relationships: []
+      }
+      auditoria_exportes: {
+        Row: {
+          created_at: string
+          exportado_por: string
+          filtros: Json
+          hash_sha256: string
+          id: string
+          rango_fin: string | null
+          rango_inicio: string | null
+          tipo: string
+          total_registros: number
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          exportado_por: string
+          filtros?: Json
+          hash_sha256: string
+          id?: string
+          rango_fin?: string | null
+          rango_inicio?: string | null
+          tipo: string
+          total_registros?: number
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          exportado_por?: string
+          filtros?: Json
+          hash_sha256?: string
+          id?: string
+          rango_fin?: string | null
+          rango_inicio?: string | null
+          tipo?: string
+          total_registros?: number
+          workspace_id?: string | null
         }
         Relationships: []
       }
@@ -660,8 +744,12 @@ export type Database = {
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at: string | null
           video_enlace: string | null
+          video_estado: string | null
+          video_finalizado_at: string | null
+          video_iniciado_at: string | null
           video_notas: string | null
           video_proveedor: string | null
+          video_token: string | null
           workspace_id: string | null
         }
         Insert: {
@@ -680,8 +768,12 @@ export type Database = {
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
           video_enlace?: string | null
+          video_estado?: string | null
+          video_finalizado_at?: string | null
+          video_iniciado_at?: string | null
           video_notas?: string | null
           video_proveedor?: string | null
+          video_token?: string | null
           workspace_id?: string | null
         }
         Update: {
@@ -700,8 +792,12 @@ export type Database = {
           tipo_visita?: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
           video_enlace?: string | null
+          video_estado?: string | null
+          video_finalizado_at?: string | null
+          video_iniciado_at?: string | null
           video_notas?: string | null
           video_proveedor?: string | null
+          video_token?: string | null
           workspace_id?: string | null
         }
         Relationships: [
@@ -3127,6 +3223,10 @@ export type Database = {
           tasa_contacto: number
           total_llamadas: number
         }[]
+      }
+      detectar_accesos_sospechosos: {
+        Args: { _workspace_id?: string }
+        Returns: number
       }
       generar_codigo_ticket: { Args: never; Returns: string }
       get_invitation_details: { Args: { _token: string }; Returns: Json }
