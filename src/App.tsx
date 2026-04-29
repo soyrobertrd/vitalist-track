@@ -56,6 +56,7 @@ const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisp
 const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesional"));
 const UciManagement = lazy(() => import("./pages/UciManagement"));
 const ChecklistRLS = lazy(() => import("./pages/ChecklistRLS"));
+const ConfiguracionAuditoria = lazy(() => import("./pages/ConfiguracionAuditoria"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -242,6 +243,10 @@ const App = () => {
                 <Route
                   path="/checklist-rls"
                   element={session ? <Layout><ChecklistRLS /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/auditoria/configuracion"
+                  element={session ? <Layout><ConfiguracionAuditoria /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -261,6 +261,7 @@ export type Database = {
       alertas_notificaciones: {
         Row: {
           alerta_id: string | null
+          canal: string
           created_at: string
           cuerpo: string | null
           destinatario_user_id: string
@@ -273,6 +274,7 @@ export type Database = {
         }
         Insert: {
           alerta_id?: string | null
+          canal?: string
           created_at?: string
           cuerpo?: string | null
           destinatario_user_id: string
@@ -285,6 +287,7 @@ export type Database = {
         }
         Update: {
           alerta_id?: string | null
+          canal?: string
           created_at?: string
           cuerpo?: string | null
           destinatario_user_id?: string
@@ -301,6 +304,50 @@ export type Database = {
             columns: ["alerta_id"]
             isOneToOne: false
             referencedRelation: "auditoria_alertas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      alertas_ruteo: {
+        Row: {
+          activo: boolean
+          canal_email: boolean
+          canal_inapp: boolean
+          created_at: string
+          id: string
+          roles: string[]
+          severidad: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean
+          canal_email?: boolean
+          canal_inapp?: boolean
+          created_at?: string
+          id?: string
+          roles?: string[]
+          severidad: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean
+          canal_email?: boolean
+          canal_inapp?: boolean
+          created_at?: string
+          id?: string
+          roles?: string[]
+          severidad?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_ruteo_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -433,6 +480,7 @@ export type Database = {
       }
       auditoria_alertas: {
         Row: {
+          categoria: string | null
           created_at: string
           descripcion: string
           id: string
@@ -447,6 +495,7 @@ export type Database = {
           workspace_id: string | null
         }
         Insert: {
+          categoria?: string | null
           created_at?: string
           descripcion: string
           id?: string
@@ -461,6 +510,7 @@ export type Database = {
           workspace_id?: string | null
         }
         Update: {
+          categoria?: string | null
           created_at?: string
           descripcion?: string
           id?: string
@@ -508,6 +558,59 @@ export type Database = {
           usuario_id?: string | null
         }
         Relationships: []
+      }
+      auditoria_config: {
+        Row: {
+          created_at: string
+          detectar_cambios_criticos: boolean
+          hora_nocturna_fin: number
+          hora_nocturna_inicio: number
+          id: string
+          umbral_acceso_masivo: number
+          umbral_cambios_criticos: number
+          umbral_descargas: number
+          umbral_fuera_horario: number
+          updated_at: string
+          ventana_horas_acceso_masivo: number
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detectar_cambios_criticos?: boolean
+          hora_nocturna_fin?: number
+          hora_nocturna_inicio?: number
+          id?: string
+          umbral_acceso_masivo?: number
+          umbral_cambios_criticos?: number
+          umbral_descargas?: number
+          umbral_fuera_horario?: number
+          updated_at?: string
+          ventana_horas_acceso_masivo?: number
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detectar_cambios_criticos?: boolean
+          hora_nocturna_fin?: number
+          hora_nocturna_inicio?: number
+          id?: string
+          umbral_acceso_masivo?: number
+          umbral_cambios_criticos?: number
+          umbral_descargas?: number
+          umbral_fuera_horario?: number
+          updated_at?: string
+          ventana_horas_acceso_masivo?: number
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auditoria_config_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       auditoria_exportes: {
         Row: {

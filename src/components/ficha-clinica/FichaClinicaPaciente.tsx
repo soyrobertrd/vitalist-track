@@ -18,9 +18,8 @@ import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinico
 import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
 import { HistorialVideoConsultas } from "@/components/HistorialVideoConsultas";
 import { EscalasClinicasPaciente } from "@/components/ficha-clinica/EscalasClinicas";
-import DiagnosticosManager from "@/components/DiagnosticosManager";
 import EscalasEnfermeriaManager from "@/components/EscalasEnfermeriaManager";
-import HistorialDiagnosticos from "@/components/HistorialDiagnosticos";
+import { Cie10Workbench } from "@/components/ficha-clinica/Cie10Workbench";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
 
 interface Props {
@@ -268,8 +267,7 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
           </TabsContent>
 
           <TabsContent value="cie10" className="mt-4">
-            <DiagnosticosManager pacienteId={pacienteId} />
-            <div className="mt-3"><HistorialDiagnosticos pacienteId={pacienteId} /></div>
+            <Cie10Workbench pacienteId={pacienteId} />
           </TabsContent>
 
           <TabsContent value="enfermeria" className="mt-4">

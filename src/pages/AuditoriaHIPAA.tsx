@@ -228,13 +228,16 @@ export default function AuditoriaHIPAA() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <Shield className="h-7 w-7 text-primary" /> Auditoría y cumplimiento
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          Logs de acceso a fichas clínicas, alertas de acceso sospechoso y política de retención (HIPAA-like).
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+            <Shield className="h-7 w-7 text-primary" /> Auditoría y cumplimiento
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Logs de acceso a fichas clínicas, alertas de acceso sospechoso y política de retención (HIPAA-like).
+          </p>
+        </div>
+        <a href="/auditoria/configuracion" className="text-sm underline text-primary">Configurar umbrales y ruteo →</a>
       </div>
 
       <Tabs defaultValue="logs">
