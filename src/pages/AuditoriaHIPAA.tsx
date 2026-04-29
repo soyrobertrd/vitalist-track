@@ -17,6 +17,7 @@ import { es } from "date-fns/locale";
 import { toast } from "sonner";
 import { AlertasAuditoriaPanel } from "@/components/AlertasAuditoriaPanel";
 import ResumenAuditoria from "@/components/ResumenAuditoria";
+import PanelRetencion from "@/components/PanelRetencion";
 
 interface AccesoLog {
   id: string;
@@ -437,6 +438,7 @@ export default function AuditoriaHIPAA() {
                   placeholder="Justificación regulatoria, referencias…"
                 />
               </div>
+              <PanelRetencion />
               <Button onClick={handleSavePolitica} disabled={savingPolitica}>
                 <Save className="h-4 w-4 mr-2" /> Guardar política
               </Button>
