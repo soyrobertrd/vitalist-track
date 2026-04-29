@@ -18,6 +18,8 @@ import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinico
 import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
 import { HistorialVideoConsultas } from "@/components/HistorialVideoConsultas";
 import { EscalasClinicasPaciente } from "@/components/ficha-clinica/EscalasClinicas";
+import DiagnosticosManager from "@/components/DiagnosticosManager";
+import EscalasEnfermeriaManager from "@/components/EscalasEnfermeriaManager";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
 
 interface Props {
@@ -250,10 +252,26 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
               <ClipboardList className="h-4 w-4" />
               Escalas
             </TabsTrigger>
+            <TabsTrigger value="cie10" className="flex items-center gap-1.5">
+              <ClipboardList className="h-4 w-4" />
+              CIE-10
+            </TabsTrigger>
+            <TabsTrigger value="enfermeria" className="flex items-center gap-1.5">
+              <ClipboardList className="h-4 w-4" />
+              Enfermería
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="escalas" className="mt-4">
             <EscalasClinicasPaciente pacienteId={pacienteId} />
+          </TabsContent>
+
+          <TabsContent value="cie10" className="mt-4">
+            <DiagnosticosManager pacienteId={pacienteId} />
+          </TabsContent>
+
+          <TabsContent value="enfermeria" className="mt-4">
+            <EscalasEnfermeriaManager pacienteId={pacienteId} />
           </TabsContent>
 
           <TabsContent value="timeline" className="mt-4">

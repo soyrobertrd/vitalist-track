@@ -119,10 +119,12 @@ const Layout = ({ children }: LayoutProps) => {
       label: "Hospital",
       subItems: [
         { path: "/triaje", label: "Triaje" },
-        { path: "/hospitalizacion", label: "Hospitalización / UCI" },
+        { path: "/hospitalizacion", label: "Hospitalización" },
+        { path: "/uci", label: "UCI: infusiones / kardex" },
         { path: "/consultorios", label: "Consultorios", icon: Building2 },
       ]
     },
+    { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },
     { path: "/api-citas", icon: Cog, label: "API Pública Citas", adminOnly: true },
     { path: "/auditoria", icon: Shield, label: "Auditoría", adminOnly: true },
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },

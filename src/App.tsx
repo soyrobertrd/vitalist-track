@@ -52,6 +52,9 @@ const Consultorios = lazy(() => import("./pages/Consultorios"));
 const Hospitalizacion = lazy(() => import("./pages/Hospitalizacion"));
 const Triaje = lazy(() => import("./pages/Triaje"));
 const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
+const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
+const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesional"));
+const UciManagement = lazy(() => import("./pages/UciManagement"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -106,6 +109,7 @@ const App = () => {
                 <Route path="/confirmar-cita" element={<ConfirmarCita />} />
                 <Route path="/ticket/:token" element={<TicketPublico />} />
                 <Route path="/sala/:token" element={<SalaVirtual />} />
+                <Route path="/portal-citas" element={<PortalPublicoDisponibilidad />} />
                 <Route
                   path="/recepcion"
                   element={session ? <Layout><Recepcion /></Layout> : <Navigate to="/auth" />}
@@ -225,6 +229,14 @@ const App = () => {
                 <Route
                   path="/api-citas"
                   element={session ? <Layout><ApiPublicaCitas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/afiliaciones"
+                  element={session ? <Layout><AfiliacionesProfesional /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/uci"
+                  element={session ? <Layout><UciManagement /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
