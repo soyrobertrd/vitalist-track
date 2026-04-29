@@ -58,9 +58,19 @@ export default function UciManagement() {
     setKardex((k as any) || []);
   };
 
+  const getPaciente = () => admisiones.find((a) => a.id === adId)?.paciente_id;
+
   const addInf = async () => {
-    if (!infForm.medicamento) return;
-    const { error } = await supabase.from("uci_infusiones").insert({ admision_id: adId, ...infForm });
+    const pacienteId = getPaciente();
+    if (!infForm.medicamento || !pacienteId) return;
+    const { error } = await (supabase.from("uci_infusiones") as any).insert({
+      admision_id: adId,
+      paciente_id: pacienteId,
+      medicamento: infForm.medicamento,
+      dosis: infForm.dosis,
+      via: infForm.via,
+      velocidad: infForm.velocidad,
+    });
     if (error) return toast.error(error.message);
     setInfForm({ medicamento: "", dosis: "", via: "iv", velocidad: "" });
     toast.success("Infusión registrada");
@@ -68,11 +78,14 @@ export default function UciManagement() {
   };
 
   const addBal = async () => {
-    const { error } = await supabase.from("uci_balance_hidrico").insert({
+    const pacienteId = getPaciente();
+    if (!pacienteId) return;
+    const { error } = await (supabase.from("uci_balance_hidrico") as any).insert({
       admision_id: adId,
+      paciente_id: pacienteId,
       ingresos_ml: parseFloat(balForm.ingresos_ml) || 0,
       egresos_ml: parseFloat(balForm.egresos_ml) || 0,
-      tipo: balForm.tipo,
+      notas: balForm.tipo,
     });
     if (error) return toast.error(error.message);
     setBalForm({ ingresos_ml: "", egresos_ml: "", tipo: "general" });
@@ -81,8 +94,15 @@ export default function UciManagement() {
   };
 
   const addKar = async () => {
-    if (!kForm.actividad) return;
-    const { error } = await supabase.from("kardex_enfermeria").insert({ admision_id: adId, ...kForm });
+    const pacienteId = getPaciente();
+    if (!kForm.actividad || !pacienteId) return;
+    const { error } = await (supabase.from("kardex_enfermeria") as any).insert({
+      admision_id: adId,
+      paciente_id: pacienteId,
+      turno: kForm.turno,
+      cuidados: { actividad: kForm.actividad },
+      observaciones: kForm.observaciones,
+    });
     if (error) return toast.error(error.message);
     setKForm({ turno: "manana", actividad: "", observaciones: "" });
     toast.success("Kardex registrado");
@@ -106,7 +126,7 @@ export default function UciManagement() {
       </table>
       <h2>Kardex (${kardex.length})</h2>
       <table><tr><th>Turno</th><th>Actividad</th><th>Observaciones</th><th>Fecha</th></tr>
-      ${kardex.map((k) => `<tr><td>${k.turno}</td><td>${k.actividad}</td><td>${k.observaciones || ""}</td><td>${new Date(k.created_at).toLocaleString("es-DO")}</td></tr>`).join("")}
+      ${kardex.map((k) => `<tr><td>${k.turno}</td><td>${k.cuidados?.actividad || ""}</td><td>${k.observaciones || ""}</td><td>${new Date(k.created_at).toLocaleString("es-DO")}</td></tr>`).join("")}
       </table>
       </body></html>`;
     const w = window.open("", "_blank");
@@ -265,7 +285,7 @@ export default function UciManagement() {
                   <div key={k.id} className="rounded border p-2 text-sm">
                     <div className="flex items-center gap-2">
                       <Badge>{k.turno}</Badge>
-                      <span className="font-medium">{k.actividad}</span>
+                      <span className="font-medium">{k.cuidados?.actividad || "—"}</span>
                       <span className="text-xs text-muted-foreground ml-auto">{new Date(k.created_at).toLocaleString("es-DO")}</span>
                     </div>
                     {k.observaciones && <p className="text-xs text-muted-foreground mt-1">{k.observaciones}</p>}
