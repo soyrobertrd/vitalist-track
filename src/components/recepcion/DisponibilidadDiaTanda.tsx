@@ -45,26 +45,24 @@ export function DisponibilidadDiaTanda() {
     const inicio = `${fecha}T00:00:00`;
     const fin = `${fecha}T23:59:59`;
 
-    const [visitasRes, llamadasRes, ausRes] = await Promise.all([
-      supabase
-        .from("visitas")
-        .select("id, fecha_hora_visita, duracion_minutos, estado, motivo_visita, pacientes(nombre, apellido)")
-        .eq("profesional_id", profId)
-        .gte("fecha_hora_visita", inicio)
-        .lte("fecha_hora_visita", fin),
-      supabase
-        .from("registro_llamadas")
-        .select("id, fecha_agendada, estado, motivo, pacientes(nombre, apellido)")
-        .eq("profesional_id", profId)
-        .gte("fecha_agendada", inicio)
-        .lte("fecha_agendada", fin),
-      supabase
-        .from("ausencias_profesionales")
-        .select("fecha_inicio, fecha_fin, motivo, tipo")
-        .eq("profesional_id", profId)
-        .lte("fecha_inicio", fin)
-        .gte("fecha_fin", inicio),
-    ]);
+    const visitasRes = await supabase
+      .from("visitas")
+      .select("id, fecha_hora_visita, duracion_minutos, estado, motivo_visita, pacientes(nombre, apellido)")
+      .eq("profesional_id", profId)
+      .gte("fecha_hora_visita", inicio)
+      .lte("fecha_hora_visita", fin);
+    const llamadasRes = await supabase
+      .from("registro_llamadas")
+      .select("id, fecha_agendada, estado, motivo, pacientes(nombre, apellido)")
+      .eq("profesional_id", profId)
+      .gte("fecha_agendada", inicio)
+      .lte("fecha_agendada", fin);
+    const ausRes = await supabase
+      .from("ausencias_profesionales")
+      .select("fecha_inicio, fecha_fin, motivo, tipo")
+      .eq("profesional_id", profId)
+      .lte("fecha_inicio", fin)
+      .gte("fecha_fin", inicio);
 
     const items = [
       ...(visitasRes.data || []).map((v: any) => ({
