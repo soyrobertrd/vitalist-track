@@ -17,6 +17,7 @@ import { DiagnosticosPaciente } from "@/components/ficha-clinica/DiagnosticosPac
 import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinicos";
 import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
 import { HistorialVideoConsultas } from "@/components/HistorialVideoConsultas";
+import { EscalasClinicasPaciente } from "@/components/ficha-clinica/EscalasClinicas";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
 
 interface Props {
@@ -245,7 +246,15 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
               <Video className="h-4 w-4" />
               Telemedicina
             </TabsTrigger>
+            <TabsTrigger value="escalas" className="flex items-center gap-1.5">
+              <ClipboardList className="h-4 w-4" />
+              Escalas
+            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="escalas" className="mt-4">
+            <EscalasClinicasPaciente pacienteId={pacienteId} />
+          </TabsContent>
 
           <TabsContent value="timeline" className="mt-4">
             <TimelineClinica pacienteId={pacienteId} />
