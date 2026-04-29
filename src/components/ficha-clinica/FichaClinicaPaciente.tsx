@@ -20,6 +20,7 @@ import { HistorialVideoConsultas } from "@/components/HistorialVideoConsultas";
 import { EscalasClinicasPaciente } from "@/components/ficha-clinica/EscalasClinicas";
 import DiagnosticosManager from "@/components/DiagnosticosManager";
 import EscalasEnfermeriaManager from "@/components/EscalasEnfermeriaManager";
+import HistorialDiagnosticos from "@/components/HistorialDiagnosticos";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
 
 interface Props {
@@ -268,6 +269,7 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
 
           <TabsContent value="cie10" className="mt-4">
             <DiagnosticosManager pacienteId={pacienteId} />
+            <div className="mt-3"><HistorialDiagnosticos pacienteId={pacienteId} /></div>
           </TabsContent>
 
           <TabsContent value="enfermeria" className="mt-4">
