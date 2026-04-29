@@ -56,6 +56,7 @@ const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisp
 const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesional"));
 const UciManagement = lazy(() => import("./pages/UciManagement"));
 const ChecklistRLS = lazy(() => import("./pages/ChecklistRLS"));
+const ConfiguracionAuditoria = lazy(() => import("./pages/ConfiguracionAuditoria"));
 
 // Loading fallback component
 const PageLoader = () => (
