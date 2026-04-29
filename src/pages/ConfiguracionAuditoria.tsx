@@ -54,13 +54,13 @@ const DEFAULT_CFG: Cfg = {
 };
 
 export default function ConfiguracionAuditoria() {
-  const { activeWorkspace } = useWorkspace();
+  const { currentWorkspace } = useWorkspace();
   const [cfg, setCfg] = useState<Cfg>(DEFAULT_CFG);
   const [cfgId, setCfgId] = useState<string | null>(null);
   const [ruteos, setRuteos] = useState<Record<string, Ruteo>>({});
   const [saving, setSaving] = useState(false);
 
-  const wsId = activeWorkspace?.id || null;
+  const wsId = currentWorkspace?.id || null;
 
   useEffect(() => {
     if (!wsId) return;
