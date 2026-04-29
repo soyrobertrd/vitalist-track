@@ -139,6 +139,44 @@ export default function PortalPublicoDisponibilidad() {
           <>
             <Card>
               <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Filter className="h-5 w-5" />Filtros</CardTitle>
+              </CardHeader>
+              <CardContent className="grid md:grid-cols-3 gap-3">
+                <div>
+                  <Label>Especialidad</Label>
+                  <Select value={especialidad} onValueChange={setEspecialidad}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="todas">Todas</SelectItem>
+                      {especialidades.map((e) => <SelectItem key={e} value={e}>{e}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Sucursal</Label>
+                  <Select value={sucursalSel} onValueChange={setSucursalSel}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="todas">Todas</SelectItem>
+                      {sucursales.map((s) => <SelectItem key={s.id} value={s.id}>{s.nombre}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Consultorio</Label>
+                  <Select value={consultorioSel} onValueChange={setConsultorioSel} disabled={consultorios.length === 0}>
+                    <SelectTrigger><SelectValue placeholder="Cualquiera" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="cualquiera">Cualquiera</SelectItem>
+                      {consultorios.map((c) => <SelectItem key={c.id} value={c.id}>{c.nombre}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2"><CalendarDays className="h-5 w-5" />Buscar disponibilidad</CardTitle>
               </CardHeader>
               <CardContent className="grid md:grid-cols-3 gap-3">
@@ -165,6 +203,14 @@ export default function PortalPublicoDisponibilidad() {
                 </Button>
               </CardContent>
             </Card>
+
+            {bloqueo && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Profesional no disponible — {bloqueo.motivo}</AlertTitle>
+                <AlertDescription>{bloqueo.descripcion}</AlertDescription>
+              </Alert>
+            )}
 
             {slots.length > 0 && (
               <Card>
