@@ -3,8 +3,26 @@ project_id = "qkjjyiymzaouqslzbxrp"
 [functions.consultar-cedula]
 verify_jwt = false
 
-[functions.send-recordatorio-cita]
+[functions.consultar-barrios]
 verify_jwt = false
+
+[functions.contacto-landing]
+verify_jwt = false
+
+[functions.ticket-publico]
+verify_jwt = false
+
+[functions.api-citas-publicas]
+verify_jwt = false
+
+[functions.exportar-auditoria-pdf]
+verify_jwt = true
+
+[functions.send-recordatorio-cita]
+verify_jwt = true
+
+[functions.send-workspace-invitation]
+verify_jwt = true
 
 [functions.daily-agenda-notifications]
 verify_jwt = false
@@ -12,8 +30,17 @@ verify_jwt = false
 [functions.daily-reminder-cron]
 verify_jwt = false
 
+[functions.process-reportes-programados]
+verify_jwt = false
+
+[functions.generar-reporte]
+verify_jwt = true
+
+[functions.payments-checkout]
+verify_jwt = true
+
 [functions.payments-webhook]
 verify_jwt = false
 
-[functions.contacto-landing]
-verify_jwt = false
+[functions.admin-update-password]
+verify_jwt = true
