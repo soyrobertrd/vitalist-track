@@ -18,9 +18,8 @@ import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinico
 import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
 import { HistorialVideoConsultas } from "@/components/HistorialVideoConsultas";
 import { EscalasClinicasPaciente } from "@/components/ficha-clinica/EscalasClinicas";
-import DiagnosticosManager from "@/components/DiagnosticosManager";
 import EscalasEnfermeriaManager from "@/components/EscalasEnfermeriaManager";
-import HistorialDiagnosticos from "@/components/HistorialDiagnosticos";
+import { Cie10Workbench } from "@/components/ficha-clinica/Cie10Workbench";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
 
 interface Props {
