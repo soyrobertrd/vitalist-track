@@ -48,6 +48,10 @@ const Inventario = lazy(() => import("./pages/Inventario"));
 const AuditoriaHIPAA = lazy(() => import("./pages/AuditoriaHIPAA"));
 const ReportesProgramados = lazy(() => import("./pages/ReportesProgramados"));
 const SalaVirtual = lazy(() => import("./pages/SalaVirtual"));
+const Consultorios = lazy(() => import("./pages/Consultorios"));
+const Hospitalizacion = lazy(() => import("./pages/Hospitalizacion"));
+const Triaje = lazy(() => import("./pages/Triaje"));
+const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -205,6 +209,22 @@ const App = () => {
                 <Route
                   path="/reportes-programados"
                   element={session ? <Layout><ReportesProgramados /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/consultorios"
+                  element={session ? <Layout><Consultorios /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/hospitalizacion"
+                  element={session ? <Layout><Hospitalizacion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/triaje"
+                  element={session ? <Layout><Triaje /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/api-citas"
+                  element={session ? <Layout><ApiPublicaCitas /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
