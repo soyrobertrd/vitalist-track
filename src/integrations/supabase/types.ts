@@ -2557,6 +2557,8 @@ export type Database = {
       }
       pacientes: {
         Row: {
+          anonimizado: boolean
+          anonimizado_at: string | null
           apellido: string
           barrio: string | null
           cedula: string | null
@@ -2598,6 +2600,8 @@ export type Database = {
           zona: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Insert: {
+          anonimizado?: boolean
+          anonimizado_at?: string | null
           apellido: string
           barrio?: string | null
           cedula?: string | null
@@ -2639,6 +2643,8 @@ export type Database = {
           zona?: Database["public"]["Enums"]["zona_distrito"] | null
         }
         Update: {
+          anonimizado?: boolean
+          anonimizado_at?: string | null
           apellido?: string
           barrio?: string | null
           cedula?: string | null
@@ -4480,6 +4486,14 @@ export type Database = {
     }
     Functions: {
       accept_workspace_invitation: { Args: { _token: string }; Returns: Json }
+      anonimizar_paciente_seguro: {
+        Args: { _motivo?: string; _paciente_id: string }
+        Returns: Json
+      }
+      aplicar_politica_retencion: {
+        Args: { _dry_run?: boolean; _workspace_id?: string }
+        Returns: Json
+      }
       calcular_indicadores_llamadas: {
         Args: {
           fecha_fin?: string
@@ -4555,6 +4569,28 @@ export type Database = {
       limite_centros_profesional: {
         Args: { _user_id: string }
         Returns: number
+      }
+      listar_pacientes_para_anonimizar: {
+        Args: { _workspace_id: string }
+        Returns: {
+          meses_inactivo: number
+          motivo: string
+          nombre_completo: string
+          paciente_id: string
+          ultima_actividad: string
+        }[]
+      }
+      listar_recordatorios_pendientes: {
+        Args: { _horas?: number }
+        Returns: {
+          cita_id: string
+          fecha: string
+          paciente_id: string
+          paciente_nombre: string
+          paciente_telefono: string
+          tipo: string
+          workspace_id: string
+        }[]
       }
       registrar_acceso_ficha: {
         Args: {

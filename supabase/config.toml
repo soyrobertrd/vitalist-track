@@ -44,3 +44,10 @@ verify_jwt = false
 
 [functions.admin-update-password]
 verify_jwt = true
+
+[functions.aplicar-retencion-cron]
+verify_jwt = false
+
+[functions.recordatorios-automaticos-cron]
+verify_jwt = false
+
