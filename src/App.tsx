@@ -239,6 +239,10 @@ const App = () => {
                   path="/uci"
                   element={session ? <Layout><UciManagement /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route
+                  path="/checklist-rls"
+                  element={session ? <Layout><ChecklistRLS /></Layout> : <Navigate to="/auth" />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
