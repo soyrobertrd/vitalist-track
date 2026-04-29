@@ -38,18 +38,25 @@ export default function AfiliacionesProfesional() {
       const { data: limite } = await supabase.rpc("limite_centros_profesional", { _user_id: u.user.id });
       setMaxCentros(limite || 1);
 
-      const { data: ws } = await supabase.from("workspaces").select("id, nombre, plan_codigo").eq("owner_user_id", u.user.id).maybeSingle();
+      const { data: ws } = await (supabase.from("workspaces") as any).select("id, nombre, plan_codigo").eq("owner_user_id", u.user.id).maybeSingle();
       if (ws?.plan_codigo) setPlanCodigo(ws.plan_codigo);
 
-      const { data: afs } = await supabase
-        .from("afiliaciones_profesional")
-        .select("id, workspace_id, centro_nombre, rol, estado, created_at")
+      const { data: afs } = await (supabase
+        .from("afiliaciones_profesional") as any)
+        .select("id, workspace_id, tipo, estado, created_at")
         .eq("user_id", u.user.id)
         .order("created_at", { ascending: false });
-      setAfiliaciones((afs as any) || []);
 
-      const { data: allWs } = await supabase.from("workspaces").select("id, nombre");
+      // Map workspace name from workspaces list
+      const { data: allWs } = await (supabase.from("workspaces") as any).select("id, nombre");
       setWorkspaces((allWs as any) || []);
+      const wsMap = new Map((allWs || []).map((w: any) => [w.id, w.nombre]));
+      const enriched = (afs || []).map((a: any) => ({
+        ...a,
+        rol: a.tipo,
+        centro_nombre: wsMap.get(a.workspace_id) || "Centro",
+      }));
+      setAfiliaciones(enriched);
       setLoading(false);
     })();
   }, []);
@@ -61,12 +68,15 @@ export default function AfiliacionesProfesional() {
 
   const agregar = async () => {
     if (!selWs || !userId) return;
-    const ws = workspaces.find((w) => w.id === selWs);
-    const { error } = await supabase.from("afiliaciones_profesional").insert({
+    // lookup profesional_id from personal_salud
+    const { data: prof } = await (supabase.from("personal_salud") as any)
+      .select("id").eq("user_id", userId).maybeSingle();
+    if (!prof?.id) { toast.error("No se encontró tu perfil profesional"); return; }
+    const { error } = await (supabase.from("afiliaciones_profesional") as any).insert({
       user_id: userId,
+      profesional_id: prof.id,
       workspace_id: selWs,
-      centro_nombre: ws?.nombre,
-      rol: "medico",
+      tipo: "medico",
       estado: "activa",
     });
     if (error) { toast.error(error.message); return; }
