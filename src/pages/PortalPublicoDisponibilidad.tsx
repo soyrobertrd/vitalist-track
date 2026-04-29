@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
-import { CalendarDays, Clock, Stethoscope, MapPin, Loader2 } from "lucide-react";
+import { CalendarDays, Clock, Stethoscope, MapPin, Loader2, Building2, Filter, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function PortalPublicoDisponibilidad() {
@@ -15,10 +16,18 @@ export default function PortalPublicoDisponibilidad() {
   const [profSel, setProfSel] = useState("");
   const [fecha, setFecha] = useState(new Date().toISOString().split("T")[0]);
   const [slots, setSlots] = useState<any[]>([]);
+  const [bloqueo, setBloqueo] = useState<{ motivo: string; descripcion: string } | null>(null);
   const [loadingProf, setLoadingProf] = useState(false);
   const [loadingDisp, setLoadingDisp] = useState(false);
   const [reservando, setReservando] = useState<string | null>(null);
   const [datosPaciente, setDatosPaciente] = useState({ nombre: "", cedula: "", telefono: "" });
+
+  const [especialidades, setEspecialidades] = useState<string[]>([]);
+  const [especialidad, setEspecialidad] = useState<string>("todas");
+  const [sucursales, setSucursales] = useState<any[]>([]);
+  const [sucursalSel, setSucursalSel] = useState<string>("todas");
+  const [consultorios, setConsultorios] = useState<any[]>([]);
+  const [consultorioSel, setConsultorioSel] = useState<string>("cualquiera");
 
   const projectId = (import.meta as any).env.VITE_SUPABASE_PROJECT_ID;
   const baseUrl = `https://${projectId}.supabase.co/functions/v1/api-citas-publicas`;
@@ -41,19 +50,43 @@ export default function PortalPublicoDisponibilidad() {
     setLoadingProf(true);
     try {
       localStorage.setItem("portal_api_key", apiKey);
-      const data = await callApi("/profesionales");
-      setProfesionales(data.profesionales || []);
-      toast.success(`${data.profesionales?.length || 0} profesionales`);
+      const [profs, esp, sucs] = await Promise.all([
+        callApi("/profesionales"),
+        callApi("/especialidades").catch(() => ({ especialidades: [] })),
+        callApi("/sucursales").catch(() => ({ sucursales: [] })),
+      ]);
+      setProfesionales(profs.profesionales || []);
+      setEspecialidades(esp.especialidades || []);
+      setSucursales(sucs.sucursales || []);
+      toast.success(`${profs.profesionales?.length || 0} profesionales`);
     } catch (e: any) { toast.error(e.message); }
     setLoadingProf(false);
   };
 
+  useEffect(() => {
+    if (!apiKey || profesionales.length === 0) return;
+    const q = especialidad !== "todas" ? `?especialidad=${encodeURIComponent(especialidad)}` : "";
+    callApi(`/profesionales${q}`).then((d) => setProfesionales(d.profesionales || [])).catch(() => {});
+  }, [especialidad]);
+
+  useEffect(() => {
+    if (!apiKey || sucursalSel === "todas") { setConsultorios([]); return; }
+    callApi(`/consultorios?sucursal_id=${sucursalSel}`).then((d) => setConsultorios(d.consultorios || [])).catch(() => {});
+  }, [sucursalSel]);
+
   const buscarDisp = async () => {
     if (!profSel) { toast.error("Selecciona un profesional"); return; }
     setLoadingDisp(true);
+    setBloqueo(null);
     try {
-      const data = await callApi(`/disponibilidad?profesional_id=${profSel}&fecha=${fecha}`);
-      setSlots(data.slots || []);
+      const cParam = consultorioSel !== "cualquiera" ? `&consultorio_id=${consultorioSel}` : "";
+      const data = await callApi(`/disponibilidad?profesional_id=${profSel}&fecha=${fecha}${cParam}`);
+      if (data.bloqueado) {
+        setBloqueo({ motivo: data.motivo_bloqueo, descripcion: data.descripcion_bloqueo });
+        setSlots([]);
+      } else {
+        setSlots(data.slots || []);
+      }
     } catch (e: any) { toast.error(e.message); setSlots([]); }
     setLoadingDisp(false);
   };
@@ -106,6 +139,44 @@ export default function PortalPublicoDisponibilidad() {
           <>
             <Card>
               <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Filter className="h-5 w-5" />Filtros</CardTitle>
+              </CardHeader>
+              <CardContent className="grid md:grid-cols-3 gap-3">
+                <div>
+                  <Label>Especialidad</Label>
+                  <Select value={especialidad} onValueChange={setEspecialidad}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="todas">Todas</SelectItem>
+                      {especialidades.map((e) => <SelectItem key={e} value={e}>{e}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Sucursal</Label>
+                  <Select value={sucursalSel} onValueChange={setSucursalSel}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="todas">Todas</SelectItem>
+                      {sucursales.map((s) => <SelectItem key={s.id} value={s.id}>{s.nombre}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Consultorio</Label>
+                  <Select value={consultorioSel} onValueChange={setConsultorioSel} disabled={consultorios.length === 0}>
+                    <SelectTrigger><SelectValue placeholder="Cualquiera" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="cualquiera">Cualquiera</SelectItem>
+                      {consultorios.map((c) => <SelectItem key={c.id} value={c.id}>{c.nombre}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
                 <CardTitle className="flex items-center gap-2"><CalendarDays className="h-5 w-5" />Buscar disponibilidad</CardTitle>
               </CardHeader>
               <CardContent className="grid md:grid-cols-3 gap-3">
@@ -132,6 +203,14 @@ export default function PortalPublicoDisponibilidad() {
                 </Button>
               </CardContent>
             </Card>
+
+            {bloqueo && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Profesional no disponible — {bloqueo.motivo}</AlertTitle>
+                <AlertDescription>{bloqueo.descripcion}</AlertDescription>
+              </Alert>
+            )}
 
             {slots.length > 0 && (
               <Card>

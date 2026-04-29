@@ -258,6 +258,53 @@ export type Database = {
           },
         ]
       }
+      alertas_notificaciones: {
+        Row: {
+          alerta_id: string | null
+          created_at: string
+          cuerpo: string | null
+          destinatario_user_id: string
+          id: string
+          leido: boolean
+          notificado_email: boolean
+          severidad: string | null
+          titulo: string
+          workspace_id: string | null
+        }
+        Insert: {
+          alerta_id?: string | null
+          created_at?: string
+          cuerpo?: string | null
+          destinatario_user_id: string
+          id?: string
+          leido?: boolean
+          notificado_email?: boolean
+          severidad?: string | null
+          titulo: string
+          workspace_id?: string | null
+        }
+        Update: {
+          alerta_id?: string | null
+          created_at?: string
+          cuerpo?: string | null
+          destinatario_user_id?: string
+          id?: string
+          leido?: boolean
+          notificado_email?: boolean
+          severidad?: string | null
+          titulo?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_notificaciones_alerta_id_fkey"
+            columns: ["alerta_id"]
+            isOneToOne: false
+            referencedRelation: "auditoria_alertas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       antecedentes_medicos: {
         Row: {
           activo: boolean
@@ -1254,6 +1301,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      diagnosticos_auditoria: {
+        Row: {
+          accion: string
+          cambios: Json | null
+          cie10_codigo: string | null
+          created_at: string
+          datos_anteriores: Json | null
+          datos_nuevos: Json | null
+          diagnostico_id: string | null
+          id: string
+          motivo: string | null
+          paciente_id: string
+          usuario_id: string | null
+        }
+        Insert: {
+          accion: string
+          cambios?: Json | null
+          cie10_codigo?: string | null
+          created_at?: string
+          datos_anteriores?: Json | null
+          datos_nuevos?: Json | null
+          diagnostico_id?: string | null
+          id?: string
+          motivo?: string | null
+          paciente_id: string
+          usuario_id?: string | null
+        }
+        Update: {
+          accion?: string
+          cambios?: Json | null
+          cie10_codigo?: string | null
+          created_at?: string
+          datos_anteriores?: Json | null
+          datos_nuevos?: Json | null
+          diagnostico_id?: string | null
+          id?: string
+          motivo?: string | null
+          paciente_id?: string
+          usuario_id?: string | null
+        }
+        Relationships: []
       }
       diagnosticos_clinicos: {
         Row: {
@@ -4373,6 +4462,7 @@ export type Database = {
         }
         Returns: string
       }
+      set_motivo_cambio: { Args: { _motivo: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "coordinador" | "medico" | "enfermera" | "recepcion"

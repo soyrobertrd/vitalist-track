@@ -55,6 +55,7 @@ const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
 const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
 const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesional"));
 const UciManagement = lazy(() => import("./pages/UciManagement"));
+const ChecklistRLS = lazy(() => import("./pages/ChecklistRLS"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -237,6 +238,10 @@ const App = () => {
                 <Route
                   path="/uci"
                   element={session ? <Layout><UciManagement /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/checklist-rls"
+                  element={session ? <Layout><ChecklistRLS /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>

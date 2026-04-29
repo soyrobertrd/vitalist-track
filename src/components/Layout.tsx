@@ -127,6 +127,7 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },
     { path: "/api-citas", icon: Cog, label: "API Pública Citas", adminOnly: true },
     { path: "/auditoria", icon: Shield, label: "Auditoría", adminOnly: true },
+    { path: "/checklist-rls", icon: Shield, label: "Checklist RLS", adminOnly: true },
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
 
