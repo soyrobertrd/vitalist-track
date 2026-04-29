@@ -50,8 +50,38 @@ Deno.serve(async (req) => {
   const { token, admin } = auth;
 
   try {
-    // GET /profesionales — lista médicos del workspace con sus especialidades
+    // GET /especialidades — lista de especialidades del workspace
+    if (req.method === "GET" && path === "especialidades") {
+      const { data: afil } = await admin
+        .from("afiliaciones_profesional").select("profesional_id")
+        .eq("workspace_id", token.workspace_id).eq("estado", "activa");
+      const ids = (afil ?? []).map((a: any) => a.profesional_id);
+      if (ids.length === 0) return jres({ especialidades: [] });
+      const { data: profs } = await admin.from("personal_salud").select("especialidad").in("id", ids);
+      const set = new Set((profs ?? []).map((p: any) => p.especialidad).filter(Boolean));
+      return jres({ especialidades: Array.from(set).sort() });
+    }
+
+    // GET /sucursales
+    if (req.method === "GET" && path === "sucursales") {
+      const { data } = await admin
+        .from("sucursales").select("id, nombre, codigo, direccion, ciudad")
+        .eq("workspace_id", token.workspace_id).eq("activo", true);
+      return jres({ sucursales: data ?? [] });
+    }
+
+    // GET /consultorios?sucursal_id=
+    if (req.method === "GET" && path === "consultorios") {
+      const sid = url.searchParams.get("sucursal_id");
+      let q = admin.from("consultorios").select("id, sucursal_id, nombre, codigo, tipo").eq("activo", true);
+      if (sid) q = q.eq("sucursal_id", sid);
+      const { data } = await q;
+      return jres({ consultorios: data ?? [] });
+    }
+
+    // GET /profesionales?especialidad=&sucursal_id=
     if (req.method === "GET" && path === "profesionales") {
+      const especialidad = url.searchParams.get("especialidad");
       const { data: afil } = await admin
         .from("afiliaciones_profesional")
         .select("profesional_id")
@@ -59,18 +89,37 @@ Deno.serve(async (req) => {
         .eq("estado", "activa");
       const ids = (afil ?? []).map((a: any) => a.profesional_id);
       if (ids.length === 0) return jres({ profesionales: [] });
-      const { data: profs } = await admin
-        .from("personal_salud")
-        .select("id, nombre, apellido, especialidad")
-        .in("id", ids);
+      let q = admin.from("personal_salud").select("id, nombre, apellido, especialidad").in("id", ids);
+      if (especialidad) q = q.eq("especialidad", especialidad);
+      const { data: profs } = await q;
       return jres({ profesionales: profs ?? [] });
     }
 
-    // GET /disponibilidad?profesional_id=&fecha=YYYY-MM-DD
+    // GET /disponibilidad?profesional_id=&fecha=YYYY-MM-DD[&consultorio_id=]
     if (req.method === "GET" && path === "disponibilidad") {
       const profId = url.searchParams.get("profesional_id");
       const fecha = url.searchParams.get("fecha");
+      const consultorioId = url.searchParams.get("consultorio_id");
       if (!profId || !fecha) return jres({ error: "profesional_id y fecha requeridos" }, 400);
+
+      // 1) Reglas de licencia / vacaciones / ausencias en esta fecha
+      const { data: ausencias } = await admin
+        .from("ausencias_profesionales")
+        .select("tipo, descripcion, fecha_inicio, fecha_fin")
+        .eq("profesional_id", profId)
+        .eq("aprobado", true)
+        .lte("fecha_inicio", fecha)
+        .gte("fecha_fin", fecha);
+
+      if (ausencias && ausencias.length > 0) {
+        const a = ausencias[0];
+        return jres({
+          fecha, profesional_id: profId, disponibles: [], slots: [],
+          bloqueado: true,
+          motivo_bloqueo: a.tipo,
+          descripcion_bloqueo: a.descripcion || `${a.tipo} del ${a.fecha_inicio} al ${a.fecha_fin}`,
+        });
+      }
 
       const dow = new Date(fecha + "T12:00:00").getDay();
       const { data: horarios } = await admin
@@ -92,19 +141,34 @@ Deno.serve(async (req) => {
         new Date(c.fecha_hora_visita).toTimeString().slice(0, 5)
       );
 
-      const slots: string[] = [];
+      let consultorio_label: string | null = null;
+      if (consultorioId) {
+        const { data: c } = await admin.from("consultorios").select("nombre").eq("id", consultorioId).maybeSingle();
+        consultorio_label = c?.nombre || null;
+      }
+
+      const slots: any[] = [];
       for (const h of horarios ?? []) {
         const [hi, mi] = h.hora_inicio.split(":").map(Number);
         const [hf] = h.hora_fin.split(":").map(Number);
         for (let hour = hi; hour < hf; hour++) {
           for (const min of [0, 30]) {
-            const slot = `${String(hour).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
             if (hour === hi && min < mi) continue;
-            if (!ocupados.includes(slot)) slots.push(slot);
+            const hora = `${String(hour).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+            slots.push({
+              hora,
+              disponible: !ocupados.includes(hora),
+              consultorio: consultorio_label,
+            });
           }
         }
       }
-      return jres({ fecha, profesional_id: profId, disponibles: slots });
+      return jres({
+        fecha, profesional_id: profId,
+        disponibles: slots.filter((s) => s.disponible).map((s) => s.hora),
+        slots,
+        bloqueado: false,
+      });
     }
 
     // POST /agendar { paciente:{nombre,apellido,cedula,telefono,email}, profesional_id, fecha_hora, motivo, modalidad }
