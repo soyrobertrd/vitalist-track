@@ -501,6 +501,48 @@ export type Database = {
         }
         Relationships: []
       }
+      auditoria_resumenes: {
+        Row: {
+          acciones_sospechosas: Json
+          alertas_por_severidad: Json
+          created_at: string
+          fecha_fin: string
+          fecha_inicio: string
+          generado_por: string | null
+          id: string
+          periodo: string
+          total_alertas: number
+          total_eventos: number
+          workspace_id: string | null
+        }
+        Insert: {
+          acciones_sospechosas?: Json
+          alertas_por_severidad?: Json
+          created_at?: string
+          fecha_fin: string
+          fecha_inicio: string
+          generado_por?: string | null
+          id?: string
+          periodo: string
+          total_alertas?: number
+          total_eventos?: number
+          workspace_id?: string | null
+        }
+        Update: {
+          acciones_sospechosas?: Json
+          alertas_por_severidad?: Json
+          created_at?: string
+          fecha_fin?: string
+          fecha_inicio?: string
+          generado_por?: string | null
+          id?: string
+          periodo?: string
+          total_alertas?: number
+          total_eventos?: number
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
       auditoria_unificaciones: {
         Row: {
           created_at: string
@@ -700,6 +742,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cie10_codigos: {
+        Row: {
+          activo: boolean
+          capitulo: string | null
+          categoria: string | null
+          codigo: string
+          created_at: string
+          descripcion: string
+          id: string
+        }
+        Insert: {
+          activo?: boolean
+          capitulo?: string | null
+          categoria?: string | null
+          codigo: string
+          created_at?: string
+          descripcion: string
+          id?: string
+        }
+        Update: {
+          activo?: boolean
+          capitulo?: string | null
+          categoria?: string | null
+          codigo?: string
+          created_at?: string
+          descripcion?: string
+          id?: string
+        }
+        Relationships: []
       }
       cita_tickets: {
         Row: {
@@ -1183,6 +1255,59 @@ export type Database = {
           },
         ]
       }
+      diagnosticos_clinicos: {
+        Row: {
+          certeza: string
+          cie10_codigo: string
+          cie10_descripcion: string | null
+          created_at: string
+          escala_id: string | null
+          id: string
+          notas: string | null
+          paciente_id: string
+          registrado_por: string | null
+          tipo: string
+          updated_at: string
+          visita_id: string | null
+        }
+        Insert: {
+          certeza?: string
+          cie10_codigo: string
+          cie10_descripcion?: string | null
+          created_at?: string
+          escala_id?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          registrado_por?: string | null
+          tipo?: string
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Update: {
+          certeza?: string
+          cie10_codigo?: string
+          cie10_descripcion?: string | null
+          created_at?: string
+          escala_id?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          registrado_por?: string | null
+          tipo?: string
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diagnosticos_clinicos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       diagnosticos_paciente: {
         Row: {
           codigo_cie10: string | null
@@ -1496,6 +1621,59 @@ export type Database = {
           visita_id?: string | null
         }
         Relationships: []
+      }
+      escalas_enfermeria: {
+        Row: {
+          created_at: string
+          detalles: Json
+          fecha: string
+          id: string
+          observaciones: string | null
+          paciente_id: string
+          puntaje: number | null
+          registrado_por: string | null
+          riesgo: string | null
+          tipo: string
+          updated_at: string
+          visita_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detalles?: Json
+          fecha?: string
+          id?: string
+          observaciones?: string | null
+          paciente_id: string
+          puntaje?: number | null
+          registrado_por?: string | null
+          riesgo?: string | null
+          tipo: string
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detalles?: Json
+          fecha?: string
+          id?: string
+          observaciones?: string | null
+          paciente_id?: string
+          puntaje?: number | null
+          registrado_por?: string | null
+          riesgo?: string | null
+          tipo?: string
+          updated_at?: string
+          visita_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escalas_enfermeria_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       especialidades_medicas: {
         Row: {
@@ -4132,6 +4310,10 @@ export type Database = {
         Returns: number
       }
       generar_codigo_ticket: { Args: never; Returns: string }
+      generar_resumen_auditoria: {
+        Args: { _periodo?: string; _workspace_id?: string }
+        Returns: string
+      }
       get_invitation_details: { Args: { _token: string }; Returns: Json }
       get_user_module_permissions: {
         Args: { _user_id: string }
