@@ -267,8 +267,7 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
           </TabsContent>
 
           <TabsContent value="cie10" className="mt-4">
-            <DiagnosticosManager pacienteId={pacienteId} />
-            <div className="mt-3"><HistorialDiagnosticos pacienteId={pacienteId} /></div>
+            <Cie10Workbench pacienteId={pacienteId} />
           </TabsContent>
 
           <TabsContent value="enfermeria" className="mt-4">
