@@ -244,6 +244,10 @@ const App = () => {
                   path="/checklist-rls"
                   element={session ? <Layout><ChecklistRLS /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route
+                  path="/auditoria/configuracion"
+                  element={session ? <Layout><ConfiguracionAuditoria /></Layout> : <Navigate to="/auth" />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
