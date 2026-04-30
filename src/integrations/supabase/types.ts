@@ -2007,6 +2007,81 @@ export type Database = {
           },
         ]
       }
+      detalle_nomina: {
+        Row: {
+          bono: number
+          comisiones: number
+          created_at: string
+          deducciones_afp: number
+          deducciones_isr: number
+          deducciones_sfs: number
+          empleado_id: string
+          horas_extra: number
+          id: string
+          neto_pagar: number
+          notas: string | null
+          otras_deducciones: number
+          periodo_id: string
+          salario_base: number
+          total_bruto: number
+          total_deducciones: number
+          updated_at: string
+        }
+        Insert: {
+          bono?: number
+          comisiones?: number
+          created_at?: string
+          deducciones_afp?: number
+          deducciones_isr?: number
+          deducciones_sfs?: number
+          empleado_id: string
+          horas_extra?: number
+          id?: string
+          neto_pagar?: number
+          notas?: string | null
+          otras_deducciones?: number
+          periodo_id: string
+          salario_base?: number
+          total_bruto?: number
+          total_deducciones?: number
+          updated_at?: string
+        }
+        Update: {
+          bono?: number
+          comisiones?: number
+          created_at?: string
+          deducciones_afp?: number
+          deducciones_isr?: number
+          deducciones_sfs?: number
+          empleado_id?: string
+          horas_extra?: number
+          id?: string
+          neto_pagar?: number
+          notas?: string | null
+          otras_deducciones?: number
+          periodo_id?: string
+          salario_base?: number
+          total_bruto?: number
+          total_deducciones?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "detalle_nomina_empleado_id_fkey"
+            columns: ["empleado_id"]
+            isOneToOne: false
+            referencedRelation: "empleados_nomina"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "detalle_nomina_periodo_id_fkey"
+            columns: ["periodo_id"]
+            isOneToOne: false
+            referencedRelation: "periodos_nomina"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       diagnosticos_auditoria: {
         Row: {
           accion: string
@@ -2298,6 +2373,68 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      empleados_nomina: {
+        Row: {
+          activo: boolean
+          apellido: string
+          banco: string | null
+          cargo: string | null
+          cedula: string | null
+          created_at: string
+          cuenta_banco: string | null
+          departamento: string | null
+          fecha_ingreso: string | null
+          fecha_salida: string | null
+          id: string
+          nombre: string
+          salario_base: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          apellido?: string
+          banco?: string | null
+          cargo?: string | null
+          cedula?: string | null
+          created_at?: string
+          cuenta_banco?: string | null
+          departamento?: string | null
+          fecha_ingreso?: string | null
+          fecha_salida?: string | null
+          id?: string
+          nombre: string
+          salario_base?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          apellido?: string
+          banco?: string | null
+          cargo?: string | null
+          cedula?: string | null
+          created_at?: string
+          cuenta_banco?: string | null
+          departamento?: string | null
+          fecha_ingreso?: string | null
+          fecha_salida?: string | null
+          id?: string
+          nombre?: string
+          salario_base?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "empleados_nomina_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       encuestas: {
         Row: {
@@ -4129,6 +4266,62 @@ export type Database = {
             columns: ["admision_id"]
             isOneToOne: false
             referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      periodos_nomina: {
+        Row: {
+          created_at: string
+          estado: Database["public"]["Enums"]["estado_periodo_nomina"]
+          fecha_fin: string
+          fecha_inicio: string
+          id: string
+          nombre: string
+          notas: string | null
+          numero: string | null
+          total_bruto: number
+          total_deducciones: number
+          total_neto: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_periodo_nomina"]
+          fecha_fin: string
+          fecha_inicio: string
+          id?: string
+          nombre?: string
+          notas?: string | null
+          numero?: string | null
+          total_bruto?: number
+          total_deducciones?: number
+          total_neto?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_periodo_nomina"]
+          fecha_fin?: string
+          fecha_inicio?: string
+          id?: string
+          nombre?: string
+          notas?: string | null
+          numero?: string | null
+          total_bruto?: number
+          total_deducciones?: number
+          total_neto?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "periodos_nomina_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -6679,6 +6872,12 @@ export type Database = {
         | "parcial"
         | "completada"
         | "cancelada"
+      estado_periodo_nomina:
+        | "borrador"
+        | "calculado"
+        | "aprobado"
+        | "pagado"
+        | "anulado"
       estado_receta: "activa" | "dispensada" | "vencida" | "cancelada"
       estado_reclamacion:
         | "borrador"
@@ -6934,6 +7133,13 @@ export const Constants = {
         "parcial",
         "completada",
         "cancelada",
+      ],
+      estado_periodo_nomina: [
+        "borrador",
+        "calculado",
+        "aprobado",
+        "pagado",
+        "anulado",
       ],
       estado_receta: ["activa", "dispensada", "vencida", "cancelada"],
       estado_reclamacion: [
