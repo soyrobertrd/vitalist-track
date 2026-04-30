@@ -402,6 +402,56 @@ export type Database = {
           },
         ]
       }
+      areas_seguridad: {
+        Row: {
+          activa: boolean | null
+          cantidad_camaras: number | null
+          capacidad: number | null
+          created_at: string
+          id: string
+          nivel_acceso: string
+          nombre: string
+          tiene_camaras: boolean | null
+          ubicacion: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activa?: boolean | null
+          cantidad_camaras?: number | null
+          capacidad?: number | null
+          created_at?: string
+          id?: string
+          nivel_acceso?: string
+          nombre: string
+          tiene_camaras?: boolean | null
+          ubicacion?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activa?: boolean | null
+          cantidad_camaras?: number | null
+          capacidad?: number | null
+          created_at?: string
+          id?: string
+          nivel_acceso?: string
+          nombre?: string
+          tiene_camaras?: boolean | null
+          ubicacion?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "areas_seguridad_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       aseguradoras: {
         Row: {
           activa: boolean
@@ -1066,6 +1116,75 @@ export type Database = {
           },
         ]
       }
+      bitacora_accesos: {
+        Row: {
+          area_id: string | null
+          autorizado_por: string | null
+          created_at: string
+          fecha_hora: string | null
+          id: string
+          metodo_verificacion: string | null
+          motivo_visita: string | null
+          numero: string
+          observaciones: string | null
+          persona_cedula: string | null
+          persona_nombre: string
+          persona_visitada: string | null
+          tipo: string
+          tipo_persona: string
+          workspace_id: string
+        }
+        Insert: {
+          area_id?: string | null
+          autorizado_por?: string | null
+          created_at?: string
+          fecha_hora?: string | null
+          id?: string
+          metodo_verificacion?: string | null
+          motivo_visita?: string | null
+          numero?: string
+          observaciones?: string | null
+          persona_cedula?: string | null
+          persona_nombre: string
+          persona_visitada?: string | null
+          tipo?: string
+          tipo_persona?: string
+          workspace_id: string
+        }
+        Update: {
+          area_id?: string | null
+          autorizado_por?: string | null
+          created_at?: string
+          fecha_hora?: string | null
+          id?: string
+          metodo_verificacion?: string | null
+          motivo_visita?: string | null
+          numero?: string
+          observaciones?: string | null
+          persona_cedula?: string | null
+          persona_nombre?: string
+          persona_visitada?: string | null
+          tipo?: string
+          tipo_persona?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bitacora_accesos_area_id_fkey"
+            columns: ["area_id"]
+            isOneToOne: false
+            referencedRelation: "areas_seguridad"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bitacora_accesos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camas: {
         Row: {
           ala_id: string | null
@@ -1169,6 +1288,97 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "campanas_marketing_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      casos_trabajo_social: {
+        Row: {
+          composicion_familiar: Json | null
+          created_at: string
+          descripcion: string | null
+          estado: string
+          evaluacion: string | null
+          fecha_apertura: string | null
+          fecha_cierre: string | null
+          id: string
+          ingresos_mensuales: number | null
+          motivo_cierre: string | null
+          nivel_socioeconomico: string | null
+          numero: string
+          observaciones: string | null
+          paciente_id: string | null
+          plan_intervencion: string | null
+          prioridad: string
+          tipo_caso: string
+          trabajador_social_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          composicion_familiar?: Json | null
+          created_at?: string
+          descripcion?: string | null
+          estado?: string
+          evaluacion?: string | null
+          fecha_apertura?: string | null
+          fecha_cierre?: string | null
+          id?: string
+          ingresos_mensuales?: number | null
+          motivo_cierre?: string | null
+          nivel_socioeconomico?: string | null
+          numero?: string
+          observaciones?: string | null
+          paciente_id?: string | null
+          plan_intervencion?: string | null
+          prioridad?: string
+          tipo_caso?: string
+          trabajador_social_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          composicion_familiar?: Json | null
+          created_at?: string
+          descripcion?: string | null
+          estado?: string
+          evaluacion?: string | null
+          fecha_apertura?: string | null
+          fecha_cierre?: string | null
+          id?: string
+          ingresos_mensuales?: number | null
+          motivo_cierre?: string | null
+          nivel_socioeconomico?: string | null
+          numero?: string
+          observaciones?: string | null
+          paciente_id?: string | null
+          plan_intervencion?: string | null
+          prioridad?: string
+          tipo_caso?: string
+          trabajador_social_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "casos_trabajo_social_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "casos_trabajo_social_trabajador_social_id_fkey"
+            columns: ["trabajador_social_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "casos_trabajo_social_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -2044,6 +2254,62 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credenciales_acceso: {
+        Row: {
+          areas_permitidas: string[] | null
+          codigo_credencial: string | null
+          created_at: string
+          estado: string
+          fecha_emision: string | null
+          fecha_vencimiento: string | null
+          foto_url: string | null
+          id: string
+          persona_cedula: string | null
+          persona_nombre: string
+          tipo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          areas_permitidas?: string[] | null
+          codigo_credencial?: string | null
+          created_at?: string
+          estado?: string
+          fecha_emision?: string | null
+          fecha_vencimiento?: string | null
+          foto_url?: string | null
+          id?: string
+          persona_cedula?: string | null
+          persona_nombre: string
+          tipo?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          areas_permitidas?: string[] | null
+          codigo_credencial?: string | null
+          created_at?: string
+          estado?: string
+          fecha_emision?: string | null
+          fecha_vencimiento?: string | null
+          foto_url?: string | null
+          id?: string
+          persona_cedula?: string | null
+          persona_nombre?: string
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credenciales_acceso_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -4033,6 +4299,62 @@ export type Database = {
           },
         ]
       }
+      inventario_ropa: {
+        Row: {
+          cantidad_disponible: number | null
+          cantidad_total: number | null
+          costo_unitario: number | null
+          created_at: string
+          descripcion: string | null
+          en_baja: number | null
+          en_lavado: number | null
+          id: string
+          proveedor: string | null
+          stock_minimo: number | null
+          tipo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          cantidad_disponible?: number | null
+          cantidad_total?: number | null
+          costo_unitario?: number | null
+          created_at?: string
+          descripcion?: string | null
+          en_baja?: number | null
+          en_lavado?: number | null
+          id?: string
+          proveedor?: string | null
+          stock_minimo?: number | null
+          tipo: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          cantidad_disponible?: number | null
+          cantidad_total?: number | null
+          costo_unitario?: number | null
+          created_at?: string
+          descripcion?: string | null
+          en_baja?: number | null
+          en_lavado?: number | null
+          id?: string
+          proveedor?: string | null
+          stock_minimo?: number | null
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventario_ropa_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       items_despacho: {
         Row: {
           cantidad_despachada: number
@@ -4409,6 +4731,71 @@ export type Database = {
           },
           {
             foreignKeyName: "lista_espera_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      manifiestos_residuos: {
+        Row: {
+          conductor: string | null
+          created_at: string
+          destino: string
+          fecha_entrega: string | null
+          fecha_salida: string | null
+          id: string
+          numero: string
+          observaciones: string | null
+          peso_total_kg: number | null
+          tipos_residuo: string[] | null
+          transportista: string
+          updated_at: string
+          vehiculo_placa: string | null
+          verificado: boolean | null
+          verificado_por: string | null
+          workspace_id: string
+        }
+        Insert: {
+          conductor?: string | null
+          created_at?: string
+          destino: string
+          fecha_entrega?: string | null
+          fecha_salida?: string | null
+          id?: string
+          numero?: string
+          observaciones?: string | null
+          peso_total_kg?: number | null
+          tipos_residuo?: string[] | null
+          transportista: string
+          updated_at?: string
+          vehiculo_placa?: string | null
+          verificado?: boolean | null
+          verificado_por?: string | null
+          workspace_id: string
+        }
+        Update: {
+          conductor?: string | null
+          created_at?: string
+          destino?: string
+          fecha_entrega?: string | null
+          fecha_salida?: string | null
+          id?: string
+          numero?: string
+          observaciones?: string | null
+          peso_total_kg?: number | null
+          tipos_residuo?: string[] | null
+          transportista?: string
+          updated_at?: string
+          vehiculo_placa?: string | null
+          verificado?: boolean | null
+          verificado_por?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manifiestos_residuos_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -4915,6 +5302,71 @@ export type Database = {
           },
           {
             foreignKeyName: "ordenes_laboratorio_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ordenes_lavanderia: {
+        Row: {
+          cantidad_piezas: number | null
+          created_at: string
+          entregado_a: string | null
+          estado: string
+          fecha_entrega: string | null
+          fecha_recepcion: string | null
+          id: string
+          numero: string
+          observaciones: string | null
+          peso_kg: number | null
+          prioridad: string
+          recibido_por: string | null
+          servicio_solicitante: string
+          tipo_ropa: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          cantidad_piezas?: number | null
+          created_at?: string
+          entregado_a?: string | null
+          estado?: string
+          fecha_entrega?: string | null
+          fecha_recepcion?: string | null
+          id?: string
+          numero?: string
+          observaciones?: string | null
+          peso_kg?: number | null
+          prioridad?: string
+          recibido_por?: string | null
+          servicio_solicitante: string
+          tipo_ropa?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          cantidad_piezas?: number | null
+          created_at?: string
+          entregado_a?: string | null
+          estado?: string
+          fecha_entrega?: string | null
+          fecha_recepcion?: string | null
+          id?: string
+          numero?: string
+          observaciones?: string | null
+          peso_kg?: number | null
+          prioridad?: string
+          recibido_por?: string | null
+          servicio_solicitante?: string
+          tipo_ropa?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordenes_lavanderia_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -7095,6 +7547,75 @@ export type Database = {
           },
         ]
       }
+      referimientos_sociales: {
+        Row: {
+          caso_id: string
+          contacto_institucion: string | null
+          created_at: string
+          documentos_enviados: string[] | null
+          estado: string
+          fecha_referimiento: string | null
+          fecha_respuesta: string | null
+          id: string
+          institucion_destino: string
+          motivo: string
+          observaciones: string | null
+          resultado: string | null
+          telefono_institucion: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          caso_id: string
+          contacto_institucion?: string | null
+          created_at?: string
+          documentos_enviados?: string[] | null
+          estado?: string
+          fecha_referimiento?: string | null
+          fecha_respuesta?: string | null
+          id?: string
+          institucion_destino: string
+          motivo: string
+          observaciones?: string | null
+          resultado?: string | null
+          telefono_institucion?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          caso_id?: string
+          contacto_institucion?: string | null
+          created_at?: string
+          documentos_enviados?: string[] | null
+          estado?: string
+          fecha_referimiento?: string | null
+          fecha_respuesta?: string | null
+          id?: string
+          institucion_destino?: string
+          motivo?: string
+          observaciones?: string | null
+          resultado?: string | null
+          telefono_institucion?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referimientos_sociales_caso_id_fkey"
+            columns: ["caso_id"]
+            isOneToOne: false
+            referencedRelation: "casos_trabajo_social"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referimientos_sociales_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       registro_llamadas: {
         Row: {
           archivos_adjuntos: Json | null
@@ -7529,6 +8050,75 @@ export type Database = {
           },
           {
             foreignKeyName: "residentes_rotaciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      residuos_hospitalarios: {
+        Row: {
+          area_generadora: string | null
+          contenedor: string | null
+          created_at: string
+          estado: string
+          fecha_generacion: string | null
+          fecha_recoleccion: string | null
+          id: string
+          numero: string
+          observaciones: string | null
+          peso_kg: number | null
+          responsable_id: string | null
+          tipo: string
+          updated_at: string
+          volumen_litros: number | null
+          workspace_id: string
+        }
+        Insert: {
+          area_generadora?: string | null
+          contenedor?: string | null
+          created_at?: string
+          estado?: string
+          fecha_generacion?: string | null
+          fecha_recoleccion?: string | null
+          id?: string
+          numero?: string
+          observaciones?: string | null
+          peso_kg?: number | null
+          responsable_id?: string | null
+          tipo?: string
+          updated_at?: string
+          volumen_litros?: number | null
+          workspace_id: string
+        }
+        Update: {
+          area_generadora?: string | null
+          contenedor?: string | null
+          created_at?: string
+          estado?: string
+          fecha_generacion?: string | null
+          fecha_recoleccion?: string | null
+          id?: string
+          numero?: string
+          observaciones?: string | null
+          peso_kg?: number | null
+          responsable_id?: string | null
+          tipo?: string
+          updated_at?: string
+          volumen_litros?: number | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "residuos_hospitalarios_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "residuos_hospitalarios_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
