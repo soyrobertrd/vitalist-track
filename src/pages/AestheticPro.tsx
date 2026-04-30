@@ -5,7 +5,12 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, TrendingUp, Camera, CreditCard, Package } from "lucide-react";
+import { Sparkles, TrendingUp, Camera, CreditCard, Package, Users, CalendarDays, DollarSign, Calculator } from "lucide-react";
+import VerticalPersonalTab from "@/components/vertical/VerticalPersonalTab";
+import VerticalCitasTab from "@/components/vertical/VerticalCitasTab";
+import VerticalFacturacionTab from "@/components/vertical/VerticalFacturacionTab";
+import VerticalNominaTab from "@/components/vertical/VerticalNominaTab";
+import VerticalPacientesTab from "@/components/vertical/VerticalPacientesTab";
 
 const estadoLeadColor: Record<string, string> = {
   nuevo: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -112,12 +117,17 @@ export default function AestheticPro() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex-wrap">
+        <TabsList className="flex-wrap h-auto gap-1">
           <TabsTrigger value="leads">Leads CRM</TabsTrigger>
           <TabsTrigger value="evaluaciones">Evaluaciones</TabsTrigger>
           <TabsTrigger value="procedimientos">Procedimientos</TabsTrigger>
           <TabsTrigger value="paquetes">Paquetes</TabsTrigger>
           <TabsTrigger value="financiamiento">Financiamiento</TabsTrigger>
+          <TabsTrigger value="pacientes" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Pacientes</TabsTrigger>
+          <TabsTrigger value="citas" className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> Citas</TabsTrigger>
+          <TabsTrigger value="personal" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Enfermeras</TabsTrigger>
+          <TabsTrigger value="facturacion" className="flex items-center gap-1"><DollarSign className="h-3.5 w-3.5" /> Facturación</TabsTrigger>
+          <TabsTrigger value="nomina" className="flex items-center gap-1"><Calculator className="h-3.5 w-3.5" /> Nómina</TabsTrigger>
         </TabsList>
 
         <TabsContent value="leads" className="space-y-3">
@@ -200,6 +210,12 @@ export default function AestheticPro() {
             </Card>
           ))}
         </TabsContent>
+
+        <TabsContent value="pacientes" className="mt-4"><VerticalPacientesTab pacienteLabel="Clientes" /></TabsContent>
+        <TabsContent value="citas" className="mt-4"><VerticalCitasTab citaLabel="Citas Estéticas" /></TabsContent>
+        <TabsContent value="personal" className="mt-4"><VerticalPersonalTab profesionalLabel="Enfermeras / Terapeutas" especialidades={["Masaje linfático", "Radiofrecuencia", "Cavitación", "Limpieza facial", "Depilación láser", "Estética corporal", "Estética facial"]} /></TabsContent>
+        <TabsContent value="facturacion" className="mt-4"><VerticalFacturacionTab /></TabsContent>
+        <TabsContent value="nomina" className="mt-4"><VerticalNominaTab /></TabsContent>
       </Tabs>
     </div>
   );

@@ -5,7 +5,12 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eye, Glasses, FileText, Package, AlertTriangle } from "lucide-react";
+import { Eye, Glasses, FileText, Package, AlertTriangle, Users, CalendarDays, DollarSign, Calculator } from "lucide-react";
+import VerticalPersonalTab from "@/components/vertical/VerticalPersonalTab";
+import VerticalCitasTab from "@/components/vertical/VerticalCitasTab";
+import VerticalFacturacionTab from "@/components/vertical/VerticalFacturacionTab";
+import VerticalNominaTab from "@/components/vertical/VerticalNominaTab";
+import VerticalPacientesTab from "@/components/vertical/VerticalPacientesTab";
 
 const estadoOrdenColor: Record<string, string> = {
   solicitada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -87,10 +92,15 @@ export default function VisionCarePro() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList>
+        <TabsList className="flex-wrap h-auto gap-1">
           <TabsTrigger value="recetas">Recetas</TabsTrigger>
           <TabsTrigger value="inventario">Inventario</TabsTrigger>
           <TabsTrigger value="ordenes">Órdenes Lab</TabsTrigger>
+          <TabsTrigger value="pacientes" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Pacientes</TabsTrigger>
+          <TabsTrigger value="citas" className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> Citas</TabsTrigger>
+          <TabsTrigger value="personal" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Doctores</TabsTrigger>
+          <TabsTrigger value="facturacion" className="flex items-center gap-1"><DollarSign className="h-3.5 w-3.5" /> Facturación</TabsTrigger>
+          <TabsTrigger value="nomina" className="flex items-center gap-1"><Calculator className="h-3.5 w-3.5" /> Nómina</TabsTrigger>
         </TabsList>
 
         <TabsContent value="recetas" className="space-y-3">
@@ -159,6 +169,12 @@ export default function VisionCarePro() {
             </Card>
           ))}
         </TabsContent>
+
+        <TabsContent value="pacientes" className="mt-4"><VerticalPacientesTab /></TabsContent>
+        <TabsContent value="citas" className="mt-4"><VerticalCitasTab citaLabel="Citas Oftalmológicas" /></TabsContent>
+        <TabsContent value="personal" className="mt-4"><VerticalPersonalTab profesionalLabel="Doctores" especialidades={["Oftalmología", "Optometría", "Contactología", "Cirugía refractiva"]} /></TabsContent>
+        <TabsContent value="facturacion" className="mt-4"><VerticalFacturacionTab /></TabsContent>
+        <TabsContent value="nomina" className="mt-4"><VerticalNominaTab /></TabsContent>
       </Tabs>
     </div>
   );

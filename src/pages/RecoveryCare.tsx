@@ -5,9 +5,14 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, BedDouble, CalendarCheck, Activity, Plane } from "lucide-react";
+import { Heart, BedDouble, CalendarCheck, Activity, Plane, Users, CalendarDays, DollarSign, Calculator } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import VerticalPersonalTab from "@/components/vertical/VerticalPersonalTab";
+import VerticalCitasTab from "@/components/vertical/VerticalCitasTab";
+import VerticalFacturacionTab from "@/components/vertical/VerticalFacturacionTab";
+import VerticalNominaTab from "@/components/vertical/VerticalNominaTab";
+import VerticalPacientesTab from "@/components/vertical/VerticalPacientesTab";
 
 const estadoPacColor: Record<string, string> = {
   reservado: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -105,11 +110,16 @@ export default function RecoveryCare() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex-wrap">
+        <TabsList className="flex-wrap h-auto gap-1">
           <TabsTrigger value="pacientes">Pacientes</TabsTrigger>
           <TabsTrigger value="habitaciones">Habitaciones</TabsTrigger>
           <TabsTrigger value="planes">Planes</TabsTrigger>
           <TabsTrigger value="seguimiento">Seguimiento</TabsTrigger>
+          <TabsTrigger value="gestion_pacientes" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Registro</TabsTrigger>
+          <TabsTrigger value="citas" className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> Citas</TabsTrigger>
+          <TabsTrigger value="personal" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Personal</TabsTrigger>
+          <TabsTrigger value="facturacion" className="flex items-center gap-1"><DollarSign className="h-3.5 w-3.5" /> Facturación</TabsTrigger>
+          <TabsTrigger value="nomina" className="flex items-center gap-1"><Calculator className="h-3.5 w-3.5" /> Nómina</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pacientes" className="space-y-3">
@@ -187,6 +197,12 @@ export default function RecoveryCare() {
             </Card>
           ))}
         </TabsContent>
+
+        <TabsContent value="gestion_pacientes" className="mt-4"><VerticalPacientesTab /></TabsContent>
+        <TabsContent value="citas" className="mt-4"><VerticalCitasTab citaLabel="Citas de Recuperación" /></TabsContent>
+        <TabsContent value="personal" className="mt-4"><VerticalPersonalTab profesionalLabel="Personal de Cuidado" especialidades={["Enfermería", "Fisioterapia", "Cuidado postquirúrgico", "Masaje linfático", "Concierge médico"]} /></TabsContent>
+        <TabsContent value="facturacion" className="mt-4"><VerticalFacturacionTab /></TabsContent>
+        <TabsContent value="nomina" className="mt-4"><VerticalNominaTab /></TabsContent>
       </Tabs>
     </div>
   );
