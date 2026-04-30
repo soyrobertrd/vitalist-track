@@ -69,6 +69,8 @@ export function AutorizacionesManager() {
   const locale = localeFromCountry(countryCode);
   const fmt = (n: number | string | null) => n != null ? formatCurrency(n, currency, locale) : "—";
 
+  const { pacientes } = usePacientes();
+  const { personal } = usePersonal();
   const [items, setItems] = useState<Autorizacion[]>([]);
   const [aseguradoras, setAseguradoras] = useState<{ id: string; nombre: string }[]>([]);
   const [loading, setLoading] = useState(true);
