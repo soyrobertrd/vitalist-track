@@ -1172,6 +1172,135 @@ export type Database = {
           },
         ]
       }
+      cirugias: {
+        Row: {
+          anestesiologo: string | null
+          checklist_intraop: Json | null
+          checklist_preop: Json | null
+          complicaciones: string | null
+          consentimiento_firmado: boolean | null
+          costo_estimado: number | null
+          costo_real: number | null
+          created_at: string
+          diagnostico_preop: string | null
+          duracion_estimada_min: number | null
+          estado: Database["public"]["Enums"]["estado_cirugia"]
+          fecha_programada: string
+          hora_fin: string | null
+          hora_inicio: string | null
+          id: string
+          instrumentista: string | null
+          insumos_utilizados: Json | null
+          notas_operatorias: string | null
+          paciente_id: string
+          prioridad: Database["public"]["Enums"]["prioridad_cirugia"]
+          profesional_id: string | null
+          sala_id: string | null
+          sangrado_ml: number | null
+          sucursal_id: string | null
+          tipo_anestesia: string | null
+          tipo_cirugia: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          anestesiologo?: string | null
+          checklist_intraop?: Json | null
+          checklist_preop?: Json | null
+          complicaciones?: string | null
+          consentimiento_firmado?: boolean | null
+          costo_estimado?: number | null
+          costo_real?: number | null
+          created_at?: string
+          diagnostico_preop?: string | null
+          duracion_estimada_min?: number | null
+          estado?: Database["public"]["Enums"]["estado_cirugia"]
+          fecha_programada: string
+          hora_fin?: string | null
+          hora_inicio?: string | null
+          id?: string
+          instrumentista?: string | null
+          insumos_utilizados?: Json | null
+          notas_operatorias?: string | null
+          paciente_id: string
+          prioridad?: Database["public"]["Enums"]["prioridad_cirugia"]
+          profesional_id?: string | null
+          sala_id?: string | null
+          sangrado_ml?: number | null
+          sucursal_id?: string | null
+          tipo_anestesia?: string | null
+          tipo_cirugia: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          anestesiologo?: string | null
+          checklist_intraop?: Json | null
+          checklist_preop?: Json | null
+          complicaciones?: string | null
+          consentimiento_firmado?: boolean | null
+          costo_estimado?: number | null
+          costo_real?: number | null
+          created_at?: string
+          diagnostico_preop?: string | null
+          duracion_estimada_min?: number | null
+          estado?: Database["public"]["Enums"]["estado_cirugia"]
+          fecha_programada?: string
+          hora_fin?: string | null
+          hora_inicio?: string | null
+          id?: string
+          instrumentista?: string | null
+          insumos_utilizados?: Json | null
+          notas_operatorias?: string | null
+          paciente_id?: string
+          prioridad?: Database["public"]["Enums"]["prioridad_cirugia"]
+          profesional_id?: string | null
+          sala_id?: string | null
+          sangrado_ml?: number | null
+          sucursal_id?: string | null
+          tipo_anestesia?: string | null
+          tipo_cirugia?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cirugias_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cirugias_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cirugias_sala_id_fkey"
+            columns: ["sala_id"]
+            isOneToOne: false
+            referencedRelation: "salas_operacion"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cirugias_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cirugias_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cita_tickets: {
         Row: {
           checkin_por: string | null
@@ -2116,6 +2245,48 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipo_quirurgico: {
+        Row: {
+          cirugia_id: string
+          created_at: string
+          id: string
+          notas: string | null
+          profesional_id: string
+          rol: Database["public"]["Enums"]["rol_quirurgico"]
+        }
+        Insert: {
+          cirugia_id: string
+          created_at?: string
+          id?: string
+          notas?: string | null
+          profesional_id: string
+          rol: Database["public"]["Enums"]["rol_quirurgico"]
+        }
+        Update: {
+          cirugia_id?: string
+          created_at?: string
+          id?: string
+          notas?: string | null
+          profesional_id?: string
+          rol?: Database["public"]["Enums"]["rol_quirurgico"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipo_quirurgico_cirugia_id_fkey"
+            columns: ["cirugia_id"]
+            isOneToOne: false
+            referencedRelation: "cirugias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipo_quirurgico_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
             referencedColumns: ["id"]
           },
         ]
@@ -4746,6 +4917,60 @@ export type Database = {
           },
         ]
       }
+      salas_operacion: {
+        Row: {
+          activa: boolean
+          capacidad: number | null
+          created_at: string
+          equipamiento: Json | null
+          id: string
+          nombre: string
+          notas: string | null
+          sucursal_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activa?: boolean
+          capacidad?: number | null
+          created_at?: string
+          equipamiento?: Json | null
+          id?: string
+          nombre: string
+          notas?: string | null
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activa?: boolean
+          capacidad?: number | null
+          created_at?: string
+          equipamiento?: Json | null
+          id?: string
+          nombre?: string
+          notas?: string | null
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salas_operacion_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "salas_operacion_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seguros_paciente: {
         Row: {
           activo: boolean
@@ -5765,6 +5990,12 @@ export type Database = {
         | "vencida"
         | "cancelada"
       estado_cierre: "abierto" | "cerrado"
+      estado_cirugia:
+        | "programada"
+        | "en_curso"
+        | "completada"
+        | "cancelada"
+        | "suspendida"
       estado_espera: "esperando" | "asignada" | "cancelada" | "expirada"
       estado_llamada:
         | "agendada"
@@ -5791,6 +6022,7 @@ export type Database = {
         | "postpuesta"
         | "no_realizada"
       grado_dificultad: "bajo" | "medio" | "alto"
+      prioridad_cirugia: "electiva" | "urgente" | "emergencia"
       prioridad_espera: "normal" | "alta" | "urgente"
       resultado_seguimiento:
         | "contactado"
@@ -5801,6 +6033,12 @@ export type Database = {
         | "visita_agendada"
         | "paciente_decline"
         | "no_disponible"
+      rol_quirurgico:
+        | "cirujano_principal"
+        | "asistente"
+        | "anestesiologo"
+        | "instrumentista"
+        | "circulante"
       status_paciente:
         | "activo"
         | "inactivo"
@@ -5974,6 +6212,13 @@ export const Constants = {
         "cancelada",
       ],
       estado_cierre: ["abierto", "cerrado"],
+      estado_cirugia: [
+        "programada",
+        "en_curso",
+        "completada",
+        "cancelada",
+        "suspendida",
+      ],
       estado_espera: ["esperando", "asignada", "cancelada", "expirada"],
       estado_llamada: [
         "agendada",
@@ -6003,6 +6248,7 @@ export const Constants = {
         "no_realizada",
       ],
       grado_dificultad: ["bajo", "medio", "alto"],
+      prioridad_cirugia: ["electiva", "urgente", "emergencia"],
       prioridad_espera: ["normal", "alta", "urgente"],
       resultado_seguimiento: [
         "contactado",
@@ -6013,6 +6259,13 @@ export const Constants = {
         "visita_agendada",
         "paciente_decline",
         "no_disponible",
+      ],
+      rol_quirurgico: [
+        "cirujano_principal",
+        "asistente",
+        "anestesiologo",
+        "instrumentista",
+        "circulante",
       ],
       status_paciente: [
         "activo",
