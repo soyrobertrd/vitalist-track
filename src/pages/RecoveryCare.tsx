@@ -4,10 +4,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, BedDouble, CalendarCheck, Activity, Plane, Users, CalendarDays, DollarSign, Calculator } from "lucide-react";
+import { toast } from "sonner";
+import { Heart, BedDouble, Activity, Plane, Users, CalendarDays, DollarSign, Calculator, AlertTriangle, Concierge, Plus, ShieldAlert } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { formatCurrency, resolveCurrency } from "@/lib/currency";
 import VerticalPersonalTab from "@/components/vertical/VerticalPersonalTab";
 import VerticalCitasTab from "@/components/vertical/VerticalCitasTab";
 import VerticalFacturacionTab from "@/components/vertical/VerticalFacturacionTab";
@@ -21,7 +29,6 @@ const estadoPacColor: Record<string, string> = {
   alta: "bg-muted text-muted-foreground",
   cancelado: "bg-destructive/10 text-destructive",
 };
-
 const estadoHabColor: Record<string, string> = {
   disponible: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
   ocupada: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
@@ -29,178 +36,194 @@ const estadoHabColor: Record<string, string> = {
   mantenimiento: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
   reservada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
 };
+const estadoReservaColor: Record<string, string> = {
+  reservada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  confirmada: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
+  check_in: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  en_estadia: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+  check_out: "bg-muted text-muted-foreground",
+  cancelada: "bg-destructive/10 text-destructive",
+  no_show: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+};
 
 export default function RecoveryCare() {
   const { currentWorkspace } = useWorkspace();
+  const wsId = currentWorkspace?.id;
+  const cur = resolveCurrency(currentWorkspace);
+  const fmt = (v: number) => formatCurrency(v, cur);
   const [tab, setTab] = useState("pacientes");
 
-  const { data: pacientes = [] } = useQuery({
-    queryKey: ["pacientes_recovery", currentWorkspace?.id],
-    enabled: !!currentWorkspace,
-    queryFn: async () => {
-      const { data } = await supabase.from("pacientes_recovery" as any).select("*").eq("workspace_id", currentWorkspace!.id).order("created_at", { ascending: false }).limit(100);
-      return (data || []) as any[];
-    },
+  const { data: pacientesRec = [] } = useQuery({
+    queryKey: ["pacientes_recovery", wsId], enabled: !!wsId,
+    queryFn: async () => { const { data } = await supabase.from("pacientes_recovery" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
-
   const { data: habitaciones = [] } = useQuery({
-    queryKey: ["habitaciones_recovery", currentWorkspace?.id],
-    enabled: !!currentWorkspace,
-    queryFn: async () => {
-      const { data } = await supabase.from("habitaciones_recovery" as any).select("*").eq("workspace_id", currentWorkspace!.id).eq("activa", true).order("nombre");
-      return (data || []) as any[];
-    },
+    queryKey: ["habitaciones_recovery", wsId], enabled: !!wsId,
+    queryFn: async () => { const { data } = await supabase.from("habitaciones_recovery" as any).select("*").eq("workspace_id", wsId!).order("nombre"); return (data || []) as any[]; },
   });
-
   const { data: planes = [] } = useQuery({
-    queryKey: ["planes_recovery", currentWorkspace?.id],
-    enabled: !!currentWorkspace,
-    queryFn: async () => {
-      const { data } = await supabase.from("planes_recovery" as any).select("*").eq("workspace_id", currentWorkspace!.id).eq("activo", true).order("dias");
-      return (data || []) as any[];
-    },
+    queryKey: ["planes_recovery", wsId], enabled: !!wsId,
+    queryFn: async () => { const { data } = await supabase.from("planes_recovery" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre"); return (data || []) as any[]; },
   });
-
   const { data: seguimientos = [] } = useQuery({
-    queryKey: ["seguimiento_diario_recovery", currentWorkspace?.id],
-    enabled: !!currentWorkspace,
-    queryFn: async () => {
-      const { data } = await supabase.from("seguimiento_diario_recovery" as any).select("*").eq("workspace_id", currentWorkspace!.id).order("created_at", { ascending: false }).limit(50);
-      return (data || []) as any[];
-    },
+    queryKey: ["seguimiento_diario_recovery", wsId], enabled: !!wsId,
+    queryFn: async () => { const { data } = await supabase.from("seguimiento_diario_recovery" as any).select("*").eq("workspace_id", wsId!).order("fecha", { ascending: false }).limit(50); return (data || []) as any[]; },
+  });
+  const { data: reservas = [] } = useQuery({
+    queryKey: ["reservas_recovery", wsId], enabled: !!wsId,
+    queryFn: async () => { const { data } = await (supabase.from("reservas_recovery") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("check_in", { ascending: false }).limit(100); return (data || []) as any[]; },
+  });
+  const { data: alertas = [] } = useQuery({
+    queryKey: ["alertas_emergencia_recovery", wsId], enabled: !!wsId,
+    queryFn: async () => { const { data } = await supabase.from("alertas_emergencia_recovery" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(50); return (data || []) as any[]; },
+  });
+  const { data: conciergeServ = [] } = useQuery({
+    queryKey: ["servicios_concierge", wsId], enabled: !!wsId,
+    queryFn: async () => { const { data } = await supabase.from("servicios_concierge" as any).select("*").eq("workspace_id", wsId!).order("fecha", { ascending: false }).limit(50); return (data || []) as any[]; },
   });
 
-  const activos = pacientes.filter((p: any) => ["ingresado", "en_recuperacion"].includes(p.estado)).length;
-  const turismoMedico = pacientes.filter((p: any) => p.turismo_medico).length;
+  const activos = pacientesRec.filter((p: any) => p.estado === "en_recuperacion" || p.estado === "ingresado").length;
   const habDisponibles = habitaciones.filter((h: any) => h.estado === "disponible").length;
+  const turismoMedico = pacientesRec.filter((p: any) => p.turismo_medico).length;
+  const alertasAbiertas = alertas.filter((a: any) => !a.resuelta).length;
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Heart className="h-6 w-6" /> Recovery Care
-        </h1>
-        <p className="text-muted-foreground">Gestión de casas de recuperación postquirúrgica</p>
+        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2"><Heart className="h-6 w-6" /> Recovery Care</h1>
+        <p className="text-muted-foreground">Post-lipo, BBL, turismo médico, recovery premium, cuidados domiciliarios</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card><CardContent className="pt-4 text-center">
-          <Activity className="h-5 w-5 mx-auto mb-1 text-green-500" />
-          <p className="text-2xl font-bold">{activos}</p>
-          <p className="text-xs text-muted-foreground">Pacientes activos</p>
-        </CardContent></Card>
-        <Card><CardContent className="pt-4 text-center">
-          <BedDouble className="h-5 w-5 mx-auto mb-1 text-primary" />
-          <p className="text-2xl font-bold">{habDisponibles}/{habitaciones.length}</p>
-          <p className="text-xs text-muted-foreground">Hab. disponibles</p>
-        </CardContent></Card>
-        <Card><CardContent className="pt-4 text-center">
-          <Plane className="h-5 w-5 mx-auto mb-1 text-blue-500" />
-          <p className="text-2xl font-bold">{turismoMedico}</p>
-          <p className="text-xs text-muted-foreground">Turismo médico</p>
-        </CardContent></Card>
-        <Card><CardContent className="pt-4 text-center">
-          <p className="text-2xl font-bold">{planes.length}</p>
-          <p className="text-xs text-muted-foreground">Planes activos</p>
-        </CardContent></Card>
-        <Card><CardContent className="pt-4 text-center">
-          <p className="text-2xl font-bold">{seguimientos.length}</p>
-          <p className="text-xs text-muted-foreground">Seguimientos hoy</p>
-        </CardContent></Card>
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+        <Card><CardContent className="pt-3 text-center"><Activity className="h-4 w-4 mx-auto mb-1 text-green-500" /><p className="text-xl font-bold">{activos}</p><p className="text-[10px] text-muted-foreground">Activos</p></CardContent></Card>
+        <Card><CardContent className="pt-3 text-center"><BedDouble className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{habDisponibles}/{habitaciones.length}</p><p className="text-[10px] text-muted-foreground">Hab. disp.</p></CardContent></Card>
+        <Card><CardContent className="pt-3 text-center"><Plane className="h-4 w-4 mx-auto mb-1 text-blue-500" /><p className="text-xl font-bold">{turismoMedico}</p><p className="text-[10px] text-muted-foreground">Turismo méd.</p></CardContent></Card>
+        <Card><CardContent className="pt-3 text-center"><p className="text-xl font-bold">{reservas.length}</p><p className="text-[10px] text-muted-foreground">Reservas</p></CardContent></Card>
+        <Card><CardContent className="pt-3 text-center"><p className="text-xl font-bold">{conciergeServ.length}</p><p className="text-[10px] text-muted-foreground">Concierge</p></CardContent></Card>
+        <Card><CardContent className="pt-3 text-center"><ShieldAlert className="h-4 w-4 mx-auto mb-1 text-destructive" /><p className="text-xl font-bold">{alertasAbiertas}</p><p className="text-[10px] text-muted-foreground">Alertas</p></CardContent></Card>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="flex-wrap h-auto gap-1">
           <TabsTrigger value="pacientes">Pacientes</TabsTrigger>
           <TabsTrigger value="habitaciones">Habitaciones</TabsTrigger>
+          <TabsTrigger value="reservas">Reservas</TabsTrigger>
           <TabsTrigger value="planes">Planes</TabsTrigger>
           <TabsTrigger value="seguimiento">Seguimiento</TabsTrigger>
-          <TabsTrigger value="gestion_pacientes" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Registro</TabsTrigger>
-          <TabsTrigger value="citas" className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> Citas</TabsTrigger>
-          <TabsTrigger value="personal" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Personal</TabsTrigger>
-          <TabsTrigger value="facturacion" className="flex items-center gap-1"><DollarSign className="h-3.5 w-3.5" /> Facturación</TabsTrigger>
-          <TabsTrigger value="nomina" className="flex items-center gap-1"><Calculator className="h-3.5 w-3.5" /> Nómina</TabsTrigger>
+          <TabsTrigger value="concierge">Concierge</TabsTrigger>
+          <TabsTrigger value="alertas">Alertas</TabsTrigger>
+          <TabsTrigger value="gestion_pacientes"><Users className="h-3.5 w-3.5 mr-1" />Registro</TabsTrigger>
+          <TabsTrigger value="citas"><CalendarDays className="h-3.5 w-3.5 mr-1" />Citas</TabsTrigger>
+          <TabsTrigger value="personal"><Users className="h-3.5 w-3.5 mr-1" />Personal</TabsTrigger>
+          <TabsTrigger value="facturacion"><DollarSign className="h-3.5 w-3.5 mr-1" />Facturación</TabsTrigger>
+          <TabsTrigger value="nomina"><Calculator className="h-3.5 w-3.5 mr-1" />Nómina</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pacientes" className="space-y-3">
-          {pacientes.length === 0 ? (
-            <Card><CardContent className="py-8 text-center text-muted-foreground">No hay pacientes</CardContent></Card>
-          ) : pacientes.map((p: any) => (
-            <Card key={p.id}>
-              <CardContent className="py-4 flex items-center justify-between">
-                <div>
-                  <p className="font-medium">{p.numero} — {p.nombre_paciente || "Paciente"}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {p.tipo_cirugia || ""} · {p.medico_tratante || ""} · {p.pais_origen || "RD"}
-                    {p.turismo_medico && " ✈️"}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {p.fecha_ingreso ? `Ingreso: ${format(new Date(p.fecha_ingreso), "dd/MM/yyyy", { locale: es })}` : ""}
-                  </p>
-                </div>
-                <Badge className={estadoPacColor[p.estado] || ""}>{p.estado.replace(/_/g, " ")}</Badge>
-              </CardContent>
-            </Card>
+          {pacientesRec.length === 0 ? <Card><CardContent className="py-8 text-center text-muted-foreground">Sin pacientes</CardContent></Card> : pacientesRec.map((p: any) => (
+            <Card key={p.id}><CardContent className="py-4 flex items-center justify-between">
+              <div>
+                <p className="font-medium">{p.numero} — {p.nombre_paciente || "Paciente"}</p>
+                <p className="text-sm text-muted-foreground">{p.tipo_cirugia || ""} · {p.medico_tratante || ""} {p.turismo_medico ? "✈️" : ""} {p.pais_origen ? `· ${p.pais_origen}` : ""}</p>
+              </div>
+              <Badge className={estadoPacColor[p.estado] || ""}>{p.estado?.replace(/_/g, " ")}</Badge>
+            </CardContent></Card>
           ))}
         </TabsContent>
 
-        <TabsContent value="habitaciones" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <TabsContent value="habitaciones" className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {habitaciones.map((h: any) => (
-            <Card key={h.id}>
-              <CardContent className="pt-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium text-lg">{h.nombre}</p>
-                    <p className="text-sm text-muted-foreground">{h.tipo} · Cap: {h.capacidad} {h.piso ? `· Piso ${h.piso}` : ""}</p>
-                    {h.tarifa_diaria && <p className="text-sm font-medium mt-1">${h.tarifa_diaria}/día</p>}
-                  </div>
-                  <Badge className={estadoHabColor[h.estado] || ""}>{h.estado}</Badge>
-                </div>
-              </CardContent>
-            </Card>
+            <Card key={h.id}><CardContent className="pt-4">
+              <div className="flex items-center justify-between"><p className="font-medium">{h.nombre}</p><Badge className={estadoHabColor[h.estado] || ""}>{h.estado}</Badge></div>
+              <p className="text-sm text-muted-foreground mt-1">{h.tipo?.replace(/_/g, " ")} {h.tarifa_diaria ? `· ${fmt(h.tarifa_diaria)}/día` : ""}</p>
+            </CardContent></Card>
           ))}
         </TabsContent>
 
-        <TabsContent value="planes" className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <TabsContent value="reservas" className="mt-4">
+          <Card><Table>
+            <TableHeader><TableRow>
+              <TableHead>Número</TableHead><TableHead>Paciente</TableHead><TableHead>Paquete</TableHead><TableHead>Check-in</TableHead><TableHead>Check-out</TableHead><TableHead>Noches</TableHead><TableHead className="text-right">Total</TableHead><TableHead>Estado</TableHead>
+            </TableRow></TableHeader>
+            <TableBody>
+              {reservas.map((r: any) => (
+                <TableRow key={r.id}>
+                  <TableCell className="font-mono text-xs">{r.numero}</TableCell>
+                  <TableCell>{r.pacientes ? `${r.pacientes.nombre} ${r.pacientes.apellido || ""}` : "—"}</TableCell>
+                  <TableCell><Badge variant="outline">{r.paquete?.replace(/_/g, " ") || "custom"}</Badge></TableCell>
+                  <TableCell>{r.check_in}</TableCell>
+                  <TableCell>{r.check_out || "—"}</TableCell>
+                  <TableCell>{r.noches || "—"}</TableCell>
+                  <TableCell className="text-right font-semibold">{fmt(r.total || 0)}</TableCell>
+                  <TableCell><Badge className={estadoReservaColor[r.estado] || ""}>{r.estado?.replace(/_/g, " ")}</Badge></TableCell>
+                </TableRow>
+              ))}
+              {!reservas.length && <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Sin reservas</TableCell></TableRow>}
+            </TableBody>
+          </Table></Card>
+        </TabsContent>
+
+        <TabsContent value="planes" className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {planes.map((p: any) => (
-            <Card key={p.id}>
-              <CardContent className="pt-4">
-                <p className="font-bold text-lg">{p.nombre}</p>
-                <Badge variant="outline" className="mt-1">{p.categoria} · {p.dias} días</Badge>
-                {p.precio && <p className="text-xl font-bold mt-2">${p.precio} {p.moneda}</p>}
-                {p.descripcion && <p className="text-sm text-muted-foreground mt-2">{p.descripcion}</p>}
-              </CardContent>
-            </Card>
+            <Card key={p.id}><CardContent className="pt-4">
+              <p className="font-bold">{p.nombre}</p>
+              <Badge variant="outline" className="mt-1">{p.categoria}</Badge>
+              <p className="text-sm text-muted-foreground mt-2">{p.dias} noches · {fmt(p.precio || 0)}</p>
+            </CardContent></Card>
           ))}
         </TabsContent>
 
         <TabsContent value="seguimiento" className="space-y-3">
-          {seguimientos.length === 0 ? (
-            <Card><CardContent className="py-8 text-center text-muted-foreground">No hay seguimientos</CardContent></Card>
-          ) : seguimientos.map((s: any) => (
-            <Card key={s.id}>
-              <CardContent className="py-4">
-                <div className="flex justify-between">
-                  <p className="font-medium">{s.fecha} — Turno: {s.turno}</p>
-                  {s.alertas && <Badge variant="destructive">{s.alertas}</Badge>}
+          {seguimientos.map((s: any) => (
+            <Card key={s.id}><CardContent className="py-4">
+              <p className="font-medium">{s.fecha}</p>
+              <p className="text-sm text-muted-foreground">Dolor: {s.nivel_dolor}/10 · T: {s.temperatura || "—"}°C · PA: {s.presion_arterial || "—"}</p>
+              {s.observaciones && <p className="text-xs text-muted-foreground mt-1">{s.observaciones}</p>}
+            </CardContent></Card>
+          ))}
+          {!seguimientos.length && <Card><CardContent className="py-8 text-center text-muted-foreground">Sin seguimientos</CardContent></Card>}
+        </TabsContent>
+
+        <TabsContent value="concierge" className="mt-4">
+          <Card><Table>
+            <TableHeader><TableRow><TableHead>Tipo</TableHead><TableHead>Fecha</TableHead><TableHead>Hora</TableHead><TableHead>Proveedor</TableHead><TableHead className="text-right">Costo</TableHead><TableHead>Estado</TableHead></TableRow></TableHeader>
+            <TableBody>
+              {conciergeServ.map((c: any) => (
+                <TableRow key={c.id}>
+                  <TableCell className="font-medium">{c.tipo?.replace(/_/g, " ")}</TableCell>
+                  <TableCell>{c.fecha}</TableCell>
+                  <TableCell>{c.hora || "—"}</TableCell>
+                  <TableCell>{c.proveedor || "—"}</TableCell>
+                  <TableCell className="text-right">{fmt(c.costo || 0)}</TableCell>
+                  <TableCell><Badge variant={c.estado === "completado" ? "default" : "secondary"}>{c.estado}</Badge></TableCell>
+                </TableRow>
+              ))}
+              {!conciergeServ.length && <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Sin servicios concierge</TableCell></TableRow>}
+            </TableBody>
+          </Table></Card>
+        </TabsContent>
+
+        <TabsContent value="alertas" className="mt-4 space-y-3">
+          {alertas.map((a: any) => (
+            <Card key={a.id} className={!a.resuelta ? "border-destructive/50" : ""}>
+              <CardContent className="py-4 flex items-center justify-between">
+                <div>
+                  <p className="font-medium">{a.tipo?.replace(/_/g, " ")}</p>
+                  <p className="text-sm text-muted-foreground">{a.descripcion || ""}</p>
                 </div>
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mt-2 text-sm">
-                  {s.temperatura && <span>🌡️ {s.temperatura}°C</span>}
-                  {s.presion_sistolica && <span>💓 {s.presion_sistolica}/{s.presion_diastolica}</span>}
-                  {s.frecuencia_cardiaca && <span>❤️ {s.frecuencia_cardiaca} bpm</span>}
-                  {s.saturacion_o2 && <span>🫁 {s.saturacion_o2}%</span>}
-                  {s.nivel_dolor !== null && <span>😣 Dolor: {s.nivel_dolor}/10</span>}
-                  {s.inflamacion && <span>🔴 {s.inflamacion}</span>}
+                <div className="flex items-center gap-2">
+                  <Badge variant={a.severidad === "critica" ? "destructive" : a.severidad === "alta" ? "destructive" : "secondary"}>{a.severidad}</Badge>
+                  <Badge variant={a.resuelta ? "default" : "outline"}>{a.resuelta ? "Resuelta" : "Abierta"}</Badge>
                 </div>
-                {s.notas_enfermeria && <p className="text-sm text-muted-foreground mt-2">{s.notas_enfermeria}</p>}
               </CardContent>
             </Card>
           ))}
+          {!alertas.length && <Card><CardContent className="py-8 text-center text-muted-foreground">Sin alertas de emergencia</CardContent></Card>}
         </TabsContent>
 
         <TabsContent value="gestion_pacientes" className="mt-4"><VerticalPacientesTab /></TabsContent>
         <TabsContent value="citas" className="mt-4"><VerticalCitasTab citaLabel="Citas de Recuperación" /></TabsContent>
-        <TabsContent value="personal" className="mt-4"><VerticalPersonalTab profesionalLabel="Personal de Cuidado" especialidades={["Enfermería", "Fisioterapia", "Cuidado postquirúrgico", "Masaje linfático", "Concierge médico"]} /></TabsContent>
+        <TabsContent value="personal" className="mt-4"><VerticalPersonalTab profesionalLabel="Personal de Cuidado" especialidades={["Enfermería", "Fisioterapia", "Cuidado postquirúrgico", "Masaje linfático", "Concierge médico", "Chofer", "Traductor"]} /></TabsContent>
         <TabsContent value="facturacion" className="mt-4"><VerticalFacturacionTab /></TabsContent>
         <TabsContent value="nomina" className="mt-4"><VerticalNominaTab /></TabsContent>
       </Tabs>
