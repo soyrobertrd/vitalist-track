@@ -21,6 +21,7 @@ import { DiasNoLaborablesCalendar } from "@/components/DiasNoLaborablesCalendar"
 import { ModulePermissionsManager } from "@/components/ModulePermissionsManager";
 import { AuditoriaCambiosViewer } from "@/components/AuditoriaCambiosViewer";
 import { WorkspaceLocaleEditor } from "@/components/WorkspaceLocaleEditor";
+import { PlantillasEspecialidadAdmin } from "@/components/ficha-clinica/PlantillasEspecialidad";
 
 const ConfiguracionAdmin = () => {
   const navigate = useNavigate();
