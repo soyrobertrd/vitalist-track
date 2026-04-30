@@ -23,6 +23,7 @@ import Landing from "./pages/Landing";
 
 // Lazy loaded pages for better performance & smaller initial bundle
 const Recepcion = lazy(() => import("./pages/Recepcion"));
+const Finanzas = lazy(() => import("./pages/Finanzas"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Pacientes = lazy(() => import("./pages/Pacientes"));
 const Personal = lazy(() => import("./pages/Personal"));
