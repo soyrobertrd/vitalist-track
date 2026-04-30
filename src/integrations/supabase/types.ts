@@ -1176,6 +1176,81 @@ export type Database = {
           },
         ]
       }
+      ciclos_esterilizacion: {
+        Row: {
+          created_at: string
+          duracion_minutos: number | null
+          equipo: string
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          id: string
+          indicador_biologico: boolean | null
+          indicador_quimico: boolean | null
+          metodo: string
+          numero: string
+          observaciones: string | null
+          operador_id: string | null
+          presion_psi: number | null
+          resultado: string
+          temperatura_c: number | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          duracion_minutos?: number | null
+          equipo?: string
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          indicador_biologico?: boolean | null
+          indicador_quimico?: boolean | null
+          metodo?: string
+          numero?: string
+          observaciones?: string | null
+          operador_id?: string | null
+          presion_psi?: number | null
+          resultado?: string
+          temperatura_c?: number | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          duracion_minutos?: number | null
+          equipo?: string
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          indicador_biologico?: boolean | null
+          indicador_quimico?: boolean | null
+          metodo?: string
+          numero?: string
+          observaciones?: string | null
+          operador_id?: string | null
+          presion_psi?: number | null
+          resultado?: string
+          temperatura_c?: number | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ciclos_esterilizacion_operador_id_fkey"
+            columns: ["operador_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ciclos_esterilizacion_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cie10_codigos: {
         Row: {
           activo: boolean
@@ -2825,6 +2900,77 @@ export type Database = {
           },
         ]
       }
+      equipos_hospitalarios: {
+        Row: {
+          costo_adquisicion: number | null
+          created_at: string
+          departamento: string | null
+          estado: string
+          fecha_adquisicion: string | null
+          fecha_ultimo_mantenimiento: string | null
+          garantia_hasta: string | null
+          id: string
+          marca: string | null
+          modelo: string | null
+          nombre: string
+          numero_serie: string | null
+          observaciones: string | null
+          proveedor: string | null
+          proximo_mantenimiento: string | null
+          ubicacion: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          costo_adquisicion?: number | null
+          created_at?: string
+          departamento?: string | null
+          estado?: string
+          fecha_adquisicion?: string | null
+          fecha_ultimo_mantenimiento?: string | null
+          garantia_hasta?: string | null
+          id?: string
+          marca?: string | null
+          modelo?: string | null
+          nombre: string
+          numero_serie?: string | null
+          observaciones?: string | null
+          proveedor?: string | null
+          proximo_mantenimiento?: string | null
+          ubicacion?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          costo_adquisicion?: number | null
+          created_at?: string
+          departamento?: string | null
+          estado?: string
+          fecha_adquisicion?: string | null
+          fecha_ultimo_mantenimiento?: string | null
+          garantia_hasta?: string | null
+          id?: string
+          marca?: string | null
+          modelo?: string | null
+          nombre?: string
+          numero_serie?: string | null
+          observaciones?: string | null
+          proveedor?: string | null
+          proximo_mantenimiento?: string | null
+          ubicacion?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipos_hospitalarios_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       escalas_clinicas: {
         Row: {
           admision_id: string | null
@@ -3062,6 +3208,98 @@ export type Database = {
           },
           {
             foreignKeyName: "estudios_imagen_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      estudios_patologia: {
+        Row: {
+          created_at: string
+          diagnostico_final: string | null
+          diagnostico_macro: string | null
+          diagnostico_micro: string | null
+          estado: string
+          fecha_recepcion: string | null
+          fecha_resultado: string | null
+          id: string
+          medico_solicitante_id: string | null
+          muestra: string
+          numero: string
+          observaciones: string | null
+          paciente_id: string | null
+          patologo_id: string | null
+          sitio_anatomico: string | null
+          tipo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          diagnostico_final?: string | null
+          diagnostico_macro?: string | null
+          diagnostico_micro?: string | null
+          estado?: string
+          fecha_recepcion?: string | null
+          fecha_resultado?: string | null
+          id?: string
+          medico_solicitante_id?: string | null
+          muestra?: string
+          numero?: string
+          observaciones?: string | null
+          paciente_id?: string | null
+          patologo_id?: string | null
+          sitio_anatomico?: string | null
+          tipo?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          diagnostico_final?: string | null
+          diagnostico_macro?: string | null
+          diagnostico_micro?: string | null
+          estado?: string
+          fecha_recepcion?: string | null
+          fecha_resultado?: string | null
+          id?: string
+          medico_solicitante_id?: string | null
+          muestra?: string
+          numero?: string
+          observaciones?: string | null
+          paciente_id?: string | null
+          patologo_id?: string | null
+          sitio_anatomico?: string | null
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estudios_patologia_medico_solicitante_id_fkey"
+            columns: ["medico_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estudios_patologia_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estudios_patologia_patologo_id_fkey"
+            columns: ["patologo_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estudios_patologia_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -4684,6 +4922,91 @@ export type Database = {
           },
         ]
       }
+      ordenes_mantenimiento: {
+        Row: {
+          costo: number | null
+          created_at: string
+          descripcion: string | null
+          equipo_id: string
+          estado: string
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          fecha_solicitud: string | null
+          id: string
+          numero: string
+          prioridad: string
+          repuestos_usados: Json | null
+          resultado: string | null
+          solicitado_por: string | null
+          tecnico_asignado: string | null
+          tipo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          costo?: number | null
+          created_at?: string
+          descripcion?: string | null
+          equipo_id: string
+          estado?: string
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          fecha_solicitud?: string | null
+          id?: string
+          numero?: string
+          prioridad?: string
+          repuestos_usados?: Json | null
+          resultado?: string | null
+          solicitado_por?: string | null
+          tecnico_asignado?: string | null
+          tipo?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          costo?: number | null
+          created_at?: string
+          descripcion?: string | null
+          equipo_id?: string
+          estado?: string
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          fecha_solicitud?: string | null
+          id?: string
+          numero?: string
+          prioridad?: string
+          repuestos_usados?: Json | null
+          resultado?: string | null
+          solicitado_por?: string | null
+          tecnico_asignado?: string | null
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordenes_mantenimiento_equipo_id_fkey"
+            columns: ["equipo_id"]
+            isOneToOne: false
+            referencedRelation: "equipos_hospitalarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordenes_mantenimiento_solicitado_por_fkey"
+            columns: ["solicitado_por"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordenes_mantenimiento_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pacientes: {
         Row: {
           anonimizado: boolean
@@ -5036,6 +5359,60 @@ export type Database = {
           },
           {
             foreignKeyName: "pantallas_turno_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paquetes_quirurgicos: {
+        Row: {
+          codigo: string | null
+          contenido: Json | null
+          created_at: string
+          estado: string
+          fecha_vencimiento_esterilizacion: string | null
+          id: string
+          nombre: string
+          ultimo_ciclo_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          codigo?: string | null
+          contenido?: Json | null
+          created_at?: string
+          estado?: string
+          fecha_vencimiento_esterilizacion?: string | null
+          id?: string
+          nombre: string
+          ultimo_ciclo_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          codigo?: string | null
+          contenido?: Json | null
+          created_at?: string
+          estado?: string
+          fecha_vencimiento_esterilizacion?: string | null
+          id?: string
+          nombre?: string
+          ultimo_ciclo_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paquetes_quirurgicos_ultimo_ciclo_id_fkey"
+            columns: ["ultimo_ciclo_id"]
+            isOneToOne: false
+            referencedRelation: "ciclos_esterilizacion"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "paquetes_quirurgicos_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -5923,6 +6300,159 @@ export type Database = {
         }
         Relationships: []
       }
+      programas_docencia: {
+        Row: {
+          activo: boolean | null
+          coordinador_id: string | null
+          created_at: string
+          cupo_maximo: number | null
+          descripcion: string | null
+          duracion_meses: number | null
+          especialidad: string | null
+          id: string
+          nombre: string
+          requisitos: string | null
+          tipo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          coordinador_id?: string | null
+          created_at?: string
+          cupo_maximo?: number | null
+          descripcion?: string | null
+          duracion_meses?: number | null
+          especialidad?: string | null
+          id?: string
+          nombre: string
+          requisitos?: string | null
+          tipo?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          coordinador_id?: string | null
+          created_at?: string
+          cupo_maximo?: number | null
+          descripcion?: string | null
+          duracion_meses?: number | null
+          especialidad?: string | null
+          id?: string
+          nombre?: string
+          requisitos?: string | null
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programas_docencia_coordinador_id_fkey"
+            columns: ["coordinador_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programas_docencia_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      protocolos_investigacion: {
+        Row: {
+          co_investigadores: Json | null
+          comite_etica: string
+          created_at: string
+          estado: string
+          fecha_aprobacion_etica: string | null
+          fecha_fin_estimada: string | null
+          fecha_inicio: string | null
+          financiamiento: string | null
+          id: string
+          investigador_principal_id: string | null
+          metodologia: string | null
+          monto_financiamiento: number | null
+          numero: string
+          objetivo: string | null
+          poblacion_estudio: string | null
+          publicaciones: Json | null
+          resultados: string | null
+          resumen: string | null
+          tamano_muestra: number | null
+          titulo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          co_investigadores?: Json | null
+          comite_etica?: string
+          created_at?: string
+          estado?: string
+          fecha_aprobacion_etica?: string | null
+          fecha_fin_estimada?: string | null
+          fecha_inicio?: string | null
+          financiamiento?: string | null
+          id?: string
+          investigador_principal_id?: string | null
+          metodologia?: string | null
+          monto_financiamiento?: number | null
+          numero?: string
+          objetivo?: string | null
+          poblacion_estudio?: string | null
+          publicaciones?: Json | null
+          resultados?: string | null
+          resumen?: string | null
+          tamano_muestra?: number | null
+          titulo: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          co_investigadores?: Json | null
+          comite_etica?: string
+          created_at?: string
+          estado?: string
+          fecha_aprobacion_etica?: string | null
+          fecha_fin_estimada?: string | null
+          fecha_inicio?: string | null
+          financiamiento?: string | null
+          id?: string
+          investigador_principal_id?: string | null
+          metodologia?: string | null
+          monto_financiamiento?: number | null
+          numero?: string
+          objetivo?: string | null
+          poblacion_estudio?: string | null
+          publicaciones?: Json | null
+          resultados?: string | null
+          resumen?: string | null
+          tamano_muestra?: number | null
+          titulo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocolos_investigacion_investigador_principal_id_fkey"
+            columns: ["investigador_principal_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "protocolos_investigacion_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       proveedores: {
         Row: {
           activo: boolean | null
@@ -6696,6 +7226,88 @@ export type Database = {
           },
         ]
       }
+      registros_morgue: {
+        Row: {
+          autopsia: boolean | null
+          causa_muerte: string | null
+          cedula_receptor: string | null
+          created_at: string
+          estado: string
+          familiar_receptor: string | null
+          fecha_defuncion: string | null
+          fecha_liberacion: string | null
+          hora_defuncion: string | null
+          id: string
+          medico_certificante_id: string | null
+          nombre_fallecido: string | null
+          numero: string
+          observaciones: string | null
+          paciente_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          autopsia?: boolean | null
+          causa_muerte?: string | null
+          cedula_receptor?: string | null
+          created_at?: string
+          estado?: string
+          familiar_receptor?: string | null
+          fecha_defuncion?: string | null
+          fecha_liberacion?: string | null
+          hora_defuncion?: string | null
+          id?: string
+          medico_certificante_id?: string | null
+          nombre_fallecido?: string | null
+          numero?: string
+          observaciones?: string | null
+          paciente_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          autopsia?: boolean | null
+          causa_muerte?: string | null
+          cedula_receptor?: string | null
+          created_at?: string
+          estado?: string
+          familiar_receptor?: string | null
+          fecha_defuncion?: string | null
+          fecha_liberacion?: string | null
+          hora_defuncion?: string | null
+          id?: string
+          medico_certificante_id?: string | null
+          nombre_fallecido?: string | null
+          numero?: string
+          observaciones?: string | null
+          paciente_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registros_morgue_medico_certificante_id_fkey"
+            columns: ["medico_certificante_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registros_morgue_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registros_morgue_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reportes_bi_guardados: {
         Row: {
           compartido: boolean
@@ -6837,6 +7449,92 @@ export type Database = {
           workspace_id?: string
         }
         Relationships: []
+      }
+      residentes_rotaciones: {
+        Row: {
+          area_rotacion: string | null
+          calificacion_final: number | null
+          created_at: string
+          estado: string
+          evaluaciones: Json | null
+          id: string
+          nombre_residente: string | null
+          observaciones: string | null
+          periodo_fin: string | null
+          periodo_inicio: string | null
+          profesional_id: string | null
+          programa_id: string
+          supervisor_id: string | null
+          universidad: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          area_rotacion?: string | null
+          calificacion_final?: number | null
+          created_at?: string
+          estado?: string
+          evaluaciones?: Json | null
+          id?: string
+          nombre_residente?: string | null
+          observaciones?: string | null
+          periodo_fin?: string | null
+          periodo_inicio?: string | null
+          profesional_id?: string | null
+          programa_id: string
+          supervisor_id?: string | null
+          universidad?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          area_rotacion?: string | null
+          calificacion_final?: number | null
+          created_at?: string
+          estado?: string
+          evaluaciones?: Json | null
+          id?: string
+          nombre_residente?: string | null
+          observaciones?: string | null
+          periodo_fin?: string | null
+          periodo_inicio?: string | null
+          profesional_id?: string | null
+          programa_id?: string
+          supervisor_id?: string | null
+          universidad?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "residentes_rotaciones_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "residentes_rotaciones_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "programas_docencia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "residentes_rotaciones_supervisor_id_fkey"
+            columns: ["supervisor_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "residentes_rotaciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       respuestas_encuestas: {
         Row: {
