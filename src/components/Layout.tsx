@@ -35,6 +35,7 @@ import {
   UserCog as UserCogIcon,
   Target,
   Pill,
+  CircleDot,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -128,10 +129,18 @@ const Layout = ({ children }: LayoutProps) => {
     },
     { path: "/organizaciones", icon: Building2, label: "Organizaciones", adminOnly: true },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
-    { path: "/plantillas", icon: MessageSquare, label: "Plantillas (WhatsApp/Email)", adminOnly: true },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
     { path: "/inventario", icon: Boxes, label: "Inventario" },
     { path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true },
+    { path: "/turnos", icon: Monitor, label: "Turnos y Colas" },
+    {
+      path: "/odontologia",
+      icon: CircleDot,
+      label: "Odontología",
+      subItems: [
+        { path: "/odontograma", label: "Odontograma" },
+      ]
+    },
     {
       path: "/hospital",
       icon: Activity,
@@ -144,14 +153,26 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/laboratorio", label: "Laboratorio" },
         { path: "/imagenologia", label: "Imagenología" },
         { path: "/consultorios", label: "Consultorios", icon: Building2 },
-        { path: "/odontograma", label: "Odontograma" },
         { path: "/farmacia", label: "Farmacia", icon: Pill },
+        { path: "/banco-sangre", label: "Banco de Sangre" },
+        { path: "/nutricion", label: "Nutrición y Dietética" },
+        { path: "/rehabilitacion", label: "Rehabilitación" },
       ]
     },
     { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },
-    { path: "/api-citas", icon: Cog, label: "API Pública Citas", adminOnly: true },
-    { path: "/auditoria", icon: Shield, label: "Auditoría", adminOnly: true },
-    { path: "/checklist-rls", icon: Shield, label: "Checklist RLS", adminOnly: true },
+    {
+      path: "/config-grupo",
+      icon: Settings,
+      label: "Configuración",
+      adminOnly: true,
+      subItems: [
+        { path: "/configuracion-admin", label: "Sistema", icon: Cog },
+        { path: "/plantillas", label: "Plantillas (WhatsApp/Email)", icon: MessageSquare },
+        { path: "/api-citas", label: "API Pública Citas", icon: Cog },
+        { path: "/auditoria", label: "Auditoría", icon: Shield },
+        { path: "/checklist-rls", label: "Checklist RLS", icon: Shield },
+      ]
+    },
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
 
