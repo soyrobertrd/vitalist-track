@@ -74,6 +74,10 @@ const Turnos = lazy(() => import("./pages/Turnos"));
 const BancoSangre = lazy(() => import("./pages/BancoSangre"));
 const Nutricion = lazy(() => import("./pages/Nutricion"));
 const Rehabilitacion = lazy(() => import("./pages/Rehabilitacion"));
+const Esterilizacion = lazy(() => import("./pages/Esterilizacion"));
+const Morgue = lazy(() => import("./pages/Morgue"));
+const Mantenimiento = lazy(() => import("./pages/Mantenimiento"));
+const Docencia = lazy(() => import("./pages/Docencia"));
 
 // Loading fallback component
 const PageLoader = () => (
