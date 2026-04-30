@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Settings, Users, Shield, Mail, FileText, 
-  BarChart, Lock, Palette, Database, Workflow, Plus, CalendarDays, Key, History
+  BarChart, Lock, Palette, Database, Workflow, Plus, CalendarDays, Key, History, LayoutTemplate
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useUserProfile } from "@/hooks/useUserProfile";
