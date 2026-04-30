@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { usePacientes } from "@/hooks/usePacientes";
+import { usePersonal } from "@/hooks/usePersonal";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
