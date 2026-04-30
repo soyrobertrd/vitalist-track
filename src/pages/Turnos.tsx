@@ -49,9 +49,10 @@ const Turnos = () => {
       if (!currentWorkspace?.id) throw new Error("Sin workspace");
       const { error } = await supabase.from("turnos_cola").insert({
         workspace_id: currentWorkspace.id,
+        numero: "",
         servicio: form.servicio,
         prioridad: form.prioridad as any,
-      });
+      } as any);
       if (error) throw error;
     },
     onSuccess: () => {
