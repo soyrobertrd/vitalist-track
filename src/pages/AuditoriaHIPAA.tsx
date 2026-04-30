@@ -18,6 +18,10 @@ import { toast } from "sonner";
 import { AlertasAuditoriaPanel } from "@/components/AlertasAuditoriaPanel";
 import ResumenAuditoria from "@/components/ResumenAuditoria";
 import PanelRetencion from "@/components/PanelRetencion";
+import { PanelSaludSistema } from "@/components/PanelSaludSistema";
+import { ExportarAuditoriaAvanzada } from "@/components/ExportarAuditoriaAvanzada";
+import { PushNotificationsToggle } from "@/components/PushNotificationsToggle";
+import { Activity } from "lucide-react";
 
 interface AccesoLog {
   id: string;
@@ -247,10 +251,17 @@ export default function AuditoriaHIPAA() {
           <TabsTrigger value="alertas"><AlertTriangle className="h-4 w-4 mr-1" /> Alertas</TabsTrigger>
           <TabsTrigger value="resumenes"><FileText className="h-4 w-4 mr-1" /> Resúmenes</TabsTrigger>
           <TabsTrigger value="retencion"><FileText className="h-4 w-4 mr-1" /> Retención</TabsTrigger>
+          <TabsTrigger value="salud"><Activity className="h-4 w-4 mr-1" /> Salud</TabsTrigger>
         </TabsList>
 
         <TabsContent value="resumenes" className="space-y-4">
           <ResumenAuditoria />
+        </TabsContent>
+
+        <TabsContent value="salud" className="space-y-4">
+          <PanelSaludSistema />
+          <ExportarAuditoriaAvanzada />
+          <PushNotificationsToggle />
         </TabsContent>
 
         <TabsContent value="logs" className="space-y-4">
