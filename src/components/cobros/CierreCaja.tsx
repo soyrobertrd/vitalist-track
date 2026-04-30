@@ -35,8 +35,8 @@ interface Cierre {
 export function CierreCaja() {
   const { currentWorkspace } = useWorkspace();
   const { activeSucursalId } = useActiveSucursal();
-  const { locale } = useLocale();
-  const currency = resolveCurrency(locale?.pais || "DO");
+  const { countryCode } = useLocale();
+  const currency = resolveCurrency(countryCode);
   const [cierres, setCierres] = useState<Cierre[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewOpen, setPreviewOpen] = useState(false);
