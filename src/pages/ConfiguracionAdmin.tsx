@@ -320,6 +320,10 @@ const ConfiguracionAdmin = () => {
             <History className="mr-2 h-4 w-4" />
             Auditoría
           </TabsTrigger>
+          <TabsTrigger value="especialidades">
+            <LayoutTemplate className="mr-2 h-4 w-4" />
+            Especialidades
+          </TabsTrigger>
         </TabsList>
 
         {/* General */}
