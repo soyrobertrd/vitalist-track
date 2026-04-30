@@ -455,6 +455,65 @@ export type Database = {
           },
         ]
       }
+      asientos_contables: {
+        Row: {
+          aprobado_por: string | null
+          creado_por: string | null
+          created_at: string
+          descripcion: string
+          estado: Database["public"]["Enums"]["estado_asiento"]
+          fecha: string
+          id: string
+          notas: string | null
+          numero: string | null
+          referencia: string | null
+          total_debe: number | null
+          total_haber: number | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          aprobado_por?: string | null
+          creado_por?: string | null
+          created_at?: string
+          descripcion: string
+          estado?: Database["public"]["Enums"]["estado_asiento"]
+          fecha?: string
+          id?: string
+          notas?: string | null
+          numero?: string | null
+          referencia?: string | null
+          total_debe?: number | null
+          total_haber?: number | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          aprobado_por?: string | null
+          creado_por?: string | null
+          created_at?: string
+          descripcion?: string
+          estado?: Database["public"]["Enums"]["estado_asiento"]
+          fecha?: string
+          id?: string
+          notas?: string | null
+          numero?: string | null
+          referencia?: string | null
+          total_debe?: number | null
+          total_haber?: number | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asientos_contables_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       atencion_paciente: {
         Row: {
           archivos: Json | null
@@ -1888,6 +1947,66 @@ export type Database = {
         }
         Relationships: []
       }
+      cuentas_contables: {
+        Row: {
+          acepta_movimientos: boolean | null
+          activa: boolean | null
+          codigo: string
+          created_at: string
+          cuenta_padre_id: string | null
+          id: string
+          naturaleza: Database["public"]["Enums"]["naturaleza_cuenta"]
+          nivel: number | null
+          nombre: string
+          tipo: Database["public"]["Enums"]["tipo_cuenta_contable"]
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          acepta_movimientos?: boolean | null
+          activa?: boolean | null
+          codigo: string
+          created_at?: string
+          cuenta_padre_id?: string | null
+          id?: string
+          naturaleza?: Database["public"]["Enums"]["naturaleza_cuenta"]
+          nivel?: number | null
+          nombre: string
+          tipo: Database["public"]["Enums"]["tipo_cuenta_contable"]
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          acepta_movimientos?: boolean | null
+          activa?: boolean | null
+          codigo?: string
+          created_at?: string
+          cuenta_padre_id?: string | null
+          id?: string
+          naturaleza?: Database["public"]["Enums"]["naturaleza_cuenta"]
+          nivel?: number | null
+          nombre?: string
+          tipo?: Database["public"]["Enums"]["tipo_cuenta_contable"]
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cuentas_contables_cuenta_padre_id_fkey"
+            columns: ["cuenta_padre_id"]
+            isOneToOne: false
+            referencedRelation: "cuentas_contables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cuentas_contables_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       diagnosticos_auditoria: {
         Row: {
           accion: string
@@ -3121,6 +3240,51 @@ export type Database = {
             columns: ["admision_id"]
             isOneToOne: false
             referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lineas_asiento: {
+        Row: {
+          asiento_id: string
+          created_at: string
+          cuenta_id: string
+          debe: number
+          descripcion: string | null
+          haber: number
+          id: string
+        }
+        Insert: {
+          asiento_id: string
+          created_at?: string
+          cuenta_id: string
+          debe?: number
+          descripcion?: string | null
+          haber?: number
+          id?: string
+        }
+        Update: {
+          asiento_id?: string
+          created_at?: string
+          cuenta_id?: string
+          debe?: number
+          descripcion?: string | null
+          haber?: number
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lineas_asiento_asiento_id_fkey"
+            columns: ["asiento_id"]
+            isOneToOne: false
+            referencedRelation: "asientos_contables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lineas_asiento_cuenta_id_fkey"
+            columns: ["cuenta_id"]
+            isOneToOne: false
+            referencedRelation: "cuentas_contables"
             referencedColumns: ["id"]
           },
         ]
@@ -6472,6 +6636,7 @@ export type Database = {
         | "imagenes"
         | "emergencias"
         | "otro"
+      estado_asiento: "borrador" | "aprobado" | "anulado"
       estado_autorizacion:
         | "solicitada"
         | "en_revision"
@@ -6530,6 +6695,7 @@ export type Database = {
         | "postpuesta"
         | "no_realizada"
       grado_dificultad: "bajo" | "medio" | "alto"
+      naturaleza_cuenta: "deudora" | "acreedora"
       prioridad_cirugia: "electiva" | "urgente" | "emergencia"
       prioridad_espera: "normal" | "alta" | "urgente"
       prioridad_estudio_imagen: "rutina" | "urgente" | "stat"
@@ -6555,6 +6721,13 @@ export type Database = {
         | "fallecido"
         | "renuncio"
         | "cambio_ars"
+      tipo_cuenta_contable:
+        | "activo"
+        | "pasivo"
+        | "capital"
+        | "ingreso"
+        | "gasto"
+        | "costo"
       tipo_visita: "ambulatorio" | "domicilio"
       user_role:
         | "admin"
@@ -6713,6 +6886,7 @@ export const Constants = {
         "emergencias",
         "otro",
       ],
+      estado_asiento: ["borrador", "aprobado", "anulado"],
       estado_autorizacion: [
         "solicitada",
         "en_revision",
@@ -6779,6 +6953,7 @@ export const Constants = {
         "no_realizada",
       ],
       grado_dificultad: ["bajo", "medio", "alto"],
+      naturaleza_cuenta: ["deudora", "acreedora"],
       prioridad_cirugia: ["electiva", "urgente", "emergencia"],
       prioridad_espera: ["normal", "alta", "urgente"],
       prioridad_estudio_imagen: ["rutina", "urgente", "stat"],
@@ -6806,6 +6981,14 @@ export const Constants = {
         "fallecido",
         "renuncio",
         "cambio_ars",
+      ],
+      tipo_cuenta_contable: [
+        "activo",
+        "pasivo",
+        "capital",
+        "ingreso",
+        "gasto",
+        "costo",
       ],
       tipo_visita: ["ambulatorio", "domicilio"],
       user_role: [
