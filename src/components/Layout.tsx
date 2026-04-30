@@ -27,6 +27,7 @@ import {
   Route,
   Building2,
   Boxes,
+  Truck,
   Shield,
   DollarSign,
 } from "lucide-react";
