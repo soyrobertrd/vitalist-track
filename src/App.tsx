@@ -286,6 +286,10 @@ const App = () => {
                   path="/contabilidad"
                   element={session ? <Layout><Contabilidad /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route
+                  path="/nomina"
+                  element={session ? <Layout><Nomina /></Layout> : <Navigate to="/auth" />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
