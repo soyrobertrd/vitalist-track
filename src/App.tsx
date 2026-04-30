@@ -261,6 +261,10 @@ const App = () => {
                   element={session ? <Layout><DashboardBI /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="/portal-paciente" element={<PortalPaciente />} />
+                <Route
+                  path="/quirofano"
+                  element={session ? <Layout><Quirofano /></Layout> : <Navigate to="/auth" />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
