@@ -232,7 +232,7 @@ const Odontograma = () => {
 
             <TabsContent value="carta">
               <Card>
-                <CardHeader><CardTitle className="flex items-center gap-2"><Tooth className="h-5 w-5" /> Carta Dental Interactiva</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="flex items-center gap-2"><CircleDot className="h-5 w-5" /> Carta Dental Interactiva</CardTitle></CardHeader>
                 <CardContent>
                   {!selectedOdontogramaId ? (
                     <p className="text-muted-foreground text-center py-8">Seleccione o cree un odontograma para ver la carta dental.</p>
