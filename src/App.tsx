@@ -118,6 +118,10 @@ const App = () => {
                   element={session ? <Layout><Recepcion /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
+                  path="/finanzas"
+                  element={session ? <Layout><Finanzas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
                   path="/onboarding"
                   element={session ? <Onboarding /> : <Navigate to="/auth" />}
                 />
