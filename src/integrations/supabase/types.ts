@@ -3890,6 +3890,54 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_paciente_tokens: {
+        Row: {
+          activo: boolean
+          created_at: string
+          created_by: string | null
+          expires_at: string
+          id: string
+          paciente_id: string
+          token: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string
+          id?: string
+          paciente_id: string
+          token?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string
+          id?: string
+          paciente_id?: string
+          token?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_paciente_tokens_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_paciente_tokens_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profesional_especialidades: {
         Row: {
           created_at: string
@@ -4492,6 +4540,50 @@ export type Database = {
           },
           {
             foreignKeyName: "registro_llamadas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reportes_bi_guardados: {
+        Row: {
+          compartido: boolean
+          configuracion: Json
+          creado_por: string
+          created_at: string
+          descripcion: string | null
+          id: string
+          nombre: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          compartido?: boolean
+          configuracion?: Json
+          creado_por: string
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          compartido?: boolean
+          configuracion?: Json
+          creado_por?: string
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reportes_bi_guardados_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -5629,6 +5721,7 @@ export type Database = {
           workspace_id: string
         }[]
       }
+      portal_paciente_datos: { Args: { _token: string }; Returns: Json }
       registrar_acceso_ficha: {
         Args: {
           _accion?: string
