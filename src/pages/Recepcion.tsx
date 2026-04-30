@@ -118,11 +118,12 @@ export default function Recepcion() {
       </div>
 
       <Tabs defaultValue="ticket" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
           <TabsTrigger value="ticket"><ScanLine className="h-4 w-4 mr-2" />Tickets</TabsTrigger>
           <TabsTrigger value="paciente"><User className="h-4 w-4 mr-2" />Paciente</TabsTrigger>
           <TabsTrigger value="cedula"><ScanText className="h-4 w-4 mr-2" />OCR cédula</TabsTrigger>
           <TabsTrigger value="agenda"><CalendarSearch className="h-4 w-4 mr-2" />Agenda</TabsTrigger>
+          <TabsTrigger value="espera"><ClockIcon className="h-4 w-4 mr-2" />Lista Espera</TabsTrigger>
         </TabsList>
 
         {/* TICKETS */}
