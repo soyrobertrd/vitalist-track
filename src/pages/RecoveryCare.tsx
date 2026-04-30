@@ -197,6 +197,12 @@ export default function RecoveryCare() {
             </Card>
           ))}
         </TabsContent>
+
+        <TabsContent value="gestion_pacientes" className="mt-4"><VerticalPacientesTab /></TabsContent>
+        <TabsContent value="citas" className="mt-4"><VerticalCitasTab citaLabel="Citas de Recuperación" /></TabsContent>
+        <TabsContent value="personal" className="mt-4"><VerticalPersonalTab profesionalLabel="Personal de Cuidado" especialidades={["Enfermería", "Fisioterapia", "Cuidado postquirúrgico", "Masaje linfático", "Concierge médico"]} /></TabsContent>
+        <TabsContent value="facturacion" className="mt-4"><VerticalFacturacionTab /></TabsContent>
+        <TabsContent value="nomina" className="mt-4"><VerticalNominaTab /></TabsContent>
       </Tabs>
     </div>
   );
