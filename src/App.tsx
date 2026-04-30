@@ -334,6 +334,22 @@ const App = () => {
                   path="/rehabilitacion"
                   element={session ? <Layout><Rehabilitacion /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route
+                  path="/esterilizacion"
+                  element={session ? <Layout><Esterilizacion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/morgue"
+                  element={session ? <Layout><Morgue /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/mantenimiento"
+                  element={session ? <Layout><Mantenimiento /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/docencia"
+                  element={session ? <Layout><Docencia /></Layout> : <Navigate to="/auth" />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
