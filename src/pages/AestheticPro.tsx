@@ -210,6 +210,12 @@ export default function AestheticPro() {
             </Card>
           ))}
         </TabsContent>
+
+        <TabsContent value="pacientes" className="mt-4"><VerticalPacientesTab pacienteLabel="Clientes" /></TabsContent>
+        <TabsContent value="citas" className="mt-4"><VerticalCitasTab citaLabel="Citas Estéticas" /></TabsContent>
+        <TabsContent value="personal" className="mt-4"><VerticalPersonalTab profesionalLabel="Enfermeras / Terapeutas" especialidades={["Masaje linfático", "Radiofrecuencia", "Cavitación", "Limpieza facial", "Depilación láser", "Estética corporal", "Estética facial"]} /></TabsContent>
+        <TabsContent value="facturacion" className="mt-4"><VerticalFacturacionTab /></TabsContent>
+        <TabsContent value="nomina" className="mt-4"><VerticalNominaTab /></TabsContent>
       </Tabs>
     </div>
   );
