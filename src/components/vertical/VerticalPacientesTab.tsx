@@ -28,7 +28,7 @@ export default function VerticalPacientesTab({ pacienteLabel = "Pacientes" }: Pr
     queryKey: ["pacientes_vertical", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase.from("pacientes").select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre").limit(500);
+      const { data } = await (supabase.from("pacientes") as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre").limit(500);
       return data || [];
     },
   });

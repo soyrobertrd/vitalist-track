@@ -37,7 +37,7 @@ export default function VerticalFacturacionTab() {
     queryKey: ["facturas", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase.from("facturas").select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(200);
+      const { data } = await (supabase.from("facturas") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(200);
       return data || [];
     },
   });
