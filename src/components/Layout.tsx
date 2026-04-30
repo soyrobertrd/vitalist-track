@@ -34,6 +34,7 @@ import {
   Wallet,
   UserCog as UserCogIcon,
   Target,
+  Pill,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
