@@ -63,6 +63,7 @@ const PortalPaciente = lazy(() => import("./pages/PortalPaciente"));
 const Quirofano = lazy(() => import("./pages/Quirofano"));
 const Laboratorio = lazy(() => import("./pages/Laboratorio"));
 const Imagenologia = lazy(() => import("./pages/Imagenologia"));
+const Compras = lazy(() => import("./pages/Compras"));
 
 // Loading fallback component
 const PageLoader = () => (
