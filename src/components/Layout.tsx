@@ -110,6 +110,7 @@ const Layout = ({ children }: LayoutProps) => {
       label: "Reportes",
       subItems: [
         { path: "/reportes", label: "Reportes Generales" },
+        { path: "/dashboard-bi", label: "Dashboard BI" },
         { path: "/dashboard-geografico", label: "Dashboard Geográfico" },
         { path: "/reportes-programados", label: "Reportes Programados" }
       ]

@@ -58,6 +58,8 @@ const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesion
 const UciManagement = lazy(() => import("./pages/UciManagement"));
 const ChecklistRLS = lazy(() => import("./pages/ChecklistRLS"));
 const ConfiguracionAuditoria = lazy(() => import("./pages/ConfiguracionAuditoria"));
+const DashboardBI = lazy(() => import("./pages/DashboardBI"));
+const PortalPaciente = lazy(() => import("./pages/PortalPaciente"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -253,6 +255,11 @@ const App = () => {
                   path="/auditoria/configuracion"
                   element={session ? <Layout><ConfiguracionAuditoria /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route
+                  path="/dashboard-bi"
+                  element={session ? <Layout><DashboardBI /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route path="/portal-paciente" element={<PortalPaciente />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
