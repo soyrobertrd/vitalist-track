@@ -60,6 +60,7 @@ const ChecklistRLS = lazy(() => import("./pages/ChecklistRLS"));
 const ConfiguracionAuditoria = lazy(() => import("./pages/ConfiguracionAuditoria"));
 const DashboardBI = lazy(() => import("./pages/DashboardBI"));
 const PortalPaciente = lazy(() => import("./pages/PortalPaciente"));
+const Quirofano = lazy(() => import("./pages/Quirofano"));
 
 // Loading fallback component
 const PageLoader = () => (
