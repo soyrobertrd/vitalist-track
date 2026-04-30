@@ -2419,6 +2419,122 @@ export type Database = {
         }
         Relationships: []
       }
+      estudios_imagen: {
+        Row: {
+          conclusion: string | null
+          contraste: boolean | null
+          created_at: string
+          diagnostico_presuntivo: string | null
+          estado: Database["public"]["Enums"]["estado_estudio_imagen"]
+          fecha_informe: string | null
+          fecha_programada: string | null
+          fecha_realizacion: string | null
+          hallazgos: string | null
+          id: string
+          imagenes_urls: Json | null
+          impresion_diagnostica: string | null
+          indicacion_clinica: string | null
+          medico_solicitante_id: string | null
+          modalidad: string
+          notas: string | null
+          numero_orden: string | null
+          paciente_id: string
+          prioridad: Database["public"]["Enums"]["prioridad_estudio_imagen"]
+          radiologo_id: string | null
+          region_anatomica: string | null
+          sala: string | null
+          tecnico_responsable: string | null
+          tipo_estudio: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          conclusion?: string | null
+          contraste?: boolean | null
+          created_at?: string
+          diagnostico_presuntivo?: string | null
+          estado?: Database["public"]["Enums"]["estado_estudio_imagen"]
+          fecha_informe?: string | null
+          fecha_programada?: string | null
+          fecha_realizacion?: string | null
+          hallazgos?: string | null
+          id?: string
+          imagenes_urls?: Json | null
+          impresion_diagnostica?: string | null
+          indicacion_clinica?: string | null
+          medico_solicitante_id?: string | null
+          modalidad?: string
+          notas?: string | null
+          numero_orden?: string | null
+          paciente_id: string
+          prioridad?: Database["public"]["Enums"]["prioridad_estudio_imagen"]
+          radiologo_id?: string | null
+          region_anatomica?: string | null
+          sala?: string | null
+          tecnico_responsable?: string | null
+          tipo_estudio: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          conclusion?: string | null
+          contraste?: boolean | null
+          created_at?: string
+          diagnostico_presuntivo?: string | null
+          estado?: Database["public"]["Enums"]["estado_estudio_imagen"]
+          fecha_informe?: string | null
+          fecha_programada?: string | null
+          fecha_realizacion?: string | null
+          hallazgos?: string | null
+          id?: string
+          imagenes_urls?: Json | null
+          impresion_diagnostica?: string | null
+          indicacion_clinica?: string | null
+          medico_solicitante_id?: string | null
+          modalidad?: string
+          notas?: string | null
+          numero_orden?: string | null
+          paciente_id?: string
+          prioridad?: Database["public"]["Enums"]["prioridad_estudio_imagen"]
+          radiologo_id?: string | null
+          region_anatomica?: string | null
+          sala?: string | null
+          tecnico_responsable?: string | null
+          tipo_estudio?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estudios_imagen_medico_solicitante_id_fkey"
+            columns: ["medico_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estudios_imagen_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estudios_imagen_radiologo_id_fkey"
+            columns: ["radiologo_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "estudios_imagen_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       evoluciones_soap: {
         Row: {
           analisis: string | null
@@ -6192,6 +6308,12 @@ export type Database = {
         | "cancelada"
         | "suspendida"
       estado_espera: "esperando" | "asignada" | "cancelada" | "expirada"
+      estado_estudio_imagen:
+        | "solicitado"
+        | "programado"
+        | "en_proceso"
+        | "completado"
+        | "cancelado"
       estado_llamada:
         | "agendada"
         | "realizada"
@@ -6225,6 +6347,7 @@ export type Database = {
       grado_dificultad: "bajo" | "medio" | "alto"
       prioridad_cirugia: "electiva" | "urgente" | "emergencia"
       prioridad_espera: "normal" | "alta" | "urgente"
+      prioridad_estudio_imagen: "rutina" | "urgente" | "stat"
       prioridad_lab: "rutina" | "urgente" | "stat"
       resultado_seguimiento:
         | "contactado"
@@ -6422,6 +6545,13 @@ export const Constants = {
         "suspendida",
       ],
       estado_espera: ["esperando", "asignada", "cancelada", "expirada"],
+      estado_estudio_imagen: [
+        "solicitado",
+        "programado",
+        "en_proceso",
+        "completado",
+        "cancelado",
+      ],
       estado_llamada: [
         "agendada",
         "realizada",
@@ -6459,6 +6589,7 @@ export const Constants = {
       grado_dificultad: ["bajo", "medio", "alto"],
       prioridad_cirugia: ["electiva", "urgente", "emergencia"],
       prioridad_espera: ["normal", "alta", "urgente"],
+      prioridad_estudio_imagen: ["rutina", "urgente", "stat"],
       prioridad_lab: ["rutina", "urgente", "stat"],
       resultado_seguimiento: [
         "contactado",

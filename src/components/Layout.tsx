@@ -126,6 +126,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/uci", label: "UCI: infusiones / kardex" },
         { path: "/quirofano", label: "Quirófano / Cirugía" },
         { path: "/laboratorio", label: "Laboratorio" },
+        { path: "/imagenologia", label: "Imagenología" },
         { path: "/consultorios", label: "Consultorios", icon: Building2 },
       ]
     },
