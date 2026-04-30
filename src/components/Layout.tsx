@@ -169,6 +169,10 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/morgue", label: "Morgue y Patología", icon: Microscope },
         { path: "/mantenimiento", label: "Mantenimiento", icon: Wrench },
         { path: "/docencia", label: "Docencia e Investigación", icon: GraduationCap },
+        { path: "/residuos", label: "Gestión de Residuos", icon: Trash2 },
+        { path: "/seguridad-fisica", label: "Seguridad Física", icon: ShieldCheck },
+        { path: "/lavanderia", label: "Lavandería y Ropería", icon: Shirt },
+        { path: "/trabajo-social", label: "Trabajo Social", icon: Heart },
       ]
     },
     { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },
