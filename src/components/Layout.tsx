@@ -128,6 +128,7 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
     { path: "/plantillas", icon: MessageSquare, label: "Plantillas (WhatsApp/Email)", adminOnly: true },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
+    { path: "/inventario", icon: Boxes, label: "Inventario" },
     {
       path: "/hospital",
       icon: Activity,
