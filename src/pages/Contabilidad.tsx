@@ -102,7 +102,7 @@ const Contabilidad = () => {
     else { toast.success("Asiento creado"); setAsientoDialog(false); setLineas([]); setAsientoForm({ fecha: new Date().toISOString().split("T")[0], descripcion: "", referencia: "", notas: "" }); fetchAsientos(); }
   };
 
-  const updateEstadoAsiento = async (id: string, estado: string) => {
+  const updateEstadoAsiento = async (id: string, estado: "borrador" | "aprobado" | "anulado") => {
     const { error } = await supabase.from("asientos_contables").update({ estado }).eq("id", id);
     if (error) toast.error(error.message);
     else { toast.success("Estado actualizado"); fetchAsientos(); if (detalleAsiento?.id === id) setDetalleAsiento({ ...detalleAsiento, estado }); }
