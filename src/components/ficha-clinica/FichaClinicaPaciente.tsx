@@ -21,6 +21,8 @@ import { EscalasClinicasPaciente } from "@/components/ficha-clinica/EscalasClini
 import EscalasEnfermeriaManager from "@/components/EscalasEnfermeriaManager";
 import { Cie10Workbench } from "@/components/ficha-clinica/Cie10Workbench";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
+import { RecetasPaciente } from "@/components/ficha-clinica/RecetasPaciente";
+import { ConsultasEspecialidad } from "@/components/ficha-clinica/PlantillasEspecialidad";
 
 interface Props {
   pacienteId: string;
