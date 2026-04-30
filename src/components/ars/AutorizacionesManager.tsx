@@ -14,6 +14,8 @@ import { toast } from "@/hooks/use-toast";
 import { Plus, ClipboardCheck } from "lucide-react";
 import { PacienteCombobox } from "@/components/PacienteCombobox";
 import { ProfesionalCombobox } from "@/components/ProfesionalCombobox";
+import { usePacientes } from "@/hooks/usePacientes";
+import { usePersonal } from "@/hooks/usePersonal";
 import { useLocale } from "@/hooks/useLocale";
 import { resolveCurrency, formatCurrency } from "@/lib/currency";
 import { localeFromCountry } from "@/lib/dateFormat";
