@@ -28,6 +28,7 @@ import {
   Building2,
   Boxes,
   Shield,
+  DollarSign,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -97,6 +98,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/atencion-paciente", label: "Atención al Paciente", icon: Stethoscope }
       ]
     },
+    { path: "/finanzas", icon: DollarSign, label: "Finanzas", adminOnly: true },
     { path: "/personal", icon: UserCog, label: "Personal", adminOnly: true },
     { path: "/organizaciones", icon: Building2, label: "Organizaciones", adminOnly: true },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },

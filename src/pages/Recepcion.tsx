@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import {
   Search, ScanLine, User, Calendar, Clock, CheckCircle2, XCircle, UserCheck,
-  RotateCcw, AlertTriangle, IdCard, CalendarSearch, FileText, ScanText,
+  RotateCcw, AlertTriangle, IdCard, CalendarSearch, FileText, ScanText, ClockIcon,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { differenceInMinutes, format } from "date-fns";
@@ -19,6 +19,7 @@ import { MobilePageHeader } from "@/components/MobilePageHeader";
 import { OcrCedulaScanner } from "@/components/recepcion/OcrCedulaScanner";
 import { BuscarPacienteRecepcion } from "@/components/recepcion/BuscarPacienteRecepcion";
 import { DisponibilidadDiaTanda } from "@/components/recepcion/DisponibilidadDiaTanda";
+import { ListaEspera } from "@/components/ListaEspera";
 
 export default function Recepcion() {
   const { buscarPorCodigo, buscarPorToken, marcarLlegada, marcarAtendido, marcarNoShow } = useCitaTickets();
@@ -117,11 +118,12 @@ export default function Recepcion() {
       </div>
 
       <Tabs defaultValue="ticket" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
           <TabsTrigger value="ticket"><ScanLine className="h-4 w-4 mr-2" />Tickets</TabsTrigger>
           <TabsTrigger value="paciente"><User className="h-4 w-4 mr-2" />Paciente</TabsTrigger>
           <TabsTrigger value="cedula"><ScanText className="h-4 w-4 mr-2" />OCR cédula</TabsTrigger>
           <TabsTrigger value="agenda"><CalendarSearch className="h-4 w-4 mr-2" />Agenda</TabsTrigger>
+          <TabsTrigger value="espera"><ClockIcon className="h-4 w-4 mr-2" />Lista Espera</TabsTrigger>
         </TabsList>
 
         {/* TICKETS */}
@@ -303,6 +305,11 @@ export default function Recepcion() {
         {/* AGENDA */}
         <TabsContent value="agenda" className="pt-4">
           <DisponibilidadDiaTanda />
+        </TabsContent>
+
+        {/* LISTA DE ESPERA */}
+        <TabsContent value="espera" className="pt-4">
+          <ListaEspera />
         </TabsContent>
       </Tabs>
     </div>

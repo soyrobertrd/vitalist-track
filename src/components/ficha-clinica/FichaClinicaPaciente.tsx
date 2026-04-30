@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2, Receipt, FileText, Stethoscope, Paperclip, History, Video, Pill, LayoutTemplate } from "lucide-react";
 import { toast } from "sonner";
 import { CobrosPaciente } from "@/components/cobros/CobrosPaciente";
+import { NotasCredito } from "@/components/cobros/NotasCredito";
 import { EvolucionesSOAP } from "@/components/ficha-clinica/EvolucionesSOAP";
 import { DiagnosticosPaciente } from "@/components/ficha-clinica/DiagnosticosPaciente";
 import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinicos";
@@ -420,8 +421,9 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
           </TabsContent>
 
           {/* COBROS */}
-          <TabsContent value="cobros" className="space-y-2 mt-4">
+          <TabsContent value="cobros" className="space-y-4 mt-4">
             <CobrosPaciente pacienteId={pacienteId} />
+            <NotasCredito pacienteId={pacienteId} />
           </TabsContent>
 
           {/* TELEMEDICINA */}
