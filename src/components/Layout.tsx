@@ -33,6 +33,7 @@ import {
   DollarSign,
   Wallet,
   UserCog as UserCogIcon,
+  Target,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -129,6 +130,7 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/plantillas", icon: MessageSquare, label: "Plantillas (WhatsApp/Email)", adminOnly: true },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
     { path: "/inventario", icon: Boxes, label: "Inventario" },
+    { path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true },
     {
       path: "/hospital",
       icon: Activity,
