@@ -306,6 +306,11 @@ export default function Recepcion() {
         <TabsContent value="agenda" className="pt-4">
           <DisponibilidadDiaTanda />
         </TabsContent>
+
+        {/* LISTA DE ESPERA */}
+        <TabsContent value="espera" className="pt-4">
+          <ListaEspera />
+        </TabsContent>
       </Tabs>
     </div>
   );
