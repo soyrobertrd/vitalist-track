@@ -28,6 +28,7 @@ import {
   Building2,
   Boxes,
   Shield,
+  DollarSign,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
