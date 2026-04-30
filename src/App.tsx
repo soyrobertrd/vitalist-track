@@ -78,6 +78,10 @@ const Esterilizacion = lazy(() => import("./pages/Esterilizacion"));
 const Morgue = lazy(() => import("./pages/Morgue"));
 const Mantenimiento = lazy(() => import("./pages/Mantenimiento"));
 const Docencia = lazy(() => import("./pages/Docencia"));
+const Residuos = lazy(() => import("./pages/Residuos"));
+const SeguridadFisica = lazy(() => import("./pages/SeguridadFisica"));
+const Lavanderia = lazy(() => import("./pages/Lavanderia"));
+const TrabajoSocial = lazy(() => import("./pages/TrabajoSocial"));
 
 // Loading fallback component
 const PageLoader = () => (
