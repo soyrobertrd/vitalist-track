@@ -163,11 +163,11 @@ const Imagenologia = () => {
             <div className="space-y-4">
               <div>
                 <Label>Paciente *</Label>
-                <PacienteCombobox value={form.paciente_id} onChange={v => setForm(f => ({ ...f, paciente_id: v }))} />
+                <PacienteCombobox value={form.paciente_id} onValueChange={v => setForm(f => ({ ...f, paciente_id: v }))} />
               </div>
               <div>
                 <Label>Médico Solicitante</Label>
-                <ProfesionalCombobox value={form.medico_solicitante_id} onChange={v => setForm(f => ({ ...f, medico_solicitante_id: v }))} />
+                <ProfesionalCombobox value={form.medico_solicitante_id} onValueChange={v => setForm(f => ({ ...f, medico_solicitante_id: v }))} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
