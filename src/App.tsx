@@ -65,6 +65,7 @@ const Laboratorio = lazy(() => import("./pages/Laboratorio"));
 const Imagenologia = lazy(() => import("./pages/Imagenologia"));
 const Compras = lazy(() => import("./pages/Compras"));
 const Contabilidad = lazy(() => import("./pages/Contabilidad"));
+const Nomina = lazy(() => import("./pages/Nomina"));
 
 // Loading fallback component
 const PageLoader = () => (
