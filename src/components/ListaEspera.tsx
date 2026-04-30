@@ -63,7 +63,7 @@ export function ListaEspera() {
 
     if (currentWorkspace) q = q.eq("workspace_id", currentWorkspace.id);
     if (activeSucursalId) q = q.eq("sucursal_id", activeSucursalId);
-    if (filtroEstado !== "todos") q = q.eq("estado", filtroEstado);
+    if (filtroEstado !== "todos") q = q.eq("estado", filtroEstado as any);
 
     const { data } = await q;
     setItems((data || []) as unknown as ItemEspera[]);
