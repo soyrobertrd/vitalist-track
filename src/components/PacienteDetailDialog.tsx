@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { NotificacionPlanAccion } from "@/components/NotificacionPlanAccion";
 import { PatientTimeline } from "@/components/PatientTimeline";
 import { FichaClinicaPaciente } from "@/components/ficha-clinica/FichaClinicaPaciente";
+import { GenerarTokenPortal } from "@/components/GenerarTokenPortal";
 
 interface PacienteDetailDialogProps {
   pacienteId: string | null;
@@ -68,6 +69,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
             <User className="h-6 w-6" />
             {paciente.nombre} {paciente.apellido}
           </DialogTitle>
+          <GenerarTokenPortal pacienteId={pacienteId!} pacienteNombre={`${paciente.nombre} ${paciente.apellido}`} />
         </DialogHeader>
 
         <NotificacionPlanAccion pacienteId={pacienteId || ''} />
