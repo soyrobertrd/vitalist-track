@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Settings, Users, Shield, Mail, FileText, 
-  BarChart, Lock, Palette, Database, Workflow, Plus, CalendarDays, Key, History
+  BarChart, Lock, Palette, Database, Workflow, Plus, CalendarDays, Key, History, LayoutTemplate
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -21,6 +21,7 @@ import { DiasNoLaborablesCalendar } from "@/components/DiasNoLaborablesCalendar"
 import { ModulePermissionsManager } from "@/components/ModulePermissionsManager";
 import { AuditoriaCambiosViewer } from "@/components/AuditoriaCambiosViewer";
 import { WorkspaceLocaleEditor } from "@/components/WorkspaceLocaleEditor";
+import { PlantillasEspecialidadAdmin } from "@/components/ficha-clinica/PlantillasEspecialidad";
 
 const ConfiguracionAdmin = () => {
   const navigate = useNavigate();
@@ -318,6 +319,10 @@ const ConfiguracionAdmin = () => {
           <TabsTrigger value="auditoria">
             <History className="mr-2 h-4 w-4" />
             Auditoría
+          </TabsTrigger>
+          <TabsTrigger value="especialidades">
+            <LayoutTemplate className="mr-2 h-4 w-4" />
+            Especialidades
           </TabsTrigger>
         </TabsList>
 
@@ -818,6 +823,11 @@ const ConfiguracionAdmin = () => {
         <TabsContent value="auditoria">
           <GlassCard className="p-6">
             <AuditoriaCambiosViewer />
+          </GlassCard>
+        </TabsContent>
+        <TabsContent value="especialidades">
+          <GlassCard className="p-6">
+            <PlantillasEspecialidadAdmin />
           </GlassCard>
         </TabsContent>
       </Tabs>

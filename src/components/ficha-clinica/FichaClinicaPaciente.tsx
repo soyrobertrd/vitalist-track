@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2, Receipt, FileText, Stethoscope, Paperclip, History, Video } from "lucide-react";
+import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2, Receipt, FileText, Stethoscope, Paperclip, History, Video, Pill, LayoutTemplate } from "lucide-react";
 import { toast } from "sonner";
 import { CobrosPaciente } from "@/components/cobros/CobrosPaciente";
 import { EvolucionesSOAP } from "@/components/ficha-clinica/EvolucionesSOAP";
@@ -21,6 +21,8 @@ import { EscalasClinicasPaciente } from "@/components/ficha-clinica/EscalasClini
 import EscalasEnfermeriaManager from "@/components/EscalasEnfermeriaManager";
 import { Cie10Workbench } from "@/components/ficha-clinica/Cie10Workbench";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
+import { RecetasPaciente } from "@/components/ficha-clinica/RecetasPaciente";
+import { ConsultasEspecialidad } from "@/components/ficha-clinica/PlantillasEspecialidad";
 
 interface Props {
   pacienteId: string;
@@ -260,7 +262,23 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
               <ClipboardList className="h-4 w-4" />
               Enfermería
             </TabsTrigger>
+            <TabsTrigger value="recetas" className="flex items-center gap-1.5">
+              <Pill className="h-4 w-4" />
+              Recetas
+            </TabsTrigger>
+            <TabsTrigger value="consultas_esp" className="flex items-center gap-1.5">
+              <LayoutTemplate className="h-4 w-4" />
+              Consultas Esp.
+            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="recetas" className="mt-4">
+            <RecetasPaciente pacienteId={pacienteId} />
+          </TabsContent>
+
+          <TabsContent value="consultas_esp" className="mt-4">
+            <ConsultasEspecialidad pacienteId={pacienteId} />
+          </TabsContent>
 
           <TabsContent value="escalas" className="mt-4">
             <EscalasClinicasPaciente pacienteId={pacienteId} />
