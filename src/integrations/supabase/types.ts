@@ -1107,6 +1107,81 @@ export type Database = {
           },
         ]
       }
+      consultas_especialidad: {
+        Row: {
+          created_at: string
+          datos_json: Json
+          especialidad: Database["public"]["Enums"]["especialidad_medica"]
+          id: string
+          paciente_id: string
+          plantilla_id: string | null
+          profesional_id: string
+          updated_at: string
+          visita_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          datos_json?: Json
+          especialidad: Database["public"]["Enums"]["especialidad_medica"]
+          id?: string
+          paciente_id: string
+          plantilla_id?: string | null
+          profesional_id: string
+          updated_at?: string
+          visita_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          datos_json?: Json
+          especialidad?: Database["public"]["Enums"]["especialidad_medica"]
+          id?: string
+          paciente_id?: string
+          plantilla_id?: string | null
+          profesional_id?: string
+          updated_at?: string
+          visita_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultas_especialidad_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_especialidad_plantilla_id_fkey"
+            columns: ["plantilla_id"]
+            isOneToOne: false
+            referencedRelation: "plantillas_especialidad"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_especialidad_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_especialidad_visita_id_fkey"
+            columns: ["visita_id"]
+            isOneToOne: false
+            referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_especialidad_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consultorio_asignaciones: {
         Row: {
           activo: boolean
@@ -3201,6 +3276,53 @@ export type Database = {
           },
         ]
       }
+      plantillas_especialidad: {
+        Row: {
+          activo: boolean
+          campos_json: Json
+          created_at: string
+          created_by: string | null
+          descripcion: string | null
+          especialidad: Database["public"]["Enums"]["especialidad_medica"]
+          id: string
+          nombre: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean
+          campos_json?: Json
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          especialidad: Database["public"]["Enums"]["especialidad_medica"]
+          id?: string
+          nombre: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean
+          campos_json?: Json
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          especialidad?: Database["public"]["Enums"]["especialidad_medica"]
+          id?: string
+          nombre?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plantillas_especialidad_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plantillas_whatsapp: {
         Row: {
           activo: boolean
@@ -3471,6 +3593,143 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      recetas: {
+        Row: {
+          created_at: string
+          diagnostico_texto: string | null
+          estado: Database["public"]["Enums"]["estado_receta"]
+          fecha_emision: string
+          id: string
+          indicaciones_generales: string | null
+          paciente_id: string
+          profesional_id: string
+          sucursal_id: string | null
+          updated_at: string
+          vigencia_dias: number
+          visita_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          diagnostico_texto?: string | null
+          estado?: Database["public"]["Enums"]["estado_receta"]
+          fecha_emision?: string
+          id?: string
+          indicaciones_generales?: string | null
+          paciente_id: string
+          profesional_id: string
+          sucursal_id?: string | null
+          updated_at?: string
+          vigencia_dias?: number
+          visita_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          diagnostico_texto?: string | null
+          estado?: Database["public"]["Enums"]["estado_receta"]
+          fecha_emision?: string
+          id?: string
+          indicaciones_generales?: string | null
+          paciente_id?: string
+          profesional_id?: string
+          sucursal_id?: string | null
+          updated_at?: string
+          vigencia_dias?: number
+          visita_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recetas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recetas_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recetas_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recetas_visita_id_fkey"
+            columns: ["visita_id"]
+            isOneToOne: false
+            referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recetas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recetas_items: {
+        Row: {
+          cantidad: string | null
+          created_at: string
+          dosis: string | null
+          duracion: string | null
+          frecuencia: string | null
+          id: string
+          indicaciones: string | null
+          medicamento: string
+          orden: number
+          presentacion: string | null
+          receta_id: string
+          via_administracion: string | null
+        }
+        Insert: {
+          cantidad?: string | null
+          created_at?: string
+          dosis?: string | null
+          duracion?: string | null
+          frecuencia?: string | null
+          id?: string
+          indicaciones?: string | null
+          medicamento: string
+          orden?: number
+          presentacion?: string | null
+          receta_id: string
+          via_administracion?: string | null
+        }
+        Update: {
+          cantidad?: string | null
+          created_at?: string
+          dosis?: string | null
+          duracion?: string | null
+          frecuencia?: string | null
+          id?: string
+          indicaciones?: string | null
+          medicamento?: string
+          orden?: number
+          presentacion?: string | null
+          receta_id?: string
+          via_administracion?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recetas_items_receta_id_fkey"
+            columns: ["receta_id"]
+            isOneToOne: false
+            referencedRelation: "recetas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       registro_llamadas: {
         Row: {
@@ -4682,6 +4941,18 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "coordinador" | "medico" | "enfermera" | "recepcion"
+      especialidad_medica:
+        | "medicina_general"
+        | "pediatria"
+        | "ginecologia"
+        | "cardiologia"
+        | "dermatologia"
+        | "odontologia"
+        | "psicologia"
+        | "laboratorio"
+        | "imagenes"
+        | "emergencias"
+        | "otro"
       estado_llamada:
         | "agendada"
         | "realizada"
@@ -4690,6 +4961,7 @@ export type Database = {
         | "pendiente"
         | "reagendada"
         | "no_contesta"
+      estado_receta: "activa" | "dispensada" | "vencida" | "cancelada"
       estado_visita:
         | "pendiente"
         | "realizada"
@@ -4857,6 +5129,19 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "coordinador", "medico", "enfermera", "recepcion"],
+      especialidad_medica: [
+        "medicina_general",
+        "pediatria",
+        "ginecologia",
+        "cardiologia",
+        "dermatologia",
+        "odontologia",
+        "psicologia",
+        "laboratorio",
+        "imagenes",
+        "emergencias",
+        "otro",
+      ],
       estado_llamada: [
         "agendada",
         "realizada",
@@ -4866,6 +5151,7 @@ export const Constants = {
         "reagendada",
         "no_contesta",
       ],
+      estado_receta: ["activa", "dispensada", "vencida", "cancelada"],
       estado_visita: [
         "pendiente",
         "realizada",
