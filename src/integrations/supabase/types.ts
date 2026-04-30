@@ -2111,6 +2111,44 @@ export type Database = {
           },
         ]
       }
+      despachos_farmacia: {
+        Row: {
+          created_at: string
+          farmaceutico: string | null
+          fecha_despacho: string
+          id: string
+          numero: string | null
+          observaciones: string | null
+          receta_id: string
+        }
+        Insert: {
+          created_at?: string
+          farmaceutico?: string | null
+          fecha_despacho?: string
+          id?: string
+          numero?: string | null
+          observaciones?: string | null
+          receta_id: string
+        }
+        Update: {
+          created_at?: string
+          farmaceutico?: string | null
+          fecha_despacho?: string
+          id?: string
+          numero?: string | null
+          observaciones?: string | null
+          receta_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "despachos_farmacia_receta_id_fkey"
+            columns: ["receta_id"]
+            isOneToOne: false
+            referencedRelation: "recetas_farmacia"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       detalle_nomina: {
         Row: {
           bono: number
@@ -3539,6 +3577,54 @@ export type Database = {
           },
         ]
       }
+      items_despacho: {
+        Row: {
+          cantidad_despachada: number
+          created_at: string
+          despacho_id: string
+          fecha_vencimiento: string | null
+          id: string
+          item_receta_id: string | null
+          lote: string | null
+          medicamento: string
+        }
+        Insert: {
+          cantidad_despachada?: number
+          created_at?: string
+          despacho_id: string
+          fecha_vencimiento?: string | null
+          id?: string
+          item_receta_id?: string | null
+          lote?: string | null
+          medicamento: string
+        }
+        Update: {
+          cantidad_despachada?: number
+          created_at?: string
+          despacho_id?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          item_receta_id?: string | null
+          lote?: string | null
+          medicamento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "items_despacho_despacho_id_fkey"
+            columns: ["despacho_id"]
+            isOneToOne: false
+            referencedRelation: "despachos_farmacia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "items_despacho_item_receta_id_fkey"
+            columns: ["item_receta_id"]
+            isOneToOne: false
+            referencedRelation: "items_receta"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       items_orden_compra: {
         Row: {
           cantidad_recibida: number | null
@@ -3592,6 +3678,56 @@ export type Database = {
             columns: ["orden_id"]
             isOneToOne: false
             referencedRelation: "ordenes_compra"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      items_receta: {
+        Row: {
+          cantidad: number
+          created_at: string
+          despachado: boolean
+          dosis: string | null
+          duracion: string | null
+          frecuencia: string | null
+          id: string
+          medicamento: string
+          notas: string | null
+          presentacion: string | null
+          receta_id: string
+        }
+        Insert: {
+          cantidad?: number
+          created_at?: string
+          despachado?: boolean
+          dosis?: string | null
+          duracion?: string | null
+          frecuencia?: string | null
+          id?: string
+          medicamento: string
+          notas?: string | null
+          presentacion?: string | null
+          receta_id: string
+        }
+        Update: {
+          cantidad?: number
+          created_at?: string
+          despachado?: boolean
+          dosis?: string | null
+          duracion?: string | null
+          frecuencia?: string | null
+          id?: string
+          medicamento?: string
+          notas?: string | null
+          presentacion?: string | null
+          receta_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "items_receta_receta_id_fkey"
+            columns: ["receta_id"]
+            isOneToOne: false
+            referencedRelation: "recetas_farmacia"
             referencedColumns: ["id"]
           },
         ]
@@ -3906,6 +4042,54 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      movimientos_stock_farmacia: {
+        Row: {
+          cantidad: number
+          created_at: string
+          id: string
+          motivo: string | null
+          referencia_despacho_id: string | null
+          stock_id: string
+          tipo: string
+          usuario_id: string | null
+        }
+        Insert: {
+          cantidad: number
+          created_at?: string
+          id?: string
+          motivo?: string | null
+          referencia_despacho_id?: string | null
+          stock_id: string
+          tipo: string
+          usuario_id?: string | null
+        }
+        Update: {
+          cantidad?: number
+          created_at?: string
+          id?: string
+          motivo?: string | null
+          referencia_despacho_id?: string | null
+          stock_id?: string
+          tipo?: string
+          usuario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimientos_stock_farmacia_referencia_despacho_id_fkey"
+            columns: ["referencia_despacho_id"]
+            isOneToOne: false
+            referencedRelation: "despachos_farmacia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimientos_stock_farmacia_stock_id_fkey"
+            columns: ["stock_id"]
+            isOneToOne: false
+            referencedRelation: "stock_farmacia"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notas_credito: {
         Row: {
@@ -5697,6 +5881,80 @@ export type Database = {
           },
         ]
       }
+      recetas_farmacia: {
+        Row: {
+          created_at: string
+          diagnostico: string | null
+          estado: string
+          fecha_emision: string
+          id: string
+          notas: string | null
+          numero: string | null
+          paciente_id: string
+          prescriptor_id: string | null
+          sucursal_id: string | null
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          diagnostico?: string | null
+          estado?: string
+          fecha_emision?: string
+          id?: string
+          notas?: string | null
+          numero?: string | null
+          paciente_id: string
+          prescriptor_id?: string | null
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          diagnostico?: string | null
+          estado?: string
+          fecha_emision?: string
+          id?: string
+          notas?: string | null
+          numero?: string | null
+          paciente_id?: string
+          prescriptor_id?: string | null
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recetas_farmacia_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recetas_farmacia_prescriptor_id_fkey"
+            columns: ["prescriptor_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recetas_farmacia_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recetas_farmacia_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recetas_items: {
         Row: {
           cantidad: string | null
@@ -6357,6 +6615,69 @@ export type Database = {
             columns: ["paciente_id"]
             isOneToOne: false
             referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_farmacia: {
+        Row: {
+          cantidad: number
+          created_at: string
+          fecha_vencimiento: string | null
+          id: string
+          lote: string | null
+          medicamento: string
+          precio_unitario: number | null
+          presentacion: string | null
+          stock_minimo: number
+          sucursal_id: string | null
+          ubicacion: string | null
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          cantidad?: number
+          created_at?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          lote?: string | null
+          medicamento: string
+          precio_unitario?: number | null
+          presentacion?: string | null
+          stock_minimo?: number
+          sucursal_id?: string | null
+          ubicacion?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          cantidad?: number
+          created_at?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          lote?: string | null
+          medicamento?: string
+          precio_unitario?: number | null
+          presentacion?: string | null
+          stock_minimo?: number
+          sucursal_id?: string | null
+          ubicacion?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_farmacia_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_farmacia_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]

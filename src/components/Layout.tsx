@@ -34,6 +34,7 @@ import {
   Wallet,
   UserCog as UserCogIcon,
   Target,
+  Pill,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -144,6 +145,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/imagenologia", label: "Imagenología" },
         { path: "/consultorios", label: "Consultorios", icon: Building2 },
         { path: "/odontograma", label: "Odontograma" },
+        { path: "/farmacia", label: "Farmacia", icon: Pill },
       ]
     },
     { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },
