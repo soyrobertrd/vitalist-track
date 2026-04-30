@@ -3243,6 +3243,82 @@ export type Database = {
           },
         ]
       }
+      ordenes_laboratorio: {
+        Row: {
+          created_at: string | null
+          diagnostico_presuntivo: string | null
+          estado: Database["public"]["Enums"]["estado_orden_lab"] | null
+          fecha_recepcion_muestra: string | null
+          fecha_resultado: string | null
+          fecha_solicitud: string | null
+          id: string
+          indicaciones: string | null
+          medico_solicitante_id: string | null
+          notas: string | null
+          numero_orden: string | null
+          paciente_id: string
+          prioridad: Database["public"]["Enums"]["prioridad_lab"] | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          diagnostico_presuntivo?: string | null
+          estado?: Database["public"]["Enums"]["estado_orden_lab"] | null
+          fecha_recepcion_muestra?: string | null
+          fecha_resultado?: string | null
+          fecha_solicitud?: string | null
+          id?: string
+          indicaciones?: string | null
+          medico_solicitante_id?: string | null
+          notas?: string | null
+          numero_orden?: string | null
+          paciente_id: string
+          prioridad?: Database["public"]["Enums"]["prioridad_lab"] | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          diagnostico_presuntivo?: string | null
+          estado?: Database["public"]["Enums"]["estado_orden_lab"] | null
+          fecha_recepcion_muestra?: string | null
+          fecha_resultado?: string | null
+          fecha_solicitud?: string | null
+          id?: string
+          indicaciones?: string | null
+          medico_solicitante_id?: string | null
+          notas?: string | null
+          numero_orden?: string | null
+          paciente_id?: string
+          prioridad?: Database["public"]["Enums"]["prioridad_lab"] | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordenes_laboratorio_medico_solicitante_id_fkey"
+            columns: ["medico_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordenes_laboratorio_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordenes_laboratorio_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pacientes: {
         Row: {
           anonimizado: boolean
@@ -3503,6 +3579,50 @@ export type Database = {
           },
           {
             foreignKeyName: "pagos_workspace_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paneles_laboratorio: {
+        Row: {
+          activo: boolean | null
+          codigo: string | null
+          created_at: string | null
+          descripcion: string | null
+          id: string
+          nombre: string
+          pruebas_incluidas: Json | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          codigo?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          pruebas_incluidas?: Json | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          codigo?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          pruebas_incluidas?: Json | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paneles_laboratorio_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -4203,6 +4323,81 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      pruebas_laboratorio: {
+        Row: {
+          anormal: boolean | null
+          categoria: string | null
+          created_at: string | null
+          critico: boolean | null
+          estado: Database["public"]["Enums"]["estado_orden_lab"] | null
+          fecha_resultado: string | null
+          id: string
+          nombre_prueba: string
+          notas: string | null
+          orden_id: string
+          rango_referencia_texto: string | null
+          realizado_por: string | null
+          resultado: string | null
+          unidad: string | null
+          updated_at: string | null
+          valor_referencia_max: number | null
+          valor_referencia_min: number | null
+        }
+        Insert: {
+          anormal?: boolean | null
+          categoria?: string | null
+          created_at?: string | null
+          critico?: boolean | null
+          estado?: Database["public"]["Enums"]["estado_orden_lab"] | null
+          fecha_resultado?: string | null
+          id?: string
+          nombre_prueba: string
+          notas?: string | null
+          orden_id: string
+          rango_referencia_texto?: string | null
+          realizado_por?: string | null
+          resultado?: string | null
+          unidad?: string | null
+          updated_at?: string | null
+          valor_referencia_max?: number | null
+          valor_referencia_min?: number | null
+        }
+        Update: {
+          anormal?: boolean | null
+          categoria?: string | null
+          created_at?: string | null
+          critico?: boolean | null
+          estado?: Database["public"]["Enums"]["estado_orden_lab"] | null
+          fecha_resultado?: string | null
+          id?: string
+          nombre_prueba?: string
+          notas?: string | null
+          orden_id?: string
+          rango_referencia_texto?: string | null
+          realizado_por?: string | null
+          resultado?: string | null
+          unidad?: string | null
+          updated_at?: string | null
+          valor_referencia_max?: number | null
+          valor_referencia_min?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pruebas_laboratorio_orden_id_fkey"
+            columns: ["orden_id"]
+            isOneToOne: false
+            referencedRelation: "ordenes_laboratorio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pruebas_laboratorio_realizado_por_fkey"
+            columns: ["realizado_por"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       public_appointment_tokens: {
         Row: {
@@ -6006,6 +6201,12 @@ export type Database = {
         | "reagendada"
         | "no_contesta"
       estado_nota_credito: "pendiente" | "aprobada" | "rechazada" | "aplicada"
+      estado_orden_lab:
+        | "pendiente"
+        | "en_proceso"
+        | "parcial"
+        | "completada"
+        | "cancelada"
       estado_receta: "activa" | "dispensada" | "vencida" | "cancelada"
       estado_reclamacion:
         | "borrador"
@@ -6024,6 +6225,7 @@ export type Database = {
       grado_dificultad: "bajo" | "medio" | "alto"
       prioridad_cirugia: "electiva" | "urgente" | "emergencia"
       prioridad_espera: "normal" | "alta" | "urgente"
+      prioridad_lab: "rutina" | "urgente" | "stat"
       resultado_seguimiento:
         | "contactado"
         | "no_contestada"
@@ -6230,6 +6432,13 @@ export const Constants = {
         "no_contesta",
       ],
       estado_nota_credito: ["pendiente", "aprobada", "rechazada", "aplicada"],
+      estado_orden_lab: [
+        "pendiente",
+        "en_proceso",
+        "parcial",
+        "completada",
+        "cancelada",
+      ],
       estado_receta: ["activa", "dispensada", "vencida", "cancelada"],
       estado_reclamacion: [
         "borrador",
@@ -6250,6 +6459,7 @@ export const Constants = {
       grado_dificultad: ["bajo", "medio", "alto"],
       prioridad_cirugia: ["electiva", "urgente", "emergencia"],
       prioridad_espera: ["normal", "alta", "urgente"],
+      prioridad_lab: ["rutina", "urgente", "stat"],
       resultado_seguimiento: [
         "contactado",
         "no_contestada",

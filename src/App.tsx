@@ -61,6 +61,7 @@ const ConfiguracionAuditoria = lazy(() => import("./pages/ConfiguracionAuditoria
 const DashboardBI = lazy(() => import("./pages/DashboardBI"));
 const PortalPaciente = lazy(() => import("./pages/PortalPaciente"));
 const Quirofano = lazy(() => import("./pages/Quirofano"));
+const Laboratorio = lazy(() => import("./pages/Laboratorio"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -264,6 +265,10 @@ const App = () => {
                 <Route
                   path="/quirofano"
                   element={session ? <Layout><Quirofano /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/laboratorio"
+                  element={session ? <Layout><Laboratorio /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
