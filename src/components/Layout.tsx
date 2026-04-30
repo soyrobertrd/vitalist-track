@@ -44,6 +44,9 @@ import {
   ShieldCheck,
   Shirt,
   Heart,
+  BedDouble,
+  Eye,
+  SmilePlus,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -173,6 +176,38 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/seguridad-fisica", label: "Seguridad Física", icon: ShieldCheck },
         { path: "/lavanderia", label: "Lavandería y Ropería", icon: Shirt },
         { path: "/trabajo-social", label: "Trabajo Social", icon: Heart },
+      ]
+    },
+    {
+      path: "/recovery-care",
+      icon: BedDouble,
+      label: "Recovery Care",
+      subItems: [
+        { path: "/recovery-care", label: "Pacientes Recovery" },
+      ]
+    },
+    {
+      path: "/aesthetic-pro",
+      icon: Sparkles,
+      label: "Aesthetic Pro",
+      subItems: [
+        { path: "/aesthetic-pro", label: "CRM & Evaluaciones" },
+      ]
+    },
+    {
+      path: "/dental-care",
+      icon: SmilePlus,
+      label: "DentalCare Pro",
+      subItems: [
+        { path: "/dental-care", label: "Planes & Ortodoncia" },
+      ]
+    },
+    {
+      path: "/vision-care",
+      icon: Eye,
+      label: "VisionCare Pro",
+      subItems: [
+        { path: "/vision-care", label: "Recetas & Óptica" },
       ]
     },
     { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },
