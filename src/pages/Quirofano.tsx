@@ -50,6 +50,8 @@ export default function Quirofano() {
   const { activeSucursalId } = useActiveSucursal();
   const [cirugias, setCirugias] = useState<any[]>([]);
   const [salas, setSalas] = useState<any[]>([]);
+  const [pacientes, setPacientes] = useState<any[]>([]);
+  const [profesionales, setProfesionales] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [salaDialogOpen, setSalaDialogOpen] = useState(false);
@@ -70,7 +72,7 @@ export default function Quirofano() {
   const fetchData = async () => {
     setLoading(true);
     const wsId = currentWorkspace!.id;
-    const [cRes, sRes] = await Promise.all([
+    const [cRes, sRes, pxRes, psRes] = await Promise.all([
       (() => {
         let q = supabase.from("cirugias").select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido), salas_operacion(nombre)")
           .eq("workspace_id", wsId).order("fecha_programada", { ascending: false });
@@ -78,9 +80,13 @@ export default function Quirofano() {
         return q;
       })(),
       supabase.from("salas_operacion").select("*").eq("workspace_id", wsId).eq("activa", true),
+      supabase.from("pacientes").select("*").eq("workspace_id", wsId).limit(500),
+      supabase.from("personal_salud").select("*").eq("workspace_id", wsId).eq("activo", true),
     ]);
     setCirugias(cRes.data || []);
     setSalas(sRes.data || []);
+    setPacientes(pxRes.data || []);
+    setProfesionales(psRes.data || []);
     setLoading(false);
   };
 
@@ -92,8 +98,20 @@ export default function Quirofano() {
     const { error } = await supabase.from("cirugias").insert({
       workspace_id: currentWorkspace!.id,
       sucursal_id: activeSucursalId || null,
-      ...form,
+      paciente_id: form.paciente_id,
+      profesional_id: form.profesional_id || null,
+      sala_id: form.sala_id || null,
+      tipo_cirugia: form.tipo_cirugia,
+      diagnostico_preop: form.diagnostico_preop || null,
+      fecha_programada: form.fecha_programada,
+      hora_inicio: form.hora_inicio || null,
+      duracion_estimada_min: form.duracion_estimada_min,
+      prioridad: form.prioridad as any,
+      anestesiologo: form.anestesiologo || null,
+      tipo_anestesia: form.tipo_anestesia || null,
+      instrumentista: form.instrumentista || null,
       costo_estimado: form.costo_estimado || 0,
+      notas_operatorias: form.notas_operatorias || null,
     });
     if (error) { toast.error(error.message); return; }
     toast.success("Cirugía programada");
@@ -178,11 +196,11 @@ export default function Quirofano() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="md:col-span-2">
                   <Label>Paciente *</Label>
-                  <PacienteCombobox value={form.paciente_id} onSelect={v => setForm(p => ({ ...p, paciente_id: v }))} />
+                  <PacienteCombobox pacientes={pacientes} value={form.paciente_id} onValueChange={v => setForm(p => ({ ...p, paciente_id: v }))} />
                 </div>
                 <div>
                   <Label>Cirujano principal</Label>
-                  <ProfesionalCombobox value={form.profesional_id} onSelect={v => setForm(p => ({ ...p, profesional_id: v }))} />
+                  <ProfesionalCombobox profesionales={profesionales} value={form.profesional_id} onValueChange={v => setForm(p => ({ ...p, profesional_id: v }))} />
                 </div>
                 <div>
                   <Label>Sala</Label>
