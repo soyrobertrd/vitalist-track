@@ -5,9 +5,14 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SmilePlus, ClipboardList, Wrench, FlaskConical } from "lucide-react";
+import { SmilePlus, ClipboardList, Wrench, FlaskConical, Users, CalendarDays, DollarSign, Calculator } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import VerticalPersonalTab from "@/components/vertical/VerticalPersonalTab";
+import VerticalCitasTab from "@/components/vertical/VerticalCitasTab";
+import VerticalFacturacionTab from "@/components/vertical/VerticalFacturacionTab";
+import VerticalNominaTab from "@/components/vertical/VerticalNominaTab";
+import VerticalPacientesTab from "@/components/vertical/VerticalPacientesTab";
 
 const estadoPlanColor: Record<string, string> = {
   borrador: "bg-muted text-muted-foreground",
@@ -91,10 +96,15 @@ export default function DentalCarePro() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList>
+        <TabsList className="flex-wrap h-auto gap-1">
           <TabsTrigger value="planes">Planes de Tratamiento</TabsTrigger>
           <TabsTrigger value="ortodoncia">Ortodoncia</TabsTrigger>
           <TabsTrigger value="laboratorio">Laboratorio</TabsTrigger>
+          <TabsTrigger value="pacientes" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Pacientes</TabsTrigger>
+          <TabsTrigger value="citas" className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> Citas</TabsTrigger>
+          <TabsTrigger value="personal" className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> Doctores</TabsTrigger>
+          <TabsTrigger value="facturacion" className="flex items-center gap-1"><DollarSign className="h-3.5 w-3.5" /> Facturación</TabsTrigger>
+          <TabsTrigger value="nomina" className="flex items-center gap-1"><Calculator className="h-3.5 w-3.5" /> Nómina</TabsTrigger>
         </TabsList>
 
         <TabsContent value="planes" className="space-y-3">
