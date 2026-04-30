@@ -68,6 +68,7 @@ const Contabilidad = lazy(() => import("./pages/Contabilidad"));
 const Nomina = lazy(() => import("./pages/Nomina"));
 const RRHH = lazy(() => import("./pages/RRHH"));
 const CRM = lazy(() => import("./pages/CRM"));
+const Odontograma = lazy(() => import("./pages/Odontograma"));
 
 // Loading fallback component
 const PageLoader = () => (
