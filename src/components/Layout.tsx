@@ -36,6 +36,10 @@ import {
   Target,
   Pill,
   CircleDot,
+  Wrench,
+  GraduationCap,
+  Microscope,
+  Sparkles,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -157,6 +161,10 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/banco-sangre", label: "Banco de Sangre" },
         { path: "/nutricion", label: "Nutrición y Dietética" },
         { path: "/rehabilitacion", label: "Rehabilitación" },
+        { path: "/esterilizacion", label: "Esterilización / CEYE", icon: Sparkles },
+        { path: "/morgue", label: "Morgue y Patología", icon: Microscope },
+        { path: "/mantenimiento", label: "Mantenimiento", icon: Wrench },
+        { path: "/docencia", label: "Docencia e Investigación", icon: GraduationCap },
       ]
     },
     { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },

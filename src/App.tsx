@@ -74,6 +74,10 @@ const Turnos = lazy(() => import("./pages/Turnos"));
 const BancoSangre = lazy(() => import("./pages/BancoSangre"));
 const Nutricion = lazy(() => import("./pages/Nutricion"));
 const Rehabilitacion = lazy(() => import("./pages/Rehabilitacion"));
+const Esterilizacion = lazy(() => import("./pages/Esterilizacion"));
+const Morgue = lazy(() => import("./pages/Morgue"));
+const Mantenimiento = lazy(() => import("./pages/Mantenimiento"));
+const Docencia = lazy(() => import("./pages/Docencia"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -329,6 +333,22 @@ const App = () => {
                 <Route
                   path="/rehabilitacion"
                   element={session ? <Layout><Rehabilitacion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/esterilizacion"
+                  element={session ? <Layout><Esterilizacion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/morgue"
+                  element={session ? <Layout><Morgue /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/mantenimiento"
+                  element={session ? <Layout><Mantenimiento /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/docencia"
+                  element={session ? <Layout><Docencia /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
