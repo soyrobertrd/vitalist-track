@@ -33,6 +33,7 @@ import {
   DollarSign,
   Wallet,
   UserCog as UserCogIcon,
+  Target,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -102,28 +103,34 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/atencion-paciente", label: "Atención al Paciente", icon: Stethoscope }
       ]
     },
-    { path: "/finanzas", icon: DollarSign, label: "Finanzas", adminOnly: true },
-    { path: "/personal", icon: UserCog, label: "Personal", adminOnly: true },
+    {
+      path: "/financiero",
+      icon: DollarSign,
+      label: "Financiero",
+      adminOnly: true,
+      subItems: [
+        { path: "/finanzas", label: "Finanzas & ARS" },
+        { path: "/contabilidad", label: "Contabilidad" },
+        { path: "/nomina", label: "Nómina" },
+        { path: "/compras", label: "Compras" },
+      ]
+    },
+    {
+      path: "/equipo",
+      icon: UserCog,
+      label: "Equipo & RRHH",
+      adminOnly: true,
+      subItems: [
+        { path: "/personal", label: "Personal de salud" },
+        { path: "/rrhh", label: "Recursos Humanos" },
+      ]
+    },
     { path: "/organizaciones", icon: Building2, label: "Organizaciones", adminOnly: true },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
     { path: "/plantillas", icon: MessageSquare, label: "Plantillas (WhatsApp/Email)", adminOnly: true },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
-    { 
-      path: "/reportes", 
-      icon: BarChart3, 
-      label: "Reportes",
-      subItems: [
-        { path: "/reportes", label: "Reportes Generales" },
-        { path: "/dashboard-bi", label: "Dashboard BI" },
-        { path: "/dashboard-geografico", label: "Dashboard Geográfico" },
-        { path: "/reportes-programados", label: "Reportes Programados" }
-      ]
-    },
     { path: "/inventario", icon: Boxes, label: "Inventario" },
-    { path: "/compras", icon: Truck, label: "Compras", adminOnly: true },
-    { path: "/contabilidad", icon: BookOpen, label: "Contabilidad", adminOnly: true },
-    { path: "/nomina", icon: Wallet, label: "Nómina", adminOnly: true },
-    { path: "/rrhh", icon: UserCogIcon, label: "RRHH", adminOnly: true },
+    { path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true },
     {
       path: "/hospital",
       icon: Activity,

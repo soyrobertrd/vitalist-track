@@ -1120,6 +1120,62 @@ export type Database = {
           },
         ]
       }
+      campanas_marketing: {
+        Row: {
+          conversiones: number | null
+          created_at: string
+          descripcion: string | null
+          estado: Database["public"]["Enums"]["estado_campana"]
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          id: string
+          leads_generados: number | null
+          nombre: string
+          presupuesto: number | null
+          tipo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          conversiones?: number | null
+          created_at?: string
+          descripcion?: string | null
+          estado?: Database["public"]["Enums"]["estado_campana"]
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          leads_generados?: number | null
+          nombre: string
+          presupuesto?: number | null
+          tipo?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          conversiones?: number | null
+          created_at?: string
+          descripcion?: string | null
+          estado?: Database["public"]["Enums"]["estado_campana"]
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          leads_generados?: number | null
+          nombre?: string
+          presupuesto?: number | null
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campanas_marketing_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cie10_codigos: {
         Row: {
           activo: boolean
@@ -3237,6 +3293,53 @@ export type Database = {
           },
         ]
       }
+      interacciones_crm: {
+        Row: {
+          created_at: string
+          descripcion: string | null
+          fecha: string
+          id: string
+          lead_id: string
+          resultado: string | null
+          siguiente_accion: string | null
+          siguiente_fecha: string | null
+          tipo: Database["public"]["Enums"]["tipo_interaccion_crm"]
+          usuario_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          descripcion?: string | null
+          fecha?: string
+          id?: string
+          lead_id: string
+          resultado?: string | null
+          siguiente_accion?: string | null
+          siguiente_fecha?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_interaccion_crm"]
+          usuario_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string | null
+          fecha?: string
+          id?: string
+          lead_id?: string
+          resultado?: string | null
+          siguiente_accion?: string | null
+          siguiente_fecha?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_interaccion_crm"]
+          usuario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interacciones_crm_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads_crm"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inventario_items: {
         Row: {
           activo: boolean
@@ -3492,6 +3595,62 @@ export type Database = {
             columns: ["admision_id"]
             isOneToOne: false
             referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads_crm: {
+        Row: {
+          asignado_a: string | null
+          created_at: string
+          email: string | null
+          estado: Database["public"]["Enums"]["estado_lead"]
+          id: string
+          nombre: string
+          notas: string | null
+          numero: string | null
+          origen: Database["public"]["Enums"]["origen_lead"]
+          telefono: string | null
+          updated_at: string
+          valor_estimado: number | null
+          workspace_id: string
+        }
+        Insert: {
+          asignado_a?: string | null
+          created_at?: string
+          email?: string | null
+          estado?: Database["public"]["Enums"]["estado_lead"]
+          id?: string
+          nombre: string
+          notas?: string | null
+          numero?: string | null
+          origen?: Database["public"]["Enums"]["origen_lead"]
+          telefono?: string | null
+          updated_at?: string
+          valor_estimado?: number | null
+          workspace_id: string
+        }
+        Update: {
+          asignado_a?: string | null
+          created_at?: string
+          email?: string | null
+          estado?: Database["public"]["Enums"]["estado_lead"]
+          id?: string
+          nombre?: string
+          notas?: string | null
+          numero?: string | null
+          origen?: Database["public"]["Enums"]["origen_lead"]
+          telefono?: string | null
+          updated_at?: string
+          valor_estimado?: number | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_crm_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -7072,6 +7231,7 @@ export type Database = {
         | "rechazada"
         | "vencida"
         | "cancelada"
+      estado_campana: "borrador" | "activa" | "pausada" | "finalizada"
       estado_cierre: "abierto" | "cerrado"
       estado_cirugia:
         | "programada"
@@ -7086,6 +7246,13 @@ export type Database = {
         | "en_proceso"
         | "completado"
         | "cancelado"
+      estado_lead:
+        | "nuevo"
+        | "contactado"
+        | "calificado"
+        | "propuesta"
+        | "ganado"
+        | "perdido"
       estado_llamada:
         | "agendada"
         | "realizada"
@@ -7131,6 +7298,7 @@ export type Database = {
         | "no_realizada"
       grado_dificultad: "bajo" | "medio" | "alto"
       naturaleza_cuenta: "deudora" | "acreedora"
+      origen_lead: "web" | "referido" | "redes" | "publicidad" | "otro"
       prioridad_cirugia: "electiva" | "urgente" | "emergencia"
       prioridad_espera: "normal" | "alta" | "urgente"
       prioridad_estudio_imagen: "rutina" | "urgente" | "stat"
@@ -7164,6 +7332,12 @@ export type Database = {
         | "ingreso"
         | "gasto"
         | "costo"
+      tipo_interaccion_crm:
+        | "llamada"
+        | "email"
+        | "reunion"
+        | "whatsapp"
+        | "nota"
       tipo_permiso_rrhh:
         | "vacaciones"
         | "licencia_medica"
@@ -7339,6 +7513,7 @@ export const Constants = {
         "vencida",
         "cancelada",
       ],
+      estado_campana: ["borrador", "activa", "pausada", "finalizada"],
       estado_cierre: ["abierto", "cerrado"],
       estado_cirugia: [
         "programada",
@@ -7354,6 +7529,14 @@ export const Constants = {
         "en_proceso",
         "completado",
         "cancelado",
+      ],
+      estado_lead: [
+        "nuevo",
+        "contactado",
+        "calificado",
+        "propuesta",
+        "ganado",
+        "perdido",
       ],
       estado_llamada: [
         "agendada",
@@ -7406,6 +7589,7 @@ export const Constants = {
       ],
       grado_dificultad: ["bajo", "medio", "alto"],
       naturaleza_cuenta: ["deudora", "acreedora"],
+      origen_lead: ["web", "referido", "redes", "publicidad", "otro"],
       prioridad_cirugia: ["electiva", "urgente", "emergencia"],
       prioridad_espera: ["normal", "alta", "urgente"],
       prioridad_estudio_imagen: ["rutina", "urgente", "stat"],
@@ -7443,6 +7627,7 @@ export const Constants = {
         "gasto",
         "costo",
       ],
+      tipo_interaccion_crm: ["llamada", "email", "reunion", "whatsapp", "nota"],
       tipo_permiso_rrhh: [
         "vacaciones",
         "licencia_medica",
