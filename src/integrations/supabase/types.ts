@@ -923,6 +923,87 @@ export type Database = {
         }
         Relationships: []
       }
+      cierres_caja: {
+        Row: {
+          cantidad_facturas: number
+          cantidad_pagos: number
+          cerrado_en: string | null
+          cerrado_por: string | null
+          created_at: string
+          estado: Database["public"]["Enums"]["estado_cierre"]
+          fecha: string
+          id: string
+          notas: string | null
+          sucursal_id: string | null
+          total_cobrado: number
+          total_devoluciones: number
+          total_efectivo: number
+          total_neto: number
+          total_otros: number
+          total_tarjeta: number
+          total_transferencia: number
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          cantidad_facturas?: number
+          cantidad_pagos?: number
+          cerrado_en?: string | null
+          cerrado_por?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_cierre"]
+          fecha: string
+          id?: string
+          notas?: string | null
+          sucursal_id?: string | null
+          total_cobrado?: number
+          total_devoluciones?: number
+          total_efectivo?: number
+          total_neto?: number
+          total_otros?: number
+          total_tarjeta?: number
+          total_transferencia?: number
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          cantidad_facturas?: number
+          cantidad_pagos?: number
+          cerrado_en?: string | null
+          cerrado_por?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_cierre"]
+          fecha?: string
+          id?: string
+          notas?: string | null
+          sucursal_id?: string | null
+          total_cobrado?: number
+          total_devoluciones?: number
+          total_efectivo?: number
+          total_neto?: number
+          total_otros?: number
+          total_tarjeta?: number
+          total_transferencia?: number
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cierres_caja_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cierres_caja_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cita_tickets: {
         Row: {
           checkin_por: string | null
@@ -2532,6 +2613,86 @@ export type Database = {
           },
         ]
       }
+      lista_espera: {
+        Row: {
+          created_at: string
+          especialidad: string | null
+          estado: Database["public"]["Enums"]["estado_espera"]
+          fecha_asignada: string | null
+          fecha_solicitud: string
+          id: string
+          motivo: string | null
+          notas: string | null
+          paciente_id: string
+          prioridad: Database["public"]["Enums"]["prioridad_espera"]
+          profesional_id: string | null
+          sucursal_id: string | null
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          especialidad?: string | null
+          estado?: Database["public"]["Enums"]["estado_espera"]
+          fecha_asignada?: string | null
+          fecha_solicitud?: string
+          id?: string
+          motivo?: string | null
+          notas?: string | null
+          paciente_id: string
+          prioridad?: Database["public"]["Enums"]["prioridad_espera"]
+          profesional_id?: string | null
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          especialidad?: string | null
+          estado?: Database["public"]["Enums"]["estado_espera"]
+          fecha_asignada?: string | null
+          fecha_solicitud?: string
+          id?: string
+          motivo?: string | null
+          notas?: string | null
+          paciente_id?: string
+          prioridad?: Database["public"]["Enums"]["prioridad_espera"]
+          profesional_id?: string | null
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lista_espera_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lista_espera_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lista_espera_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lista_espera_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       medicamentos_paciente: {
         Row: {
           cantidad_disponible: number | null
@@ -2614,6 +2775,89 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      notas_credito: {
+        Row: {
+          aprobada_por: string | null
+          creada_por: string | null
+          created_at: string
+          estado: Database["public"]["Enums"]["estado_nota_credito"]
+          factura_id: string
+          fecha_aprobacion: string | null
+          id: string
+          monto: number
+          motivo: string
+          notas: string | null
+          numero_nota: string | null
+          paciente_id: string
+          sucursal_id: string | null
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          aprobada_por?: string | null
+          creada_por?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_nota_credito"]
+          factura_id: string
+          fecha_aprobacion?: string | null
+          id?: string
+          monto: number
+          motivo: string
+          notas?: string | null
+          numero_nota?: string | null
+          paciente_id: string
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          aprobada_por?: string | null
+          creada_por?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_nota_credito"]
+          factura_id?: string
+          fecha_aprobacion?: string | null
+          id?: string
+          monto?: number
+          motivo?: string
+          notas?: string | null
+          numero_nota?: string | null
+          paciente_id?: string
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_credito_factura_id_fkey"
+            columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "facturas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_credito_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_credito_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notas_credito_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notificaciones_plan_accion: {
         Row: {
@@ -4819,6 +5063,10 @@ export type Database = {
         Args: { _dry_run?: boolean; _workspace_id?: string }
         Returns: Json
       }
+      calcular_cierre_caja: {
+        Args: { _fecha: string; _sucursal_id?: string; _workspace_id: string }
+        Returns: Json
+      }
       calcular_indicadores_llamadas: {
         Args: {
           fecha_fin?: string
@@ -4953,6 +5201,8 @@ export type Database = {
         | "imagenes"
         | "emergencias"
         | "otro"
+      estado_cierre: "abierto" | "cerrado"
+      estado_espera: "esperando" | "asignada" | "cancelada" | "expirada"
       estado_llamada:
         | "agendada"
         | "realizada"
@@ -4961,6 +5211,7 @@ export type Database = {
         | "pendiente"
         | "reagendada"
         | "no_contesta"
+      estado_nota_credito: "pendiente" | "aprobada" | "rechazada" | "aplicada"
       estado_receta: "activa" | "dispensada" | "vencida" | "cancelada"
       estado_visita:
         | "pendiente"
@@ -4969,6 +5220,7 @@ export type Database = {
         | "postpuesta"
         | "no_realizada"
       grado_dificultad: "bajo" | "medio" | "alto"
+      prioridad_espera: "normal" | "alta" | "urgente"
       resultado_seguimiento:
         | "contactado"
         | "no_contestada"
@@ -5142,6 +5394,8 @@ export const Constants = {
         "emergencias",
         "otro",
       ],
+      estado_cierre: ["abierto", "cerrado"],
+      estado_espera: ["esperando", "asignada", "cancelada", "expirada"],
       estado_llamada: [
         "agendada",
         "realizada",
@@ -5151,6 +5405,7 @@ export const Constants = {
         "reagendada",
         "no_contesta",
       ],
+      estado_nota_credito: ["pendiente", "aprobada", "rechazada", "aplicada"],
       estado_receta: ["activa", "dispensada", "vencida", "cancelada"],
       estado_visita: [
         "pendiente",
@@ -5160,6 +5415,7 @@ export const Constants = {
         "no_realizada",
       ],
       grado_dificultad: ["bajo", "medio", "alto"],
+      prioridad_espera: ["normal", "alta", "urgente"],
       resultado_seguimiento: [
         "contactado",
         "no_contestada",
