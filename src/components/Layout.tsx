@@ -44,6 +44,9 @@ import {
   ShieldCheck,
   Shirt,
   Heart,
+  BedDouble,
+  Eye,
+  SmilePlus,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
