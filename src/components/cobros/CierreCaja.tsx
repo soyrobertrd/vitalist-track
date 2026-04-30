@@ -106,7 +106,7 @@ export function CierreCaja() {
     setSaving(false);
   };
 
-  const fmt = (n: number) => formatCurrency(n, currency, locale?.pais || "DO");
+  const fmt = (n: number) => formatCurrency(n, currency, countryCode);
 
   return (
     <div className="space-y-4">
