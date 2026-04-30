@@ -56,7 +56,7 @@ export default function VerticalCitasTab({ citaLabel = "Citas", tiposCita = ["Co
     queryKey: ["profesionales_combo", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase.from("personal_salud").select("id, nombre, apellido").eq("workspace_id", wsId!).order("nombre").limit(200);
+      const { data } = await (supabase.from("personal_salud") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).order("nombre").limit(200);
       return data || [];
     },
   });
