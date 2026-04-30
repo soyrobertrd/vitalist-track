@@ -1405,6 +1405,36 @@ export type Database = {
           },
         ]
       }
+      cron_ejecuciones: {
+        Row: {
+          duracion_ms: number | null
+          ejecutado_en: string
+          error: string | null
+          exitoso: boolean
+          id: string
+          job_name: string
+          resultado: Json | null
+        }
+        Insert: {
+          duracion_ms?: number | null
+          ejecutado_en?: string
+          error?: string | null
+          exitoso?: boolean
+          id?: string
+          job_name: string
+          resultado?: Json | null
+        }
+        Update: {
+          duracion_ms?: number | null
+          ejecutado_en?: string
+          error?: string | null
+          exitoso?: boolean
+          id?: string
+          job_name?: string
+          resultado?: Json | null
+        }
+        Relationships: []
+      }
       diagnosticos_auditoria: {
         Row: {
           accion: string
@@ -3406,6 +3436,42 @@ export type Database = {
         }
         Relationships: []
       }
+      push_subscriptions: {
+        Row: {
+          activo: boolean
+          auth_key: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          activo?: boolean
+          auth_key: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          activo?: boolean
+          auth_key?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       registro_llamadas: {
         Row: {
           archivos_adjuntos: Json | null
@@ -4515,6 +4581,7 @@ export type Database = {
         Args: { _workspace_id?: string }
         Returns: number
       }
+      estadisticas_salud_sistema: { Args: never; Returns: Json }
       generar_codigo_ticket: { Args: never; Returns: string }
       generar_resumen_auditoria: {
         Args: { _periodo?: string; _workspace_id?: string }
@@ -4598,6 +4665,16 @@ export type Database = {
           _metadata?: Json
           _paciente_id: string
           _recurso: string
+        }
+        Returns: string
+      }
+      registrar_cron_ejecucion: {
+        Args: {
+          _duracion_ms?: number
+          _error?: string
+          _exitoso: boolean
+          _job: string
+          _resultado?: Json
         }
         Returns: string
       }
