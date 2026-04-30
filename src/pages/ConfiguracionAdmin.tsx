@@ -825,6 +825,11 @@ const ConfiguracionAdmin = () => {
             <AuditoriaCambiosViewer />
           </GlassCard>
         </TabsContent>
+        <TabsContent value="especialidades">
+          <GlassCard className="p-6">
+            <PlantillasEspecialidadAdmin />
+          </GlassCard>
+        </TabsContent>
       </Tabs>
     </div>
   );
