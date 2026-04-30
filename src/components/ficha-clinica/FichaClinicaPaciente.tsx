@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { AlertTriangle, ClipboardList, ShieldCheck, Plus, Pencil, Trash2, Receipt, FileText, Stethoscope, Paperclip, History, Video, Pill, LayoutTemplate } from "lucide-react";
 import { toast } from "sonner";
 import { CobrosPaciente } from "@/components/cobros/CobrosPaciente";
+import { NotasCredito } from "@/components/cobros/NotasCredito";
 import { EvolucionesSOAP } from "@/components/ficha-clinica/EvolucionesSOAP";
 import { DiagnosticosPaciente } from "@/components/ficha-clinica/DiagnosticosPaciente";
 import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinicos";
