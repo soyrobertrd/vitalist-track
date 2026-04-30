@@ -40,6 +40,10 @@ import {
   GraduationCap,
   Microscope,
   Sparkles,
+  Trash2,
+  ShieldCheck,
+  Shirt,
+  Heart,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
