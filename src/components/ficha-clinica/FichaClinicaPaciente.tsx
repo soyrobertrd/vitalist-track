@@ -262,7 +262,23 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
               <ClipboardList className="h-4 w-4" />
               Enfermería
             </TabsTrigger>
+            <TabsTrigger value="recetas" className="flex items-center gap-1.5">
+              <Pill className="h-4 w-4" />
+              Recetas
+            </TabsTrigger>
+            <TabsTrigger value="consultas_esp" className="flex items-center gap-1.5">
+              <LayoutTemplate className="h-4 w-4" />
+              Consultas Esp.
+            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="recetas" className="mt-4">
+            <RecetasPaciente pacienteId={pacienteId} />
+          </TabsContent>
+
+          <TabsContent value="consultas_esp" className="mt-4">
+            <ConsultasEspecialidad pacienteId={pacienteId} />
+          </TabsContent>
 
           <TabsContent value="escalas" className="mt-4">
             <EscalasClinicasPaciente pacienteId={pacienteId} />
