@@ -38,6 +38,8 @@ const ESTADOS_COLOR: Record<string, string> = {
 
 const Imagenologia = () => {
   const { currentWorkspace } = useWorkspace();
+  const { pacientes: listaPacientes } = usePacientes();
+  const { personal: listaPersonal } = usePersonal();
   const [estudios, setEstudios] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
