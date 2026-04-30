@@ -28,6 +28,7 @@ import {
   Building2,
   Boxes,
   Truck,
+  BookOpen,
   Shield,
   DollarSign,
 } from "lucide-react";
