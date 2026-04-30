@@ -402,6 +402,59 @@ export type Database = {
           },
         ]
       }
+      aseguradoras: {
+        Row: {
+          activa: boolean
+          codigo: string | null
+          created_at: string
+          direccion: string | null
+          email: string | null
+          id: string
+          nombre: string
+          notas: string | null
+          rnc: string | null
+          telefono: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activa?: boolean
+          codigo?: string | null
+          created_at?: string
+          direccion?: string | null
+          email?: string | null
+          id?: string
+          nombre: string
+          notas?: string | null
+          rnc?: string | null
+          telefono?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activa?: boolean
+          codigo?: string | null
+          created_at?: string
+          direccion?: string | null
+          email?: string | null
+          id?: string
+          nombre?: string
+          notas?: string | null
+          rnc?: string | null
+          telefono?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "aseguradoras_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       atencion_paciente: {
         Row: {
           archivos: Json | null
@@ -832,6 +885,121 @@ export type Database = {
           },
           {
             foreignKeyName: "automatizaciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      autorizaciones_medicas: {
+        Row: {
+          aseguradora_id: string
+          codigo_procedimiento: string | null
+          created_at: string
+          diagnostico_cie10: string | null
+          estado: Database["public"]["Enums"]["estado_autorizacion"]
+          factura_id: string | null
+          fecha_respuesta: string | null
+          fecha_solicitud: string
+          fecha_vencimiento: string | null
+          id: string
+          medico_solicitante: string | null
+          monto_autorizado: number | null
+          monto_solicitado: number | null
+          motivo_rechazo: string | null
+          notas: string | null
+          numero_autorizacion: string | null
+          paciente_id: string
+          plan_seguro_id: string | null
+          procedimiento: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          aseguradora_id: string
+          codigo_procedimiento?: string | null
+          created_at?: string
+          diagnostico_cie10?: string | null
+          estado?: Database["public"]["Enums"]["estado_autorizacion"]
+          factura_id?: string | null
+          fecha_respuesta?: string | null
+          fecha_solicitud?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          medico_solicitante?: string | null
+          monto_autorizado?: number | null
+          monto_solicitado?: number | null
+          motivo_rechazo?: string | null
+          notas?: string | null
+          numero_autorizacion?: string | null
+          paciente_id: string
+          plan_seguro_id?: string | null
+          procedimiento: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          aseguradora_id?: string
+          codigo_procedimiento?: string | null
+          created_at?: string
+          diagnostico_cie10?: string | null
+          estado?: Database["public"]["Enums"]["estado_autorizacion"]
+          factura_id?: string | null
+          fecha_respuesta?: string | null
+          fecha_solicitud?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          medico_solicitante?: string | null
+          monto_autorizado?: number | null
+          monto_solicitado?: number | null
+          motivo_rechazo?: string | null
+          notas?: string | null
+          numero_autorizacion?: string | null
+          paciente_id?: string
+          plan_seguro_id?: string | null
+          procedimiento?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "autorizaciones_medicas_aseguradora_id_fkey"
+            columns: ["aseguradora_id"]
+            isOneToOne: false
+            referencedRelation: "aseguradoras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autorizaciones_medicas_factura_id_fkey"
+            columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "facturas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autorizaciones_medicas_medico_solicitante_fkey"
+            columns: ["medico_solicitante"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autorizaciones_medicas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autorizaciones_medicas_plan_seguro_id_fkey"
+            columns: ["plan_seguro_id"]
+            isOneToOne: false
+            referencedRelation: "planes_seguro"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autorizaciones_medicas_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -3464,6 +3632,66 @@ export type Database = {
         }
         Relationships: []
       }
+      planes_seguro: {
+        Row: {
+          activo: boolean
+          aseguradora_id: string
+          cobertura_porcentaje: number | null
+          codigo: string | null
+          copago: number | null
+          created_at: string
+          deducible: number | null
+          id: string
+          nombre: string
+          notas: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          aseguradora_id: string
+          cobertura_porcentaje?: number | null
+          codigo?: string | null
+          copago?: number | null
+          created_at?: string
+          deducible?: number | null
+          id?: string
+          nombre: string
+          notas?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          aseguradora_id?: string
+          cobertura_porcentaje?: number | null
+          codigo?: string | null
+          copago?: number | null
+          created_at?: string
+          deducible?: number | null
+          id?: string
+          nombre?: string
+          notas?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planes_seguro_aseguradora_id_fkey"
+            columns: ["aseguradora_id"]
+            isOneToOne: false
+            referencedRelation: "aseguradoras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planes_seguro_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plantillas_correo: {
         Row: {
           activo: boolean | null
@@ -3971,6 +4199,171 @@ export type Database = {
             columns: ["receta_id"]
             isOneToOne: false
             referencedRelation: "recetas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reclamaciones_ars: {
+        Row: {
+          aseguradora_id: string
+          cantidad_casos: number
+          created_at: string
+          enviado_por: string | null
+          estado: Database["public"]["Enums"]["estado_reclamacion"]
+          fecha_envio: string | null
+          fecha_respuesta: string | null
+          id: string
+          monto_aprobado: number | null
+          monto_rechazado: number | null
+          monto_reclamado: number
+          motivo_rechazo: string | null
+          notas: string | null
+          numero_lote: string | null
+          numero_reclamacion: string | null
+          periodo_desde: string | null
+          periodo_hasta: string | null
+          sucursal_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          aseguradora_id: string
+          cantidad_casos?: number
+          created_at?: string
+          enviado_por?: string | null
+          estado?: Database["public"]["Enums"]["estado_reclamacion"]
+          fecha_envio?: string | null
+          fecha_respuesta?: string | null
+          id?: string
+          monto_aprobado?: number | null
+          monto_rechazado?: number | null
+          monto_reclamado?: number
+          motivo_rechazo?: string | null
+          notas?: string | null
+          numero_lote?: string | null
+          numero_reclamacion?: string | null
+          periodo_desde?: string | null
+          periodo_hasta?: string | null
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          aseguradora_id?: string
+          cantidad_casos?: number
+          created_at?: string
+          enviado_por?: string | null
+          estado?: Database["public"]["Enums"]["estado_reclamacion"]
+          fecha_envio?: string | null
+          fecha_respuesta?: string | null
+          id?: string
+          monto_aprobado?: number | null
+          monto_rechazado?: number | null
+          monto_reclamado?: number
+          motivo_rechazo?: string | null
+          notas?: string | null
+          numero_lote?: string | null
+          numero_reclamacion?: string | null
+          periodo_desde?: string | null
+          periodo_hasta?: string | null
+          sucursal_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reclamaciones_ars_aseguradora_id_fkey"
+            columns: ["aseguradora_id"]
+            isOneToOne: false
+            referencedRelation: "aseguradoras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reclamaciones_ars_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reclamaciones_ars_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reclamaciones_detalle: {
+        Row: {
+          autorizacion_id: string | null
+          created_at: string
+          estado: string | null
+          factura_id: string | null
+          id: string
+          monto_aprobado: number | null
+          monto_facturado: number
+          monto_reclamado: number
+          motivo_glosa: string | null
+          paciente_id: string | null
+          procedimiento: string | null
+          reclamacion_id: string
+        }
+        Insert: {
+          autorizacion_id?: string | null
+          created_at?: string
+          estado?: string | null
+          factura_id?: string | null
+          id?: string
+          monto_aprobado?: number | null
+          monto_facturado?: number
+          monto_reclamado?: number
+          motivo_glosa?: string | null
+          paciente_id?: string | null
+          procedimiento?: string | null
+          reclamacion_id: string
+        }
+        Update: {
+          autorizacion_id?: string | null
+          created_at?: string
+          estado?: string | null
+          factura_id?: string | null
+          id?: string
+          monto_aprobado?: number | null
+          monto_facturado?: number
+          monto_reclamado?: number
+          motivo_glosa?: string | null
+          paciente_id?: string | null
+          procedimiento?: string | null
+          reclamacion_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reclamaciones_detalle_autorizacion_id_fkey"
+            columns: ["autorizacion_id"]
+            isOneToOne: false
+            referencedRelation: "autorizaciones_medicas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reclamaciones_detalle_factura_id_fkey"
+            columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "facturas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reclamaciones_detalle_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reclamaciones_detalle_reclamacion_id_fkey"
+            columns: ["reclamacion_id"]
+            isOneToOne: false
+            referencedRelation: "reclamaciones_ars"
             referencedColumns: ["id"]
           },
         ]
@@ -4509,6 +4902,76 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "sucursales_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tarifarios_ars: {
+        Row: {
+          activo: boolean
+          aseguradora_id: string
+          cobertura_porcentaje: number | null
+          codigo_procedimiento: string
+          created_at: string
+          descripcion: string
+          id: string
+          plan_seguro_id: string | null
+          precio_convenio: number | null
+          precio_lista: number
+          requiere_autorizacion: boolean
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          aseguradora_id: string
+          cobertura_porcentaje?: number | null
+          codigo_procedimiento: string
+          created_at?: string
+          descripcion: string
+          id?: string
+          plan_seguro_id?: string | null
+          precio_convenio?: number | null
+          precio_lista?: number
+          requiere_autorizacion?: boolean
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          aseguradora_id?: string
+          cobertura_porcentaje?: number | null
+          codigo_procedimiento?: string
+          created_at?: string
+          descripcion?: string
+          id?: string
+          plan_seguro_id?: string | null
+          precio_convenio?: number | null
+          precio_lista?: number
+          requiere_autorizacion?: boolean
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tarifarios_ars_aseguradora_id_fkey"
+            columns: ["aseguradora_id"]
+            isOneToOne: false
+            referencedRelation: "aseguradoras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tarifarios_ars_plan_seguro_id_fkey"
+            columns: ["plan_seguro_id"]
+            isOneToOne: false
+            referencedRelation: "planes_seguro"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tarifarios_ars_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -5201,6 +5664,13 @@ export type Database = {
         | "imagenes"
         | "emergencias"
         | "otro"
+      estado_autorizacion:
+        | "solicitada"
+        | "en_revision"
+        | "aprobada"
+        | "rechazada"
+        | "vencida"
+        | "cancelada"
       estado_cierre: "abierto" | "cerrado"
       estado_espera: "esperando" | "asignada" | "cancelada" | "expirada"
       estado_llamada:
@@ -5213,6 +5683,14 @@ export type Database = {
         | "no_contesta"
       estado_nota_credito: "pendiente" | "aprobada" | "rechazada" | "aplicada"
       estado_receta: "activa" | "dispensada" | "vencida" | "cancelada"
+      estado_reclamacion:
+        | "borrador"
+        | "enviada"
+        | "en_revision"
+        | "pagada"
+        | "rechazada"
+        | "parcial"
+        | "anulada"
       estado_visita:
         | "pendiente"
         | "realizada"
@@ -5394,6 +5872,14 @@ export const Constants = {
         "emergencias",
         "otro",
       ],
+      estado_autorizacion: [
+        "solicitada",
+        "en_revision",
+        "aprobada",
+        "rechazada",
+        "vencida",
+        "cancelada",
+      ],
       estado_cierre: ["abierto", "cerrado"],
       estado_espera: ["esperando", "asignada", "cancelada", "expirada"],
       estado_llamada: [
@@ -5407,6 +5893,15 @@ export const Constants = {
       ],
       estado_nota_credito: ["pendiente", "aprobada", "rechazada", "aplicada"],
       estado_receta: ["activa", "dispensada", "vencida", "cancelada"],
+      estado_reclamacion: [
+        "borrador",
+        "enviada",
+        "en_revision",
+        "pagada",
+        "rechazada",
+        "parcial",
+        "anulada",
+      ],
       estado_visita: [
         "pendiente",
         "realizada",
