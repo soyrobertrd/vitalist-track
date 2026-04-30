@@ -3021,6 +3021,63 @@ export type Database = {
           },
         ]
       }
+      items_orden_compra: {
+        Row: {
+          cantidad_recibida: number | null
+          cantidad_solicitada: number
+          created_at: string
+          descripcion: string
+          id: string
+          item_inventario_id: string | null
+          notas: string | null
+          orden_id: string
+          precio_unitario: number | null
+          subtotal: number | null
+          unidad: string | null
+        }
+        Insert: {
+          cantidad_recibida?: number | null
+          cantidad_solicitada?: number
+          created_at?: string
+          descripcion: string
+          id?: string
+          item_inventario_id?: string | null
+          notas?: string | null
+          orden_id: string
+          precio_unitario?: number | null
+          subtotal?: number | null
+          unidad?: string | null
+        }
+        Update: {
+          cantidad_recibida?: number | null
+          cantidad_solicitada?: number
+          created_at?: string
+          descripcion?: string
+          id?: string
+          item_inventario_id?: string | null
+          notas?: string | null
+          orden_id?: string
+          precio_unitario?: number | null
+          subtotal?: number | null
+          unidad?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "items_orden_compra_item_inventario_id_fkey"
+            columns: ["item_inventario_id"]
+            isOneToOne: false
+            referencedRelation: "inventario_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "items_orden_compra_orden_id_fkey"
+            columns: ["orden_id"]
+            isOneToOne: false
+            referencedRelation: "ordenes_compra"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kardex_enfermeria: {
         Row: {
           admision_id: string
@@ -3355,6 +3412,75 @@ export type Database = {
             columns: ["visita_id"]
             isOneToOne: true
             referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ordenes_compra: {
+        Row: {
+          aprobado_por: string | null
+          created_at: string
+          estado: Database["public"]["Enums"]["estado_orden_compra"]
+          fecha_emision: string
+          fecha_estimada_entrega: string | null
+          fecha_recepcion: string | null
+          id: string
+          notas: string | null
+          numero_orden: string | null
+          prioridad: string | null
+          proveedor_id: string | null
+          solicitado_por: string | null
+          total_estimado: number | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          aprobado_por?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_orden_compra"]
+          fecha_emision?: string
+          fecha_estimada_entrega?: string | null
+          fecha_recepcion?: string | null
+          id?: string
+          notas?: string | null
+          numero_orden?: string | null
+          prioridad?: string | null
+          proveedor_id?: string | null
+          solicitado_por?: string | null
+          total_estimado?: number | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          aprobado_por?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_orden_compra"]
+          fecha_emision?: string
+          fecha_estimada_entrega?: string | null
+          fecha_recepcion?: string | null
+          id?: string
+          notas?: string | null
+          numero_orden?: string | null
+          prioridad?: string | null
+          proveedor_id?: string | null
+          solicitado_por?: string | null
+          total_estimado?: number | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordenes_compra_proveedor_id_fkey"
+            columns: ["proveedor_id"]
+            isOneToOne: false
+            referencedRelation: "proveedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordenes_compra_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -4439,6 +4565,59 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      proveedores: {
+        Row: {
+          activo: boolean | null
+          contacto_nombre: string | null
+          created_at: string
+          direccion: string | null
+          email: string | null
+          id: string
+          nombre: string
+          notas: string | null
+          rnc: string | null
+          telefono: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          contacto_nombre?: string | null
+          created_at?: string
+          direccion?: string | null
+          email?: string | null
+          id?: string
+          nombre: string
+          notas?: string | null
+          rnc?: string | null
+          telefono?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          contacto_nombre?: string | null
+          created_at?: string
+          direccion?: string | null
+          email?: string | null
+          id?: string
+          nombre?: string
+          notas?: string | null
+          rnc?: string | null
+          telefono?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proveedores_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pruebas_laboratorio: {
         Row: {
@@ -6323,6 +6502,12 @@ export type Database = {
         | "reagendada"
         | "no_contesta"
       estado_nota_credito: "pendiente" | "aprobada" | "rechazada" | "aplicada"
+      estado_orden_compra:
+        | "borrador"
+        | "enviada"
+        | "parcial"
+        | "recibida"
+        | "cancelada"
       estado_orden_lab:
         | "pendiente"
         | "en_proceso"
@@ -6562,6 +6747,13 @@ export const Constants = {
         "no_contesta",
       ],
       estado_nota_credito: ["pendiente", "aprobada", "rechazada", "aplicada"],
+      estado_orden_compra: [
+        "borrador",
+        "enviada",
+        "parcial",
+        "recibida",
+        "cancelada",
+      ],
       estado_orden_lab: [
         "pendiente",
         "en_proceso",

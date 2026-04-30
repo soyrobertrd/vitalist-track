@@ -63,6 +63,7 @@ const PortalPaciente = lazy(() => import("./pages/PortalPaciente"));
 const Quirofano = lazy(() => import("./pages/Quirofano"));
 const Laboratorio = lazy(() => import("./pages/Laboratorio"));
 const Imagenologia = lazy(() => import("./pages/Imagenologia"));
+const Compras = lazy(() => import("./pages/Compras"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -274,6 +275,10 @@ const App = () => {
                 <Route
                   path="/imagenologia"
                   element={session ? <Layout><Imagenologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/compras"
+                  element={session ? <Layout><Compras /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
