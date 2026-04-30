@@ -28,6 +28,7 @@ import {
   Building2,
   Boxes,
   Truck,
+  BookOpen,
   Shield,
   DollarSign,
 } from "lucide-react";
@@ -118,6 +119,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
     { path: "/inventario", icon: Boxes, label: "Inventario" },
     { path: "/compras", icon: Truck, label: "Compras", adminOnly: true },
+    { path: "/contabilidad", icon: BookOpen, label: "Contabilidad", adminOnly: true },
     {
       path: "/hospital",
       icon: Activity,
