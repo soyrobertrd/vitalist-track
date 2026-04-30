@@ -129,7 +129,6 @@ export default function AestheticPro() {
           <TabsTrigger value="facturacion" className="flex items-center gap-1"><DollarSign className="h-3.5 w-3.5" /> Facturación</TabsTrigger>
           <TabsTrigger value="nomina" className="flex items-center gap-1"><Calculator className="h-3.5 w-3.5" /> Nómina</TabsTrigger>
         </TabsList>
-        </TabsList>
 
         <TabsContent value="leads" className="space-y-3">
           {leads.length === 0 ? (
