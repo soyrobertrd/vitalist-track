@@ -2007,6 +2007,54 @@ export type Database = {
           },
         ]
       }
+      departamentos_rrhh: {
+        Row: {
+          activo: boolean
+          created_at: string
+          descripcion: string | null
+          id: string
+          nombre: string
+          responsable_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          responsable_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          responsable_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "departamentos_rrhh_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "empleados_nomina"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "departamentos_rrhh_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       detalle_nomina: {
         Row: {
           bono: number
@@ -2898,6 +2946,73 @@ export type Database = {
             columns: ["paciente_existente_id"]
             isOneToOne: false
             referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expedientes_empleado: {
+        Row: {
+          created_at: string
+          documentos_entregados: Json | null
+          empleado_id: string
+          evaluacion_actual: number | null
+          fecha_fin_contrato: string | null
+          fecha_inicio_contrato: string | null
+          id: string
+          notas: string | null
+          puesto_id: string | null
+          tipo_contrato: Database["public"]["Enums"]["tipo_contrato_rrhh"]
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          documentos_entregados?: Json | null
+          empleado_id: string
+          evaluacion_actual?: number | null
+          fecha_fin_contrato?: string | null
+          fecha_inicio_contrato?: string | null
+          id?: string
+          notas?: string | null
+          puesto_id?: string | null
+          tipo_contrato?: Database["public"]["Enums"]["tipo_contrato_rrhh"]
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          documentos_entregados?: Json | null
+          empleado_id?: string
+          evaluacion_actual?: number | null
+          fecha_fin_contrato?: string | null
+          fecha_inicio_contrato?: string | null
+          id?: string
+          notas?: string | null
+          puesto_id?: string | null
+          tipo_contrato?: Database["public"]["Enums"]["tipo_contrato_rrhh"]
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expedientes_empleado_empleado_id_fkey"
+            columns: ["empleado_id"]
+            isOneToOne: false
+            referencedRelation: "empleados_nomina"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expedientes_empleado_puesto_id_fkey"
+            columns: ["puesto_id"]
+            isOneToOne: false
+            referencedRelation: "puestos_rrhh"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expedientes_empleado_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -5096,6 +5211,63 @@ export type Database = {
         }
         Relationships: []
       }
+      puestos_rrhh: {
+        Row: {
+          activo: boolean
+          created_at: string
+          departamento_id: string | null
+          descripcion: string | null
+          id: string
+          nivel: string | null
+          nombre: string
+          salario_max: number | null
+          salario_min: number | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          departamento_id?: string | null
+          descripcion?: string | null
+          id?: string
+          nivel?: string | null
+          nombre: string
+          salario_max?: number | null
+          salario_min?: number | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          departamento_id?: string | null
+          descripcion?: string | null
+          id?: string
+          nivel?: string | null
+          nombre?: string
+          salario_max?: number | null
+          salario_min?: number | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "puestos_rrhh_departamento_id_fkey"
+            columns: ["departamento_id"]
+            isOneToOne: false
+            referencedRelation: "departamentos_rrhh"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "puestos_rrhh_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       push_subscriptions: {
         Row: {
           activo: boolean
@@ -6478,6 +6650,69 @@ export type Database = {
         }
         Relationships: []
       }
+      vacaciones_permisos: {
+        Row: {
+          aprobado_por: string | null
+          created_at: string
+          dias: number
+          empleado_id: string
+          estado: Database["public"]["Enums"]["estado_permiso_rrhh"]
+          fecha_fin: string
+          fecha_inicio: string
+          id: string
+          notas: string | null
+          numero: string | null
+          tipo: Database["public"]["Enums"]["tipo_permiso_rrhh"]
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          aprobado_por?: string | null
+          created_at?: string
+          dias?: number
+          empleado_id: string
+          estado?: Database["public"]["Enums"]["estado_permiso_rrhh"]
+          fecha_fin: string
+          fecha_inicio: string
+          id?: string
+          notas?: string | null
+          numero?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_permiso_rrhh"]
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          aprobado_por?: string | null
+          created_at?: string
+          dias?: number
+          empleado_id?: string
+          estado?: Database["public"]["Enums"]["estado_permiso_rrhh"]
+          fecha_fin?: string
+          fecha_inicio?: string
+          id?: string
+          notas?: string | null
+          numero?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_permiso_rrhh"]
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vacaciones_permisos_empleado_id_fkey"
+            columns: ["empleado_id"]
+            isOneToOne: false
+            referencedRelation: "empleados_nomina"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vacaciones_permisos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       visitas_profesionales: {
         Row: {
           created_at: string | null
@@ -6878,6 +7113,7 @@ export type Database = {
         | "aprobado"
         | "pagado"
         | "anulado"
+      estado_permiso_rrhh: "solicitado" | "aprobado" | "rechazado" | "cancelado"
       estado_receta: "activa" | "dispensada" | "vencida" | "cancelada"
       estado_reclamacion:
         | "borrador"
@@ -6920,6 +7156,7 @@ export type Database = {
         | "fallecido"
         | "renuncio"
         | "cambio_ars"
+      tipo_contrato_rrhh: "indefinido" | "temporal" | "pasantia" | "servicios"
       tipo_cuenta_contable:
         | "activo"
         | "pasivo"
@@ -6927,6 +7164,14 @@ export type Database = {
         | "ingreso"
         | "gasto"
         | "costo"
+      tipo_permiso_rrhh:
+        | "vacaciones"
+        | "licencia_medica"
+        | "permiso_personal"
+        | "maternidad"
+        | "paternidad"
+        | "duelo"
+        | "sin_goce"
       tipo_visita: "ambulatorio" | "domicilio"
       user_role:
         | "admin"
@@ -7141,6 +7386,7 @@ export const Constants = {
         "pagado",
         "anulado",
       ],
+      estado_permiso_rrhh: ["solicitado", "aprobado", "rechazado", "cancelado"],
       estado_receta: ["activa", "dispensada", "vencida", "cancelada"],
       estado_reclamacion: [
         "borrador",
@@ -7188,6 +7434,7 @@ export const Constants = {
         "renuncio",
         "cambio_ars",
       ],
+      tipo_contrato_rrhh: ["indefinido", "temporal", "pasantia", "servicios"],
       tipo_cuenta_contable: [
         "activo",
         "pasivo",
@@ -7195,6 +7442,15 @@ export const Constants = {
         "ingreso",
         "gasto",
         "costo",
+      ],
+      tipo_permiso_rrhh: [
+        "vacaciones",
+        "licencia_medica",
+        "permiso_personal",
+        "maternidad",
+        "paternidad",
+        "duelo",
+        "sin_goce",
       ],
       tipo_visita: ["ambulatorio", "domicilio"],
       user_role: [
