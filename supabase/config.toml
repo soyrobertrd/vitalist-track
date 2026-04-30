@@ -51,3 +51,6 @@ verify_jwt = false
 [functions.recordatorios-automaticos-cron]
 verify_jwt = false
 
+[functions.exportar-auditoria-avanzada]
+verify_jwt = true
+
