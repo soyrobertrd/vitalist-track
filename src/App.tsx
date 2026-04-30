@@ -66,6 +66,7 @@ const Imagenologia = lazy(() => import("./pages/Imagenologia"));
 const Compras = lazy(() => import("./pages/Compras"));
 const Contabilidad = lazy(() => import("./pages/Contabilidad"));
 const Nomina = lazy(() => import("./pages/Nomina"));
+const RRHH = lazy(() => import("./pages/RRHH"));
 
 // Loading fallback component
 const PageLoader = () => (
