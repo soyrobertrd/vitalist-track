@@ -291,6 +291,10 @@ const App = () => {
                   path="/nomina"
                   element={session ? <Layout><Nomina /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route
+                  path="/rrhh"
+                  element={session ? <Layout><RRHH /></Layout> : <Navigate to="/auth" />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
