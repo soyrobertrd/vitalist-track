@@ -160,9 +160,19 @@ const Layout = ({ children }: LayoutProps) => {
       ]
     },
     { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },
-    { path: "/api-citas", icon: Cog, label: "API Pública Citas", adminOnly: true },
-    { path: "/auditoria", icon: Shield, label: "Auditoría", adminOnly: true },
-    { path: "/checklist-rls", icon: Shield, label: "Checklist RLS", adminOnly: true },
+    {
+      path: "/config-grupo",
+      icon: Settings,
+      label: "Configuración",
+      adminOnly: true,
+      subItems: [
+        { path: "/configuracion-admin", label: "Sistema", icon: Cog },
+        { path: "/plantillas", label: "Plantillas (WhatsApp/Email)", icon: MessageSquare },
+        { path: "/api-citas", label: "API Pública Citas", icon: Cog },
+        { path: "/auditoria", label: "Auditoría", icon: Shield },
+        { path: "/checklist-rls", label: "Checklist RLS", icon: Shield },
+      ]
+    },
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
 
