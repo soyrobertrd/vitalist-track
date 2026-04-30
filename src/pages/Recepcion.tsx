@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import {
   Search, ScanLine, User, Calendar, Clock, CheckCircle2, XCircle, UserCheck,
-  RotateCcw, AlertTriangle, IdCard, CalendarSearch, FileText, ScanText,
+  RotateCcw, AlertTriangle, IdCard, CalendarSearch, FileText, ScanText, ClockIcon,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { differenceInMinutes, format } from "date-fns";
