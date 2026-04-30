@@ -124,6 +124,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/triaje", label: "Triaje" },
         { path: "/hospitalizacion", label: "Hospitalización" },
         { path: "/uci", label: "UCI: infusiones / kardex" },
+        { path: "/quirofano", label: "Quirófano / Cirugía" },
         { path: "/consultorios", label: "Consultorios", icon: Building2 },
       ]
     },
