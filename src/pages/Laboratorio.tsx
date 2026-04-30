@@ -30,7 +30,8 @@ const prioridadBadge: Record<string, { variant: "default" | "secondary" | "destr
 };
 
 export default function Laboratorio() {
-  const { workspaceId } = useWorkspace();
+  const { currentWorkspace } = useWorkspace();
+  const workspaceId = currentWorkspace?.id || null;
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [showNewOrder, setShowNewOrder] = useState(false);
