@@ -166,6 +166,12 @@ export default function DentalCarePro() {
             </Card>
           ))}
         </TabsContent>
+
+        <TabsContent value="pacientes" className="mt-4"><VerticalPacientesTab /></TabsContent>
+        <TabsContent value="citas" className="mt-4"><VerticalCitasTab citaLabel="Citas Dentales" /></TabsContent>
+        <TabsContent value="personal" className="mt-4"><VerticalPersonalTab profesionalLabel="Doctores" especialidades={["Odontología general", "Ortodoncia", "Endodoncia", "Periodoncia", "Cirugía oral", "Prostodoncia", "Odontopediatría"]} /></TabsContent>
+        <TabsContent value="facturacion" className="mt-4"><VerticalFacturacionTab /></TabsContent>
+        <TabsContent value="nomina" className="mt-4"><VerticalNominaTab /></TabsContent>
       </Tabs>
     </div>
   );
