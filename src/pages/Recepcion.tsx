@@ -19,6 +19,7 @@ import { MobilePageHeader } from "@/components/MobilePageHeader";
 import { OcrCedulaScanner } from "@/components/recepcion/OcrCedulaScanner";
 import { BuscarPacienteRecepcion } from "@/components/recepcion/BuscarPacienteRecepcion";
 import { DisponibilidadDiaTanda } from "@/components/recepcion/DisponibilidadDiaTanda";
+import { ListaEspera } from "@/components/ListaEspera";
 
 export default function Recepcion() {
   const { buscarPorCodigo, buscarPorToken, marcarLlegada, marcarAtendido, marcarNoShow } = useCitaTickets();
