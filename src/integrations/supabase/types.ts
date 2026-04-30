@@ -326,6 +326,73 @@ export type Database = {
           },
         ]
       }
+      alertas_emergencia_recovery: {
+        Row: {
+          created_at: string | null
+          descripcion: string | null
+          id: string
+          paciente_id: string | null
+          reportado_por: string | null
+          reserva_id: string | null
+          resolucion: string | null
+          resuelta: boolean | null
+          resuelta_at: string | null
+          severidad: string | null
+          tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          paciente_id?: string | null
+          reportado_por?: string | null
+          reserva_id?: string | null
+          resolucion?: string | null
+          resuelta?: boolean | null
+          resuelta_at?: string | null
+          severidad?: string | null
+          tipo: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          paciente_id?: string | null
+          reportado_por?: string | null
+          reserva_id?: string | null
+          resolucion?: string | null
+          resuelta?: boolean | null
+          resuelta_at?: string | null
+          severidad?: string | null
+          tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_emergencia_recovery_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_emergencia_recovery_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas_recovery"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_emergencia_recovery_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertas_notificaciones: {
         Row: {
           alerta_id: string | null
@@ -1253,6 +1320,53 @@ export type Database = {
           },
         ]
       }
+      cabinas_estetica: {
+        Row: {
+          activo: boolean | null
+          capacidad: number | null
+          created_at: string | null
+          equipos: string[] | null
+          estado: string | null
+          id: string
+          nombre: string
+          tipo: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          capacidad?: number | null
+          created_at?: string | null
+          equipos?: string[] | null
+          estado?: string | null
+          id?: string
+          nombre: string
+          tipo?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          capacidad?: number | null
+          created_at?: string | null
+          equipos?: string[] | null
+          estado?: string | null
+          id?: string
+          nombre?: string
+          tipo?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabinas_estetica_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       camas: {
         Row: {
           ala_id: string | null
@@ -1854,6 +1968,110 @@ export type Database = {
           },
           {
             foreignKeyName: "cita_tickets_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      combos_optica: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          descripcion: string | null
+          id: string
+          incluye_lentes: boolean | null
+          incluye_montura: boolean | null
+          nombre: string
+          precio_combo: number | null
+          precio_regular: number | null
+          tratamientos_incluidos: string[] | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          incluye_lentes?: boolean | null
+          incluye_montura?: boolean | null
+          nombre: string
+          precio_combo?: number | null
+          precio_regular?: number | null
+          tratamientos_incluidos?: string[] | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          incluye_lentes?: boolean | null
+          incluye_montura?: boolean | null
+          nombre?: string
+          precio_combo?: number | null
+          precio_regular?: number | null
+          tratamientos_incluidos?: string[] | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "combos_optica_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comisiones_profesional: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          id: string
+          monto_fijo: number | null
+          porcentaje: number | null
+          profesional_id: string
+          tipo_procedimiento: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          id?: string
+          monto_fijo?: number | null
+          porcentaje?: number | null
+          profesional_id: string
+          tipo_procedimiento?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          id?: string
+          monto_fijo?: number | null
+          porcentaje?: number | null
+          profesional_id?: string
+          tipo_procedimiento?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comisiones_profesional_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comisiones_profesional_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -4367,6 +4585,63 @@ export type Database = {
           },
         ]
       }
+      fotos_evolucion: {
+        Row: {
+          angulo: string | null
+          consentimiento_uso: boolean | null
+          created_at: string | null
+          fecha_foto: string | null
+          foto_url: string
+          id: string
+          notas: string | null
+          paciente_id: string
+          procedimiento: string | null
+          tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          angulo?: string | null
+          consentimiento_uso?: boolean | null
+          created_at?: string | null
+          fecha_foto?: string | null
+          foto_url: string
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          procedimiento?: string | null
+          tipo: string
+          workspace_id: string
+        }
+        Update: {
+          angulo?: string | null
+          consentimiento_uso?: boolean | null
+          created_at?: string | null
+          fecha_foto?: string | null
+          foto_url?: string
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          procedimiento?: string | null
+          tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fotos_evolucion_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fotos_evolucion_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       galeria_antes_despues: {
         Row: {
           consentimiento_uso_imagen: boolean | null
@@ -4423,6 +4698,69 @@ export type Database = {
           },
           {
             foreignKeyName: "galeria_antes_despues_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      garantias_optica: {
+        Row: {
+          created_at: string | null
+          duracion_meses: number | null
+          estado: string | null
+          fecha_inicio: string | null
+          fecha_vencimiento: string | null
+          id: string
+          orden_id: string | null
+          paciente_id: string | null
+          reclamacion_descripcion: string | null
+          reclamacion_fecha: string | null
+          tipo: string
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          duracion_meses?: number | null
+          estado?: string | null
+          fecha_inicio?: string | null
+          fecha_vencimiento?: string | null
+          id?: string
+          orden_id?: string | null
+          paciente_id?: string | null
+          reclamacion_descripcion?: string | null
+          reclamacion_fecha?: string | null
+          tipo: string
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          duracion_meses?: number | null
+          estado?: string | null
+          fecha_inicio?: string | null
+          fecha_vencimiento?: string | null
+          id?: string
+          orden_id?: string | null
+          paciente_id?: string | null
+          reclamacion_descripcion?: string | null
+          reclamacion_fecha?: string | null
+          tipo?: string
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "garantias_optica_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "garantias_optica_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -5557,6 +5895,75 @@ export type Database = {
             columns: ["paciente_id"]
             isOneToOne: false
             referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membresias_estetica: {
+        Row: {
+          auto_renovar: boolean | null
+          created_at: string | null
+          estado: string | null
+          fecha_fin: string | null
+          fecha_inicio: string
+          id: string
+          numero: string | null
+          paciente_id: string | null
+          plan_nombre: string
+          precio: number | null
+          sesiones_incluidas: number | null
+          sesiones_usadas: number | null
+          tipo: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          auto_renovar?: boolean | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio: string
+          id?: string
+          numero?: string | null
+          paciente_id?: string | null
+          plan_nombre: string
+          precio?: number | null
+          sesiones_incluidas?: number | null
+          sesiones_usadas?: number | null
+          tipo?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          auto_renovar?: boolean | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string
+          id?: string
+          numero?: string | null
+          paciente_id?: string | null
+          plan_nombre?: string
+          precio?: number | null
+          sesiones_incluidas?: number | null
+          sesiones_usadas?: number | null
+          tipo?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membresias_estetica_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "membresias_estetica_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -7864,6 +8271,85 @@ export type Database = {
           },
         ]
       }
+      presupuestos_sonrisa: {
+        Row: {
+          created_at: string | null
+          estado: string | null
+          fecha_firma: string | null
+          firma_digital_url: string | null
+          foto_antes_url: string | null
+          foto_despues_url: string | null
+          id: string
+          monto_total: number | null
+          notas: string | null
+          numero: string | null
+          paciente_id: string | null
+          procedimientos: Json | null
+          profesional_id: string | null
+          simulacion_ia_url: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          estado?: string | null
+          fecha_firma?: string | null
+          firma_digital_url?: string | null
+          foto_antes_url?: string | null
+          foto_despues_url?: string | null
+          id?: string
+          monto_total?: number | null
+          notas?: string | null
+          numero?: string | null
+          paciente_id?: string | null
+          procedimientos?: Json | null
+          profesional_id?: string | null
+          simulacion_ia_url?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          estado?: string | null
+          fecha_firma?: string | null
+          firma_digital_url?: string | null
+          foto_antes_url?: string | null
+          foto_despues_url?: string | null
+          id?: string
+          monto_total?: number | null
+          notas?: string | null
+          numero?: string | null
+          paciente_id?: string | null
+          procedimientos?: Json | null
+          profesional_id?: string | null
+          simulacion_ia_url?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presupuestos_sonrisa_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "presupuestos_sonrisa_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "presupuestos_sonrisa_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       procedimientos_esteticos: {
         Row: {
           activo: boolean | null
@@ -8068,6 +8554,65 @@ export type Database = {
           },
           {
             foreignKeyName: "programas_docencia_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      promociones_estetica: {
+        Row: {
+          activa: boolean | null
+          codigo: string | null
+          created_at: string | null
+          descripcion: string | null
+          id: string
+          nombre: string
+          tipo_descuento: string | null
+          updated_at: string | null
+          usos_actuales: number | null
+          usos_maximos: number | null
+          valor_descuento: number | null
+          vigencia_fin: string | null
+          vigencia_inicio: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activa?: boolean | null
+          codigo?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          tipo_descuento?: string | null
+          updated_at?: string | null
+          usos_actuales?: number | null
+          usos_maximos?: number | null
+          valor_descuento?: number | null
+          vigencia_fin?: string | null
+          vigencia_inicio?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activa?: boolean | null
+          codigo?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          tipo_descuento?: string | null
+          updated_at?: string | null
+          usos_actuales?: number | null
+          usos_maximos?: number | null
+          valor_descuento?: number | null
+          vigencia_fin?: string | null
+          vigencia_inicio?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promociones_estetica_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -8898,6 +9443,60 @@ export type Database = {
           },
         ]
       }
+      recordatorios_fidelizacion: {
+        Row: {
+          canal: string | null
+          created_at: string | null
+          estado: string | null
+          id: string
+          notas: string | null
+          paciente_id: string
+          proxima_fecha: string
+          tipo: string
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          canal?: string | null
+          created_at?: string | null
+          estado?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          proxima_fecha: string
+          tipo: string
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          canal?: string | null
+          created_at?: string | null
+          estado?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          proxima_fecha?: string
+          tipo?: string
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recordatorios_fidelizacion_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recordatorios_fidelizacion_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       referimientos_sociales: {
         Row: {
           caso_id: string
@@ -9322,6 +9921,99 @@ export type Database = {
         }
         Relationships: []
       }
+      reservas_recovery: {
+        Row: {
+          acompanante_nombre: string | null
+          acompanante_telefono: string | null
+          check_in: string
+          check_out: string | null
+          created_at: string | null
+          deposito: number | null
+          estado: string | null
+          habitacion_id: string | null
+          id: string
+          idioma: string | null
+          medico_tratante: string | null
+          noches: number | null
+          notas: string | null
+          numero: string | null
+          paciente_id: string | null
+          pais_origen: string | null
+          paquete: string | null
+          requiere_traductor: boolean | null
+          tipo_cirugia: string | null
+          total: number | null
+          traslado_aeropuerto: boolean | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          acompanante_nombre?: string | null
+          acompanante_telefono?: string | null
+          check_in: string
+          check_out?: string | null
+          created_at?: string | null
+          deposito?: number | null
+          estado?: string | null
+          habitacion_id?: string | null
+          id?: string
+          idioma?: string | null
+          medico_tratante?: string | null
+          noches?: number | null
+          notas?: string | null
+          numero?: string | null
+          paciente_id?: string | null
+          pais_origen?: string | null
+          paquete?: string | null
+          requiere_traductor?: boolean | null
+          tipo_cirugia?: string | null
+          total?: number | null
+          traslado_aeropuerto?: boolean | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          acompanante_nombre?: string | null
+          acompanante_telefono?: string | null
+          check_in?: string
+          check_out?: string | null
+          created_at?: string | null
+          deposito?: number | null
+          estado?: string | null
+          habitacion_id?: string | null
+          id?: string
+          idioma?: string | null
+          medico_tratante?: string | null
+          noches?: number | null
+          notas?: string | null
+          numero?: string | null
+          paciente_id?: string | null
+          pais_origen?: string | null
+          paquete?: string | null
+          requiere_traductor?: boolean | null
+          tipo_cirugia?: string | null
+          total?: number | null
+          traslado_aeropuerto?: boolean | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservas_recovery_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservas_recovery_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       residentes_rotaciones: {
         Row: {
           area_rotacion: string | null
@@ -9741,6 +10433,66 @@ export type Database = {
           },
         ]
       }
+      servicios_concierge: {
+        Row: {
+          costo: number | null
+          created_at: string | null
+          detalles: string | null
+          estado: string | null
+          fecha: string
+          hora: string | null
+          id: string
+          proveedor: string | null
+          reserva_id: string
+          tipo: string
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          costo?: number | null
+          created_at?: string | null
+          detalles?: string | null
+          estado?: string | null
+          fecha: string
+          hora?: string | null
+          id?: string
+          proveedor?: string | null
+          reserva_id: string
+          tipo: string
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          costo?: number | null
+          created_at?: string | null
+          detalles?: string | null
+          estado?: string | null
+          fecha?: string
+          hora?: string | null
+          id?: string
+          proveedor?: string | null
+          reserva_id?: string
+          tipo?: string
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servicios_concierge_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas_recovery"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "servicios_concierge_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       servicios_recovery: {
         Row: {
           activo: boolean | null
@@ -9831,6 +10583,47 @@ export type Database = {
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "planes_rehabilitacion"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sillones_dentales: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          equipamiento: string[] | null
+          id: string
+          nombre: string
+          ubicacion: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          equipamiento?: string[] | null
+          id?: string
+          nombre: string
+          ubicacion?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          equipamiento?: string[] | null
+          id?: string
+          nombre?: string
+          ubicacion?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sillones_dentales_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
