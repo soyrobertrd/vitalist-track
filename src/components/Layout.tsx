@@ -31,6 +31,7 @@ import {
   BookOpen,
   Shield,
   DollarSign,
+  Wallet,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -120,6 +121,7 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/inventario", icon: Boxes, label: "Inventario" },
     { path: "/compras", icon: Truck, label: "Compras", adminOnly: true },
     { path: "/contabilidad", icon: BookOpen, label: "Contabilidad", adminOnly: true },
+    { path: "/nomina", icon: Wallet, label: "Nómina", adminOnly: true },
     {
       path: "/hospital",
       icon: Activity,
