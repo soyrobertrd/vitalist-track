@@ -301,6 +301,10 @@ const App = () => {
                   path="/crm"
                   element={session ? <Layout><CRM /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route
+                  path="/odontograma"
+                  element={session ? <Layout><Odontograma /></Layout> : <Navigate to="/auth" />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
