@@ -143,6 +143,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/laboratorio", label: "Laboratorio" },
         { path: "/imagenologia", label: "Imagenología" },
         { path: "/consultorios", label: "Consultorios", icon: Building2 },
+        { path: "/odontograma", label: "Odontograma" },
       ]
     },
     { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },

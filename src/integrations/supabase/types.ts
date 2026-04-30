@@ -3161,6 +3161,50 @@ export type Database = {
           },
         ]
       }
+      hallazgos_dentales: {
+        Row: {
+          cara: Database["public"]["Enums"]["cara_dental"] | null
+          created_at: string
+          estado: Database["public"]["Enums"]["estado_hallazgo_dental"]
+          id: string
+          notas: string | null
+          numero_diente: number
+          odontograma_id: string
+          tipo: Database["public"]["Enums"]["tipo_hallazgo_dental"]
+          updated_at: string
+        }
+        Insert: {
+          cara?: Database["public"]["Enums"]["cara_dental"] | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_hallazgo_dental"]
+          id?: string
+          notas?: string | null
+          numero_diente: number
+          odontograma_id: string
+          tipo?: Database["public"]["Enums"]["tipo_hallazgo_dental"]
+          updated_at?: string
+        }
+        Update: {
+          cara?: Database["public"]["Enums"]["cara_dental"] | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_hallazgo_dental"]
+          id?: string
+          notas?: string | null
+          numero_diente?: number
+          odontograma_id?: string
+          tipo?: Database["public"]["Enums"]["tipo_hallazgo_dental"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hallazgos_dentales_odontograma_id_fkey"
+            columns: ["odontograma_id"]
+            isOneToOne: false
+            referencedRelation: "odontogramas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       historial_recordatorios: {
         Row: {
           canal: string
@@ -3987,6 +4031,61 @@ export type Database = {
             columns: ["visita_id"]
             isOneToOne: true
             referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      odontogramas: {
+        Row: {
+          created_at: string
+          fecha_evaluacion: string
+          id: string
+          notas: string | null
+          paciente_id: string
+          profesional_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          fecha_evaluacion?: string
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          profesional_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          fecha_evaluacion?: string
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          profesional_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "odontogramas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "odontogramas_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "odontogramas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -5095,6 +5194,57 @@ export type Database = {
           },
           {
             foreignKeyName: "portal_paciente_tokens_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      presupuestos_dentales: {
+        Row: {
+          created_at: string
+          estado: Database["public"]["Enums"]["estado_presupuesto_dental"]
+          id: string
+          notas: string | null
+          numero: string | null
+          paciente_id: string
+          total: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_presupuesto_dental"]
+          id?: string
+          notas?: string | null
+          numero?: string | null
+          paciente_id: string
+          total?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_presupuesto_dental"]
+          id?: string
+          notas?: string | null
+          numero?: string | null
+          paciente_id?: string
+          total?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presupuestos_dentales_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "presupuestos_dentales_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -6474,6 +6624,60 @@ export type Database = {
           },
         ]
       }
+      tratamientos_dentales: {
+        Row: {
+          costo_estimado: number
+          created_at: string
+          estado: Database["public"]["Enums"]["estado_tratamiento_dental"]
+          fecha_realizado: string | null
+          hallazgo_id: string
+          id: string
+          notas: string | null
+          presupuesto_id: string | null
+          procedimiento: string
+          updated_at: string
+        }
+        Insert: {
+          costo_estimado?: number
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_tratamiento_dental"]
+          fecha_realizado?: string | null
+          hallazgo_id: string
+          id?: string
+          notas?: string | null
+          presupuesto_id?: string | null
+          procedimiento: string
+          updated_at?: string
+        }
+        Update: {
+          costo_estimado?: number
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_tratamiento_dental"]
+          fecha_realizado?: string | null
+          hallazgo_id?: string
+          id?: string
+          notas?: string | null
+          presupuesto_id?: string | null
+          procedimiento?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tratamientos_dentales_hallazgo_id_fkey"
+            columns: ["hallazgo_id"]
+            isOneToOne: false
+            referencedRelation: "hallazgos_dentales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tratamientos_dentales_presupuesto_id_fkey"
+            columns: ["presupuesto_id"]
+            isOneToOne: false
+            referencedRelation: "presupuestos_dentales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       triaje_eventos: {
         Row: {
           admision_id: string | null
@@ -7211,6 +7415,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "coordinador" | "medico" | "enfermera" | "recepcion"
+      cara_dental:
+        | "oclusal"
+        | "mesial"
+        | "distal"
+        | "vestibular"
+        | "lingual"
+        | "palatina"
+        | "incisal"
       especialidad_medica:
         | "medicina_general"
         | "pediatria"
@@ -7246,6 +7458,7 @@ export type Database = {
         | "en_proceso"
         | "completado"
         | "cancelado"
+      estado_hallazgo_dental: "activo" | "tratado" | "observacion"
       estado_lead:
         | "nuevo"
         | "contactado"
@@ -7281,6 +7494,11 @@ export type Database = {
         | "pagado"
         | "anulado"
       estado_permiso_rrhh: "solicitado" | "aprobado" | "rechazado" | "cancelado"
+      estado_presupuesto_dental:
+        | "borrador"
+        | "presentado"
+        | "aceptado"
+        | "rechazado"
       estado_receta: "activa" | "dispensada" | "vencida" | "cancelada"
       estado_reclamacion:
         | "borrador"
@@ -7290,6 +7508,11 @@ export type Database = {
         | "rechazada"
         | "parcial"
         | "anulada"
+      estado_tratamiento_dental:
+        | "pendiente"
+        | "en_proceso"
+        | "completado"
+        | "cancelado"
       estado_visita:
         | "pendiente"
         | "realizada"
@@ -7332,6 +7555,18 @@ export type Database = {
         | "ingreso"
         | "gasto"
         | "costo"
+      tipo_hallazgo_dental:
+        | "caries"
+        | "fractura"
+        | "ausente"
+        | "corona"
+        | "endodoncia"
+        | "implante"
+        | "sellante"
+        | "obturacion"
+        | "protesis"
+        | "movilidad"
+        | "sano"
       tipo_interaccion_crm:
         | "llamada"
         | "email"
@@ -7491,6 +7726,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "coordinador", "medico", "enfermera", "recepcion"],
+      cara_dental: [
+        "oclusal",
+        "mesial",
+        "distal",
+        "vestibular",
+        "lingual",
+        "palatina",
+        "incisal",
+      ],
       especialidad_medica: [
         "medicina_general",
         "pediatria",
@@ -7530,6 +7774,7 @@ export const Constants = {
         "completado",
         "cancelado",
       ],
+      estado_hallazgo_dental: ["activo", "tratado", "observacion"],
       estado_lead: [
         "nuevo",
         "contactado",
@@ -7570,6 +7815,12 @@ export const Constants = {
         "anulado",
       ],
       estado_permiso_rrhh: ["solicitado", "aprobado", "rechazado", "cancelado"],
+      estado_presupuesto_dental: [
+        "borrador",
+        "presentado",
+        "aceptado",
+        "rechazado",
+      ],
       estado_receta: ["activa", "dispensada", "vencida", "cancelada"],
       estado_reclamacion: [
         "borrador",
@@ -7579,6 +7830,12 @@ export const Constants = {
         "rechazada",
         "parcial",
         "anulada",
+      ],
+      estado_tratamiento_dental: [
+        "pendiente",
+        "en_proceso",
+        "completado",
+        "cancelado",
       ],
       estado_visita: [
         "pendiente",
@@ -7626,6 +7883,19 @@ export const Constants = {
         "ingreso",
         "gasto",
         "costo",
+      ],
+      tipo_hallazgo_dental: [
+        "caries",
+        "fractura",
+        "ausente",
+        "corona",
+        "endodoncia",
+        "implante",
+        "sellante",
+        "obturacion",
+        "protesis",
+        "movilidad",
+        "sano",
       ],
       tipo_interaccion_crm: ["llamada", "email", "reunion", "whatsapp", "nota"],
       tipo_permiso_rrhh: [
