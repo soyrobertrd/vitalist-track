@@ -421,8 +421,9 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
           </TabsContent>
 
           {/* COBROS */}
-          <TabsContent value="cobros" className="space-y-2 mt-4">
+          <TabsContent value="cobros" className="space-y-4 mt-4">
             <CobrosPaciente pacienteId={pacienteId} />
+            <NotasCredito pacienteId={pacienteId} />
           </TabsContent>
 
           {/* TELEMEDICINA */}
