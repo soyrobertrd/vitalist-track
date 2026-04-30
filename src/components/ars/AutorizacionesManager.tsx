@@ -155,7 +155,7 @@ export function AutorizacionesManager() {
               <div className="space-y-3">
                 <div>
                   <Label>Paciente *</Label>
-                  <PacienteCombobox value={form.paciente_id} onChange={v => setForm({ ...form, paciente_id: v })} />
+                  <PacienteCombobox value={form.paciente_id} onValueChange={v => setForm({ ...form, paciente_id: v })} />
                 </div>
                 <div>
                   <Label>Aseguradora *</Label>
@@ -174,7 +174,7 @@ export function AutorizacionesManager() {
                 <div><Label>Monto solicitado</Label><Input type="number" step="0.01" value={form.monto_solicitado} onChange={e => setForm({ ...form, monto_solicitado: e.target.value })} /></div>
                 <div>
                   <Label>Médico solicitante</Label>
-                  <ProfesionalCombobox value={form.medico_solicitante} onChange={v => setForm({ ...form, medico_solicitante: v })} />
+                  <ProfesionalCombobox value={form.medico_solicitante} onValueChange={v => setForm({ ...form, medico_solicitante: v })} />
                 </div>
                 <div><Label>Notas</Label><Textarea value={form.notas} onChange={e => setForm({ ...form, notas: e.target.value })} /></div>
               </div>
