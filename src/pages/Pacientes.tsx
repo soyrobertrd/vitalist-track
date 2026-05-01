@@ -29,6 +29,7 @@ import { NuevoPacienteForm } from "@/components/pacientes/NuevoPacienteForm";
 import { Badge } from "@/components/ui/badge";
 import { BulkActionsToolbar, PACIENTE_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 import { AgendarCitaButton } from "@/components/AgendarCitaButton";
+import { PlanLimitAlert } from "@/components/PlanLimitAlert";
 
 const MOTIVO_LABELS: Record<string, string> = {
   viaje: "De viaje",
@@ -199,6 +200,7 @@ const Pacientes = () => {
         </div>
 
         <TabsContent value="activos" className="mt-6 space-y-6">
+          <PlanLimitAlert resource="pacientes" />
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <PacientesHeader
               isAdmin={isAdmin}
