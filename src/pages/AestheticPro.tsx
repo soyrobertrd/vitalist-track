@@ -37,6 +37,9 @@ import VerticalRolesPermisosTab from "@/components/vertical/VerticalRolesPermiso
 import VerticalAgendaIATab from "@/components/vertical/VerticalAgendaIATab";
 import VerticalComunicacionesTab from "@/components/vertical/VerticalComunicacionesTab";
 import VerticalFinanzasAvanzadasTab from "@/components/vertical/VerticalFinanzasAvanzadasTab";
+import VerticalDocumentosTab from "@/components/vertical/VerticalDocumentosTab";
+import VerticalWorkflowsTab from "@/components/vertical/VerticalWorkflowsTab";
+import VerticalIdiomaAccesibilidadTab from "@/components/vertical/VerticalIdiomaAccesibilidadTab";
 
 const estadoLeadColor: Record<string, string> = {
   nuevo: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -202,6 +205,9 @@ export default function AestheticPro() {
           <TabsTrigger value="agenda_ia">Agenda IA</TabsTrigger>
           <TabsTrigger value="comunicaciones">Comunicaciones</TabsTrigger>
           <TabsTrigger value="finanzas_avz">Finanzas</TabsTrigger>
+          <TabsTrigger value="documentos_v">Documentos</TabsTrigger>
+          <TabsTrigger value="workflows">Workflows</TabsTrigger>
+          <TabsTrigger value="idioma_acc">i18n / A11y</TabsTrigger>
         </TabsList>
 
         {/* LEADS CRM */}
@@ -443,6 +449,9 @@ export default function AestheticPro() {
         <TabsContent value="agenda_ia" className="mt-4"><VerticalAgendaIATab verticalTipo="estetica" /></TabsContent>
         <TabsContent value="comunicaciones" className="mt-4"><VerticalComunicacionesTab verticalTipo="estetica" /></TabsContent>
         <TabsContent value="finanzas_avz" className="mt-4"><VerticalFinanzasAvanzadasTab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="documentos_v" className="mt-4"><VerticalDocumentosTab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="workflows" className="mt-4"><VerticalWorkflowsTab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="idioma_acc" className="mt-4"><VerticalIdiomaAccesibilidadTab /></TabsContent>
       </Tabs>
     </div>
   );

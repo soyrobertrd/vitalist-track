@@ -2444,6 +2444,45 @@ export type Database = {
           },
         ]
       }
+      configuracion_accesibilidad: {
+        Row: {
+          alto_contraste: boolean | null
+          created_at: string | null
+          daltonismo: string | null
+          id: string
+          lector_pantalla: boolean | null
+          navegacion_teclado: boolean | null
+          reducir_movimiento: boolean | null
+          tamano_fuente: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          alto_contraste?: boolean | null
+          created_at?: string | null
+          daltonismo?: string | null
+          id?: string
+          lector_pantalla?: boolean | null
+          navegacion_teclado?: boolean | null
+          reducir_movimiento?: boolean | null
+          tamano_fuente?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          alto_contraste?: boolean | null
+          created_at?: string | null
+          daltonismo?: string | null
+          id?: string
+          lector_pantalla?: boolean | null
+          navegacion_teclado?: boolean | null
+          reducir_movimiento?: boolean | null
+          tamano_fuente?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       configuracion_sistema: {
         Row: {
           clave: string
@@ -3606,54 +3645,97 @@ export type Database = {
       }
       documentos_clinicos: {
         Row: {
+          archivo_nombre: string | null
+          archivo_url: string | null
           categoria: string
           created_at: string
+          created_by: string | null
           descripcion: string | null
+          documento_padre_id: string | null
           evolucion_id: string | null
           fecha_documento: string | null
+          firmado: boolean | null
+          firmado_at: string | null
+          firmado_por: string | null
           id: string
+          metadata: Json | null
           mime_type: string | null
           paciente_id: string
+          profesional_id: string | null
           storage_path: string
           subido_por: string | null
           tamano_bytes: number | null
+          tipo: string | null
           titulo: string
           updated_at: string
+          version: number | null
           visita_id: string | null
+          workspace_id: string | null
         }
         Insert: {
+          archivo_nombre?: string | null
+          archivo_url?: string | null
           categoria?: string
           created_at?: string
+          created_by?: string | null
           descripcion?: string | null
+          documento_padre_id?: string | null
           evolucion_id?: string | null
           fecha_documento?: string | null
+          firmado?: boolean | null
+          firmado_at?: string | null
+          firmado_por?: string | null
           id?: string
+          metadata?: Json | null
           mime_type?: string | null
           paciente_id: string
+          profesional_id?: string | null
           storage_path: string
           subido_por?: string | null
           tamano_bytes?: number | null
+          tipo?: string | null
           titulo: string
           updated_at?: string
+          version?: number | null
           visita_id?: string | null
+          workspace_id?: string | null
         }
         Update: {
+          archivo_nombre?: string | null
+          archivo_url?: string | null
           categoria?: string
           created_at?: string
+          created_by?: string | null
           descripcion?: string | null
+          documento_padre_id?: string | null
           evolucion_id?: string | null
           fecha_documento?: string | null
+          firmado?: boolean | null
+          firmado_at?: string | null
+          firmado_por?: string | null
           id?: string
+          metadata?: Json | null
           mime_type?: string | null
           paciente_id?: string
+          profesional_id?: string | null
           storage_path?: string
           subido_por?: string | null
           tamano_bytes?: number | null
+          tipo?: string | null
           titulo?: string
           updated_at?: string
+          version?: number | null
           visita_id?: string | null
+          workspace_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "documentos_clinicos_documento_padre_id_fkey"
+            columns: ["documento_padre_id"]
+            isOneToOne: false
+            referencedRelation: "documentos_clinicos"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "documentos_clinicos_evolucion_id_fkey"
             columns: ["evolucion_id"]
@@ -3669,10 +3751,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "documentos_clinicos_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "documentos_clinicos_visita_id_fkey"
             columns: ["visita_id"]
             isOneToOne: false
             referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_clinicos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -4114,6 +4210,57 @@ export type Database = {
             columns: ["paciente_id"]
             isOneToOne: false
             referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escaneos_ocr: {
+        Row: {
+          confianza: number | null
+          created_at: string | null
+          documento_id: string
+          estado: string | null
+          id: string
+          idioma_detectado: string | null
+          metadata_extraida: Json | null
+          texto_extraido: string | null
+          workspace_id: string
+        }
+        Insert: {
+          confianza?: number | null
+          created_at?: string | null
+          documento_id: string
+          estado?: string | null
+          id?: string
+          idioma_detectado?: string | null
+          metadata_extraida?: Json | null
+          texto_extraido?: string | null
+          workspace_id: string
+        }
+        Update: {
+          confianza?: number | null
+          created_at?: string | null
+          documento_id?: string
+          estado?: string | null
+          id?: string
+          idioma_detectado?: string | null
+          metadata_extraida?: Json | null
+          texto_extraido?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escaneos_ocr_documento_id_fkey"
+            columns: ["documento_id"]
+            isOneToOne: false
+            referencedRelation: "documentos_clinicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escaneos_ocr_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -5077,6 +5224,63 @@ export type Database = {
           },
           {
             foreignKeyName: "financiamiento_estetico_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      firmas_electronicas: {
+        Row: {
+          created_at: string | null
+          documento_id: string
+          firma_data: string | null
+          firmante_id: string | null
+          hash_documento: string | null
+          id: string
+          ip_address: string | null
+          nombre_firmante: string | null
+          tipo_firmante: string
+          user_agent: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          documento_id: string
+          firma_data?: string | null
+          firmante_id?: string | null
+          hash_documento?: string | null
+          id?: string
+          ip_address?: string | null
+          nombre_firmante?: string | null
+          tipo_firmante?: string
+          user_agent?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          documento_id?: string
+          firma_data?: string | null
+          firmante_id?: string | null
+          hash_documento?: string | null
+          id?: string
+          ip_address?: string | null
+          nombre_firmante?: string | null
+          tipo_firmante?: string
+          user_agent?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "firmas_electronicas_documento_id_fkey"
+            columns: ["documento_id"]
+            isOneToOne: false
+            referencedRelation: "documentos_clinicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "firmas_electronicas_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -9368,6 +9572,39 @@ export type Database = {
           },
         ]
       }
+      preferencias_idioma: {
+        Row: {
+          created_at: string | null
+          formato_fecha: string | null
+          formato_moneda: string | null
+          id: string
+          idioma: string | null
+          updated_at: string | null
+          user_id: string
+          zona_horaria: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          formato_fecha?: string | null
+          formato_moneda?: string | null
+          id?: string
+          idioma?: string | null
+          updated_at?: string | null
+          user_id: string
+          zona_horaria?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          formato_fecha?: string | null
+          formato_moneda?: string | null
+          id?: string
+          idioma?: string | null
+          updated_at?: string | null
+          user_id?: string
+          zona_horaria?: string | null
+        }
+        Relationships: []
+      }
       presupuestos_dentales: {
         Row: {
           created_at: string
@@ -13326,6 +13563,170 @@ export type Database = {
             columns: ["visita_id"]
             isOneToOne: false
             referencedRelation: "control_visitas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_cadenas: {
+        Row: {
+          created_at: string | null
+          estado: string | null
+          id: string
+          metadata: Json | null
+          nombre: string
+          paso_actual: number | null
+          pasos: Json | null
+          regla_id: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          estado?: string | null
+          id?: string
+          metadata?: Json | null
+          nombre: string
+          paso_actual?: number | null
+          pasos?: Json | null
+          regla_id?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          estado?: string | null
+          id?: string
+          metadata?: Json | null
+          nombre?: string
+          paso_actual?: number | null
+          pasos?: Json | null
+          regla_id?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_cadenas_regla_id_fkey"
+            columns: ["regla_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_reglas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_cadenas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_ejecuciones: {
+        Row: {
+          completado_at: string | null
+          created_at: string | null
+          error_mensaje: string | null
+          estado: string | null
+          evento_data: Json | null
+          id: string
+          iniciado_at: string | null
+          regla_id: string
+          resultado: Json | null
+          workspace_id: string
+        }
+        Insert: {
+          completado_at?: string | null
+          created_at?: string | null
+          error_mensaje?: string | null
+          estado?: string | null
+          evento_data?: Json | null
+          id?: string
+          iniciado_at?: string | null
+          regla_id: string
+          resultado?: Json | null
+          workspace_id: string
+        }
+        Update: {
+          completado_at?: string | null
+          created_at?: string | null
+          error_mensaje?: string | null
+          estado?: string | null
+          evento_data?: Json | null
+          id?: string
+          iniciado_at?: string | null
+          regla_id?: string
+          resultado?: Json | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_ejecuciones_regla_id_fkey"
+            columns: ["regla_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_reglas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_ejecuciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_reglas: {
+        Row: {
+          acciones: Json | null
+          activo: boolean | null
+          condiciones: Json | null
+          created_at: string | null
+          created_by: string | null
+          descripcion: string | null
+          evento_trigger: string
+          id: string
+          nombre: string
+          prioridad: number | null
+          updated_at: string | null
+          vertical_tipo: string | null
+          workspace_id: string
+        }
+        Insert: {
+          acciones?: Json | null
+          activo?: boolean | null
+          condiciones?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          descripcion?: string | null
+          evento_trigger: string
+          id?: string
+          nombre: string
+          prioridad?: number | null
+          updated_at?: string | null
+          vertical_tipo?: string | null
+          workspace_id: string
+        }
+        Update: {
+          acciones?: Json | null
+          activo?: boolean | null
+          condiciones?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          descripcion?: string | null
+          evento_trigger?: string
+          id?: string
+          nombre?: string
+          prioridad?: number | null
+          updated_at?: string | null
+          vertical_tipo?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_reglas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
