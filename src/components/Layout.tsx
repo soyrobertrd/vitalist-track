@@ -127,6 +127,9 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/contabilidad", label: "Contabilidad" },
         { path: "/nomina", label: "Nómina" },
         { path: "/compras", label: "Compras" },
+        { path: "/forecast-ingresos", label: "Forecast de Ingresos" },
+        { path: "/ar-aging", label: "AR Aging (Cuentas por cobrar)" },
+        { path: "/costeo-servicios", label: "Costeo por Servicio" },
       ]
     },
     {
@@ -136,6 +139,9 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/rrhh", label: "Recursos Humanos" },
         { path: "/organizaciones", label: "Organizaciones", icon: Building2 },
         { path: "/comisiones-empleados", label: "Comisiones empleados", icon: DollarSign },
+        { path: "/evaluaciones-desempeno", label: "Evaluaciones de Desempeño" },
+        { path: "/metas-incentivos", label: "Metas e Incentivos" },
+        { path: "/capacitaciones", label: "Capacitaciones" },
       ]
     },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
