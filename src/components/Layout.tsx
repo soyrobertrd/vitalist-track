@@ -248,6 +248,8 @@ const Layout = ({ children }: LayoutProps) => {
       subItems: [
         { path: "/configuracion-admin", label: "Sistema", icon: Cog },
         { path: "/verticales", label: "Verticales del centro", icon: Building2 },
+        { path: "/organizaciones", label: "Organizaciones", icon: Building2 },
+        { path: "/afiliaciones", label: "Afiliaciones", icon: Building2 },
         { path: "/plantillas", label: "Plantillas (WhatsApp/Email)", icon: MessageSquare },
         { path: "/api-citas", label: "API Pública Citas", icon: Cog },
         { path: "/auditoria", label: "Auditoría", icon: Shield },
