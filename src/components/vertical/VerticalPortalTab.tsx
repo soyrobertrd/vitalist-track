@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Plus, Link2, Copy, ExternalLink } from "lucide-react";
-import PacienteCombobox from "@/components/PacienteCombobox";
+import { PacienteCombobox } from "@/components/PacienteCombobox";
 
 interface Props {
   verticalTipo: "dental" | "estetica" | "recovery" | "vision";
