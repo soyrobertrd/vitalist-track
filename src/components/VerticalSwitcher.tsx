@@ -1,4 +1,5 @@
-import { Building2, Eye, SmilePlus, Sparkles, BedDouble, Stethoscope, Layers } from "lucide-react";
+import { Building2, Eye, SmilePlus, Sparkles, BedDouble, Stethoscope, Layers, Settings2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
