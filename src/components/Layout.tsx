@@ -242,7 +242,12 @@ const Layout = ({ children }: LayoutProps) => {
     {
       path: "/financiero", icon: DollarSign, label: "Financiero", adminOnly: true,
       subItems: [
-        { path: "/finanzas", label: "Finanzas & ARS" },
+        { path: "/finanzas?tab=caja", label: "Caja", icon: DollarSign },
+        { path: "/finanzas?tab=devoluciones", label: "Notas de crédito" },
+        { path: "/finanzas?tab=aseguradoras", label: "Aseguradoras (ARS)", icon: Building2 },
+        { path: "/finanzas?tab=tarifarios", label: "Tarifarios ARS" },
+        { path: "/finanzas?tab=autorizaciones", label: "Autorizaciones" },
+        { path: "/finanzas?tab=reclamaciones", label: "Reclamaciones" },
         { path: "/contabilidad", label: "Contabilidad" },
         { path: "/nomina", label: "Nómina" },
         { path: "/compras", label: "Compras" },
