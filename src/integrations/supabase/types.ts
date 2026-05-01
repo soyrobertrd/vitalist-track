@@ -53,6 +53,66 @@ export type Database = {
         }
         Relationships: []
       }
+      acciones_correctivas: {
+        Row: {
+          created_at: string
+          descripcion: string
+          estado: string
+          evento_id: string | null
+          evidencia: string | null
+          fecha_completado: string | null
+          fecha_limite: string | null
+          id: string
+          no_conformidad_id: string | null
+          responsable_id: string | null
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          descripcion: string
+          estado?: string
+          evento_id?: string | null
+          evidencia?: string | null
+          fecha_completado?: string | null
+          fecha_limite?: string | null
+          id?: string
+          no_conformidad_id?: string | null
+          responsable_id?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string
+          estado?: string
+          evento_id?: string | null
+          evidencia?: string | null
+          fecha_completado?: string | null
+          fecha_limite?: string | null
+          id?: string
+          no_conformidad_id?: string | null
+          responsable_id?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acciones_correctivas_evento_id_fkey"
+            columns: ["evento_id"]
+            isOneToOne: false
+            referencedRelation: "eventos_adversos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acciones_correctivas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       administracion_medicamentos: {
         Row: {
           admision_id: string | null
@@ -1543,6 +1603,65 @@ export type Database = {
           realizado_por?: string | null
         }
         Relationships: []
+      }
+      auditorias_calidad: {
+        Row: {
+          alcance: string | null
+          auditor: string | null
+          created_at: string
+          estado: string
+          estandar: string | null
+          fecha_fin: string | null
+          fecha_inicio: string
+          id: string
+          puntaje: number | null
+          resultado_general: string | null
+          tipo: string
+          titulo: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          alcance?: string | null
+          auditor?: string | null
+          created_at?: string
+          estado?: string
+          estandar?: string | null
+          fecha_fin?: string | null
+          fecha_inicio: string
+          id?: string
+          puntaje?: number | null
+          resultado_general?: string | null
+          tipo: string
+          titulo: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          alcance?: string | null
+          auditor?: string | null
+          created_at?: string
+          estado?: string
+          estandar?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string
+          id?: string
+          puntaje?: number | null
+          resultado_general?: string | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auditorias_calidad_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ausencias_profesionales: {
         Row: {
@@ -3123,6 +3242,56 @@ export type Database = {
           },
           {
             foreignKeyName: "comisiones_profesional_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comites_calidad: {
+        Row: {
+          activo: boolean
+          created_at: string
+          descripcion: string | null
+          frecuencia_reunion: string | null
+          id: string
+          miembros: Json | null
+          nombre: string
+          presidente_id: string | null
+          tipo: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          descripcion?: string | null
+          frecuencia_reunion?: string | null
+          id?: string
+          miembros?: Json | null
+          nombre: string
+          presidente_id?: string | null
+          tipo: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          descripcion?: string | null
+          frecuencia_reunion?: string | null
+          id?: string
+          miembros?: Json | null
+          nombre?: string
+          presidente_id?: string | null
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comites_calidad_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -6140,6 +6309,90 @@ export type Database = {
           },
         ]
       }
+      eventos_adversos: {
+        Row: {
+          causa_raiz: string | null
+          consecuencias: string | null
+          created_at: string
+          departamento: string | null
+          descripcion: string
+          estado: string
+          fecha_cierre: string | null
+          fecha_evento: string
+          id: string
+          involucrados: Json | null
+          metadata: Json | null
+          notificado_familia: boolean | null
+          notificado_paciente: boolean | null
+          numero: string | null
+          paciente_id: string | null
+          reportado_por: string | null
+          severidad: string
+          tipo: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          causa_raiz?: string | null
+          consecuencias?: string | null
+          created_at?: string
+          departamento?: string | null
+          descripcion: string
+          estado?: string
+          fecha_cierre?: string | null
+          fecha_evento?: string
+          id?: string
+          involucrados?: Json | null
+          metadata?: Json | null
+          notificado_familia?: boolean | null
+          notificado_paciente?: boolean | null
+          numero?: string | null
+          paciente_id?: string | null
+          reportado_por?: string | null
+          severidad: string
+          tipo: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          causa_raiz?: string | null
+          consecuencias?: string | null
+          created_at?: string
+          departamento?: string | null
+          descripcion?: string
+          estado?: string
+          fecha_cierre?: string | null
+          fecha_evento?: string
+          id?: string
+          involucrados?: Json | null
+          metadata?: Json | null
+          notificado_familia?: boolean | null
+          notificado_paciente?: boolean | null
+          numero?: string | null
+          paciente_id?: string | null
+          reportado_por?: string | null
+          severidad?: string
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eventos_adversos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eventos_adversos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       evoluciones_soap: {
         Row: {
           analisis: string | null
@@ -7648,6 +7901,71 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "ia_modelos_predictivos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      indicadores_calidad: {
+        Row: {
+          activo: boolean
+          categoria: string
+          codigo: string
+          created_at: string
+          descripcion: string | null
+          estandar: string | null
+          formula: string | null
+          frecuencia: string | null
+          id: string
+          meta: number | null
+          nombre: string
+          umbral_alerta: number | null
+          umbral_critico: number | null
+          unidad: string | null
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean
+          categoria: string
+          codigo: string
+          created_at?: string
+          descripcion?: string | null
+          estandar?: string | null
+          formula?: string | null
+          frecuencia?: string | null
+          id?: string
+          meta?: number | null
+          nombre: string
+          umbral_alerta?: number | null
+          umbral_critico?: number | null
+          unidad?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean
+          categoria?: string
+          codigo?: string
+          created_at?: string
+          descripcion?: string | null
+          estandar?: string | null
+          formula?: string | null
+          frecuencia?: string | null
+          id?: string
+          meta?: number | null
+          nombre?: string
+          umbral_alerta?: number | null
+          umbral_critico?: number | null
+          unidad?: string | null
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "indicadores_calidad_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -9181,6 +9499,69 @@ export type Database = {
           },
         ]
       }
+      mediciones_indicadores: {
+        Row: {
+          created_at: string
+          cumple_meta: boolean | null
+          denominador: number
+          id: string
+          indicador_id: string
+          numerador: number
+          observaciones: string | null
+          periodo_fin: string
+          periodo_inicio: string
+          registrado_por: string | null
+          resultado: number | null
+          sucursal_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          cumple_meta?: boolean | null
+          denominador?: number
+          id?: string
+          indicador_id: string
+          numerador?: number
+          observaciones?: string | null
+          periodo_fin: string
+          periodo_inicio: string
+          registrado_por?: string | null
+          resultado?: number | null
+          sucursal_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          cumple_meta?: boolean | null
+          denominador?: number
+          id?: string
+          indicador_id?: string
+          numerador?: number
+          observaciones?: string | null
+          periodo_fin?: string
+          periodo_inicio?: string
+          registrado_por?: string | null
+          resultado?: number | null
+          sucursal_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mediciones_indicadores_indicador_id_fkey"
+            columns: ["indicador_id"]
+            isOneToOne: false
+            referencedRelation: "indicadores_calidad"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mediciones_indicadores_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       membresias_estetica: {
         Row: {
           auto_renovar: boolean | null
@@ -9633,6 +10014,78 @@ export type Database = {
             columns: ["paciente_id"]
             isOneToOne: false
             referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      no_conformidades: {
+        Row: {
+          area: string
+          auditoria_id: string | null
+          codigo: string | null
+          created_at: string
+          descripcion: string
+          estado: string
+          evidencia_cierre: string | null
+          fecha_cierre: string | null
+          fecha_deteccion: string
+          fecha_limite_cierre: string | null
+          id: string
+          requisito: string | null
+          responsable_id: string | null
+          severidad: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          area: string
+          auditoria_id?: string | null
+          codigo?: string | null
+          created_at?: string
+          descripcion: string
+          estado?: string
+          evidencia_cierre?: string | null
+          fecha_cierre?: string | null
+          fecha_deteccion?: string
+          fecha_limite_cierre?: string | null
+          id?: string
+          requisito?: string | null
+          responsable_id?: string | null
+          severidad: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          area?: string
+          auditoria_id?: string | null
+          codigo?: string | null
+          created_at?: string
+          descripcion?: string
+          estado?: string
+          evidencia_cierre?: string | null
+          fecha_cierre?: string | null
+          fecha_deteccion?: string
+          fecha_limite_cierre?: string | null
+          id?: string
+          requisito?: string | null
+          responsable_id?: string | null
+          severidad?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "no_conformidades_auditoria_id_fkey"
+            columns: ["auditoria_id"]
+            isOneToOne: false
+            referencedRelation: "auditorias_calidad"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "no_conformidades_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -15728,6 +16181,57 @@ export type Database = {
           },
         ]
       }
+      reuniones_comite: {
+        Row: {
+          acta_url: string | null
+          acuerdos: string | null
+          agenda: string | null
+          asistentes: Json | null
+          comite_id: string
+          created_at: string
+          fecha_reunion: string
+          id: string
+          workspace_id: string | null
+        }
+        Insert: {
+          acta_url?: string | null
+          acuerdos?: string | null
+          agenda?: string | null
+          asistentes?: Json | null
+          comite_id: string
+          created_at?: string
+          fecha_reunion: string
+          id?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          acta_url?: string | null
+          acuerdos?: string | null
+          agenda?: string | null
+          asistentes?: Json | null
+          comite_id?: string
+          created_at?: string
+          fecha_reunion?: string
+          id?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reuniones_comite_comite_id_fkey"
+            columns: ["comite_id"]
+            isOneToOne: false
+            referencedRelation: "comites_calidad"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reuniones_comite_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       roles_vertical: {
         Row: {
           activo: boolean
@@ -17015,6 +17519,60 @@ export type Database = {
           },
           {
             foreignKeyName: "teleconsultas_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      telemedicina_chat_mensajes: {
+        Row: {
+          archivo_url: string | null
+          created_at: string
+          id: string
+          leido: boolean | null
+          mensaje: string
+          remitente_nombre: string | null
+          remitente_tipo: string
+          remitente_user_id: string | null
+          sesion_id: string
+          workspace_id: string | null
+        }
+        Insert: {
+          archivo_url?: string | null
+          created_at?: string
+          id?: string
+          leido?: boolean | null
+          mensaje: string
+          remitente_nombre?: string | null
+          remitente_tipo: string
+          remitente_user_id?: string | null
+          sesion_id: string
+          workspace_id?: string | null
+        }
+        Update: {
+          archivo_url?: string | null
+          created_at?: string
+          id?: string
+          leido?: boolean | null
+          mensaje?: string
+          remitente_nombre?: string | null
+          remitente_tipo?: string
+          remitente_user_id?: string | null
+          sesion_id?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "telemedicina_chat_mensajes_sesion_id_fkey"
+            columns: ["sesion_id"]
+            isOneToOne: false
+            referencedRelation: "telemedicina_sesiones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "telemedicina_chat_mensajes_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
