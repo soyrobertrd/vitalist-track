@@ -173,8 +173,15 @@ const Layout = ({ children }: LayoutProps) => {
       path: "/odontologia", icon: CircleDot, label: "Odontología",
       verticales: ["dental"] as VerticalTipo[],
       subItems: [
-        { path: "/dental-care", label: "DentalCare Pro" },
+        { path: "/dental-care", label: "Resumen DentalCare" },
         { path: "/odontograma", label: "Odontograma" },
+        { path: "/dental-care?tab=planes", label: "Planes de tratamiento" },
+        { path: "/dental-care?tab=ortodoncia", label: "Ortodoncia" },
+        { path: "/dental-care?tab=laboratorio", label: "Laboratorio dental" },
+        { path: "/dental-care?tab=sillones", label: "Sillones / Boxes" },
+        { path: "/dental-care?tab=presupuestos", label: "Presupuestos sonrisa" },
+        { path: "/dental-care?tab=comisiones", label: "Comisiones doctores" },
+        { path: "/dental-care?tab=recordatorios", label: "Fidelización paciente" },
       ]
     },
 
@@ -235,21 +242,48 @@ const Layout = ({ children }: LayoutProps) => {
     {
       path: "/recovery-care", icon: BedDouble, label: "Recovery Care",
       verticales: ["recovery"] as VerticalTipo[],
-      subItems: [{ path: "/recovery-care", label: "Pacientes Recovery" }]
+      subItems: [
+        { path: "/recovery-care", label: "Resumen Recovery" },
+        { path: "/recovery-care?tab=pacientes", label: "Pacientes Recovery" },
+        { path: "/recovery-care?tab=habitaciones", label: "Habitaciones" },
+        { path: "/recovery-care?tab=reservas", label: "Reservas" },
+        { path: "/recovery-care?tab=planes", label: "Planes de cuidado" },
+        { path: "/recovery-care?tab=seguimiento", label: "Seguimiento clínico" },
+        { path: "/recovery-care?tab=concierge", label: "Concierge médico" },
+        { path: "/recovery-care?tab=alertas", label: "Alertas Recovery" },
+      ]
     },
 
     // ===== ESTÉTICA =====
     {
       path: "/aesthetic-pro", icon: Sparkles, label: "Aesthetic Pro",
       verticales: ["aesthetic"] as VerticalTipo[],
-      subItems: [{ path: "/aesthetic-pro", label: "CRM & Evaluaciones" }]
+      subItems: [
+        { path: "/aesthetic-pro", label: "Resumen Aesthetic" },
+        { path: "/aesthetic-pro?tab=leads", label: "Leads CRM estética" },
+        { path: "/aesthetic-pro?tab=evaluaciones", label: "Evaluaciones" },
+        { path: "/aesthetic-pro?tab=procedimientos", label: "Procedimientos" },
+        { path: "/aesthetic-pro?tab=paquetes", label: "Paquetes" },
+        { path: "/aesthetic-pro?tab=cabinas", label: "Cabinas" },
+        { path: "/aesthetic-pro?tab=membresias", label: "Membresías" },
+        { path: "/aesthetic-pro?tab=fotos", label: "Fotos evolución" },
+        { path: "/aesthetic-pro?tab=promos", label: "Promociones" },
+        { path: "/aesthetic-pro?tab=financiamiento", label: "Financiamiento" },
+      ]
     },
 
     // ===== VISIÓN =====
     {
       path: "/vision-care", icon: Eye, label: "VisionCare Pro",
       verticales: ["vision"] as VerticalTipo[],
-      subItems: [{ path: "/vision-care", label: "Recetas & Óptica" }]
+      subItems: [
+        { path: "/vision-care", label: "Resumen Vision" },
+        { path: "/vision-care?tab=recetas", label: "Recetas ópticas" },
+        { path: "/vision-care?tab=inventario", label: "Inventario óptico" },
+        { path: "/vision-care?tab=ordenes", label: "Órdenes de laboratorio" },
+        { path: "/vision-care?tab=combos", label: "Combos lentes" },
+        { path: "/vision-care?tab=garantias", label: "Garantías" },
+      ]
     },
 
     
