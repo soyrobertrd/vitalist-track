@@ -27,10 +27,17 @@ export default function VerticalPacientesTab({ pacienteLabel = "Pacientes" }: Pr
   const [form, setForm] = useState({ nombre: "", apellido: "", cedula: "", telefono: "", email: "", sexo: "", fecha_nacimiento: "" });
 
   const { data: pacientes = [], refetch } = useQuery({
-    queryKey: ["pacientes_vertical", wsId],
+    queryKey: ["pacientes_vertical", wsId, verticalActiva],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("pacientes") as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre").limit(500);
+      let q: any = (supabase.from("pacientes") as any)
+        .select("*")
+        .eq("workspace_id", wsId!)
+        .eq("activo", true);
+      if (verticalActiva && verticalActiva !== "todas") {
+        q = q.eq("vertical", verticalActiva);
+      }
+      const { data } = await q.order("nombre").limit(500);
       return data || [];
     },
   });
@@ -39,6 +46,7 @@ export default function VerticalPacientesTab({ pacienteLabel = "Pacientes" }: Pr
     if (!wsId || !form.nombre) return;
     const { error } = await supabase.from("pacientes").insert({
       workspace_id: wsId,
+      vertical: verticalParaInsert,
       nombre: form.nombre,
       apellido: form.apellido || null,
       cedula: form.cedula || null,
