@@ -173,6 +173,106 @@ export type Database = {
         }
         Relationships: []
       }
+      agenda_ia_predicciones: {
+        Row: {
+          accion_sugerida: string | null
+          cita_id: string | null
+          created_at: string
+          estado: string
+          factores: Json | null
+          id: string
+          paciente_id: string | null
+          probabilidad: number
+          tipo_prediccion: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          accion_sugerida?: string | null
+          cita_id?: string | null
+          created_at?: string
+          estado?: string
+          factores?: Json | null
+          id?: string
+          paciente_id?: string | null
+          probabilidad?: number
+          tipo_prediccion?: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          accion_sugerida?: string | null
+          cita_id?: string | null
+          created_at?: string
+          estado?: string
+          factores?: Json | null
+          id?: string
+          paciente_id?: string | null
+          probabilidad?: number
+          tipo_prediccion?: string
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agenda_ia_predicciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agenda_ia_sugerencias: {
+        Row: {
+          aplicada_at: string | null
+          aplicada_por: string | null
+          created_at: string
+          datos: Json | null
+          descripcion: string
+          estado: string
+          id: string
+          prioridad: string
+          tipo_sugerencia: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          aplicada_at?: string | null
+          aplicada_por?: string | null
+          created_at?: string
+          datos?: Json | null
+          descripcion: string
+          estado?: string
+          id?: string
+          prioridad?: string
+          tipo_sugerencia?: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          aplicada_at?: string | null
+          aplicada_por?: string | null
+          created_at?: string
+          datos?: Json | null
+          descripcion?: string
+          estado?: string
+          id?: string
+          prioridad?: string
+          tipo_sugerencia?: string
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agenda_ia_sugerencias_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agenda_servicios_recovery: {
         Row: {
           created_at: string
@@ -692,6 +792,60 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "asientos_contables_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asignaciones_rol_vertical: {
+        Row: {
+          activo: boolean
+          asignado_por: string | null
+          created_at: string
+          id: string
+          rol_vertical_id: string
+          user_id: string
+          vertical_tipo: string
+          vigencia_fin: string | null
+          vigencia_inicio: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          asignado_por?: string | null
+          created_at?: string
+          id?: string
+          rol_vertical_id: string
+          user_id: string
+          vertical_tipo: string
+          vigencia_fin?: string | null
+          vigencia_inicio?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          asignado_por?: string | null
+          created_at?: string
+          id?: string
+          rol_vertical_id?: string
+          user_id?: string
+          vertical_tipo?: string
+          vigencia_fin?: string | null
+          vigencia_inicio?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asignaciones_rol_vertical_rol_vertical_id_fkey"
+            columns: ["rol_vertical_id"]
+            isOneToOne: false
+            referencedRelation: "roles_vertical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asignaciones_rol_vertical_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -1421,6 +1575,81 @@ export type Database = {
           },
         ]
       }
+      campanas_comunicacion: {
+        Row: {
+          abiertos: number
+          canal: string
+          creado_por: string | null
+          created_at: string
+          entregados: number
+          enviados: number
+          errores: number
+          estado: string
+          id: string
+          nombre: string
+          plantilla_id: string | null
+          programada_para: string | null
+          segmentacion: Json | null
+          tipo: string
+          updated_at: string
+          vertical_tipo: string | null
+          workspace_id: string
+        }
+        Insert: {
+          abiertos?: number
+          canal?: string
+          creado_por?: string | null
+          created_at?: string
+          entregados?: number
+          enviados?: number
+          errores?: number
+          estado?: string
+          id?: string
+          nombre: string
+          plantilla_id?: string | null
+          programada_para?: string | null
+          segmentacion?: Json | null
+          tipo?: string
+          updated_at?: string
+          vertical_tipo?: string | null
+          workspace_id: string
+        }
+        Update: {
+          abiertos?: number
+          canal?: string
+          creado_por?: string | null
+          created_at?: string
+          entregados?: number
+          enviados?: number
+          errores?: number
+          estado?: string
+          id?: string
+          nombre?: string
+          plantilla_id?: string | null
+          programada_para?: string | null
+          segmentacion?: Json | null
+          tipo?: string
+          updated_at?: string
+          vertical_tipo?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campanas_comunicacion_plantilla_id_fkey"
+            columns: ["plantilla_id"]
+            isOneToOne: false
+            referencedRelation: "plantillas_comunicacion"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campanas_comunicacion_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       campanas_marketing: {
         Row: {
           conversiones: number | null
@@ -2141,6 +2370,80 @@ export type Database = {
           },
         ]
       }
+      comunicaciones_multicanal: {
+        Row: {
+          asunto: string | null
+          campana_id: string | null
+          canal: string
+          contenido: string
+          created_at: string
+          destinatario_contacto: string | null
+          destinatario_id: string | null
+          destinatario_tipo: string
+          entregado_at: string | null
+          enviado_at: string | null
+          enviado_por: string | null
+          error_detalle: string | null
+          estado: string
+          id: string
+          leido_at: string | null
+          metadata: Json | null
+          plantilla_id: string | null
+          vertical_tipo: string | null
+          workspace_id: string
+        }
+        Insert: {
+          asunto?: string | null
+          campana_id?: string | null
+          canal?: string
+          contenido: string
+          created_at?: string
+          destinatario_contacto?: string | null
+          destinatario_id?: string | null
+          destinatario_tipo?: string
+          entregado_at?: string | null
+          enviado_at?: string | null
+          enviado_por?: string | null
+          error_detalle?: string | null
+          estado?: string
+          id?: string
+          leido_at?: string | null
+          metadata?: Json | null
+          plantilla_id?: string | null
+          vertical_tipo?: string | null
+          workspace_id: string
+        }
+        Update: {
+          asunto?: string | null
+          campana_id?: string | null
+          canal?: string
+          contenido?: string
+          created_at?: string
+          destinatario_contacto?: string | null
+          destinatario_id?: string | null
+          destinatario_tipo?: string
+          entregado_at?: string | null
+          enviado_at?: string | null
+          enviado_por?: string | null
+          error_detalle?: string | null
+          estado?: string
+          id?: string
+          leido_at?: string | null
+          metadata?: Json | null
+          plantilla_id?: string | null
+          vertical_tipo?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comunicaciones_multicanal_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       configuracion_sistema: {
         Row: {
           clave: string
@@ -2824,6 +3127,56 @@ export type Database = {
           },
           {
             foreignKeyName: "cuentas_contables_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      delegaciones_acceso_vertical: {
+        Row: {
+          activo: boolean
+          created_at: string
+          delegado_user_id: string
+          delegante_user_id: string
+          fin: string
+          id: string
+          inicio: string
+          motivo: string | null
+          permisos_delegados: Json
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          delegado_user_id: string
+          delegante_user_id: string
+          fin: string
+          id?: string
+          inicio?: string
+          motivo?: string | null
+          permisos_delegados?: Json
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          delegado_user_id?: string
+          delegante_user_id?: string
+          fin?: string
+          id?: string
+          inicio?: string
+          motivo?: string | null
+          permisos_delegados?: Json
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delegaciones_acceso_vertical_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -8636,6 +8989,59 @@ export type Database = {
           },
         ]
       }
+      plantillas_comunicacion: {
+        Row: {
+          activo: boolean
+          asunto_template: string | null
+          canal: string
+          contenido_template: string
+          created_at: string
+          evento: string | null
+          id: string
+          nombre: string
+          updated_at: string
+          variables: Json | null
+          vertical_tipo: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          asunto_template?: string | null
+          canal?: string
+          contenido_template: string
+          created_at?: string
+          evento?: string | null
+          id?: string
+          nombre: string
+          updated_at?: string
+          variables?: Json | null
+          vertical_tipo?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          asunto_template?: string | null
+          canal?: string
+          contenido_template?: string
+          created_at?: string
+          evento?: string | null
+          id?: string
+          nombre?: string
+          updated_at?: string
+          variables?: Json | null
+          vertical_tipo?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plantillas_comunicacion_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plantillas_correo: {
         Row: {
           activo: boolean | null
@@ -9498,6 +9904,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "proveedores_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proyecciones_financieras: {
+        Row: {
+          created_at: string
+          generado_por: string | null
+          id: string
+          notas: string | null
+          periodo: string
+          supuestos: Json | null
+          tipo: string
+          valor_proyectado: number
+          valor_real: number | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          generado_por?: string | null
+          id?: string
+          notas?: string | null
+          periodo: string
+          supuestos?: Json | null
+          tipo?: string
+          valor_proyectado?: number
+          valor_real?: number | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          generado_por?: string | null
+          id?: string
+          notas?: string | null
+          periodo?: string
+          supuestos?: Json | null
+          tipo?: string
+          valor_proyectado?: number
+          valor_real?: number | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proyecciones_financieras_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -10682,6 +11138,56 @@ export type Database = {
           },
         ]
       }
+      reportes_financieros_vertical: {
+        Row: {
+          created_at: string
+          datos: Json
+          generado_por: string | null
+          id: string
+          notas: string | null
+          periodo_fin: string
+          periodo_inicio: string
+          tipo_reporte: string
+          totales: Json | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          datos?: Json
+          generado_por?: string | null
+          id?: string
+          notas?: string | null
+          periodo_fin: string
+          periodo_inicio: string
+          tipo_reporte?: string
+          totales?: Json | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          datos?: Json
+          generado_por?: string | null
+          id?: string
+          notas?: string | null
+          periodo_fin?: string
+          periodo_inicio?: string
+          tipo_reporte?: string
+          totales?: Json | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reportes_financieros_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reportes_fiscales_vertical: {
         Row: {
           cantidad_registros: number | null
@@ -11137,6 +11643,50 @@ export type Database = {
             columns: ["paciente_id"]
             isOneToOne: false
             referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roles_vertical: {
+        Row: {
+          activo: boolean
+          created_at: string
+          descripcion: string | null
+          id: string
+          nombre: string
+          permisos: Json
+          updated_at: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          permisos?: Json
+          updated_at?: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          permisos?: Json
+          updated_at?: string
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roles_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
