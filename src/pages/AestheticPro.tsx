@@ -77,7 +77,8 @@ export default function AestheticPro() {
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
-  const [tab, setTab] = useTabParam("leads");
+  const [tab, setTab] = useTabParam("");
+  const isResumen = !tab;
 
   // Existing queries
   const { data: leads = [] } = useQuery({
@@ -169,19 +170,30 @@ export default function AestheticPro() {
         <p className="text-muted-foreground">Cirugía estética, medicina estética, spa médico, depilación láser, centros corporales y faciales</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-        <Card><CardContent className="pt-3 text-center"><TrendingUp className="h-4 w-4 mx-auto mb-1 text-blue-500" /><p className="text-xl font-bold">{leads.length}</p><p className="text-[10px] text-muted-foreground">Leads</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><p className="text-xl font-bold text-green-600">{tasaConversion}%</p><p className="text-[10px] text-muted-foreground">Conversión</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Camera className="h-4 w-4 mx-auto mb-1 text-purple-500" /><p className="text-xl font-bold">{evaluaciones.length}</p><p className="text-[10px] text-muted-foreground">Evaluaciones</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Crown className="h-4 w-4 mx-auto mb-1 text-yellow-500" /><p className="text-xl font-bold">{membActivas}</p><p className="text-[10px] text-muted-foreground">Membresías</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Sofa className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{cabinasDisp}/{cabinas.length}</p><p className="text-[10px] text-muted-foreground">Cabinas disp.</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Package className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{paquetes.length}</p><p className="text-[10px] text-muted-foreground">Paquetes</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Tag className="h-4 w-4 mx-auto mb-1 text-pink-500" /><p className="text-xl font-bold">{promosActivas}</p><p className="text-[10px] text-muted-foreground">Promos</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><CreditCard className="h-4 w-4 mx-auto mb-1 text-orange-500" /><p className="text-xl font-bold">{fmt(balancePendiente)}</p><p className="text-[10px] text-muted-foreground">Por cobrar</p></CardContent></Card>
-      </div>
+      {isResumen && (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+          <Card><CardContent className="pt-3 text-center"><TrendingUp className="h-4 w-4 mx-auto mb-1 text-blue-500" /><p className="text-xl font-bold">{leads.length}</p><p className="text-[10px] text-muted-foreground">Leads</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><p className="text-xl font-bold text-green-600">{tasaConversion}%</p><p className="text-[10px] text-muted-foreground">Conversión</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><Camera className="h-4 w-4 mx-auto mb-1 text-purple-500" /><p className="text-xl font-bold">{evaluaciones.length}</p><p className="text-[10px] text-muted-foreground">Evaluaciones</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><Crown className="h-4 w-4 mx-auto mb-1 text-yellow-500" /><p className="text-xl font-bold">{membActivas}</p><p className="text-[10px] text-muted-foreground">Membresías</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><Sofa className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{cabinasDisp}/{cabinas.length}</p><p className="text-[10px] text-muted-foreground">Cabinas disp.</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><Package className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{paquetes.length}</p><p className="text-[10px] text-muted-foreground">Paquetes</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><Tag className="h-4 w-4 mx-auto mb-1 text-pink-500" /><p className="text-xl font-bold">{promosActivas}</p><p className="text-[10px] text-muted-foreground">Promos</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><CreditCard className="h-4 w-4 mx-auto mb-1 text-orange-500" /><p className="text-xl font-bold">{fmt(balancePendiente)}</p><p className="text-[10px] text-muted-foreground">Por cobrar</p></CardContent></Card>
+        </div>
+      )}
 
+      {isResumen && (
+        <Card>
+          <CardContent className="py-6 text-sm text-muted-foreground">
+            Selecciona una sección desde el menú lateral (<strong>Aesthetic Pro</strong>): Leads CRM, Evaluaciones, Procedimientos, Paquetes, Cabinas, Membresías, Fotos evolución, Promociones, Financiamiento.
+          </CardContent>
+        </Card>
+      )}
+
+      {!isResumen && (
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex-wrap h-auto gap-1">
+        <TabsList className="hidden">
           <TabsTrigger value="leads">Leads CRM</TabsTrigger>
           <TabsTrigger value="evaluaciones">Evaluaciones</TabsTrigger>
           <TabsTrigger value="procedimientos">Procedimientos</TabsTrigger>
@@ -478,6 +490,7 @@ export default function AestheticPro() {
         <TabsContent value="crm_fideliz" className="mt-4"><VerticalCRMFidelizacionTab verticalTipo="estetica" /></TabsContent>
         <TabsContent value="api_gateway" className="mt-4"><VerticalAPIGatewayTab verticalTipo="estetica" /></TabsContent>
       </Tabs>
+      )}
     </div>
   );
 }

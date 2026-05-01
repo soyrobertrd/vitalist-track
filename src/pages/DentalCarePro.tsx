@@ -83,7 +83,8 @@ export default function DentalCarePro() {
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
-  const [tab, setTab] = useTabParam("planes");
+  const [tab, setTab] = useTabParam("");
+  const isResumen = !tab;
 
   const { data: planes = [] } = useQuery({
     queryKey: ["planes_tratamiento_dental", wsId],
@@ -204,6 +205,7 @@ export default function DentalCarePro() {
         <p className="text-muted-foreground">Gestión integral dental — General, Ortodoncia, Implantología, Endodoncia, Odontopediatría</p>
       </div>
 
+      {isResumen && (
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         <Card><CardContent className="pt-4 text-center">
           <ClipboardList className="h-5 w-5 mx-auto mb-1 text-primary" />
@@ -234,9 +236,17 @@ export default function DentalCarePro() {
           <p className="text-xs text-muted-foreground">Recordatorios</p>
         </CardContent></Card>
       </div>
+      )}
 
+      {isResumen && (
+        <Card><CardContent className="py-6 text-sm text-muted-foreground">
+          Selecciona una sección desde el menú lateral (<strong>Odontología</strong>): Planes, Ortodoncia, Laboratorio dental, Sillones, Presupuestos, Comisiones, Fidelización.
+        </CardContent></Card>
+      )}
+
+      {!isResumen && (
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex-wrap h-auto gap-1">
+        <TabsList className="hidden">
           <TabsTrigger value="planes">Tratamientos</TabsTrigger>
           <TabsTrigger value="ortodoncia">Ortodoncia</TabsTrigger>
           <TabsTrigger value="laboratorio">Laboratorio</TabsTrigger>
@@ -496,6 +506,7 @@ export default function DentalCarePro() {
         <TabsContent value="crm_fideliz" className="mt-4"><VerticalCRMFidelizacionTab verticalTipo="dental" /></TabsContent>
         <TabsContent value="api_gateway" className="mt-4"><VerticalAPIGatewayTab verticalTipo="dental" /></TabsContent>
       </Tabs>
+      )}
     </div>
   );
 }

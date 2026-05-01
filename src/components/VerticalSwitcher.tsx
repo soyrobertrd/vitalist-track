@@ -1,4 +1,5 @@
-import { Building2, Eye, SmilePlus, Sparkles, BedDouble, Stethoscope, Layers } from "lucide-react";
+import { Building2, Eye, SmilePlus, Sparkles, BedDouble, Stethoscope, Layers, Settings2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -21,6 +22,7 @@ interface Props { collapsed?: boolean; }
 export function VerticalSwitcher({ collapsed = false }: Props) {
   const { verticalesActivas, verticalActiva, setVerticalActiva } = useVertical();
   const { isAdmin } = useUserRole();
+  const navigate = useNavigate();
 
   if (verticalesActivas.length <= 1 && !isAdmin) return null;
 
@@ -30,15 +32,19 @@ export function VerticalSwitcher({ collapsed = false }: Props) {
 
   const Icon = actual.icon;
 
+  // Verticales no activadas (sólo admin)
+  const todas: VerticalTipo[] = ["clinica", "dental", "aesthetic", "recovery", "vision"];
+  const inactivas = todas.filter((v) => !verticalesActivas.includes(v));
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className={collapsed ? "w-9 h-9 p-0" : "gap-2"}>
+        <Button variant="outline" size="sm" className={collapsed ? "w-9 h-9 p-0" : "gap-2 w-full justify-start"}>
           <Icon className={`h-4 w-4 ${actual.color}`} />
-          {!collapsed && <span className="hidden md:inline">{actual.label}</span>}
+          {!collapsed && <span className="truncate">{actual.label}</span>}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56 bg-popover">
+      <DropdownMenuContent align="end" className="w-64 bg-popover">
         <DropdownMenuLabel className="flex items-center justify-between">
           <span>Vertical activa</span>
           <Badge variant="secondary" className="text-[10px]">{verticalesActivas.length} activas</Badge>
@@ -55,15 +61,35 @@ export function VerticalSwitcher({ collapsed = false }: Props) {
           return (
             <DropdownMenuItem key={v} onClick={() => setVerticalActiva(v)}>
               <I className={`mr-2 h-4 w-4 ${m.color}`} /> {m.label}
+              {verticalActiva === v && <Badge variant="outline" className="ml-auto text-[10px]">activa</Badge>}
             </DropdownMenuItem>
           );
         })}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem disabled className="text-xs text-muted-foreground">
-          {isAdmin
-            ? "Como admin, puedes ver todas o filtrar por una."
-            : "Tu acceso se limita a tu vertical asignada."}
-        </DropdownMenuItem>
+        {isAdmin && inactivas.length > 0 && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-xs text-muted-foreground">No habilitadas</DropdownMenuLabel>
+            {inactivas.map((v) => {
+              const m = META[v]; const I = m.icon;
+              return (
+                <DropdownMenuItem key={v} onClick={() => navigate("/verticales")} className="opacity-60">
+                  <I className={`mr-2 h-4 w-4 ${m.color}`} />
+                  <span className="flex-1">{m.label}</span>
+                  <span className="text-[10px] text-muted-foreground">activar →</span>
+                </DropdownMenuItem>
+              );
+            })}
+          </>
+        )}
+        {isAdmin && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/verticales")}>
+              <Settings2 className="mr-2 h-4 w-4" />
+              Gestionar verticales del centro
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
