@@ -43,7 +43,7 @@ export function VerticalProvider({ children }: { children: ReactNode }) {
         .eq("workspace_id", currentWorkspace.id)
         .eq("activa", true),
       user
-        ? supabase.from("profiles").select("vertical_asignada").eq("user_id", user.id).maybeSingle()
+        ? (supabase.from("profiles") as any).select("vertical_asignada").eq("user_id", user.id).maybeSingle()
         : Promise.resolve({ data: null }),
     ]);
     const lista = (vw.data || []).map((r: any) => r.vertical as VerticalTipo);
