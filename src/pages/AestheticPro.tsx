@@ -29,6 +29,10 @@ import VerticalTelemedicinaTab from "@/components/vertical/VerticalTelemedicinaT
 import VerticalRecetasTab from "@/components/vertical/VerticalRecetasTab";
 import VerticalFacturacionElectronicaTab from "@/components/vertical/VerticalFacturacionElectronicaTab";
 import VerticalIntegracionesTab from "@/components/vertical/VerticalIntegracionesTab";
+import VerticalInventarioTab from "@/components/vertical/VerticalInventarioTab";
+import VerticalReportesKPITab from "@/components/vertical/VerticalReportesKPITab";
+import VerticalOnboardingTab from "@/components/vertical/VerticalOnboardingTab";
+import VerticalPWATab from "@/components/vertical/VerticalPWATab";
 
 const estadoLeadColor: Record<string, string> = {
   nuevo: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -186,6 +190,10 @@ export default function AestheticPro() {
           <TabsTrigger value="recetas">Recetas</TabsTrigger>
           <TabsTrigger value="ecf">e-CF / DGII</TabsTrigger>
           <TabsTrigger value="integraciones">Integraciones</TabsTrigger>
+          <TabsTrigger value="inventario_v">Inventario</TabsTrigger>
+          <TabsTrigger value="kpis">KPIs</TabsTrigger>
+          <TabsTrigger value="onboarding">Setup</TabsTrigger>
+          <TabsTrigger value="pwa">PWA</TabsTrigger>
         </TabsList>
 
         {/* LEADS CRM */}
@@ -419,6 +427,10 @@ export default function AestheticPro() {
         <TabsContent value="recetas" className="mt-4"><VerticalRecetasTab verticalTipo="estetica" /></TabsContent>
         <TabsContent value="ecf" className="mt-4"><VerticalFacturacionElectronicaTab verticalTipo="estetica" /></TabsContent>
         <TabsContent value="integraciones" className="mt-4"><VerticalIntegracionesTab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="inventario_v" className="mt-4"><VerticalInventarioTab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="kpis" className="mt-4"><VerticalReportesKPITab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="onboarding" className="mt-4"><VerticalOnboardingTab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="pwa" className="mt-4"><VerticalPWATab /></TabsContent>
       </Tabs>
     </div>
   );
