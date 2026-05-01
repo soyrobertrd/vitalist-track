@@ -103,6 +103,7 @@ const Dashboard = () => {
         let qq = q;
         if (wsId) qq = qq.eq("workspace_id", wsId);
         if (activeSucursalId) qq = qq.eq("sucursal_id", activeSucursalId);
+        if (verticalActiva && verticalActiva !== "todas") qq = qq.eq("vertical", verticalActiva);
         return qq;
       };
 
