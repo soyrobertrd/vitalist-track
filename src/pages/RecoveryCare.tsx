@@ -81,7 +81,8 @@ export default function RecoveryCare() {
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
-  const [tab, setTab] = useTabParam("pacientes");
+  const [tab, setTab] = useTabParam("");
+  const isResumen = !tab;
 
   const { data: pacientesRec = [] } = useQuery({
     queryKey: ["pacientes_recovery", wsId], enabled: !!wsId,
@@ -124,6 +125,7 @@ export default function RecoveryCare() {
         <p className="text-muted-foreground">Post-lipo, BBL, turismo médico, recovery premium, cuidados domiciliarios</p>
       </div>
 
+      {isResumen && (
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
         <Card><CardContent className="pt-3 text-center"><Activity className="h-4 w-4 mx-auto mb-1 text-green-500" /><p className="text-xl font-bold">{activos}</p><p className="text-[10px] text-muted-foreground">Activos</p></CardContent></Card>
         <Card><CardContent className="pt-3 text-center"><BedDouble className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{habDisponibles}/{habitaciones.length}</p><p className="text-[10px] text-muted-foreground">Hab. disp.</p></CardContent></Card>
@@ -132,7 +134,15 @@ export default function RecoveryCare() {
         <Card><CardContent className="pt-3 text-center"><p className="text-xl font-bold">{conciergeServ.length}</p><p className="text-[10px] text-muted-foreground">Concierge</p></CardContent></Card>
         <Card><CardContent className="pt-3 text-center"><ShieldAlert className="h-4 w-4 mx-auto mb-1 text-destructive" /><p className="text-xl font-bold">{alertasAbiertas}</p><p className="text-[10px] text-muted-foreground">Alertas</p></CardContent></Card>
       </div>
+      )}
 
+      {isResumen && (
+        <Card><CardContent className="py-6 text-sm text-muted-foreground">
+          Selecciona una sección desde el menú lateral (<strong>Recovery Care</strong>): Pacientes, Habitaciones, Reservas, Planes de cuidado, Seguimiento, Concierge, Alertas.
+        </CardContent></Card>
+      )}
+
+      {!isResumen && (
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="hidden">
           <TabsTrigger value="pacientes">Pacientes</TabsTrigger>
@@ -315,6 +325,7 @@ export default function RecoveryCare() {
         <TabsContent value="crm_fideliz" className="mt-4"><VerticalCRMFidelizacionTab verticalTipo="recuperacion" /></TabsContent>
         <TabsContent value="api_gateway" className="mt-4"><VerticalAPIGatewayTab verticalTipo="recuperacion" /></TabsContent>
       </Tabs>
+      )}
     </div>
   );
 }
