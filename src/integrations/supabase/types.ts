@@ -19036,6 +19036,62 @@ export type Database = {
           },
         ]
       }
+      workflow_plantillas: {
+        Row: {
+          acciones: Json
+          activo: boolean
+          categoria: string | null
+          codigo: string
+          created_at: string
+          created_by: string | null
+          descripcion: string | null
+          es_global: boolean
+          evento_disparador: string
+          id: string
+          nombre: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          acciones?: Json
+          activo?: boolean
+          categoria?: string | null
+          codigo: string
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          es_global?: boolean
+          evento_disparador: string
+          id?: string
+          nombre: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          acciones?: Json
+          activo?: boolean
+          categoria?: string | null
+          codigo?: string
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          es_global?: boolean
+          evento_disparador?: string
+          id?: string
+          nombre?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_plantillas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workflow_reglas: {
         Row: {
           acciones: Json | null
@@ -19384,6 +19440,10 @@ export type Database = {
           total_llamadas: number
         }[]
       }
+      centro_comando_metricas: {
+        Args: { _workspace_id: string }
+        Returns: Json
+      }
       detectar_accesos_sospechosos: {
         Args: { _workspace_id?: string }
         Returns: number
@@ -19468,7 +19528,15 @@ export type Database = {
       }
       paciente_timeline_360: {
         Args: { _limite?: number; _paciente_id: string }
-        Returns: Json
+        Returns: {
+          estado: string
+          fecha: string
+          metadata: Json
+          modulo: string
+          ref_id: string
+          tipo: string
+          titulo: string
+        }[]
       }
       portal_paciente_datos: { Args: { _token: string }; Returns: Json }
       registrar_acceso_ficha: {
@@ -19491,6 +19559,10 @@ export type Database = {
         Returns: string
       }
       set_motivo_cambio: { Args: { _motivo: string }; Returns: undefined }
+      workflow_ejecutar_plantilla: {
+        Args: { _contexto?: Json; _paciente_id: string; _plantilla_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "coordinador" | "medico" | "enfermera" | "recepcion"
