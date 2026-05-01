@@ -44,10 +44,10 @@ export default function VerticalReportesKPITab({ verticalTipo }: Props) {
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
-      const [citas, leads, pagos] = await Promise.all([
-        (supabase.from("citas_vertical") as any).select("id, estado", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).gte("created_at", startOfMonth),
-        (supabase.from("leads_vertical") as any).select("id", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).gte("created_at", startOfMonth),
-        (supabase.from("pagos_online_vertical") as any).select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startOfMonth),
+      const citasQ = (supabase as any).from("citas_vertical").select("id, estado", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).gte("created_at", startOfMonth);
+      const leadsQ = (supabase as any).from("leads_vertical").select("id", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).gte("created_at", startOfMonth);
+      const pagosQ = (supabase as any).from("pagos_online_vertical").select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startOfMonth);
+      const [citas, leads, pagos] = await Promise.all([citasQ, leadsQ, pagosQ] as any[]);
       ]);
 
       const totalCitas = citas.count || 0;
