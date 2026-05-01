@@ -42,6 +42,10 @@ import VerticalFinanzasAvanzadasTab from "@/components/vertical/VerticalFinanzas
 import VerticalDocumentosTab from "@/components/vertical/VerticalDocumentosTab";
 import VerticalWorkflowsTab from "@/components/vertical/VerticalWorkflowsTab";
 import VerticalIdiomaAccesibilidadTab from "@/components/vertical/VerticalIdiomaAccesibilidadTab";
+import VerticalMarketplaceTab from "@/components/vertical/VerticalMarketplaceTab";
+import VerticalTelemedicinaAvanzadaTab from "@/components/vertical/VerticalTelemedicinaAvanzadaTab";
+import VerticalIAPredictivaTab from "@/components/vertical/VerticalIAPredictivaTab";
+import VerticalIoTTab from "@/components/vertical/VerticalIoTTab";
 
 const estadoPacColor: Record<string, string> = {
   reservado: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -159,6 +163,10 @@ export default function RecoveryCare() {
           <TabsTrigger value="documentos_v">Documentos</TabsTrigger>
           <TabsTrigger value="workflows">Workflows</TabsTrigger>
           <TabsTrigger value="idioma_acc">i18n / A11y</TabsTrigger>
+          <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
+          <TabsTrigger value="telemed_avz">Telemedicina Avz</TabsTrigger>
+          <TabsTrigger value="ia_predictiva">IA Predictiva</TabsTrigger>
+          <TabsTrigger value="iot">IoT</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pacientes" className="space-y-3">
@@ -289,6 +297,10 @@ export default function RecoveryCare() {
         <TabsContent value="documentos_v" className="mt-4"><VerticalDocumentosTab verticalTipo="recovery" /></TabsContent>
         <TabsContent value="workflows" className="mt-4"><VerticalWorkflowsTab verticalTipo="recovery" /></TabsContent>
         <TabsContent value="idioma_acc" className="mt-4"><VerticalIdiomaAccesibilidadTab /></TabsContent>
+        <TabsContent value="marketplace" className="mt-4"><VerticalMarketplaceTab verticalTipo="recuperacion" /></TabsContent>
+        <TabsContent value="telemed_avz" className="mt-4"><VerticalTelemedicinaAvanzadaTab verticalTipo="recuperacion" /></TabsContent>
+        <TabsContent value="ia_predictiva" className="mt-4"><VerticalIAPredictivaTab verticalTipo="recuperacion" /></TabsContent>
+        <TabsContent value="iot" className="mt-4"><VerticalIoTTab verticalTipo="recuperacion" /></TabsContent>
       </Tabs>
     </div>
   );
