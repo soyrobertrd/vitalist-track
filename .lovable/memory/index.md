@@ -84,3 +84,4 @@
 - [Fase W - Internamientos, Enfermería, Lab, Agenda Universal](mem://features/fase-w-internamientos-enfermeria-lab-agenda) — Rondas médicas, valoración/plan/signos/admin meds enfermería, trazabilidad muestras + QC + alertas lab, agenda multi-área
 - [Fase Z - Hub 360, CPOE y Alertas Clínicas](mem://features/fase-z-hub360-cpoe-alertas) — Hub Clínico 360° del paciente con timeline, motor de Órdenes Médicas (CPOE) y alertas inter-módulos
 - [Fase AA - Interoperabilidad HL7/FHIR + DICOM + PWA Offline](mem://features/fase-aa-interop-fhir-dicom-pwa) — Exportación FHIR R4, mensajes HL7 v2, visor DICOM con bucket privado y cola de sync offline para personal móvil
+- [Fase CC - Integración total inter-módulos](mem://features/fase-cc-integracion-total) — Hub 360° expandido, Centro de Comando Clínico unificado y Workflows clínicos con plantillas (sepsis, alta, post-cirugía, alergia)

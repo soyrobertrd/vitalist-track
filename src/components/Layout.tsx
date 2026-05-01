@@ -180,6 +180,8 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/pwa-offline", label: "PWA Offline / Dispositivos" },
         { path: "/telemedicina", label: "Centro de Telemedicina" },
         { path: "/calidad", label: "Gestión de Calidad" },
+        { path: "/centro-comando", label: "Centro de Comando" },
+        { path: "/workflows-clinicos", label: "Workflows Clínicos" },
         { path: "/consultorios", label: "Consultorios", icon: Building2 },
         { path: "/farmacia", label: "Farmacia", icon: Pill },
         { path: "/banco-sangre", label: "Banco de Sangre" },
