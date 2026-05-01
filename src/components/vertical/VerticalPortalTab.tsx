@@ -20,6 +20,15 @@ export default function VerticalPortalTab({ verticalTipo }: Props) {
   const wsId = currentWorkspace?.id;
   const [pacienteId, setPacienteId] = useState("");
 
+  const { data: pacientes = [] } = useQuery({
+    queryKey: ["pacientes_portal_v", wsId],
+    enabled: !!wsId,
+    queryFn: async () => {
+      const { data } = await (supabase.from("pacientes") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).eq("activo", true).order("nombre").limit(500);
+      return data || [];
+    },
+  });
+
   const { data: tokens = [], refetch } = useQuery({
     queryKey: ["portal_paciente_vertical", wsId, verticalTipo],
     enabled: !!wsId,
