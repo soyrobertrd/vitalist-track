@@ -366,6 +366,14 @@ const App = () => {
                   element={session ? <Layout><CentroTelemedicina /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
+                  path="/centro-comando"
+                  element={session ? <Layout><CentroComando /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/workflows-clinicos"
+                  element={session ? <Layout><WorkflowsClinicos /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
                   path="/checklist-rls"
                   element={session ? <Layout><ChecklistRLS /></Layout> : <Navigate to="/auth" />}
                 />
