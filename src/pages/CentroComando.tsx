@@ -67,11 +67,11 @@ export default function CentroComando() {
     },
     {
       title: "Telemedicina", value: data?.telemedicina_activa ?? 0,
-      sub: "sesiones activas / programadas", icon: Video, to: "/centro-telemedicina",
+      sub: "sesiones activas / programadas", icon: Video, to: "/telemedicina",
     },
     {
       title: "Eventos adversos", value: data?.eventos_adversos_abiertos ?? 0,
-      sub: "abiertos / en investigación", icon: ShieldAlert, to: "/gestion-calidad",
+      sub: "abiertos / en investigación", icon: ShieldAlert, to: "/calidad",
     },
     {
       title: "FHIR jobs", value: data?.fhir_jobs_pendientes ?? 0,
