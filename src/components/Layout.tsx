@@ -242,7 +242,7 @@ const Layout = ({ children }: LayoutProps) => {
       subItems: [{ path: "/vision-care", label: "Recetas & Óptica" }]
     },
 
-    { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },
+    
     {
       path: "/config-grupo", icon: Settings, label: "Configuración", adminOnly: true,
       subItems: [
