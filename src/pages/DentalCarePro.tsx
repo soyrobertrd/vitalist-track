@@ -258,6 +258,9 @@ export default function DentalCarePro() {
           <TabsTrigger value="agenda_ia">Agenda IA</TabsTrigger>
           <TabsTrigger value="comunicaciones">Comunicaciones</TabsTrigger>
           <TabsTrigger value="finanzas_avz">Finanzas</TabsTrigger>
+          <TabsTrigger value="documentos_v">Documentos</TabsTrigger>
+          <TabsTrigger value="workflows">Workflows</TabsTrigger>
+          <TabsTrigger value="idioma_acc">i18n / A11y</TabsTrigger>
         </TabsList>
 
         <TabsContent value="planes" className="space-y-3">
@@ -464,6 +467,9 @@ export default function DentalCarePro() {
         <TabsContent value="agenda_ia" className="mt-4"><VerticalAgendaIATab verticalTipo="dental" /></TabsContent>
         <TabsContent value="comunicaciones" className="mt-4"><VerticalComunicacionesTab verticalTipo="dental" /></TabsContent>
         <TabsContent value="finanzas_avz" className="mt-4"><VerticalFinanzasAvanzadasTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="documentos_v" className="mt-4"><VerticalDocumentosTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="workflows" className="mt-4"><VerticalWorkflowsTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="idioma_acc" className="mt-4"><VerticalIdiomaAccesibilidadTab /></TabsContent>
       </Tabs>
     </div>
   );
