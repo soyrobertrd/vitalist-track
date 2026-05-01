@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTabParam } from "@/hooks/useTabParam";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
@@ -82,7 +83,7 @@ export default function DentalCarePro() {
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
-  const [tab, setTab] = useState("planes");
+  const [tab, setTab] = useTabParam("planes");
 
   const { data: planes = [] } = useQuery({
     queryKey: ["planes_tratamiento_dental", wsId],

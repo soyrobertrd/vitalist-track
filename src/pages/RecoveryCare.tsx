@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTabParam } from "@/hooks/useTabParam";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
@@ -80,7 +81,7 @@ export default function RecoveryCare() {
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
-  const [tab, setTab] = useState("pacientes");
+  const [tab, setTab] = useTabParam("pacientes");
 
   const { data: pacientesRec = [] } = useQuery({
     queryKey: ["pacientes_recovery", wsId], enabled: !!wsId,
