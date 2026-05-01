@@ -251,8 +251,16 @@ const Dashboard = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Resumen completo del seguimiento de pacientes</p>
+          <h1 className="text-3xl font-bold text-foreground">
+            Dashboard{verticalActiva && verticalActiva !== "todas" ? ` · ${({
+              clinica: "Hospital",
+              dental: "Odontología",
+              aesthetic: "Aesthetic Pro",
+              recovery: "Recovery Care",
+              vision: "VisionCare Pro",
+            } as Record<string, string>)[verticalActiva] || ""}` : ""}
+          </h1>
+          <p className="text-muted-foreground">Resumen completo de la operación{verticalActiva && verticalActiva !== "todas" ? " de esta vertical" : ""}</p>
         </div>
         <div className="flex items-center gap-2 text-muted-foreground bg-card p-3 rounded-lg border">
           <Clock className="h-5 w-5" />
