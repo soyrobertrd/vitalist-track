@@ -109,13 +109,7 @@ export default function Recepcion() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
-      <MobilePageHeader title="Recepción" description="Validar tickets, escanear cédula, consultar agenda y ficha clínica" />
-      <div className="hidden md:block">
-        <h1 className="text-3xl font-bold tracking-tight">Recepción</h1>
-        <p className="text-muted-foreground">
-          Centro integrado para llegada de pacientes, validación de tickets y consultas.
-        </p>
-      </div>
+      <MobilePageHeader title="Recepción" description="Centro integrado para llegada de pacientes, validación de tickets y consultas." />
 
       <Tabs defaultValue="ticket" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
