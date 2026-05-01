@@ -32,13 +32,14 @@ export default function VerticalCRMFidelizacionTab({ verticalTipo }: Props) {
     queryKey: ["campanas_marketing", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase
+      const q: any = supabase
         .from("campanas_marketing")
         .select("*")
         .eq("workspace_id", wsId!)
         .eq("vertical_tipo", verticalTipo)
         .order("created_at", { ascending: false })
-        .limit(30) as any);
+        .limit(30);
+      const { data } = await q;
       return (data as any[]) || [];
     },
   });
