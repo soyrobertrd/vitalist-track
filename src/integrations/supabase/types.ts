@@ -2210,6 +2210,54 @@ export type Database = {
           },
         ]
       }
+      checklist_oms: {
+        Row: {
+          completado: boolean | null
+          created_at: string | null
+          fase: string
+          hora_completado: string | null
+          id: string
+          items: Json
+          programacion_id: string | null
+          responsable_id: string | null
+        }
+        Insert: {
+          completado?: boolean | null
+          created_at?: string | null
+          fase: string
+          hora_completado?: string | null
+          id?: string
+          items?: Json
+          programacion_id?: string | null
+          responsable_id?: string | null
+        }
+        Update: {
+          completado?: boolean | null
+          created_at?: string | null
+          fase?: string
+          hora_completado?: string | null
+          id?: string
+          items?: Json
+          programacion_id?: string | null
+          responsable_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_oms_programacion_id_fkey"
+            columns: ["programacion_id"]
+            isOneToOne: false
+            referencedRelation: "programaciones_quirurgicas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_oms_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ciclos_esterilizacion: {
         Row: {
           created_at: string
@@ -3283,6 +3331,60 @@ export type Database = {
         }
         Relationships: []
       }
+      conteo_gasas_instrumental: {
+        Row: {
+          agregado: number | null
+          coincide: boolean | null
+          conteo_final: number | null
+          conteo_inicial: number
+          created_at: string | null
+          id: string
+          notas: string | null
+          programacion_id: string | null
+          responsable_id: string | null
+          tipo: string
+        }
+        Insert: {
+          agregado?: number | null
+          coincide?: boolean | null
+          conteo_final?: number | null
+          conteo_inicial: number
+          created_at?: string | null
+          id?: string
+          notas?: string | null
+          programacion_id?: string | null
+          responsable_id?: string | null
+          tipo: string
+        }
+        Update: {
+          agregado?: number | null
+          coincide?: boolean | null
+          conteo_final?: number | null
+          conteo_inicial?: number
+          created_at?: string | null
+          id?: string
+          notas?: string | null
+          programacion_id?: string | null
+          responsable_id?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conteo_gasas_instrumental_programacion_id_fkey"
+            columns: ["programacion_id"]
+            isOneToOne: false
+            referencedRelation: "programaciones_quirurgicas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conteo_gasas_instrumental_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       control_calidad_lab: {
         Row: {
           aprobado: boolean | null
@@ -3780,6 +3882,57 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      derivaciones_urgencias: {
+        Row: {
+          created_at: string | null
+          destino_detalle: string | null
+          diagnostico_egreso: string | null
+          hora_derivacion: string | null
+          id: string
+          medico_id: string | null
+          recomendaciones: string | null
+          registro_urgencia_id: string | null
+          tipo: string
+        }
+        Insert: {
+          created_at?: string | null
+          destino_detalle?: string | null
+          diagnostico_egreso?: string | null
+          hora_derivacion?: string | null
+          id?: string
+          medico_id?: string | null
+          recomendaciones?: string | null
+          registro_urgencia_id?: string | null
+          tipo: string
+        }
+        Update: {
+          created_at?: string | null
+          destino_detalle?: string | null
+          diagnostico_egreso?: string | null
+          hora_derivacion?: string | null
+          id?: string
+          medico_id?: string | null
+          recomendaciones?: string | null
+          registro_urgencia_id?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "derivaciones_urgencias_medico_id_fkey"
+            columns: ["medico_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "derivaciones_urgencias_registro_urgencia_id_fkey"
+            columns: ["registro_urgencia_id"]
+            isOneToOne: false
+            referencedRelation: "registros_urgencias"
             referencedColumns: ["id"]
           },
         ]
@@ -4339,6 +4492,144 @@ export type Database = {
           },
           {
             foreignKeyName: "documentos_clinicos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      donaciones_sangre: {
+        Row: {
+          apta_uso: boolean | null
+          created_at: string | null
+          donante_id: string | null
+          fecha_donacion: string | null
+          hemoglobina_predonacion: number | null
+          id: string
+          motivo_descarte: string | null
+          presion_arterial: string | null
+          pruebas_serologia: Json | null
+          pulso: number | null
+          responsable_id: string | null
+          tipo_donacion: string | null
+          volumen_ml: number | null
+          workspace_id: string | null
+        }
+        Insert: {
+          apta_uso?: boolean | null
+          created_at?: string | null
+          donante_id?: string | null
+          fecha_donacion?: string | null
+          hemoglobina_predonacion?: number | null
+          id?: string
+          motivo_descarte?: string | null
+          presion_arterial?: string | null
+          pruebas_serologia?: Json | null
+          pulso?: number | null
+          responsable_id?: string | null
+          tipo_donacion?: string | null
+          volumen_ml?: number | null
+          workspace_id?: string | null
+        }
+        Update: {
+          apta_uso?: boolean | null
+          created_at?: string | null
+          donante_id?: string | null
+          fecha_donacion?: string | null
+          hemoglobina_predonacion?: number | null
+          id?: string
+          motivo_descarte?: string | null
+          presion_arterial?: string | null
+          pruebas_serologia?: Json | null
+          pulso?: number | null
+          responsable_id?: string | null
+          tipo_donacion?: string | null
+          volumen_ml?: number | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donaciones_sangre_donante_id_fkey"
+            columns: ["donante_id"]
+            isOneToOne: false
+            referencedRelation: "donantes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "donaciones_sangre_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "donaciones_sangre_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      donantes: {
+        Row: {
+          apellido: string | null
+          apto: boolean | null
+          cedula: string | null
+          created_at: string | null
+          direccion: string | null
+          email: string | null
+          fecha_nacimiento: string | null
+          id: string
+          motivo_diferimiento: string | null
+          nombre: string
+          sexo: string | null
+          telefono: string | null
+          tipo_sangre: string | null
+          ultima_donacion: string | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          apellido?: string | null
+          apto?: boolean | null
+          cedula?: string | null
+          created_at?: string | null
+          direccion?: string | null
+          email?: string | null
+          fecha_nacimiento?: string | null
+          id?: string
+          motivo_diferimiento?: string | null
+          nombre: string
+          sexo?: string | null
+          telefono?: string | null
+          tipo_sangre?: string | null
+          ultima_donacion?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          apellido?: string | null
+          apto?: boolean | null
+          cedula?: string | null
+          created_at?: string | null
+          direccion?: string | null
+          email?: string | null
+          fecha_nacimiento?: string | null
+          id?: string
+          motivo_diferimiento?: string | null
+          nombre?: string
+          sexo?: string | null
+          telefono?: string | null
+          tipo_sangre?: string | null
+          ultima_donacion?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donantes_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -6535,6 +6826,69 @@ export type Database = {
           },
         ]
       }
+      inventario_hemocomponentes: {
+        Row: {
+          codigo_unidad: string
+          componente: string
+          created_at: string | null
+          donacion_id: string | null
+          estado: string | null
+          fecha_extraccion: string
+          fecha_vencimiento: string
+          id: string
+          tipo_sangre: string
+          ubicacion: string | null
+          updated_at: string | null
+          volumen_ml: number | null
+          workspace_id: string | null
+        }
+        Insert: {
+          codigo_unidad: string
+          componente: string
+          created_at?: string | null
+          donacion_id?: string | null
+          estado?: string | null
+          fecha_extraccion: string
+          fecha_vencimiento: string
+          id?: string
+          tipo_sangre: string
+          ubicacion?: string | null
+          updated_at?: string | null
+          volumen_ml?: number | null
+          workspace_id?: string | null
+        }
+        Update: {
+          codigo_unidad?: string
+          componente?: string
+          created_at?: string | null
+          donacion_id?: string | null
+          estado?: string | null
+          fecha_extraccion?: string
+          fecha_vencimiento?: string
+          id?: string
+          tipo_sangre?: string
+          ubicacion?: string | null
+          updated_at?: string | null
+          volumen_ml?: number | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventario_hemocomponentes_donacion_id_fkey"
+            columns: ["donacion_id"]
+            isOneToOne: false
+            referencedRelation: "donaciones_sangre"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventario_hemocomponentes_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inventario_items: {
         Row: {
           activo: boolean
@@ -8357,6 +8711,51 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      observacion_urgencias: {
+        Row: {
+          created_at: string | null
+          evolucion: string | null
+          hora: string
+          id: string
+          registro_urgencia_id: string | null
+          responsable_id: string | null
+          signos_vitales: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          evolucion?: string | null
+          hora: string
+          id?: string
+          registro_urgencia_id?: string | null
+          responsable_id?: string | null
+          signos_vitales?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          evolucion?: string | null
+          hora?: string
+          id?: string
+          registro_urgencia_id?: string | null
+          responsable_id?: string | null
+          signos_vitales?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "observacion_urgencias_registro_urgencia_id_fkey"
+            columns: ["registro_urgencia_id"]
+            isOneToOne: false
+            referencedRelation: "registros_urgencias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "observacion_urgencias_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
             referencedColumns: ["id"]
           },
         ]
@@ -11227,6 +11626,112 @@ export type Database = {
           },
         ]
       }
+      programaciones_quirurgicas: {
+        Row: {
+          anestesiologo_id: string | null
+          cirujano_principal_id: string | null
+          created_at: string | null
+          duracion_estimada_min: number | null
+          estado: string | null
+          fecha_programada: string
+          hora_fin_real: string | null
+          hora_inicio_real: string | null
+          id: string
+          instrumentista_id: string | null
+          notas: string | null
+          paciente_id: string | null
+          prioridad: string | null
+          procedimiento: string
+          quirofano_id: string | null
+          tipo_anestesia: string | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          anestesiologo_id?: string | null
+          cirujano_principal_id?: string | null
+          created_at?: string | null
+          duracion_estimada_min?: number | null
+          estado?: string | null
+          fecha_programada: string
+          hora_fin_real?: string | null
+          hora_inicio_real?: string | null
+          id?: string
+          instrumentista_id?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          prioridad?: string | null
+          procedimiento: string
+          quirofano_id?: string | null
+          tipo_anestesia?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          anestesiologo_id?: string | null
+          cirujano_principal_id?: string | null
+          created_at?: string | null
+          duracion_estimada_min?: number | null
+          estado?: string | null
+          fecha_programada?: string
+          hora_fin_real?: string | null
+          hora_inicio_real?: string | null
+          id?: string
+          instrumentista_id?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          prioridad?: string | null
+          procedimiento?: string
+          quirofano_id?: string | null
+          tipo_anestesia?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programaciones_quirurgicas_anestesiologo_id_fkey"
+            columns: ["anestesiologo_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programaciones_quirurgicas_cirujano_principal_id_fkey"
+            columns: ["cirujano_principal_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programaciones_quirurgicas_instrumentista_id_fkey"
+            columns: ["instrumentista_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programaciones_quirurgicas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programaciones_quirurgicas_quirofano_id_fkey"
+            columns: ["quirofano_id"]
+            isOneToOne: false
+            referencedRelation: "quirofanos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programaciones_quirurgicas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       programas_docencia: {
         Row: {
           activo: boolean | null
@@ -11542,6 +12047,74 @@ export type Database = {
           },
         ]
       }
+      pruebas_cruzadas: {
+        Row: {
+          compatible: boolean | null
+          created_at: string | null
+          fecha_prueba: string | null
+          id: string
+          metodo: string | null
+          observaciones: string | null
+          paciente_id: string | null
+          responsable_id: string | null
+          unidad_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          compatible?: boolean | null
+          created_at?: string | null
+          fecha_prueba?: string | null
+          id?: string
+          metodo?: string | null
+          observaciones?: string | null
+          paciente_id?: string | null
+          responsable_id?: string | null
+          unidad_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          compatible?: boolean | null
+          created_at?: string | null
+          fecha_prueba?: string | null
+          id?: string
+          metodo?: string | null
+          observaciones?: string | null
+          paciente_id?: string | null
+          responsable_id?: string | null
+          unidad_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pruebas_cruzadas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pruebas_cruzadas_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pruebas_cruzadas_unidad_id_fkey"
+            columns: ["unidad_id"]
+            isOneToOne: false
+            referencedRelation: "inventario_hemocomponentes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pruebas_cruzadas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pruebas_laboratorio: {
         Row: {
           anormal: boolean | null
@@ -11809,6 +12382,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      quirofanos: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          equipamiento: Json | null
+          estado: string | null
+          id: string
+          nombre: string
+          tipo: string | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          equipamiento?: Json | null
+          estado?: string | null
+          id?: string
+          nombre: string
+          tipo?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          equipamiento?: Json | null
+          estado?: string | null
+          id?: string
+          nombre?: string
+          tipo?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quirofanos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       recetas: {
         Row: {
@@ -12407,6 +13024,75 @@ export type Database = {
           },
         ]
       }
+      recuperacion_post_anestesica: {
+        Row: {
+          aldrete_actividad: number | null
+          aldrete_circulacion: number | null
+          aldrete_conciencia: number | null
+          aldrete_respiracion: number | null
+          aldrete_saturacion: number | null
+          aldrete_total: number | null
+          created_at: string | null
+          destino: string | null
+          hora_alta_urpa: string | null
+          hora_ingreso_urpa: string | null
+          id: string
+          notas: string | null
+          paciente_id: string | null
+          programacion_id: string | null
+          signos_vitales: Json | null
+        }
+        Insert: {
+          aldrete_actividad?: number | null
+          aldrete_circulacion?: number | null
+          aldrete_conciencia?: number | null
+          aldrete_respiracion?: number | null
+          aldrete_saturacion?: number | null
+          aldrete_total?: number | null
+          created_at?: string | null
+          destino?: string | null
+          hora_alta_urpa?: string | null
+          hora_ingreso_urpa?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string | null
+          programacion_id?: string | null
+          signos_vitales?: Json | null
+        }
+        Update: {
+          aldrete_actividad?: number | null
+          aldrete_circulacion?: number | null
+          aldrete_conciencia?: number | null
+          aldrete_respiracion?: number | null
+          aldrete_saturacion?: number | null
+          aldrete_total?: number | null
+          created_at?: string | null
+          destino?: string | null
+          hora_alta_urpa?: string | null
+          hora_ingreso_urpa?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string | null
+          programacion_id?: string | null
+          signos_vitales?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recuperacion_post_anestesica_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recuperacion_post_anestesica_programacion_id_fkey"
+            columns: ["programacion_id"]
+            isOneToOne: false
+            referencedRelation: "programaciones_quirurgicas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       referidos_paciente: {
         Row: {
           created_at: string
@@ -12744,6 +13430,63 @@ export type Database = {
           },
           {
             foreignKeyName: "registros_morgue_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      registros_urgencias: {
+        Row: {
+          acompanante: string | null
+          created_at: string | null
+          estado: string | null
+          hora_egreso: string | null
+          hora_llegada: string
+          id: string
+          modo_llegada: string | null
+          motivo_consulta: string
+          paciente_id: string | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          acompanante?: string | null
+          created_at?: string | null
+          estado?: string | null
+          hora_egreso?: string | null
+          hora_llegada?: string
+          id?: string
+          modo_llegada?: string | null
+          motivo_consulta: string
+          paciente_id?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          acompanante?: string | null
+          created_at?: string | null
+          estado?: string | null
+          hora_egreso?: string | null
+          hora_llegada?: string
+          id?: string
+          modo_llegada?: string | null
+          motivo_consulta?: string
+          paciente_id?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registros_urgencias_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registros_urgencias_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -14794,6 +15537,96 @@ export type Database = {
           },
         ]
       }
+      transfusiones: {
+        Row: {
+          created_at: string | null
+          enfermera_id: string | null
+          hora_fin: string | null
+          hora_inicio: string
+          id: string
+          manejo_reaccion: string | null
+          medico_id: string | null
+          paciente_id: string | null
+          reaccion_adversa: boolean | null
+          signos_vitales_post: Json | null
+          signos_vitales_pre: Json | null
+          tipo_reaccion: string | null
+          unidad_id: string | null
+          velocidad_infusion: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          enfermera_id?: string | null
+          hora_fin?: string | null
+          hora_inicio?: string
+          id?: string
+          manejo_reaccion?: string | null
+          medico_id?: string | null
+          paciente_id?: string | null
+          reaccion_adversa?: boolean | null
+          signos_vitales_post?: Json | null
+          signos_vitales_pre?: Json | null
+          tipo_reaccion?: string | null
+          unidad_id?: string | null
+          velocidad_infusion?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          enfermera_id?: string | null
+          hora_fin?: string | null
+          hora_inicio?: string
+          id?: string
+          manejo_reaccion?: string | null
+          medico_id?: string | null
+          paciente_id?: string | null
+          reaccion_adversa?: boolean | null
+          signos_vitales_post?: Json | null
+          signos_vitales_pre?: Json | null
+          tipo_reaccion?: string | null
+          unidad_id?: string | null
+          velocidad_infusion?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transfusiones_enfermera_id_fkey"
+            columns: ["enfermera_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfusiones_medico_id_fkey"
+            columns: ["medico_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfusiones_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfusiones_unidad_id_fkey"
+            columns: ["unidad_id"]
+            isOneToOne: false
+            referencedRelation: "inventario_hemocomponentes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfusiones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tratamientos_dentales: {
         Row: {
           costo_estimado: number
@@ -14844,6 +15677,57 @@ export type Database = {
             columns: ["presupuesto_id"]
             isOneToOne: false
             referencedRelation: "presupuestos_dentales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      triage_manchester: {
+        Row: {
+          created_at: string | null
+          enfermera_id: string | null
+          hora_triage: string | null
+          id: string
+          nivel: string
+          registro_urgencia_id: string | null
+          signos_vitales: Json | null
+          sintomas: string | null
+          tiempo_objetivo_min: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          enfermera_id?: string | null
+          hora_triage?: string | null
+          id?: string
+          nivel: string
+          registro_urgencia_id?: string | null
+          signos_vitales?: Json | null
+          sintomas?: string | null
+          tiempo_objetivo_min?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          enfermera_id?: string | null
+          hora_triage?: string | null
+          id?: string
+          nivel?: string
+          registro_urgencia_id?: string | null
+          signos_vitales?: Json | null
+          sintomas?: string | null
+          tiempo_objetivo_min?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "triage_manchester_enfermera_id_fkey"
+            columns: ["enfermera_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "triage_manchester_registro_urgencia_id_fkey"
+            columns: ["registro_urgencia_id"]
+            isOneToOne: false
+            referencedRelation: "registros_urgencias"
             referencedColumns: ["id"]
           },
         ]
