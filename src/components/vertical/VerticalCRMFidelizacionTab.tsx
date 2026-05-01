@@ -38,7 +38,7 @@ export default function VerticalCRMFidelizacionTab({ verticalTipo }: Props) {
         .eq("workspace_id", wsId!)
         .eq("vertical_tipo", verticalTipo)
         .order("created_at", { ascending: false })
-        .limit(30);
+        .limit(30) as { data: any[] | null };
       return data || [];
     },
   });
