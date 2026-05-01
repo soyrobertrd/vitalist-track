@@ -1129,6 +1129,45 @@ export type Database = {
           },
         ]
       }
+      ar_aging_snapshots: {
+        Row: {
+          created_at: string | null
+          detalle: Json | null
+          fecha_corte: string
+          id: string
+          rango_0_30: number | null
+          rango_31_60: number | null
+          rango_61_90: number | null
+          rango_90_plus: number | null
+          total: number | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          detalle?: Json | null
+          fecha_corte: string
+          id?: string
+          rango_0_30?: number | null
+          rango_31_60?: number | null
+          rango_61_90?: number | null
+          rango_90_plus?: number | null
+          total?: number | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          detalle?: Json | null
+          fecha_corte?: string
+          id?: string
+          rango_0_30?: number | null
+          rango_31_60?: number | null
+          rango_61_90?: number | null
+          rango_90_plus?: number | null
+          total?: number | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       areas_seguridad: {
         Row: {
           activa: boolean | null
@@ -2527,6 +2566,57 @@ export type Database = {
           },
         ]
       }
+      capacitaciones_empleados: {
+        Row: {
+          calificacion: number | null
+          certificado_url: string | null
+          created_at: string | null
+          curso: string
+          empleado_id: string
+          estado: string | null
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          horas: number | null
+          id: string
+          institucion: string | null
+          modalidad: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          calificacion?: number | null
+          certificado_url?: string | null
+          created_at?: string | null
+          curso: string
+          empleado_id: string
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          horas?: number | null
+          id?: string
+          institucion?: string | null
+          modalidad?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          calificacion?: number | null
+          certificado_url?: string | null
+          created_at?: string | null
+          curso?: string
+          empleado_id?: string
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          horas?: number | null
+          id?: string
+          institucion?: string | null
+          modalidad?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       casos_trabajo_social: {
         Row: {
           composicion_familiar: Json | null
@@ -2772,6 +2862,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      centros_costo: {
+        Row: {
+          activo: boolean | null
+          codigo: string
+          created_at: string | null
+          id: string
+          nombre: string
+          presupuesto_anual: number | null
+          responsable_id: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          codigo: string
+          created_at?: string | null
+          id?: string
+          nombre: string
+          presupuesto_anual?: number | null
+          responsable_id?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          codigo?: string
+          created_at?: string | null
+          id?: string
+          nombre?: string
+          presupuesto_anual?: number | null
+          responsable_id?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
       }
       chat_canal_miembros: {
         Row: {
@@ -4613,6 +4739,65 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      costeo_servicios: {
+        Row: {
+          activo: boolean | null
+          centro_costo_id: string | null
+          codigo_servicio: string
+          costo_directo: number | null
+          costo_indirecto: number | null
+          costo_total: number | null
+          created_at: string | null
+          id: string
+          margen_bruto: number | null
+          nombre_servicio: string
+          precio_venta: number | null
+          updated_at: string | null
+          vigente_desde: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          centro_costo_id?: string | null
+          codigo_servicio: string
+          costo_directo?: number | null
+          costo_indirecto?: number | null
+          costo_total?: number | null
+          created_at?: string | null
+          id?: string
+          margen_bruto?: number | null
+          nombre_servicio: string
+          precio_venta?: number | null
+          updated_at?: string | null
+          vigente_desde?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          centro_costo_id?: string | null
+          codigo_servicio?: string
+          costo_directo?: number | null
+          costo_indirecto?: number | null
+          costo_total?: number | null
+          created_at?: string | null
+          id?: string
+          margen_bruto?: number | null
+          nombre_servicio?: string
+          precio_venta?: number | null
+          updated_at?: string | null
+          vigente_desde?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "costeo_servicios_centro_costo_id_fkey"
+            columns: ["centro_costo_id"]
+            isOneToOne: false
+            referencedRelation: "centros_costo"
             referencedColumns: ["id"]
           },
         ]
@@ -6603,6 +6788,63 @@ export type Database = {
           },
         ]
       }
+      evaluaciones_desempeno: {
+        Row: {
+          areas_mejora: string | null
+          calificacion_global: number | null
+          competencias: Json | null
+          created_at: string | null
+          empleado_id: string
+          estado: string | null
+          evaluador_id: string | null
+          fecha_evaluacion: string | null
+          firmada_empleado: boolean | null
+          firmada_evaluador: boolean | null
+          fortalezas: string | null
+          id: string
+          periodo: string
+          plan_accion: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          areas_mejora?: string | null
+          calificacion_global?: number | null
+          competencias?: Json | null
+          created_at?: string | null
+          empleado_id: string
+          estado?: string | null
+          evaluador_id?: string | null
+          fecha_evaluacion?: string | null
+          firmada_empleado?: boolean | null
+          firmada_evaluador?: boolean | null
+          fortalezas?: string | null
+          id?: string
+          periodo: string
+          plan_accion?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          areas_mejora?: string | null
+          calificacion_global?: number | null
+          competencias?: Json | null
+          created_at?: string | null
+          empleado_id?: string
+          estado?: string | null
+          evaluador_id?: string | null
+          fecha_evaluacion?: string | null
+          firmada_empleado?: boolean | null
+          firmada_evaluador?: boolean | null
+          fortalezas?: string | null
+          id?: string
+          periodo?: string
+          plan_accion?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       evaluaciones_esteticas: {
         Row: {
           altura: number | null
@@ -7759,6 +8001,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      forecast_ingresos: {
+        Row: {
+          anio: number
+          categoria: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          mes: number
+          monto_estimado: number
+          monto_real: number | null
+          notas: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          anio: number
+          categoria: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          mes: number
+          monto_estimado?: number
+          monto_real?: number | null
+          notas?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          anio?: number
+          categoria?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          mes?: number
+          monto_estimado?: number
+          monto_real?: number | null
+          notas?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
       }
       fotos_evolucion: {
         Row: {
@@ -10325,6 +10609,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      metas_incentivos: {
+        Row: {
+          bono_monto: number | null
+          created_at: string | null
+          descripcion: string | null
+          empleado_id: string
+          estado: string | null
+          fecha_fin: string
+          fecha_inicio: string
+          id: string
+          meta_valor: number | null
+          metrica: string | null
+          porcentaje_cumplimiento: number | null
+          titulo: string
+          unidad: string | null
+          updated_at: string | null
+          valor_actual: number | null
+          workspace_id: string
+        }
+        Insert: {
+          bono_monto?: number | null
+          created_at?: string | null
+          descripcion?: string | null
+          empleado_id: string
+          estado?: string | null
+          fecha_fin: string
+          fecha_inicio: string
+          id?: string
+          meta_valor?: number | null
+          metrica?: string | null
+          porcentaje_cumplimiento?: number | null
+          titulo: string
+          unidad?: string | null
+          updated_at?: string | null
+          valor_actual?: number | null
+          workspace_id: string
+        }
+        Update: {
+          bono_monto?: number | null
+          created_at?: string | null
+          descripcion?: string | null
+          empleado_id?: string
+          estado?: string | null
+          fecha_fin?: string
+          fecha_inicio?: string
+          id?: string
+          meta_valor?: number | null
+          metrica?: string | null
+          porcentaje_cumplimiento?: number | null
+          titulo?: string
+          unidad?: string | null
+          updated_at?: string | null
+          valor_actual?: number | null
+          workspace_id?: string
+        }
+        Relationships: []
       }
       metricas_bi_vertical: {
         Row: {
@@ -20629,6 +20970,14 @@ export type Database = {
       aplicar_politica_retencion: {
         Args: { _dry_run?: boolean; _workspace_id?: string }
         Returns: Json
+      }
+      calcular_ar_aging: {
+        Args: { _workspace_id: string }
+        Returns: {
+          cantidad: number
+          monto: number
+          rango: string
+        }[]
       }
       calcular_cierre_caja: {
         Args: { _fecha: string; _sucursal_id?: string; _workspace_id: string }
