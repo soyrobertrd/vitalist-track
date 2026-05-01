@@ -2614,6 +2614,149 @@ export type Database = {
           },
         ]
       }
+      chat_canal_miembros: {
+        Row: {
+          canal_id: string
+          created_at: string
+          id: string
+          notificaciones: boolean
+          rol: string
+          ultima_lectura: string
+          user_id: string
+        }
+        Insert: {
+          canal_id: string
+          created_at?: string
+          id?: string
+          notificaciones?: boolean
+          rol?: string
+          ultima_lectura?: string
+          user_id: string
+        }
+        Update: {
+          canal_id?: string
+          created_at?: string
+          id?: string
+          notificaciones?: boolean
+          rol?: string
+          ultima_lectura?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_canal_miembros_canal_id_fkey"
+            columns: ["canal_id"]
+            isOneToOne: false
+            referencedRelation: "chat_canales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_canales: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          descripcion: string | null
+          id: string
+          nombre: string
+          paciente_id: string | null
+          privado: boolean
+          tipo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          paciente_id?: string | null
+          privado?: boolean
+          tipo?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          paciente_id?: string | null
+          privado?: boolean
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_canales_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_canales_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_mensajes: {
+        Row: {
+          archivo_url: string | null
+          canal_id: string
+          contenido: string
+          created_at: string
+          editado: boolean
+          id: string
+          responde_a: string | null
+          tipo: string
+          user_id: string
+        }
+        Insert: {
+          archivo_url?: string | null
+          canal_id: string
+          contenido: string
+          created_at?: string
+          editado?: boolean
+          id?: string
+          responde_a?: string | null
+          tipo?: string
+          user_id: string
+        }
+        Update: {
+          archivo_url?: string | null
+          canal_id?: string
+          contenido?: string
+          created_at?: string
+          editado?: boolean
+          id?: string
+          responde_a?: string | null
+          tipo?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_mensajes_canal_id_fkey"
+            columns: ["canal_id"]
+            isOneToOne: false
+            referencedRelation: "chat_canales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_mensajes_responde_a_fkey"
+            columns: ["responde_a"]
+            isOneToOne: false
+            referencedRelation: "chat_mensajes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checklist_oms: {
         Row: {
           completado: boolean | null
@@ -7256,6 +7399,90 @@ export type Database = {
           },
           {
             foreignKeyName: "financiamiento_estetico_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      firmas_digitales: {
+        Row: {
+          contenido_firmado: Json | null
+          created_at: string
+          created_by: string | null
+          estado: string
+          firma_imagen_url: string | null
+          firmado_at: string
+          firmante_cedula: string | null
+          firmante_nombre: string
+          firmante_rol: string | null
+          firmante_user_id: string | null
+          id: string
+          ip_firma: string | null
+          motivo_anulacion: string | null
+          notas: string | null
+          paciente_id: string | null
+          referencia_id: string | null
+          referencia_tabla: string | null
+          tipo_documento: string
+          user_agent: string | null
+          workspace_id: string
+        }
+        Insert: {
+          contenido_firmado?: Json | null
+          created_at?: string
+          created_by?: string | null
+          estado?: string
+          firma_imagen_url?: string | null
+          firmado_at?: string
+          firmante_cedula?: string | null
+          firmante_nombre: string
+          firmante_rol?: string | null
+          firmante_user_id?: string | null
+          id?: string
+          ip_firma?: string | null
+          motivo_anulacion?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          referencia_id?: string | null
+          referencia_tabla?: string | null
+          tipo_documento: string
+          user_agent?: string | null
+          workspace_id: string
+        }
+        Update: {
+          contenido_firmado?: Json | null
+          created_at?: string
+          created_by?: string | null
+          estado?: string
+          firma_imagen_url?: string | null
+          firmado_at?: string
+          firmante_cedula?: string | null
+          firmante_nombre?: string
+          firmante_rol?: string | null
+          firmante_user_id?: string | null
+          id?: string
+          ip_firma?: string | null
+          motivo_anulacion?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          referencia_id?: string | null
+          referencia_tabla?: string | null
+          tipo_documento?: string
+          user_agent?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "firmas_digitales_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "firmas_digitales_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -17499,6 +17726,110 @@ export type Database = {
           },
         ]
       }
+      tareas_comentarios: {
+        Row: {
+          contenido: string
+          created_at: string
+          id: string
+          tarea_id: string
+          user_id: string
+        }
+        Insert: {
+          contenido: string
+          created_at?: string
+          id?: string
+          tarea_id: string
+          user_id: string
+        }
+        Update: {
+          contenido?: string
+          created_at?: string
+          id?: string
+          tarea_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tareas_comentarios_tarea_id_fkey"
+            columns: ["tarea_id"]
+            isOneToOne: false
+            referencedRelation: "tareas_internas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tareas_internas: {
+        Row: {
+          asignado_a: string | null
+          completado_at: string | null
+          created_at: string
+          created_by: string | null
+          departamento: string
+          descripcion: string | null
+          estado: string
+          etiquetas: string[] | null
+          fecha_limite: string | null
+          id: string
+          orden: number
+          paciente_id: string | null
+          prioridad: string
+          titulo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          asignado_a?: string | null
+          completado_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          departamento?: string
+          descripcion?: string | null
+          estado?: string
+          etiquetas?: string[] | null
+          fecha_limite?: string | null
+          id?: string
+          orden?: number
+          paciente_id?: string | null
+          prioridad?: string
+          titulo: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          asignado_a?: string | null
+          completado_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          departamento?: string
+          descripcion?: string | null
+          estado?: string
+          etiquetas?: string[] | null
+          fecha_limite?: string | null
+          id?: string
+          orden?: number
+          paciente_id?: string | null
+          prioridad?: string
+          titulo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tareas_internas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tareas_internas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tarifarios_ars: {
         Row: {
           activo: boolean
@@ -19155,6 +19486,60 @@ export type Database = {
           },
         ]
       }
+      workflow_ejecuciones_globales: {
+        Row: {
+          completado_at: string | null
+          contexto: Json
+          created_at: string
+          error_mensaje: string | null
+          estado: string
+          evento: Database["public"]["Enums"]["wf_evento"]
+          id: string
+          regla_id: string | null
+          resultado: Json | null
+          workspace_id: string
+        }
+        Insert: {
+          completado_at?: string | null
+          contexto?: Json
+          created_at?: string
+          error_mensaje?: string | null
+          estado?: string
+          evento: Database["public"]["Enums"]["wf_evento"]
+          id?: string
+          regla_id?: string | null
+          resultado?: Json | null
+          workspace_id: string
+        }
+        Update: {
+          completado_at?: string | null
+          contexto?: Json
+          created_at?: string
+          error_mensaje?: string | null
+          estado?: string
+          evento?: Database["public"]["Enums"]["wf_evento"]
+          id?: string
+          regla_id?: string | null
+          resultado?: Json | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_ejecuciones_globales_regla_id_fkey"
+            columns: ["regla_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_reglas_globales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_ejecuciones_globales_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workflow_plantillas: {
         Row: {
           acciones: Json
@@ -19260,6 +19645,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "workflow_reglas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_reglas_globales: {
+        Row: {
+          acciones: Json
+          activa: boolean
+          condiciones: Json
+          created_at: string
+          created_by: string | null
+          descripcion: string | null
+          ejecuciones_exito: number
+          ejecuciones_total: number
+          evento: Database["public"]["Enums"]["wf_evento"]
+          id: string
+          nombre: string
+          prioridad: number
+          retraso_minutos: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          acciones?: Json
+          activa?: boolean
+          condiciones?: Json
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          ejecuciones_exito?: number
+          ejecuciones_total?: number
+          evento: Database["public"]["Enums"]["wf_evento"]
+          id?: string
+          nombre: string
+          prioridad?: number
+          retraso_minutos?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          acciones?: Json
+          activa?: boolean
+          condiciones?: Json
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          ejecuciones_exito?: number
+          ejecuciones_total?: number
+          evento?: Database["public"]["Enums"]["wf_evento"]
+          id?: string
+          nombre?: string
+          prioridad?: number
+          retraso_minutos?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_reglas_globales_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -19608,6 +20055,10 @@ export type Database = {
         Args: { _workspace_id?: string }
         Returns: number
       }
+      es_miembro_canal: {
+        Args: { _canal_id: string; _user_id: string }
+        Returns: boolean
+      }
       estadisticas_salud_sistema: { Args: never; Returns: Json }
       generar_codigo_ticket: { Args: never; Returns: string }
       generar_resumen_auditoria: {
@@ -19901,6 +20352,20 @@ export type Database = {
         | "coordinador"
         | "recepcion"
       vertical_tipo: "clinica" | "dental" | "aesthetic" | "recovery" | "vision"
+      wf_evento:
+        | "cita_no_confirmada"
+        | "cita_proxima_24h"
+        | "cirugia_manana"
+        | "balance_pendiente"
+        | "lab_listo"
+        | "paciente_sin_volver"
+        | "no_show_detectado"
+        | "medicamento_entregado"
+        | "alta_firmada"
+        | "triaje_critico"
+        | "documento_subido"
+        | "factura_vencida"
+        | "manual"
       workspace_member_role: "owner" | "admin" | "member"
       zona_distrito:
         | "santo_domingo_oeste"
@@ -20229,6 +20694,21 @@ export const Constants = {
         "recepcion",
       ],
       vertical_tipo: ["clinica", "dental", "aesthetic", "recovery", "vision"],
+      wf_evento: [
+        "cita_no_confirmada",
+        "cita_proxima_24h",
+        "cirugia_manana",
+        "balance_pendiente",
+        "lab_listo",
+        "paciente_sin_volver",
+        "no_show_detectado",
+        "medicamento_entregado",
+        "alta_firmada",
+        "triaje_critico",
+        "documento_subido",
+        "factura_vencida",
+        "manual",
+      ],
       workspace_member_role: ["owner", "admin", "member"],
       zona_distrito: [
         "santo_domingo_oeste",
