@@ -31,6 +31,10 @@ const BeneficiosUsuarios = lazy(() => import("./pages/BeneficiosUsuarios"));
 const ProgramaReferidos = lazy(() => import("./pages/ProgramaReferidos"));
 const SegmentacionPacientes = lazy(() => import("./pages/SegmentacionPacientes"));
 const PerfilValorPacientes = lazy(() => import("./pages/PerfilValorPacientes"));
+const ProtocolosClinicos = lazy(() => import("./pages/ProtocolosClinicos"));
+const CatalogosClinicos = lazy(() => import("./pages/CatalogosClinicos"));
+const VademecumInteracciones = lazy(() => import("./pages/VademecumInteracciones"));
+const ReglasClinicas = lazy(() => import("./pages/ReglasClinicas"));
 
 // Lazy loaded pages for better performance & smaller initial bundle
 const Recepcion = lazy(() => import("./pages/Recepcion"));
@@ -534,6 +538,10 @@ const App = () => {
                 <Route path="/referidos" element={session ? <Layout><ProgramaReferidos /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/segmentacion" element={session ? <Layout><SegmentacionPacientes /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/perfil-valor" element={session ? <Layout><PerfilValorPacientes /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/protocolos-clinicos" element={session ? <Layout><ProtocolosClinicos /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/catalogos-clinicos" element={session ? <Layout><CatalogosClinicos /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/vademecum" element={session ? <Layout><VademecumInteracciones /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reglas-clinicas" element={session ? <Layout><ReglasClinicas /></Layout> : <Navigate to="/auth" />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
