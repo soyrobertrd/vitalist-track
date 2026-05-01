@@ -1,57 +1,58 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Eye, Activity, ArrowRight, Glasses, FileText, ShoppingBag, Calendar, BarChart3 } from "lucide-react";
+import LandingShell, { VerticalConfig } from "@/components/landing/LandingShell";
+import { Eye, Glasses, FileText, ShoppingBag, Calendar, BarChart3, Users, DollarSign, Camera, MessageSquare, ShieldCheck, Activity } from "lucide-react";
 
-const features = [
-  { icon: Glasses, title: "Recetas oftálmicas", desc: "Graduaciones, lentes de contacto, prismáticos." },
-  { icon: FileText, title: "Historial visual", desc: "Evolución de la agudeza visual y patologías oculares." },
-  { icon: ShoppingBag, title: "Tienda óptica", desc: "Inventario de armaduras, lentes, contactos y accesorios." },
-  { icon: Calendar, title: "Agenda de exámenes", desc: "Topografía, campimetría, OCT y revisiones de rutina." },
-  { icon: BarChart3, title: "Ventas y métricas", desc: "Conversión receta → venta, márgenes por proveedor." },
-];
+const config: VerticalConfig = {
+  slug: "vision",
+  name: "VisionCare Pro",
+  tagline: "ópticas, clínicas oftalmológicas y consultorios optométricos",
+  hero: {
+    eyebrow: "VisionCare Pro",
+    title: "Del examen a la venta del lente, sin papeles",
+    subtitle: "Recetas oftálmicas, historial visual, agenda de exámenes especializados, tienda óptica con inventario y métricas comerciales.",
+    icon: Eye,
+    accent: "bg-gradient-to-br from-indigo-500/10 via-background to-blue-500/10",
+  },
+  pains: [
+    { problem: "La receta se hace a mano y el paciente la pierde antes de comprar lente.", solution: "Receta digital firmada que llega al paciente por email/WhatsApp y al mostrador en un click." },
+    { problem: "No sabes qué porcentaje de exámenes termina en venta de lente.", solution: "Métricas de conversión examen → venta por optómetra y por tipo de receta." },
+    { problem: "El inventario de armaduras se descuadra y vendes lo que no tienes." , solution: "Inventario en tiempo real por sucursal con alertas de stock mínimo." },
+    { problem: "No tienes histórico visual del paciente para comparar evolución.", solution: "Historial completo de graduaciones, exámenes y patologías con gráficas de tendencia." },
+  ],
+  modules: [
+    { icon: Glasses, title: "Recetas oftálmicas digitales", desc: "Graduación monofocal, bifocal, progresiva, contactología, prismas." },
+    { icon: FileText, title: "Historial visual", desc: "Evolución de agudeza visual, presión intraocular, fondo de ojo, patologías." },
+    { icon: Calendar, title: "Agenda de exámenes", desc: "Topografía corneal, campimetría, OCT, biometría, paquimetría." },
+    { icon: ShoppingBag, title: "Tienda óptica", desc: "Inventario de armaduras, lentes, contactos, líquidos y accesorios." },
+    { icon: DollarSign, title: "Ventas & cuotas", desc: "Anticipo, financiamiento sin tarjeta, factura electrónica, ARS visual." },
+    { icon: BarChart3, title: "Conversión & métricas", desc: "Examen → receta → venta. Margen por proveedor de lente y armadura." },
+    { icon: Users, title: "Clientes recurrentes", desc: "Recordatorio de control anual, cambio de lente, reposición de contactos." },
+    { icon: Camera, title: "Try-on virtual & catálogo", desc: "Catálogo de armaduras con precios y disponibilidad por sucursal." },
+    { icon: MessageSquare, title: "WhatsApp marketing", desc: "Promos de armaduras, 2x1, control gratis, día del padre/madre." },
+    { icon: ShieldCheck, title: "Multi-sucursal", desc: "Stock compartido, traslados entre tiendas, ranking de sucursales." },
+    { icon: Activity, title: "Telemedicina ocular", desc: "Teleconsulta para controles simples y pre-screening." },
+    { icon: ShoppingBag, title: "Pedidos a laboratorio", desc: "Envío automático de receta a laboratorio óptico, tracking del lente." },
+  ],
+  workflow: [
+    "Paciente agenda examen → llega y el optómetra abre su histórico visual completo.",
+    "Tras el examen se genera receta digital firmada que se envía al mostrador automáticamente.",
+    "El asesor muestra armaduras compatibles del catálogo y arma el presupuesto.",
+    "Pedido al laboratorio óptico, seguimiento del lente y aviso al paciente cuando está listo.",
+  ],
+  benefits: [
+    { metric: "+38%", label: "Conversión examen → venta" },
+    { metric: "−50%", label: "Errores de pedido al laboratorio" },
+    { metric: "+22%", label: "Ticket promedio" },
+    { metric: "0", label: "Recetas perdidas en papel" },
+  ],
+  useCases: ["Ópticas independientes", "Cadenas de ópticas", "Clínicas oftalmológicas", "Consultorios optométricos", "Centros de baja visión", "Contactología", "Cirugía refractiva", "Ópticas dentro de hospitales"],
+  testimonial: {
+    quote: "Antes vendíamos lente al 48% de los exámenes. Con la receta digital integrada al mostrador subimos al 71% en 4 meses.",
+    author: "Lic. Andrés Martín",
+    role: "Gerente, Óptica Visión Total",
+  },
+  pricingNote: "Desde $89/mes por sucursal. Multi-tienda con descuento por volumen.",
+};
 
 export default function LandingVision() {
-  return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <Activity className="h-6 w-6 text-primary" />
-            <span className="font-bold">Health App</span>
-          </Link>
-          <Link to="/auth"><Button>Acceder</Button></Link>
-        </div>
-      </header>
-
-      <section className="container mx-auto px-4 py-20 text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-6">
-          <Eye className="h-4 w-4" /> VisionCare Pro
-        </div>
-        <h1 className="text-5xl font-bold mb-6 max-w-3xl mx-auto">
-          Software para ópticas y clínicas oftálmicas
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-          Recetas, historial visual, exámenes, tienda óptica y métricas comerciales. Diseñado para optómetras y oftalmólogos.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link to="/auth"><Button size="lg">Empezar gratis <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-          <Link to="/"><Button size="lg" variant="outline">Ver otros productos</Button></Link>
-        </div>
-      </section>
-
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">Visión completa de tu negocio</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f) => (
-            <Card key={f.title} className="p-6">
-              <f.icon className="h-10 w-10 text-primary mb-4" />
-              <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
-              <p className="text-sm text-muted-foreground">{f.desc}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
+  return <LandingShell config={config} />;
 }
