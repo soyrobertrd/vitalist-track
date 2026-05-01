@@ -311,6 +311,48 @@ export default function Landing() {
           />
         </section>
 
+        {/* Productos verticales */}
+        <section id="productos" className="mt-32">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Un producto para cada vertical</h2>
+            <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
+              Elige tu tipo de centro y obtén una experiencia diseñada específicamente para tu operación.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <Link to="/clinica" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
+              <Activity className="h-8 w-8 text-primary mb-3" />
+              <h3 className="font-semibold">Clínicas y Hospitales</h3>
+              <p className="text-sm text-muted-foreground mt-1">Hospitalización, quirófano, UCI, urgencias.</p>
+              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
+            </Link>
+            <Link to="/odontologia" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
+              <Sparkles className="h-8 w-8 text-primary mb-3" />
+              <h3 className="font-semibold">Odontología</h3>
+              <p className="text-sm text-muted-foreground mt-1">Odontograma, sillones, presupuestos por fases.</p>
+              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
+            </Link>
+            <Link to="/aesthetic" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
+              <Sparkles className="h-8 w-8 text-primary mb-3" />
+              <h3 className="font-semibold">Estética</h3>
+              <p className="text-sm text-muted-foreground mt-1">Fichas, before/after, paquetes, CRM VIP.</p>
+              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
+            </Link>
+            <Link to="/recovery" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
+              <Activity className="h-8 w-8 text-primary mb-3" />
+              <h3 className="font-semibold">Recovery</h3>
+              <p className="text-sm text-muted-foreground mt-1">Post-operatorio, rehabilitación, cuidado prolongado.</p>
+              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
+            </Link>
+            <Link to="/vision" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
+              <Activity className="h-8 w-8 text-primary mb-3" />
+              <h3 className="font-semibold">Visión & Óptica</h3>
+              <p className="text-sm text-muted-foreground mt-1">Recetas, exámenes, tienda óptica.</p>
+              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
+            </Link>
+          </div>
+        </section>
+
         {/* Pricing */}
         <section id="planes" className="mt-32">
           <div className="text-center max-w-2xl mx-auto mb-12">
