@@ -53,6 +53,7 @@ const SalaVirtual = lazy(() => import("./pages/SalaVirtual"));
 const Consultorios = lazy(() => import("./pages/Consultorios"));
 const Hospitalizacion = lazy(() => import("./pages/Hospitalizacion"));
 const AltaHospitalaria = lazy(() => import("./pages/AltaHospitalaria"));
+const VerticalesAdmin = lazy(() => import("./pages/VerticalesAdmin"));
 const Triaje = lazy(() => import("./pages/Triaje"));
 const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
 const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
