@@ -98,28 +98,150 @@ const Layout = ({ children }: LayoutProps) => {
   // Enable automatic notifications for suspect patients
   useNotificacionesSospechosos();
 
-  // Items COMUNES (sin verticales = visibles en todas)
-  // Items específicos: tag con `verticales: VerticalTipo[]`
+  // Convenciones por subItem:
+  //   verticales?: VerticalTipo[]  -> sólo visible en esas verticales (omitido = visible en todas)
+  //   excludeVerticales?: VerticalTipo[] -> oculto en esas verticales
+  // Items con `verticales` se ocultan si la activa no aplica.
+  // Si un grupo queda sin subItems tras el filtro, se oculta.
+
+  type VTipo = VerticalTipo;
+  const va = verticalActiva as VTipo | "todas";
+
+  const verticalLabel: Record<VTipo, string> = {
+    clinica: "Hospital",
+    dental: "Odontología",
+    aesthetic: "Aesthetic Pro",
+    recovery: "Recovery Care",
+    vision: "VisionCare Pro",
+  };
+  const verticalIcon: Record<VTipo, any> = {
+    clinica: Activity,
+    dental: CircleDot,
+    aesthetic: Sparkles,
+    recovery: BedDouble,
+    vision: Eye,
+  };
+  const verticalRoot: Record<VTipo, string> = {
+    clinica: "/dashboard",
+    dental: "/dental-care",
+    aesthetic: "/aesthetic-pro",
+    recovery: "/recovery-care",
+    vision: "/vision-care",
+  };
+
+  // Resumen de la vertical activa (si no es "todas")
+  const resumenVerticalItem = (va !== "todas") ? {
+    path: verticalRoot[va as VTipo],
+    icon: verticalIcon[va as VTipo],
+    label: `Resumen ${verticalLabel[va as VTipo]}`,
+  } : null;
+
   const menuItems: any[] = [
     { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    ...(resumenVerticalItem ? [resumenVerticalItem] : []),
+
     {
       path: "/agenda", icon: CalendarDays, label: "Agenda",
       subItems: [
         { path: "/calendario", label: "Calendario", icon: CalendarDays },
-        { path: "/llamadas", label: "Llamadas", icon: Phone },
-        { path: "/visitas", label: "Visitas", icon: Calendar },
-        { path: "/rutas", label: "Rutas Optimizadas", icon: Route },
-        { path: "/recepcion", label: "Recepción", icon: ScanLine }
+        { path: "/llamadas", label: "Llamadas", icon: Phone, verticales: ["clinica"] },
+        { path: "/visitas", label: "Visitas", icon: Calendar, verticales: ["clinica", "recovery"] },
+        { path: "/rutas", label: "Rutas Optimizadas", icon: Route, verticales: ["clinica", "recovery"] },
+        { path: "/recepcion", label: "Recepción", icon: ScanLine },
+        { path: "/agenda-universal", label: "Agenda universal", verticales: ["clinica"] },
       ]
     },
+
     {
-      path: "/pacientes", icon: Users, label: "Pacientes",
+      path: "/pacientes", icon: Users, label: va === "aesthetic" ? "Clientes" : "Pacientes",
       subItems: [
-        { path: "/pacientes", label: "Lista de Pacientes" },
-        { path: "/sospechosos", label: "Sospechosos" },
-        { path: "/atencion-paciente", label: "Atención al Paciente", icon: Stethoscope }
+        { path: "/pacientes", label: va === "aesthetic" ? "Lista de Clientes" : "Lista de Pacientes" },
+        { path: "/sospechosos", label: "Sospechosos", verticales: ["clinica"] },
+        { path: "/atencion-paciente", label: va === "aesthetic" ? "Atención al Cliente" : "Atención al Paciente", icon: Stethoscope },
+        // Específicos por vertical integrados aquí:
+        { path: "/odontograma", label: "Odontograma", icon: SmilePlus, verticales: ["dental"] },
+        { path: "/dental-care?tab=planes", label: "Planes de tratamiento", verticales: ["dental"] },
+        { path: "/dental-care?tab=ortodoncia", label: "Ortodoncia", verticales: ["dental"] },
+        { path: "/dental-care?tab=presupuestos", label: "Presupuestos sonrisa", verticales: ["dental"] },
+        { path: "/aesthetic-pro?tab=evaluaciones", label: "Evaluaciones estéticas", verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=fotos", label: "Fotos evolución", verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=membresias", label: "Membresías", icon: Heart, verticales: ["aesthetic"] },
+        { path: "/vision-care?tab=recetas", label: "Recetas ópticas", verticales: ["vision"] },
+        { path: "/recovery-care?tab=planes", label: "Planes de cuidado", verticales: ["recovery"] },
+        { path: "/recovery-care?tab=seguimiento", label: "Seguimiento clínico", verticales: ["recovery"] },
+        { path: "/recovery-care?tab=concierge", label: "Concierge médico", verticales: ["recovery"] },
+        { path: "/recovery-care?tab=alertas", label: "Alertas Recovery", verticales: ["recovery"] },
       ]
     },
+
+    {
+      path: "/clinico", icon: Stethoscope, label: "Clínico",
+      verticales: ["clinica"] as VerticalTipo[],
+      subItems: [
+        { path: "/triaje", label: "Triaje" },
+        { path: "/hospitalizacion", label: "Hospitalización" },
+        { path: "/alta-hospitalaria", label: "Alta Hospitalaria" },
+        { path: "/rondas-medicas", label: "Rondas / Visitas médicas" },
+        { path: "/enfermeria", label: "Enfermería" },
+        { path: "/uci", label: "UCI: infusiones / kardex" },
+        { path: "/quirofano", label: "Quirófano / Cirugía" },
+        { path: "/urgencias-triage", label: "Urgencias / Triage" },
+        { path: "/censo-camas", label: "Censo & Mapa de Camas" },
+        { path: "/oncologia", label: "Oncología & Quimio" },
+        { path: "/maternidad-neonatologia", label: "Maternidad & Neonatología" },
+        { path: "/ordenes-medicas", label: "Órdenes Médicas (CPOE)" },
+        { path: "/alertas-clinicas", label: "Alertas Clínicas" },
+        { path: "/protocolos-clinicos", label: "Protocolos Clínicos" },
+        { path: "/workflows-clinicos", label: "Workflows Clínicos" },
+        { path: "/reglas-clinicas", label: "Motor de Reglas Clínicas" },
+        { path: "/catalogos-clinicos", label: "Catálogos CIE-10 / CPT" },
+        { path: "/vademecum", label: "Vademécum & Interacciones" },
+      ]
+    },
+
+    {
+      path: "/diagnostico", icon: Microscope, label: "Diagnóstico",
+      verticales: ["clinica"] as VerticalTipo[],
+      subItems: [
+        { path: "/laboratorio", label: "Laboratorio" },
+        { path: "/laboratorio-avanzado", label: "Laboratorio (avanzado)" },
+        { path: "/imagenologia", label: "Imagenología" },
+        { path: "/visor-dicom", label: "Visor DICOM" },
+        { path: "/banco-sangre", label: "Banco de Sangre" },
+        { path: "/banco-sangre-avanzado", label: "Banco de Sangre (avanzado)" },
+      ]
+    },
+
+    {
+      path: "/recursos", icon: Building2, label: "Recursos",
+      subItems: [
+        { path: "/consultorios", label: "Consultorios", icon: Building2, verticales: ["clinica"] },
+        { path: "/farmacia", label: "Farmacia", icon: Pill, verticales: ["clinica"] },
+        { path: "/nutricion", label: "Nutrición y Dietética", verticales: ["clinica"] },
+        { path: "/rehabilitacion", label: "Rehabilitación", verticales: ["clinica"] },
+        { path: "/esterilizacion", label: "Esterilización / CEYE", icon: Sparkles, verticales: ["clinica"] },
+        { path: "/morgue", label: "Morgue y Patología", icon: Microscope, verticales: ["clinica"] },
+        { path: "/mantenimiento", label: "Mantenimiento", icon: Wrench, verticales: ["clinica"] },
+        { path: "/lavanderia", label: "Lavandería y Ropería", icon: Shirt, verticales: ["clinica"] },
+        { path: "/residuos", label: "Gestión de Residuos", icon: Trash2, verticales: ["clinica"] },
+        { path: "/seguridad-fisica", label: "Seguridad Física", icon: ShieldCheck, verticales: ["clinica"] },
+        { path: "/trabajo-social", label: "Trabajo Social", icon: Heart, verticales: ["clinica"] },
+        { path: "/docencia", label: "Docencia e Investigación", icon: GraduationCap, verticales: ["clinica"] },
+        // Recursos específicos por vertical:
+        { path: "/dental-care?tab=sillones", label: "Sillones / Boxes", icon: Building2, verticales: ["dental"] },
+        { path: "/dental-care?tab=laboratorio", label: "Laboratorio dental", icon: Microscope, verticales: ["dental"] },
+        { path: "/aesthetic-pro?tab=cabinas", label: "Cabinas", icon: Building2, verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=procedimientos", label: "Procedimientos", verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=paquetes", label: "Paquetes", icon: Boxes, verticales: ["aesthetic"] },
+        { path: "/vision-care?tab=inventario", label: "Inventario óptico", icon: Boxes, verticales: ["vision"] },
+        { path: "/vision-care?tab=ordenes", label: "Órdenes de laboratorio", verticales: ["vision"] },
+        { path: "/vision-care?tab=combos", label: "Combos lentes", verticales: ["vision"] },
+        { path: "/vision-care?tab=garantias", label: "Garantías", verticales: ["vision"] },
+        { path: "/recovery-care?tab=habitaciones", label: "Habitaciones", icon: BedDouble, verticales: ["recovery"] },
+        { path: "/recovery-care?tab=reservas", label: "Reservas", verticales: ["recovery"] },
+      ]
+    },
+
     {
       path: "/financiero", icon: DollarSign, label: "Financiero", adminOnly: true,
       subItems: [
@@ -130,8 +252,11 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/forecast-ingresos", label: "Forecast de Ingresos" },
         { path: "/ar-aging", label: "AR Aging (Cuentas por cobrar)" },
         { path: "/costeo-servicios", label: "Costeo por Servicio" },
+        { path: "/dental-care?tab=comisiones", label: "Comisiones doctores", verticales: ["dental"] },
+        { path: "/aesthetic-pro?tab=financiamiento", label: "Financiamiento estética", verticales: ["aesthetic"] },
       ]
     },
+
     {
       path: "/equipo", icon: UserCog, label: "Equipo & RRHH", adminOnly: true,
       subItems: [
@@ -144,8 +269,10 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/capacitaciones", label: "Capacitaciones" },
       ]
     },
+
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
+
     {
       path: "/operaciones", icon: Workflow, label: "Operaciones",
       subItems: [
@@ -155,7 +282,9 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/firmas", label: "Firmas digitales", icon: FileSignature },
       ]
     },
+
     { path: "/inventario", icon: Boxes, label: "Inventario" },
+
     {
       path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true,
       subItems: [
@@ -164,129 +293,30 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/perfil-valor", label: "Perfil de valor (LTV)", icon: BarChart3 },
         { path: "/referidos", label: "Programa de referidos", icon: Users },
         { path: "/beneficios-usuarios", label: "Beneficios / Loyalty", icon: Heart },
-      ]
-    },
-    { path: "/turnos", icon: Monitor, label: "Turnos y Colas" },
-
-    // ===== ODONTOLOGÍA =====
-    {
-      path: "/odontologia", icon: CircleDot, label: "Odontología",
-      verticales: ["dental"] as VerticalTipo[],
-      subItems: [
-        { path: "/dental-care", label: "Resumen DentalCare" },
-        { path: "/odontograma", label: "Odontograma" },
-        { path: "/dental-care?tab=planes", label: "Planes de tratamiento" },
-        { path: "/dental-care?tab=ortodoncia", label: "Ortodoncia" },
-        { path: "/dental-care?tab=laboratorio", label: "Laboratorio dental" },
-        { path: "/dental-care?tab=sillones", label: "Sillones / Boxes" },
-        { path: "/dental-care?tab=presupuestos", label: "Presupuestos sonrisa" },
-        { path: "/dental-care?tab=comisiones", label: "Comisiones doctores" },
-        { path: "/dental-care?tab=recordatorios", label: "Fidelización paciente" },
+        { path: "/aesthetic-pro?tab=leads", label: "Leads estética", verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=promos", label: "Promociones", verticales: ["aesthetic"] },
+        { path: "/dental-care?tab=recordatorios", label: "Fidelización dental", verticales: ["dental"] },
       ]
     },
 
-    // ===== HOSPITAL / CLÍNICA =====
+    { path: "/turnos", icon: Monitor, label: "Turnos y Colas", verticales: ["clinica"] as VerticalTipo[] },
+
+    // Interoperabilidad / clínica avanzada (sólo hospital)
     {
-      path: "/hospital", icon: Activity, label: "Hospital",
+      path: "/avanzado", icon: Shield, label: "Avanzado",
       verticales: ["clinica"] as VerticalTipo[],
       subItems: [
-        { path: "/triaje", label: "Triaje" },
-        { path: "/hospitalizacion", label: "Hospitalización" },
-        { path: "/alta-hospitalaria", label: "Alta Hospitalaria" },
-        { path: "/rondas-medicas", label: "Rondas / Visitas médicas" },
-        { path: "/enfermeria", label: "Enfermería" },
-        { path: "/uci", label: "UCI: infusiones / kardex" },
-        { path: "/quirofano", label: "Quirófano / Cirugía" },
         { path: "/quirofano-avanzado", label: "Quirófano (avanzado)" },
-        { path: "/urgencias-triage", label: "Urgencias / Triage" },
-        { path: "/banco-sangre-avanzado", label: "Banco de Sangre (avanzado)" },
-        { path: "/censo-camas", label: "Censo & Mapa de Camas" },
-        { path: "/oncologia", label: "Oncología & Quimio" },
-        { path: "/maternidad-neonatologia", label: "Maternidad & Neonatología" },
-        { path: "/ordenes-medicas", label: "Órdenes Médicas (CPOE)" },
-        { path: "/alertas-clinicas", label: "Alertas Clínicas" },
-        { path: "/laboratorio", label: "Laboratorio" },
-        { path: "/laboratorio-avanzado", label: "Laboratorio (avanzado)" },
-        { path: "/agenda-universal", label: "Agenda universal" },
-        { path: "/imagenologia", label: "Imagenología" },
-        { path: "/visor-dicom", label: "Visor DICOM" },
         { path: "/interoperabilidad", label: "Interoperabilidad HL7/FHIR" },
         { path: "/pwa-offline", label: "PWA Offline / Dispositivos" },
         { path: "/calidad", label: "Gestión de Calidad" },
         { path: "/centro-comando", label: "Centro de Comando" },
-        { path: "/workflows-clinicos", label: "Workflows Clínicos" },
-        { path: "/protocolos-clinicos", label: "Protocolos Clínicos" },
-        { path: "/catalogos-clinicos", label: "Catálogos CIE-10 / CPT" },
-        { path: "/vademecum", label: "Vademécum & Interacciones" },
-        { path: "/reglas-clinicas", label: "Motor de Reglas Clínicas" },
-        { path: "/consultorios", label: "Consultorios", icon: Building2 },
-        { path: "/farmacia", label: "Farmacia", icon: Pill },
-        { path: "/banco-sangre", label: "Banco de Sangre" },
-        { path: "/nutricion", label: "Nutrición y Dietética" },
-        { path: "/rehabilitacion", label: "Rehabilitación" },
-        { path: "/esterilizacion", label: "Esterilización / CEYE", icon: Sparkles },
-        { path: "/morgue", label: "Morgue y Patología", icon: Microscope },
-        { path: "/mantenimiento", label: "Mantenimiento", icon: Wrench },
-        { path: "/docencia", label: "Docencia e Investigación", icon: GraduationCap },
-        { path: "/residuos", label: "Gestión de Residuos", icon: Trash2 },
-        { path: "/seguridad-fisica", label: "Seguridad Física", icon: ShieldCheck },
-        { path: "/lavanderia", label: "Lavandería y Ropería", icon: Shirt },
-        { path: "/trabajo-social", label: "Trabajo Social", icon: Heart },
       ]
     },
 
-    // Telemedicina = común a todos (no se duplica)
+    // Telemedicina común
     { path: "/telemedicina", icon: Activity, label: "Telemedicina" },
 
-    // ===== RECOVERY =====
-    {
-      path: "/recovery-care", icon: BedDouble, label: "Recovery Care",
-      verticales: ["recovery"] as VerticalTipo[],
-      subItems: [
-        { path: "/recovery-care", label: "Resumen Recovery" },
-        { path: "/recovery-care?tab=pacientes", label: "Pacientes Recovery" },
-        { path: "/recovery-care?tab=habitaciones", label: "Habitaciones" },
-        { path: "/recovery-care?tab=reservas", label: "Reservas" },
-        { path: "/recovery-care?tab=planes", label: "Planes de cuidado" },
-        { path: "/recovery-care?tab=seguimiento", label: "Seguimiento clínico" },
-        { path: "/recovery-care?tab=concierge", label: "Concierge médico" },
-        { path: "/recovery-care?tab=alertas", label: "Alertas Recovery" },
-      ]
-    },
-
-    // ===== ESTÉTICA =====
-    {
-      path: "/aesthetic-pro", icon: Sparkles, label: "Aesthetic Pro",
-      verticales: ["aesthetic"] as VerticalTipo[],
-      subItems: [
-        { path: "/aesthetic-pro", label: "Resumen Aesthetic" },
-        { path: "/aesthetic-pro?tab=leads", label: "Leads CRM estética" },
-        { path: "/aesthetic-pro?tab=evaluaciones", label: "Evaluaciones" },
-        { path: "/aesthetic-pro?tab=procedimientos", label: "Procedimientos" },
-        { path: "/aesthetic-pro?tab=paquetes", label: "Paquetes" },
-        { path: "/aesthetic-pro?tab=cabinas", label: "Cabinas" },
-        { path: "/aesthetic-pro?tab=membresias", label: "Membresías" },
-        { path: "/aesthetic-pro?tab=fotos", label: "Fotos evolución" },
-        { path: "/aesthetic-pro?tab=promos", label: "Promociones" },
-        { path: "/aesthetic-pro?tab=financiamiento", label: "Financiamiento" },
-      ]
-    },
-
-    // ===== VISIÓN =====
-    {
-      path: "/vision-care", icon: Eye, label: "VisionCare Pro",
-      verticales: ["vision"] as VerticalTipo[],
-      subItems: [
-        { path: "/vision-care", label: "Resumen Vision" },
-        { path: "/vision-care?tab=recetas", label: "Recetas ópticas" },
-        { path: "/vision-care?tab=inventario", label: "Inventario óptico" },
-        { path: "/vision-care?tab=ordenes", label: "Órdenes de laboratorio" },
-        { path: "/vision-care?tab=combos", label: "Combos lentes" },
-        { path: "/vision-care?tab=garantias", label: "Garantías" },
-      ]
-    },
-
-    
     {
       path: "/config-grupo", icon: Settings, label: "Configuración", adminOnly: true,
       subItems: [
@@ -303,12 +333,28 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
 
-  // Filtrado por vertical activa: si es "todas" → todo; si es específica → comunes + de esa vertical
-  const visibleMenuItems = menuItems.filter((item) => {
-    if (!item.verticales) return true; // común
-    if (verticalActiva === "todas") return true;
-    return item.verticales.includes(verticalActiva);
-  });
+  // Helpers de filtrado por vertical sobre subItems
+  const subItemAplica = (sub: any): boolean => {
+    if (va === "todas") return true;
+    if (sub.excludeVerticales && sub.excludeVerticales.includes(va)) return false;
+    if (sub.verticales && !sub.verticales.includes(va)) return false;
+    return true;
+  };
+
+  // Filtrado por vertical activa: oculta items específicos no aplicables
+  // y filtra subItems individualmente. Si un grupo queda vacío, se oculta.
+  const visibleMenuItems = menuItems
+    .filter((item) => {
+      if (!item.verticales) return true;
+      if (va === "todas") return true;
+      return item.verticales.includes(va);
+    })
+    .map((item) => {
+      if (!item.subItems) return item;
+      const filtered = item.subItems.filter(subItemAplica);
+      return { ...item, subItems: filtered };
+    })
+    .filter((item) => !item.subItems || item.subItems.length > 0);
 
   // Helpers para comparar rutas con o sin query param `?tab=`
   const splitPath = (full: string) => {
