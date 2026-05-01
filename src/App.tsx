@@ -31,6 +31,10 @@ const BeneficiosUsuarios = lazy(() => import("./pages/BeneficiosUsuarios"));
 const ProgramaReferidos = lazy(() => import("./pages/ProgramaReferidos"));
 const SegmentacionPacientes = lazy(() => import("./pages/SegmentacionPacientes"));
 const PerfilValorPacientes = lazy(() => import("./pages/PerfilValorPacientes"));
+const ProtocolosClinicos = lazy(() => import("./pages/ProtocolosClinicos"));
+const CatalogosClinicos = lazy(() => import("./pages/CatalogosClinicos"));
+const VademecumInteracciones = lazy(() => import("./pages/VademecumInteracciones"));
+const ReglasClinicas = lazy(() => import("./pages/ReglasClinicas"));
 
 // Lazy loaded pages for better performance & smaller initial bundle
 const Recepcion = lazy(() => import("./pages/Recepcion"));
