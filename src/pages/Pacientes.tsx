@@ -28,6 +28,7 @@ import { AgendarLlamadaDialog } from "@/components/AgendarLlamadaDialog";
 import { NuevoPacienteForm } from "@/components/pacientes/NuevoPacienteForm";
 import { Badge } from "@/components/ui/badge";
 import { BulkActionsToolbar, PACIENTE_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
+import { AgendarCitaButton } from "@/components/AgendarCitaButton";
 
 const MOTIVO_LABELS: Record<string, string> = {
   viaje: "De viaje",
@@ -179,18 +180,21 @@ const Pacientes = () => {
               <h1 className="text-2xl font-bold">Pacientes</h1>
               <p className="text-muted-foreground text-sm">Gestión de pacientes del programa</p>
             </div>
-            <TabsList className="grid w-full sm:w-auto grid-cols-2">
-              <TabsTrigger value="activos" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span>Activos</span>
-                <Badge variant="secondary" className="ml-1">{pacientesActivos.length}</Badge>
-              </TabsTrigger>
-              <TabsTrigger value="inactivos" className="flex items-center gap-2">
-                <UserX className="h-4 w-4" />
-                <span>Inactivos</span>
-                <Badge variant="outline" className="ml-1">{pacientesInactivos.length}</Badge>
-              </TabsTrigger>
-            </TabsList>
+            <div className="flex items-center gap-2 flex-wrap">
+              <AgendarCitaButton size="sm" />
+              <TabsList className="grid grid-cols-2">
+                <TabsTrigger value="activos" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  <span>Activos</span>
+                  <Badge variant="secondary" className="ml-1">{pacientesActivos.length}</Badge>
+                </TabsTrigger>
+                <TabsTrigger value="inactivos" className="flex items-center gap-2">
+                  <UserX className="h-4 w-4" />
+                  <span>Inactivos</span>
+                  <Badge variant="outline" className="ml-1">{pacientesInactivos.length}</Badge>
+                </TabsTrigger>
+              </TabsList>
+            </div>
           </div>
         </div>
 
