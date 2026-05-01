@@ -2210,6 +2210,56 @@ export type Database = {
           },
         ]
       }
+      censo_diario: {
+        Row: {
+          camas_disponibles: number | null
+          camas_ocupadas: number | null
+          created_at: string | null
+          defunciones: number | null
+          egresos: number | null
+          fecha: string
+          id: string
+          ingresos: number | null
+          porcentaje_ocupacion: number | null
+          servicio: string
+          workspace_id: string | null
+        }
+        Insert: {
+          camas_disponibles?: number | null
+          camas_ocupadas?: number | null
+          created_at?: string | null
+          defunciones?: number | null
+          egresos?: number | null
+          fecha: string
+          id?: string
+          ingresos?: number | null
+          porcentaje_ocupacion?: number | null
+          servicio: string
+          workspace_id?: string | null
+        }
+        Update: {
+          camas_disponibles?: number | null
+          camas_ocupadas?: number | null
+          created_at?: string | null
+          defunciones?: number | null
+          egresos?: number | null
+          fecha?: string
+          id?: string
+          ingresos?: number | null
+          porcentaje_ocupacion?: number | null
+          servicio?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "censo_diario_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checklist_oms: {
         Row: {
           completado: boolean | null
@@ -2326,6 +2376,92 @@ export type Database = {
           },
           {
             foreignKeyName: "ciclos_esterilizacion_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ciclos_quimio: {
+        Row: {
+          bsa_m2: number | null
+          created_at: string | null
+          estado: string | null
+          fecha_programada: string
+          fecha_realizada: string | null
+          id: string
+          motivo_aplazamiento: string | null
+          notas: string | null
+          numero_ciclo: number
+          oncologo_id: string | null
+          paciente_id: string | null
+          peso_kg: number | null
+          protocolo_id: string | null
+          talla_cm: number | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          bsa_m2?: number | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_programada: string
+          fecha_realizada?: string | null
+          id?: string
+          motivo_aplazamiento?: string | null
+          notas?: string | null
+          numero_ciclo: number
+          oncologo_id?: string | null
+          paciente_id?: string | null
+          peso_kg?: number | null
+          protocolo_id?: string | null
+          talla_cm?: number | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          bsa_m2?: number | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_programada?: string
+          fecha_realizada?: string | null
+          id?: string
+          motivo_aplazamiento?: string | null
+          notas?: string | null
+          numero_ciclo?: number
+          oncologo_id?: string | null
+          paciente_id?: string | null
+          peso_kg?: number | null
+          protocolo_id?: string | null
+          talla_cm?: number | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ciclos_quimio_oncologo_id_fkey"
+            columns: ["oncologo_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ciclos_quimio_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ciclos_quimio_protocolo_id_fkey"
+            columns: ["protocolo_id"]
+            isOneToOne: false
+            referencedRelation: "protocolos_quimio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ciclos_quimio_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -3438,6 +3574,85 @@ export type Database = {
           },
           {
             foreignKeyName: "control_calidad_lab_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      control_prenatal: {
+        Row: {
+          altura_uterina_cm: number | null
+          created_at: string | null
+          edad_gestacional_semanas: number | null
+          edemas: boolean | null
+          fcf_lpm: number | null
+          fecha: string
+          id: string
+          movimientos_fetales: boolean | null
+          numero_consulta: number | null
+          observaciones: string | null
+          obstetra_id: string | null
+          paciente_id: string | null
+          peso_kg: number | null
+          presentacion: string | null
+          presion_arterial: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          altura_uterina_cm?: number | null
+          created_at?: string | null
+          edad_gestacional_semanas?: number | null
+          edemas?: boolean | null
+          fcf_lpm?: number | null
+          fecha: string
+          id?: string
+          movimientos_fetales?: boolean | null
+          numero_consulta?: number | null
+          observaciones?: string | null
+          obstetra_id?: string | null
+          paciente_id?: string | null
+          peso_kg?: number | null
+          presentacion?: string | null
+          presion_arterial?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          altura_uterina_cm?: number | null
+          created_at?: string | null
+          edad_gestacional_semanas?: number | null
+          edemas?: boolean | null
+          fcf_lpm?: number | null
+          fecha?: string
+          id?: string
+          movimientos_fetales?: boolean | null
+          numero_consulta?: number | null
+          observaciones?: string | null
+          obstetra_id?: string | null
+          paciente_id?: string | null
+          peso_kg?: number | null
+          presentacion?: string | null
+          presion_arterial?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "control_prenatal_obstetra_id_fkey"
+            columns: ["obstetra_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_prenatal_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_prenatal_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -4696,6 +4911,66 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dosis_quimio: {
+        Row: {
+          ciclo_id: string | null
+          created_at: string | null
+          dosis_mg_m2: number | null
+          dosis_total_mg: number | null
+          duracion_infusion_min: number | null
+          enfermera_id: string | null
+          hora_fin: string | null
+          hora_inicio: string | null
+          id: string
+          medicamento: string
+          notas: string | null
+          via_administracion: string | null
+        }
+        Insert: {
+          ciclo_id?: string | null
+          created_at?: string | null
+          dosis_mg_m2?: number | null
+          dosis_total_mg?: number | null
+          duracion_infusion_min?: number | null
+          enfermera_id?: string | null
+          hora_fin?: string | null
+          hora_inicio?: string | null
+          id?: string
+          medicamento: string
+          notas?: string | null
+          via_administracion?: string | null
+        }
+        Update: {
+          ciclo_id?: string | null
+          created_at?: string | null
+          dosis_mg_m2?: number | null
+          dosis_total_mg?: number | null
+          duracion_infusion_min?: number | null
+          enfermera_id?: string | null
+          hora_fin?: string | null
+          hora_inicio?: string | null
+          id?: string
+          medicamento?: string
+          notas?: string | null
+          via_administracion?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dosis_quimio_ciclo_id_fkey"
+            columns: ["ciclo_id"]
+            isOneToOne: false
+            referencedRelation: "ciclos_quimio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dosis_quimio_enfermera_id_fkey"
+            columns: ["enfermera_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
             referencedColumns: ["id"]
           },
         ]
@@ -7444,6 +7719,57 @@ export type Database = {
           },
         ]
       }
+      lactancia_seguimiento: {
+        Row: {
+          created_at: string | null
+          fecha: string
+          frecuencia_tomas: number | null
+          id: string
+          intervencion: string | null
+          problemas: string | null
+          recien_nacido_id: string | null
+          responsable_id: string | null
+          tipo: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          fecha: string
+          frecuencia_tomas?: number | null
+          id?: string
+          intervencion?: string | null
+          problemas?: string | null
+          recien_nacido_id?: string | null
+          responsable_id?: string | null
+          tipo?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          fecha?: string
+          frecuencia_tomas?: number | null
+          id?: string
+          intervencion?: string | null
+          problemas?: string | null
+          recien_nacido_id?: string | null
+          responsable_id?: string | null
+          tipo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lactancia_seguimiento_recien_nacido_id_fkey"
+            columns: ["recien_nacido_id"]
+            isOneToOne: false
+            referencedRelation: "recien_nacidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lactancia_seguimiento_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads_crm: {
         Row: {
           asignado_a: string | null
@@ -7801,6 +8127,67 @@ export type Database = {
           },
         ]
       }
+      lista_espera_admision: {
+        Row: {
+          cama_asignada_id: string | null
+          created_at: string | null
+          estado: string | null
+          fecha_solicitud: string | null
+          id: string
+          motivo: string | null
+          paciente_id: string | null
+          prioridad: string | null
+          servicio_solicitado: string
+          workspace_id: string | null
+        }
+        Insert: {
+          cama_asignada_id?: string | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_solicitud?: string | null
+          id?: string
+          motivo?: string | null
+          paciente_id?: string | null
+          prioridad?: string | null
+          servicio_solicitado: string
+          workspace_id?: string | null
+        }
+        Update: {
+          cama_asignada_id?: string | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_solicitud?: string | null
+          id?: string
+          motivo?: string | null
+          paciente_id?: string | null
+          prioridad?: string | null
+          servicio_solicitado?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lista_espera_admision_cama_asignada_id_fkey"
+            columns: ["cama_asignada_id"]
+            isOneToOne: false
+            referencedRelation: "mapa_camas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lista_espera_admision_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lista_espera_admision_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       manifiestos_residuos: {
         Row: {
           conductor: string | null
@@ -7859,6 +8246,69 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "manifiestos_residuos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mapa_camas: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          estado: string | null
+          fecha_ocupacion: string | null
+          id: string
+          notas: string | null
+          numero_cama: string
+          paciente_actual_id: string | null
+          piso: string
+          sala: string
+          tipo: string | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_ocupacion?: string | null
+          id?: string
+          notas?: string | null
+          numero_cama: string
+          paciente_actual_id?: string | null
+          piso: string
+          sala: string
+          tipo?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_ocupacion?: string | null
+          id?: string
+          notas?: string | null
+          numero_cama?: string
+          paciente_actual_id?: string | null
+          piso?: string
+          sala?: string
+          tipo?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mapa_camas_paciente_actual_id_fkey"
+            columns: ["paciente_actual_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mapa_camas_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -10090,6 +10540,54 @@ export type Database = {
           },
         ]
       }
+      partogramas: {
+        Row: {
+          created_at: string | null
+          estado: string | null
+          fecha_inicio_trabajo: string
+          id: string
+          paciente_id: string | null
+          registros: Json | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          estado?: string | null
+          fecha_inicio_trabajo: string
+          id?: string
+          paciente_id?: string | null
+          registros?: Json | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          estado?: string | null
+          fecha_inicio_trabajo?: string
+          id?: string
+          paciente_id?: string | null
+          registros?: Json | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partogramas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partogramas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pase_turno: {
         Row: {
           admision_id: string
@@ -11944,6 +12442,62 @@ export type Database = {
           },
         ]
       }
+      protocolos_quimio: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          duracion_ciclos: number | null
+          id: string
+          intencion: string | null
+          intervalo_dias: number | null
+          medicamentos: Json | null
+          nombre: string
+          notas: string | null
+          premedicaciones: Json | null
+          tipo_cancer: string | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          duracion_ciclos?: number | null
+          id?: string
+          intencion?: string | null
+          intervalo_dias?: number | null
+          medicamentos?: Json | null
+          nombre: string
+          notas?: string | null
+          premedicaciones?: Json | null
+          tipo_cancer?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          duracion_ciclos?: number | null
+          id?: string
+          intencion?: string | null
+          intervalo_dias?: number | null
+          medicamentos?: Json | null
+          nombre?: string
+          notas?: string | null
+          premedicaciones?: Json | null
+          tipo_cancer?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocolos_quimio_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       proveedores: {
         Row: {
           activo: boolean | null
@@ -12805,6 +13359,101 @@ export type Database = {
           },
         ]
       }
+      recien_nacidos: {
+        Row: {
+          apgar_10min: number | null
+          apgar_1min: number | null
+          apgar_5min: number | null
+          created_at: string | null
+          destino: string | null
+          edad_gestacional_semanas: number | null
+          estado: string | null
+          fecha_nacimiento: string
+          id: string
+          madre_paciente_id: string | null
+          observaciones: string | null
+          parto_id: string | null
+          pediatra_id: string | null
+          perimetro_cefalico_cm: number | null
+          peso_g: number | null
+          sexo: string | null
+          talla_cm: number | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          apgar_10min?: number | null
+          apgar_1min?: number | null
+          apgar_5min?: number | null
+          created_at?: string | null
+          destino?: string | null
+          edad_gestacional_semanas?: number | null
+          estado?: string | null
+          fecha_nacimiento: string
+          id?: string
+          madre_paciente_id?: string | null
+          observaciones?: string | null
+          parto_id?: string | null
+          pediatra_id?: string | null
+          perimetro_cefalico_cm?: number | null
+          peso_g?: number | null
+          sexo?: string | null
+          talla_cm?: number | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          apgar_10min?: number | null
+          apgar_1min?: number | null
+          apgar_5min?: number | null
+          created_at?: string | null
+          destino?: string | null
+          edad_gestacional_semanas?: number | null
+          estado?: string | null
+          fecha_nacimiento?: string
+          id?: string
+          madre_paciente_id?: string | null
+          observaciones?: string | null
+          parto_id?: string | null
+          pediatra_id?: string | null
+          perimetro_cefalico_cm?: number | null
+          peso_g?: number | null
+          sexo?: string | null
+          talla_cm?: number | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recien_nacidos_madre_paciente_id_fkey"
+            columns: ["madre_paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recien_nacidos_parto_id_fkey"
+            columns: ["parto_id"]
+            isOneToOne: false
+            referencedRelation: "registros_parto"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recien_nacidos_pediatra_id_fkey"
+            columns: ["pediatra_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recien_nacidos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reclamaciones_ars: {
         Row: {
           aseguradora_id: string
@@ -13430,6 +14079,95 @@ export type Database = {
           },
           {
             foreignKeyName: "registros_morgue_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      registros_parto: {
+        Row: {
+          complicaciones: string | null
+          created_at: string | null
+          desgarro: string | null
+          duracion_alumbramiento_min: number | null
+          duracion_dilatacion_min: number | null
+          duracion_expulsivo_min: number | null
+          episiotomia: boolean | null
+          fecha_parto: string
+          id: string
+          observaciones: string | null
+          obstetra_id: string | null
+          paciente_id: string | null
+          partograma_id: string | null
+          sangrado_ml: number | null
+          tipo_anestesia: string | null
+          tipo_parto: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          complicaciones?: string | null
+          created_at?: string | null
+          desgarro?: string | null
+          duracion_alumbramiento_min?: number | null
+          duracion_dilatacion_min?: number | null
+          duracion_expulsivo_min?: number | null
+          episiotomia?: boolean | null
+          fecha_parto: string
+          id?: string
+          observaciones?: string | null
+          obstetra_id?: string | null
+          paciente_id?: string | null
+          partograma_id?: string | null
+          sangrado_ml?: number | null
+          tipo_anestesia?: string | null
+          tipo_parto?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          complicaciones?: string | null
+          created_at?: string | null
+          desgarro?: string | null
+          duracion_alumbramiento_min?: number | null
+          duracion_dilatacion_min?: number | null
+          duracion_expulsivo_min?: number | null
+          episiotomia?: boolean | null
+          fecha_parto?: string
+          id?: string
+          observaciones?: string | null
+          obstetra_id?: string | null
+          paciente_id?: string | null
+          partograma_id?: string | null
+          sangrado_ml?: number | null
+          tipo_anestesia?: string | null
+          tipo_parto?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registros_parto_obstetra_id_fkey"
+            columns: ["obstetra_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registros_parto_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registros_parto_partograma_id_fkey"
+            columns: ["partograma_id"]
+            isOneToOne: false
+            referencedRelation: "partogramas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "registros_parto_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -14802,6 +15540,57 @@ export type Database = {
           },
         ]
       }
+      sillones_infusion: {
+        Row: {
+          activo: boolean | null
+          ciclo_actual_id: string | null
+          created_at: string | null
+          estado: string | null
+          id: string
+          numero: string
+          ubicacion: string | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          ciclo_actual_id?: string | null
+          created_at?: string | null
+          estado?: string | null
+          id?: string
+          numero: string
+          ubicacion?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          ciclo_actual_id?: string | null
+          created_at?: string | null
+          estado?: string | null
+          id?: string
+          numero?: string
+          ubicacion?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sillones_infusion_ciclo_actual_id_fkey"
+            columns: ["ciclo_actual_id"]
+            isOneToOne: false
+            referencedRelation: "ciclos_quimio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sillones_infusion_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       solicitudes_transfusion: {
         Row: {
           cantidad: number | null
@@ -15537,6 +16326,60 @@ export type Database = {
           },
         ]
       }
+      toxicidades_oncologicas: {
+        Row: {
+          ciclo_id: string | null
+          created_at: string | null
+          evaluador_id: string | null
+          fecha_evaluacion: string | null
+          grado_ctcae: number | null
+          id: string
+          manejo: string | null
+          notas: string | null
+          requiere_ajuste_dosis: boolean | null
+          tipo_toxicidad: string
+        }
+        Insert: {
+          ciclo_id?: string | null
+          created_at?: string | null
+          evaluador_id?: string | null
+          fecha_evaluacion?: string | null
+          grado_ctcae?: number | null
+          id?: string
+          manejo?: string | null
+          notas?: string | null
+          requiere_ajuste_dosis?: boolean | null
+          tipo_toxicidad: string
+        }
+        Update: {
+          ciclo_id?: string | null
+          created_at?: string | null
+          evaluador_id?: string | null
+          fecha_evaluacion?: string | null
+          grado_ctcae?: number | null
+          id?: string
+          manejo?: string | null
+          notas?: string | null
+          requiere_ajuste_dosis?: boolean | null
+          tipo_toxicidad?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "toxicidades_oncologicas_ciclo_id_fkey"
+            columns: ["ciclo_id"]
+            isOneToOne: false
+            referencedRelation: "ciclos_quimio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "toxicidades_oncologicas_evaluador_id_fkey"
+            columns: ["evaluador_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transfusiones: {
         Row: {
           created_at: string | null
@@ -15620,6 +16463,88 @@ export type Database = {
           },
           {
             foreignKeyName: "transfusiones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      traslados_internos: {
+        Row: {
+          autorizado_por_id: string | null
+          cama_destino_id: string | null
+          cama_origen_id: string | null
+          created_at: string | null
+          fecha_traslado: string | null
+          id: string
+          motivo: string
+          paciente_id: string | null
+          solicitado_por_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          autorizado_por_id?: string | null
+          cama_destino_id?: string | null
+          cama_origen_id?: string | null
+          created_at?: string | null
+          fecha_traslado?: string | null
+          id?: string
+          motivo: string
+          paciente_id?: string | null
+          solicitado_por_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          autorizado_por_id?: string | null
+          cama_destino_id?: string | null
+          cama_origen_id?: string | null
+          created_at?: string | null
+          fecha_traslado?: string | null
+          id?: string
+          motivo?: string
+          paciente_id?: string | null
+          solicitado_por_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "traslados_internos_autorizado_por_id_fkey"
+            columns: ["autorizado_por_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "traslados_internos_cama_destino_id_fkey"
+            columns: ["cama_destino_id"]
+            isOneToOne: false
+            referencedRelation: "mapa_camas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "traslados_internos_cama_origen_id_fkey"
+            columns: ["cama_origen_id"]
+            isOneToOne: false
+            referencedRelation: "mapa_camas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "traslados_internos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "traslados_internos_solicitado_por_id_fkey"
+            columns: ["solicitado_por_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "traslados_internos_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -16325,6 +17250,60 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vacunacion_neonatal: {
+        Row: {
+          created_at: string | null
+          dosis: string | null
+          fecha: string | null
+          id: string
+          lote: string | null
+          observaciones: string | null
+          recien_nacido_id: string | null
+          responsable_id: string | null
+          vacuna: string
+          via: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dosis?: string | null
+          fecha?: string | null
+          id?: string
+          lote?: string | null
+          observaciones?: string | null
+          recien_nacido_id?: string | null
+          responsable_id?: string | null
+          vacuna: string
+          via?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dosis?: string | null
+          fecha?: string | null
+          id?: string
+          lote?: string | null
+          observaciones?: string | null
+          recien_nacido_id?: string | null
+          responsable_id?: string | null
+          vacuna?: string
+          via?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vacunacion_neonatal_recien_nacido_id_fkey"
+            columns: ["recien_nacido_id"]
+            isOneToOne: false
+            referencedRelation: "recien_nacidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vacunacion_neonatal_responsable_id_fkey"
+            columns: ["responsable_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
             referencedColumns: ["id"]
           },
         ]
