@@ -48,7 +48,6 @@ export default function VerticalReportesKPITab({ verticalTipo }: Props) {
       const leadsQ = (supabase as any).from("leads_vertical").select("id", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).gte("created_at", startOfMonth);
       const pagosQ = (supabase as any).from("pagos_online_vertical").select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startOfMonth);
       const [citas, leads, pagos] = await Promise.all([citasQ, leadsQ, pagosQ] as any[]);
-      ]);
 
       const totalCitas = citas.count || 0;
       const completadas = (citas.data || []).filter((c: any) => c.estado === "completada").length;
