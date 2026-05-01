@@ -2618,6 +2618,111 @@ export type Database = {
           },
         ]
       }
+      catalogo_cie10: {
+        Row: {
+          activo: boolean | null
+          capitulo: string | null
+          categoria: string | null
+          codigo: string
+          created_at: string | null
+          descripcion: string
+        }
+        Insert: {
+          activo?: boolean | null
+          capitulo?: string | null
+          categoria?: string | null
+          codigo: string
+          created_at?: string | null
+          descripcion: string
+        }
+        Update: {
+          activo?: boolean | null
+          capitulo?: string | null
+          categoria?: string | null
+          codigo?: string
+          created_at?: string | null
+          descripcion?: string
+        }
+        Relationships: []
+      }
+      catalogo_cpt: {
+        Row: {
+          activo: boolean | null
+          categoria: string | null
+          codigo: string
+          created_at: string | null
+          descripcion: string
+          tarifa_referencia: number | null
+          unidades_rvu: number | null
+        }
+        Insert: {
+          activo?: boolean | null
+          categoria?: string | null
+          codigo: string
+          created_at?: string | null
+          descripcion: string
+          tarifa_referencia?: number | null
+          unidades_rvu?: number | null
+        }
+        Update: {
+          activo?: boolean | null
+          categoria?: string | null
+          codigo?: string
+          created_at?: string | null
+          descripcion?: string
+          tarifa_referencia?: number | null
+          unidades_rvu?: number | null
+        }
+        Relationships: []
+      }
+      catalogo_medicamentos: {
+        Row: {
+          activo: boolean | null
+          codigo: string | null
+          concentracion: string | null
+          controlado: boolean | null
+          created_at: string | null
+          forma_farmaceutica: string | null
+          grupo_terapeutico: string | null
+          id: string
+          laboratorio: string | null
+          nombre_comercial: string
+          principio_activo: string
+          requiere_receta: boolean | null
+          via_administracion: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          codigo?: string | null
+          concentracion?: string | null
+          controlado?: boolean | null
+          created_at?: string | null
+          forma_farmaceutica?: string | null
+          grupo_terapeutico?: string | null
+          id?: string
+          laboratorio?: string | null
+          nombre_comercial: string
+          principio_activo: string
+          requiere_receta?: boolean | null
+          via_administracion?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          codigo?: string | null
+          concentracion?: string | null
+          controlado?: boolean | null
+          created_at?: string | null
+          forma_farmaceutica?: string | null
+          grupo_terapeutico?: string | null
+          id?: string
+          laboratorio?: string | null
+          nombre_comercial?: string
+          principio_activo?: string
+          requiere_receta?: boolean | null
+          via_administracion?: string | null
+        }
+        Relationships: []
+      }
       censo_diario: {
         Row: {
           camas_disponibles: number | null
@@ -8514,6 +8619,42 @@ export type Database = {
           },
         ]
       }
+      interacciones_farmacologicas: {
+        Row: {
+          created_at: string | null
+          efecto_clinico: string | null
+          id: string
+          mecanismo: string | null
+          principio_activo_a: string
+          principio_activo_b: string
+          recomendacion: string | null
+          referencia: string | null
+          severidad: string
+        }
+        Insert: {
+          created_at?: string | null
+          efecto_clinico?: string | null
+          id?: string
+          mecanismo?: string | null
+          principio_activo_a: string
+          principio_activo_b: string
+          recomendacion?: string | null
+          referencia?: string | null
+          severidad: string
+        }
+        Update: {
+          created_at?: string | null
+          efecto_clinico?: string | null
+          id?: string
+          mecanismo?: string | null
+          principio_activo_a?: string
+          principio_activo_b?: string
+          recomendacion?: string | null
+          referencia?: string | null
+          severidad?: string
+        }
+        Relationships: []
+      }
       inventario_hemocomponentes: {
         Row: {
           codigo_unidad: string
@@ -14141,6 +14282,134 @@ export type Database = {
           },
         ]
       }
+      protocolos_aplicaciones: {
+        Row: {
+          created_at: string | null
+          estado: string | null
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          id: string
+          iniciado_por: string | null
+          observaciones: string | null
+          paciente_id: string
+          paso_actual: number | null
+          pasos_completados: Json | null
+          protocolo_id: string
+          resultado: string | null
+          updated_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          iniciado_por?: string | null
+          observaciones?: string | null
+          paciente_id: string
+          paso_actual?: number | null
+          pasos_completados?: Json | null
+          protocolo_id: string
+          resultado?: string | null
+          updated_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          iniciado_por?: string | null
+          observaciones?: string | null
+          paciente_id?: string
+          paso_actual?: number | null
+          pasos_completados?: Json | null
+          protocolo_id?: string
+          resultado?: string | null
+          updated_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocolos_aplicaciones_protocolo_id_fkey"
+            columns: ["protocolo_id"]
+            isOneToOne: false
+            referencedRelation: "protocolos_clinicos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      protocolos_clinicos: {
+        Row: {
+          activo: boolean | null
+          categoria: string | null
+          codigo: string
+          created_at: string | null
+          created_by: string | null
+          criterios_exclusion: Json | null
+          criterios_inclusion: Json | null
+          descripcion: string | null
+          duracion_estimada_horas: number | null
+          es_global: boolean | null
+          especialidad: string | null
+          evidencia_nivel: string | null
+          id: string
+          medicamentos_sugeridos: Json | null
+          nombre: string
+          ordenes_sugeridas: Json | null
+          pasos: Json | null
+          referencia_bibliografica: string | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          categoria?: string | null
+          codigo: string
+          created_at?: string | null
+          created_by?: string | null
+          criterios_exclusion?: Json | null
+          criterios_inclusion?: Json | null
+          descripcion?: string | null
+          duracion_estimada_horas?: number | null
+          es_global?: boolean | null
+          especialidad?: string | null
+          evidencia_nivel?: string | null
+          id?: string
+          medicamentos_sugeridos?: Json | null
+          nombre: string
+          ordenes_sugeridas?: Json | null
+          pasos?: Json | null
+          referencia_bibliografica?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          categoria?: string | null
+          codigo?: string
+          created_at?: string | null
+          created_by?: string | null
+          criterios_exclusion?: Json | null
+          criterios_inclusion?: Json | null
+          descripcion?: string | null
+          duracion_estimada_horas?: number | null
+          es_global?: boolean | null
+          especialidad?: string | null
+          evidencia_nivel?: string | null
+          id?: string
+          medicamentos_sugeridos?: Json | null
+          nombre?: string
+          ordenes_sugeridas?: Json | null
+          pasos?: Json | null
+          referencia_bibliografica?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
       protocolos_investigacion: {
         Row: {
           co_investigadores: Json | null
@@ -16068,6 +16337,107 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reglas_clinicas: {
+        Row: {
+          acciones: Json
+          activo: boolean | null
+          categoria: string | null
+          codigo: string
+          condiciones: Json
+          created_at: string | null
+          created_by: string | null
+          descripcion: string | null
+          es_global: boolean | null
+          evento_disparador: string
+          id: string
+          nombre: string
+          severidad: string | null
+          ultima_ejecucion: string | null
+          updated_at: string | null
+          veces_disparada: number | null
+          workspace_id: string | null
+        }
+        Insert: {
+          acciones?: Json
+          activo?: boolean | null
+          categoria?: string | null
+          codigo: string
+          condiciones?: Json
+          created_at?: string | null
+          created_by?: string | null
+          descripcion?: string | null
+          es_global?: boolean | null
+          evento_disparador: string
+          id?: string
+          nombre: string
+          severidad?: string | null
+          ultima_ejecucion?: string | null
+          updated_at?: string | null
+          veces_disparada?: number | null
+          workspace_id?: string | null
+        }
+        Update: {
+          acciones?: Json
+          activo?: boolean | null
+          categoria?: string | null
+          codigo?: string
+          condiciones?: Json
+          created_at?: string | null
+          created_by?: string | null
+          descripcion?: string | null
+          es_global?: boolean | null
+          evento_disparador?: string
+          id?: string
+          nombre?: string
+          severidad?: string | null
+          ultima_ejecucion?: string | null
+          updated_at?: string | null
+          veces_disparada?: number | null
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
+      reglas_ejecuciones: {
+        Row: {
+          acciones_ejecutadas: Json | null
+          contexto: Json | null
+          fecha_ejecucion: string | null
+          id: string
+          paciente_id: string | null
+          regla_id: string
+          resultado: string | null
+          workspace_id: string
+        }
+        Insert: {
+          acciones_ejecutadas?: Json | null
+          contexto?: Json | null
+          fecha_ejecucion?: string | null
+          id?: string
+          paciente_id?: string | null
+          regla_id: string
+          resultado?: string | null
+          workspace_id: string
+        }
+        Update: {
+          acciones_ejecutadas?: Json | null
+          contexto?: Json | null
+          fecha_ejecucion?: string | null
+          id?: string
+          paciente_id?: string | null
+          regla_id?: string
+          resultado?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reglas_ejecuciones_regla_id_fkey"
+            columns: ["regla_id"]
+            isOneToOne: false
+            referencedRelation: "reglas_clinicas"
             referencedColumns: ["id"]
           },
         ]
