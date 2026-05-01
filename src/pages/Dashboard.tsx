@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { InteractiveKPI } from "@/components/InteractiveKPI";
 import { RecordatoriosDiariosWhatsApp } from "@/components/RecordatoriosDiariosWhatsApp";
 import { InventarioAlertasWidget } from "@/components/InventarioAlertasWidget";
+import { AgendarCitaButton } from "@/components/AgendarCitaButton";
+import { PlanLimitAlert } from "@/components/PlanLimitAlert";
 import { format, subDays, startOfDay, endOfDay, startOfMonth, subMonths, eachDayOfInterval } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
@@ -262,18 +264,24 @@ const Dashboard = () => {
           </h1>
           <p className="text-muted-foreground">Resumen completo de la operación{verticalActiva && verticalActiva !== "todas" ? " de esta vertical" : ""}</p>
         </div>
-        <div className="flex items-center gap-2 text-muted-foreground bg-card p-3 rounded-lg border">
-          <Clock className="h-5 w-5" />
-          <div className="text-right">
-            <div className="text-sm font-medium text-foreground">
-              {format(localTime, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
-            </div>
-            <div className="text-lg font-bold text-primary">
-              {format(localTime, "hh:mm:ss a", { locale: es })}
+        <div className="flex items-center gap-3 flex-wrap">
+          <AgendarCitaButton size="sm" />
+          <div className="flex items-center gap-2 text-muted-foreground bg-card p-3 rounded-lg border">
+            <Clock className="h-5 w-5" />
+            <div className="text-right">
+              <div className="text-sm font-medium text-foreground">
+                {format(localTime, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
+              </div>
+              <div className="text-lg font-bold text-primary">
+                {format(localTime, "hh:mm:ss a", { locale: es })}
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Alerta de límite del plan (cerca o alcanzado) */}
+      <PlanLimitAlert resource="pacientes" />
 
       {/* Recordatorios WhatsApp del día siguiente */}
       <RecordatoriosDiariosWhatsApp />
