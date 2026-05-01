@@ -93,3 +93,4 @@
 - [Vertical Adaptive Sidebar Menu](mem://features/vertical-adaptive-menu) — Sidebar reorganizes per active vertical: specific options distributed into existing groups + Resumen vertical entry; non-applicable items hidden
 - [Vertical Dashboard Unified](mem://features/vertical-dashboard-unified) — "Resumen [Vertical]" fusionado con /dashboard; rutas /aesthetic-pro etc. sin ?tab redirigen al Dashboard. Mapas/rutas solo en clinica+recovery. Botón "Agendar cita" en Calendario, Pacientes y Ficha
 - [Plan Free Limited Modules](mem://features/plan-free-limited-modules) — Plan gratuito (independientes): solo Dashboard, Calendario, Pacientes, Recepción, Atención, Soporte y Configuración
+- [Plan Free Write Access](mem://features/plan-free-write-access) — Plan free: write only en Dashboard/Agenda/Pacientes/Ficha. Límite 100 pacientes con `<PlanLimitAlert>` en Dashboard y Pacientes
