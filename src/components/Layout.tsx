@@ -79,6 +79,7 @@ import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
 import { SucursalSwitcher } from "@/components/SucursalSwitcher";
 import { VerticalSwitcher } from "@/components/VerticalSwitcher";
 import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
+import { useFreePlan } from "@/hooks/useFreePlan";
 
 interface LayoutProps {
   children: ReactNode;
@@ -91,6 +92,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { profile } = useUserProfile();
   const { isAdmin } = useUserRole();
   const { verticalActiva } = useVertical();
+  const { isFree } = useFreePlan();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
@@ -129,16 +131,11 @@ const Layout = ({ children }: LayoutProps) => {
     vision: "/vision-care",
   };
 
-  // Resumen de la vertical activa (si no es "todas")
-  const resumenVerticalItem = (va !== "todas") ? {
-    path: verticalRoot[va as VTipo],
-    icon: verticalIcon[va as VTipo],
-    label: `Resumen ${verticalLabel[va as VTipo]}`,
-  } : null;
+  // El "Resumen [Vertical]" se fusiona con el Dashboard; no se muestra
+  // como item separado en el menú lateral.
 
   const menuItems: any[] = [
     { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    ...(resumenVerticalItem ? [resumenVerticalItem] : []),
 
     {
       path: "/agenda", icon: CalendarDays, label: "Agenda",
