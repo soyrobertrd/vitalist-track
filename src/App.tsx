@@ -99,6 +99,9 @@ const MaternidadNeonatologia = lazy(() => import("./pages/MaternidadNeonatologia
 const HubPaciente360 = lazy(() => import("./pages/HubPaciente360"));
 const OrdenesMedicas = lazy(() => import("./pages/OrdenesMedicas"));
 const AlertasClinicas = lazy(() => import("./pages/AlertasClinicas"));
+const Interoperabilidad = lazy(() => import("./pages/Interoperabilidad"));
+const VisorDICOM = lazy(() => import("./pages/VisorDICOM"));
+const PWAOffline = lazy(() => import("./pages/PWAOffline"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -337,6 +340,18 @@ const App = () => {
                 <Route
                   path="/alertas-clinicas"
                   element={session ? <Layout><AlertasClinicas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/interoperabilidad"
+                  element={session ? <Layout><Interoperabilidad /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/visor-dicom"
+                  element={session ? <Layout><VisorDICOM /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/pwa-offline"
+                  element={session ? <Layout><PWAOffline /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/checklist-rls"
