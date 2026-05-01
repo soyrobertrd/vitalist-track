@@ -31,6 +31,10 @@ import VerticalTelemedicinaTab from "@/components/vertical/VerticalTelemedicinaT
 import VerticalRecetasTab from "@/components/vertical/VerticalRecetasTab";
 import VerticalFacturacionElectronicaTab from "@/components/vertical/VerticalFacturacionElectronicaTab";
 import VerticalIntegracionesTab from "@/components/vertical/VerticalIntegracionesTab";
+import VerticalInventarioTab from "@/components/vertical/VerticalInventarioTab";
+import VerticalReportesKPITab from "@/components/vertical/VerticalReportesKPITab";
+import VerticalOnboardingTab from "@/components/vertical/VerticalOnboardingTab";
+import VerticalPWATab from "@/components/vertical/VerticalPWATab";
 
 const estadoPlanColor: Record<string, string> = {
   borrador: "bg-muted text-muted-foreground",
@@ -239,6 +243,10 @@ export default function DentalCarePro() {
           <TabsTrigger value="recetas">Recetas</TabsTrigger>
           <TabsTrigger value="ecf">e-CF / DGII</TabsTrigger>
           <TabsTrigger value="integraciones">Integraciones</TabsTrigger>
+          <TabsTrigger value="inventario_v">Inventario</TabsTrigger>
+          <TabsTrigger value="kpis">KPIs</TabsTrigger>
+          <TabsTrigger value="onboarding">Setup</TabsTrigger>
+          <TabsTrigger value="pwa">PWA</TabsTrigger>
         </TabsList>
 
         <TabsContent value="planes" className="space-y-3">
@@ -437,6 +445,10 @@ export default function DentalCarePro() {
         <TabsContent value="recetas" className="mt-4"><VerticalRecetasTab verticalTipo="dental" /></TabsContent>
         <TabsContent value="ecf" className="mt-4"><VerticalFacturacionElectronicaTab verticalTipo="dental" /></TabsContent>
         <TabsContent value="integraciones" className="mt-4"><VerticalIntegracionesTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="inventario_v" className="mt-4"><VerticalInventarioTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="kpis" className="mt-4"><VerticalReportesKPITab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="onboarding" className="mt-4"><VerticalOnboardingTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="pwa" className="mt-4"><VerticalPWATab /></TabsContent>
       </Tabs>
     </div>
   );
