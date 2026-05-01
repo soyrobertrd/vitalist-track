@@ -1477,6 +1477,68 @@ export type Database = {
           },
         ]
       }
+      campanas_marketing_vertical: {
+        Row: {
+          abiertos: number | null
+          canal: string
+          clics: number | null
+          created_at: string | null
+          destinatarios_total: number | null
+          enviados: number | null
+          estado: string | null
+          fecha_programada: string | null
+          id: string
+          mensaje_plantilla: string | null
+          nombre: string
+          segmento_filtro: Json | null
+          updated_at: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          abiertos?: number | null
+          canal: string
+          clics?: number | null
+          created_at?: string | null
+          destinatarios_total?: number | null
+          enviados?: number | null
+          estado?: string | null
+          fecha_programada?: string | null
+          id?: string
+          mensaje_plantilla?: string | null
+          nombre: string
+          segmento_filtro?: Json | null
+          updated_at?: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          abiertos?: number | null
+          canal?: string
+          clics?: number | null
+          created_at?: string | null
+          destinatarios_total?: number | null
+          enviados?: number | null
+          estado?: string | null
+          fecha_programada?: string | null
+          id?: string
+          mensaje_plantilla?: string | null
+          nombre?: string
+          segmento_filtro?: Json | null
+          updated_at?: string | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campanas_marketing_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       casos_trabajo_social: {
         Row: {
           composicion_familiar: Json | null
@@ -5662,6 +5724,69 @@ export type Database = {
           },
         ]
       }
+      leads_vertical: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          estado: string | null
+          id: string
+          nombre: string
+          notas: string | null
+          origen: string | null
+          sucursal_id: string | null
+          telefono: string | null
+          updated_at: string | null
+          valor_estimado: number | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          estado?: string | null
+          id?: string
+          nombre: string
+          notas?: string | null
+          origen?: string | null
+          sucursal_id?: string | null
+          telefono?: string | null
+          updated_at?: string | null
+          valor_estimado?: number | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          estado?: string | null
+          id?: string
+          nombre?: string
+          notas?: string | null
+          origen?: string | null
+          sucursal_id?: string | null
+          telefono?: string | null
+          updated_at?: string | null
+          valor_estimado?: number | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_vertical_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales_vertical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lineas_asiento: {
         Row: {
           asiento_id: string
@@ -5968,6 +6093,66 @@ export type Database = {
           },
         ]
       }
+      mensajes_whatsapp_vertical: {
+        Row: {
+          campana_id: string | null
+          created_at: string | null
+          enviado_en: string | null
+          estado: string | null
+          id: string
+          mensaje: string
+          metadata: Json | null
+          paciente_id: string | null
+          telefono: string
+          tipo: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          campana_id?: string | null
+          created_at?: string | null
+          enviado_en?: string | null
+          estado?: string | null
+          id?: string
+          mensaje: string
+          metadata?: Json | null
+          paciente_id?: string | null
+          telefono: string
+          tipo: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          campana_id?: string | null
+          created_at?: string | null
+          enviado_en?: string | null
+          estado?: string | null
+          id?: string
+          mensaje?: string
+          metadata?: Json | null
+          paciente_id?: string | null
+          telefono?: string
+          tipo?: string
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mensajes_whatsapp_vertical_campana_id_fkey"
+            columns: ["campana_id"]
+            isOneToOne: false
+            referencedRelation: "campanas_marketing_vertical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mensajes_whatsapp_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menus_dieta: {
         Row: {
           calorias: number | null
@@ -6011,6 +6196,72 @@ export type Database = {
             columns: ["dieta_id"]
             isOneToOne: false
             referencedRelation: "dietas_hospitalarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metricas_bi_vertical: {
+        Row: {
+          citas_completadas: number | null
+          citas_totales: number | null
+          created_at: string | null
+          gastos: number | null
+          id: string
+          ingresos: number | null
+          pacientes_nuevos: number | null
+          periodo: string
+          procedimientos_top: Json | null
+          sucursal_id: string | null
+          tasa_retencion: number | null
+          ticket_promedio: number | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          citas_completadas?: number | null
+          citas_totales?: number | null
+          created_at?: string | null
+          gastos?: number | null
+          id?: string
+          ingresos?: number | null
+          pacientes_nuevos?: number | null
+          periodo: string
+          procedimientos_top?: Json | null
+          sucursal_id?: string | null
+          tasa_retencion?: number | null
+          ticket_promedio?: number | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          citas_completadas?: number | null
+          citas_totales?: number | null
+          created_at?: string | null
+          gastos?: number | null
+          id?: string
+          ingresos?: number | null
+          pacientes_nuevos?: number | null
+          periodo?: string
+          procedimientos_top?: Json | null
+          sucursal_id?: string | null
+          tasa_retencion?: number | null
+          ticket_promedio?: number | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metricas_bi_vertical_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales_vertical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metricas_bi_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -7085,6 +7336,69 @@ export type Database = {
             columns: ["factura_id"]
             isOneToOne: false
             referencedRelation: "facturas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pagos_online_vertical: {
+        Row: {
+          concepto: string | null
+          created_at: string | null
+          estado: string | null
+          id: string
+          metadata: Json | null
+          metodo: string
+          moneda: string | null
+          monto: number
+          paciente_id: string | null
+          referencia_externa: string | null
+          sucursal_id: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          concepto?: string | null
+          created_at?: string | null
+          estado?: string | null
+          id?: string
+          metadata?: Json | null
+          metodo: string
+          moneda?: string | null
+          monto: number
+          paciente_id?: string | null
+          referencia_externa?: string | null
+          sucursal_id?: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          concepto?: string | null
+          created_at?: string | null
+          estado?: string | null
+          id?: string
+          metadata?: Json | null
+          metodo?: string
+          moneda?: string | null
+          monto?: number
+          paciente_id?: string | null
+          referencia_externa?: string | null
+          sucursal_id?: string | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pagos_online_vertical_sucursal_id_fkey"
+            columns: ["sucursal_id"]
+            isOneToOne: false
+            referencedRelation: "sucursales_vertical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pagos_online_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -8213,6 +8527,50 @@ export type Database = {
           },
           {
             foreignKeyName: "portal_paciente_tokens_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_paciente_vertical: {
+        Row: {
+          created_at: string | null
+          datos_visibles: Json | null
+          expira_en: string | null
+          id: string
+          paciente_id: string
+          token: string
+          usado: boolean | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          datos_visibles?: Json | null
+          expira_en?: string | null
+          id?: string
+          paciente_id: string
+          token?: string
+          usado?: boolean | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          datos_visibles?: Json | null
+          expira_en?: string | null
+          id?: string
+          paciente_id?: string
+          token?: string
+          usado?: boolean | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_paciente_vertical_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -10960,6 +11318,65 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "sucursales_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sucursales_vertical: {
+        Row: {
+          activo: boolean | null
+          configuracion: Json | null
+          created_at: string | null
+          dias_laborables: string[] | null
+          direccion: string | null
+          email: string | null
+          horario_apertura: string | null
+          horario_cierre: string | null
+          id: string
+          nombre: string
+          telefono: string | null
+          updated_at: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          configuracion?: Json | null
+          created_at?: string | null
+          dias_laborables?: string[] | null
+          direccion?: string | null
+          email?: string | null
+          horario_apertura?: string | null
+          horario_cierre?: string | null
+          id?: string
+          nombre: string
+          telefono?: string | null
+          updated_at?: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          configuracion?: Json | null
+          created_at?: string | null
+          dias_laborables?: string[] | null
+          direccion?: string | null
+          email?: string | null
+          horario_apertura?: string | null
+          horario_cierre?: string | null
+          id?: string
+          nombre?: string
+          telefono?: string | null
+          updated_at?: string | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sucursales_vertical_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
