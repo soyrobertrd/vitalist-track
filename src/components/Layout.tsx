@@ -178,6 +178,8 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/visor-dicom", label: "Visor DICOM" },
         { path: "/interoperabilidad", label: "Interoperabilidad HL7/FHIR" },
         { path: "/pwa-offline", label: "PWA Offline / Dispositivos" },
+        { path: "/telemedicina", label: "Centro de Telemedicina" },
+        { path: "/calidad", label: "Gestión de Calidad" },
         { path: "/consultorios", label: "Consultorios", icon: Building2 },
         { path: "/farmacia", label: "Farmacia", icon: Pill },
         { path: "/banco-sangre", label: "Banco de Sangre" },
