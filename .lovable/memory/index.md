@@ -1,0 +1,83 @@
+# Project Memory
+
+## Core
+- Phone numbers: strict `829-123-1234` format. Actionable links use `tel:`/`mailto:`. WhatsApp uses `wa.me/` links with icon only.
+- Contact display priority: `numero_principal` > `contacto_px` > `contacto_cuidador`. No labels.
+- Forms: Strict parity between Create and Edit modes. What exists in create, must exist in edit.
+- Enums & DB: Cast empty strings (`""`) to `null` before saving.
+- Municipalities: Label as "Municipio (zona)". Strict enum casing: "San Luis", "Los Alcarrizos", "Boca Chica".
+- Dates: Save date parts exactly without TZ shifts. On read, append `T12:00:00` to avoid timezone offset errors.
+- Auth/Roles: Always use `.maybeSingle()` instead of `.single()` when fetching user roles.
+- Scheduling: Block weekends and non-working days for all appointments. Baseline schedule start: Dec 16, 2025.
+- Security: RLS by ownership — médico/enfermera only access patients/visits/calls where they are the assigned `personal_salud.user_id`. Admin/coordinador see all. Helpers: `is_admin_or_coordinador`, `is_staff_clinico_de_paciente`, `is_staff_clinico_de_profesional`.
+- Audit: Critical tables auto-log INSERT/UPDATE/DELETE via trigger `registrar_cambio_auditoria` into `auditoria_cambios`. Only admins can view.
+- Verticals (VisionCare, DentalCare, AestheticPro, RecoveryCare) are standalone products with full clinic ops (pacientes, citas, personal, facturación, nómina).
+
+## Memories
+- [Profile Creation on Admin Add](mem://user-management/automatic-profile-creation-on-admin-add) — Automatically create profile records when admins add users
+- [Actionable Contact Links](mem://ui/actionable-contact-links) — Render phone/email as tel: and mailto: links
+- [WhatsApp Communication](mem://integrations/whatsapp-communication) — WhatsApp wa.me links next to phone numbers
+- [WhatsApp Icon Only](mem://ui/whatsapp-icon-only) — Display WhatsApp button as icon only without text
+- [Primary Contact Flag](mem://data-handling/primary-contact-flag) — Flag for WhatsApp and primary contact designation
+- [Merge Duplicate Patient Data](mem://data-processing/merge-duplicate-patient-data) — Copy phone numbers when unifying duplicate patients
+- [Patient Merge Audit Trail](mem://data-processing/patient-merge-audit-trail) — Maintain audit logs for patient merges
+- [Automatic Duplicate Detection](mem://data-validation/automatic-duplicate-detection-on-create) — Real-time duplicate alerts on create by cedula, name, phone
+- [Holiday Non-Working Day Calendar](mem://scheduling/holiday-non-working-day-calendar) — Block and shift scheduling on non-working days
+- [Patient Appointment Confirmation](mem://features/patient-appointment-confirmation-rescheduling-module) — Public tokenized web module for confirming/rescheduling
+- [Call Result Visit Scheduling Mandatory](mem://features/call-result-visit-scheduling-mandatory) — Force visit scheduling if 'visita agendada' is selected in call result
+- [Visit Restriction Auto Validation](mem://data-validation/visit-restriction-auto-validation) — Validate scheduling against patient personal restrictions
+- [Visit Action Plan Reminder](mem://notifications/visit-action-plan-reminder) — Display action plan reminders on patient records after visits
+- [Patient Attendance Types](mem://data-model/patient-attendance-types) — Categorize patients as ambulatory or home-based
+- [Initial Follow-up Calls](mem://scheduling/initial-followup-calls-juana-reyes) — Auto-assign initial follow-up calls to Juana Reyes
+- [Phone Format Automatic Masking](mem://data-validation/phone-format-automatic-masking) — Force 829-123-1234 mask across all inputs
+- [Suspect Provisional Patients](mem://data-model/suspect-provisional-patients) — Support 'sospechoso' category for program assessment
+- [Form Reorganization Principle](mem://ui/form-reorganization-principle) — Logical form sections and create/edit parity
+- [Cyclic Non-Working Days](mem://scheduling/cyclic-non-working-days) — Support recurring annual holidays
+- [Absence Conflict Detection](mem://scheduling/absence-conflict-detection-and-resolution) — Alert for appointment conflicts when registering professional absences
+- [Email Preferences User Control](mem://notifications/email-preferences-user-control) — User controls for email/notification opt-in
+- [Professional Creation Modes](mem://user-management/professional-creation-modes) — Support creating professionals with or without user accounts
+- [Email Templates By Visit Type](mem://notifications/email-templates-by-visit-type) — Distinct email templates for home vs. ambulatory visits
+- [Real-time Appointment Notifications](mem://notifications/real-time-appointment-confirmation-notifications) — Push notifications to staff on patient confirmations
+- [Municipio Zone Terminology](mem://data-model/municipio-zone-terminology) — Use "Municipio (zona)" label universally
+- [Barrios Dynamic API Endpoint](mem://integrations/barrios-dynamic-api-endpoint) — Edge function proxy for barrios API with specific url-encoding and params
+- [Overdue Appointment Logic](mem://ui/overdue-appointment-logic) — Define overdue as >1 full day post appointment
+- [Patient Visit Day Restrictions](mem://data-model/patient-visit-day-restrictions) — Block visits on days patients are unavailable
+- [Email Token Security Surveys](mem://security/email-token-security-surveys) — Single-use expiring tokens for survey responses
+- [Barrio Filter Unassigned Option](mem://ui/barrio-filter-unassigned-option) — 'Sin asignar' option in neighborhood filters
+- [Address as Google Maps Link](mem://ui/address-as-google-maps-link) — Render patient addresses as clickable Google Maps searches
+- [Theme Customization User Personal](mem://ui/theme-customization-user-personal) — User-configurable theme colors
+- [Professional Overload Alert Thresholds](mem://scheduling/professional-overload-alert-thresholds) — Warn when >12 calls, >6 visits, or >15 total daily appointments
+- [Global Search System Wide](mem://search/global-search-system-wide) — Omni-search for patients, calls, visits, professionals
+- [Calendar Weekend Blocking](mem://scheduling/calendar-weekend-blocking) — Enforce block on weekend scheduling
+- [Calendar Filter Buttons Not Dropdown](mem://ui/calendar-filter-buttons-not-dropdown) — Use buttons instead of dropdowns for calendar toggles
+- [Patient Coordinates Storage](mem://data-model/patient-coordinates-storage) — Store precise lat/lng for visit routing
+- [JCE Validation Tracking](mem://features/jce-validation-tracking) — 'Datos validados con JCE' indicator for confirmed IDs
+- [Municipality Enum Values Specific](mem://data-model/municipality-enum-values-specific) — Enforce strict DB casing for municipality enums
+- [Professional Working Hours Dual Management](mem://features/professional-working-hours-dual-management) — Self-edited schedules vs admin-managed absences
+- [Notification Email Fallback Automatic Disable](mem://features/notification-email-fallback-automatic-disable) — Auto-disable notifications if no email provided
+- [Medical Sample Prompt Integration](mem://features/medical-sample-prompt-integration) — Prompt for sample delivery during visit scheduling for medicated patients
+- [Appointment Scheduling Baseline](mem://scheduling/appointment-scheduling-baseline-december-16-2025) — Default schedule from Dec 16, 2025 (10 calls AM, 5 visits PM)
+- [JCE Blur Validation Unconfirmed Cedula](mem://scheduling/jce-blur-validation-unconfirmed-cedula) — Auto-lookup unconfirmed cedulas on blur, manual button for confirmed
+- [RLS Enum Casting Nullable Fields](mem://security/rls-enum-casting-nullable-fields) — Convert empty strings to null for enum validation
+- [Form Field Vertical Stacking](mem://ui/form-field-vertical-stacking) — Stack JCE indicator and validate button vertically
+- [Professional Upcoming Appointments Profile](mem://features/professional-upcoming-appointments-profile) — Show upcoming workload in professional profiles
+- [Professional Performance Dashboard](mem://features/professional-performance-dashboard) — Show real-time performance stats in professional profiles
+- [Date Timezone Handling Critical](mem://data-handling/date-timezone-handling-critical) — Append T12:00:00 when reading dates to avoid shifts
+- [Duplicate Exception Management System](mem://data-validation/duplicate-exception-management-system) — Workflow for confirming duplicates and storing rationale
+- [Mobile Visitas Simplified View](mem://ui/mobile-visitas-simplified-view) — Hide secondary controls on mobile visits module
+- [Suspect Patient Follow-up Calls](mem://features/suspect-patient-follow-up-calls) — Suspects receive follow-up calls, not visits
+- [Calendar Day Click Agenda View](mem://ui/calendar-day-click-agenda-view) — Click calendar days for DayAgendaDialog drill-down
+- [Header Clean Modules](mem://ui/header-clean-modules) — Full headers, smaller secondary actions, hidden toggle filters
+- [User Role Nullable Query](mem://access-control/user-role-nullable-query) — Use .maybeSingle() to prevent errors for users without roles
+- [Inactive Patient Lifecycle Tracking](mem://features/inactive-patient-lifecycle-tracking) — Track motivo_inactividad with dedicated inactive tab
+- [Patient Contact Number Priority Display](mem://ui/patient-contact-number-priority-display) — Priority display rules for phone numbers without labels
+- [Bulk Actions System](mem://features/bulk-actions-system) — Toolbar for multiselect batch operations
+- [Call Reminders Not Sent Professional Control](mem://features/call-reminders-not-sent-professional-control) — Calls act as internal workflow, no patient reminders
+- [Ficha Clínica del Paciente](mem://features/ficha-clinica-paciente) — Allergies, medical history, and insurance records per patient with ownership RLS and audit
+- [Public Landing & Routes](mem://features/public-landing-routes) — Public landing at /, dashboard at /dashboard
+- [Informed Consent](mem://features/informed-consent) — Mandatory HIPAA/GDPR consent capture with audit trail
+- [Payment Gateway Skeleton](mem://features/payment-gateway-skeleton) — Stripe/Paddle-ready tables + edge functions
+- [ARS Avanzado Fase C](mem://features/ars-avanzado-fase-c) — Aseguradoras, planes, tarifarios, autorizaciones y reclamaciones ARS
+- [Portal Paciente + Dashboard BI Fase D](mem://features/portal-paciente-dashboard-bi-fase-d) — Public patient portal with tokens + BI analytics dashboard
+- [Vertical Independence](mem://features/vertical-independence-full-clinic) — VisionCare, DentalCare, AestheticPro, RecoveryCare as standalone products with full clinic ops
+- [Fase T - Documentos, Workflows, i18n/A11y](mem://features/fase-t-documentos-workflows-i18n-accesibilidad) — Expedientes digitales con firma/OCR, motor workflows if/then, multi-idioma y WCAG 2.1 AA
