@@ -104,6 +104,8 @@ const VisorDICOM = lazy(() => import("./pages/VisorDICOM"));
 const PWAOffline = lazy(() => import("./pages/PWAOffline"));
 const GestionCalidad = lazy(() => import("./pages/GestionCalidad"));
 const CentroTelemedicina = lazy(() => import("./pages/CentroTelemedicina"));
+const CentroComando = lazy(() => import("./pages/CentroComando"));
+const WorkflowsClinicos = lazy(() => import("./pages/WorkflowsClinicos"));
 
 // Loading fallback component
 const PageLoader = () => (
