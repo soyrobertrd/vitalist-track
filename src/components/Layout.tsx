@@ -86,6 +86,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { theme, setTheme, sidebarCollapsed, setSidebarCollapsed } = useTheme();
   const { profile } = useUserProfile();
   const { isAdmin } = useUserRole();
+  const { verticalActiva } = useVertical();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
