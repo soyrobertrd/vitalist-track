@@ -4575,6 +4575,90 @@ export type Database = {
           },
         ]
       }
+      facturas_electronicas_vertical: {
+        Row: {
+          created_at: string
+          detalle: Json | null
+          estado_dgii: string
+          fecha_emision: string
+          fecha_vencimiento: string | null
+          id: string
+          itbis: number
+          ncf: string | null
+          nombre_cliente: string | null
+          numero_factura: string | null
+          paciente_id: string | null
+          respuesta_dgii: Json | null
+          rnc_cedula_cliente: string | null
+          subtotal: number
+          tipo_comprobante: string
+          total: number
+          updated_at: string
+          vertical_tipo: string
+          workspace_id: string
+          xml_ecf: string | null
+        }
+        Insert: {
+          created_at?: string
+          detalle?: Json | null
+          estado_dgii?: string
+          fecha_emision?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          itbis?: number
+          ncf?: string | null
+          nombre_cliente?: string | null
+          numero_factura?: string | null
+          paciente_id?: string | null
+          respuesta_dgii?: Json | null
+          rnc_cedula_cliente?: string | null
+          subtotal?: number
+          tipo_comprobante?: string
+          total?: number
+          updated_at?: string
+          vertical_tipo: string
+          workspace_id: string
+          xml_ecf?: string | null
+        }
+        Update: {
+          created_at?: string
+          detalle?: Json | null
+          estado_dgii?: string
+          fecha_emision?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          itbis?: number
+          ncf?: string | null
+          nombre_cliente?: string | null
+          numero_factura?: string | null
+          paciente_id?: string | null
+          respuesta_dgii?: Json | null
+          rnc_cedula_cliente?: string | null
+          subtotal?: number
+          tipo_comprobante?: string
+          total?: number
+          updated_at?: string
+          vertical_tipo?: string
+          workspace_id?: string
+          xml_ecf?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facturas_electronicas_vertical_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "facturas_electronicas_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financiamiento_estetico: {
         Row: {
           balance_pendiente: number | null
@@ -4930,6 +5014,57 @@ export type Database = {
           },
         ]
       }
+      historia_compartida_vertical: {
+        Row: {
+          compartido_por: string | null
+          created_at: string
+          documentos: Json | null
+          id: string
+          paciente_id: string
+          resumen: string | null
+          vertical_destino: string
+          vertical_origen: string
+          workspace_id: string
+        }
+        Insert: {
+          compartido_por?: string | null
+          created_at?: string
+          documentos?: Json | null
+          id?: string
+          paciente_id: string
+          resumen?: string | null
+          vertical_destino: string
+          vertical_origen: string
+          workspace_id: string
+        }
+        Update: {
+          compartido_por?: string | null
+          created_at?: string
+          documentos?: Json | null
+          id?: string
+          paciente_id?: string
+          resumen?: string | null
+          vertical_destino?: string
+          vertical_origen?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historia_compartida_vertical_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historia_compartida_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       historial_recordatorios: {
         Row: {
           canal: string
@@ -5058,6 +5193,53 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integraciones_externas_vertical: {
+        Row: {
+          activo: boolean | null
+          configuracion: Json | null
+          created_at: string
+          id: string
+          nombre: string
+          tipo_integracion: string
+          ultimo_sync: string | null
+          updated_at: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          configuracion?: Json | null
+          created_at?: string
+          id?: string
+          nombre: string
+          tipo_integracion: string
+          ultimo_sync?: string | null
+          updated_at?: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          configuracion?: Json | null
+          created_at?: string
+          id?: string
+          nombre?: string
+          tipo_integracion?: string
+          ultimo_sync?: string | null
+          updated_at?: string
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integraciones_externas_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -9418,6 +9600,82 @@ export type Database = {
           },
         ]
       }
+      recetas_digitales_vertical: {
+        Row: {
+          created_at: string
+          estado: string
+          fecha_emision: string
+          firma_digital: string | null
+          firmada: boolean | null
+          id: string
+          indicaciones: string | null
+          medicamentos: Json
+          numero: string | null
+          paciente_id: string | null
+          profesional_id: string | null
+          updated_at: string
+          vertical_tipo: string
+          vigencia_dias: number | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          estado?: string
+          fecha_emision?: string
+          firma_digital?: string | null
+          firmada?: boolean | null
+          id?: string
+          indicaciones?: string | null
+          medicamentos?: Json
+          numero?: string | null
+          paciente_id?: string | null
+          profesional_id?: string | null
+          updated_at?: string
+          vertical_tipo: string
+          vigencia_dias?: number | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          estado?: string
+          fecha_emision?: string
+          firma_digital?: string | null
+          firmada?: boolean | null
+          id?: string
+          indicaciones?: string | null
+          medicamentos?: Json
+          numero?: string | null
+          paciente_id?: string | null
+          profesional_id?: string | null
+          updated_at?: string
+          vertical_tipo?: string
+          vigencia_dias?: number | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recetas_digitales_vertical_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recetas_digitales_vertical_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recetas_digitales_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recetas_farmacia: {
         Row: {
           created_at: string
@@ -10218,6 +10476,56 @@ export type Database = {
             columns: ["reporte_id"]
             isOneToOne: false
             referencedRelation: "reportes_programados"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reportes_fiscales_vertical: {
+        Row: {
+          cantidad_registros: number | null
+          created_at: string
+          datos: Json | null
+          estado: string
+          generado_por: string | null
+          id: string
+          monto_total: number | null
+          periodo: string
+          tipo_reporte: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          cantidad_registros?: number | null
+          created_at?: string
+          datos?: Json | null
+          estado?: string
+          generado_por?: string | null
+          id?: string
+          monto_total?: number | null
+          periodo: string
+          tipo_reporte: string
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          cantidad_registros?: number | null
+          created_at?: string
+          datos?: Json | null
+          estado?: string
+          generado_por?: string | null
+          id?: string
+          monto_total?: number | null
+          periodo?: string
+          tipo_reporte?: string
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reportes_fiscales_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -11384,6 +11692,53 @@ export type Database = {
           },
         ]
       }
+      sync_calendario_vertical: {
+        Row: {
+          cita_id: string | null
+          created_at: string
+          error_detalle: string | null
+          estado_sync: string
+          external_event_id: string | null
+          id: string
+          provider: string
+          ultimo_intento: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          cita_id?: string | null
+          created_at?: string
+          error_detalle?: string | null
+          estado_sync?: string
+          external_event_id?: string | null
+          id?: string
+          provider: string
+          ultimo_intento?: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          cita_id?: string | null
+          created_at?: string
+          error_detalle?: string | null
+          estado_sync?: string
+          external_event_id?: string | null
+          id?: string
+          provider?: string
+          ultimo_intento?: string | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sync_calendario_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tarifarios_ars: {
         Row: {
           activo: boolean
@@ -11447,6 +11802,82 @@ export type Database = {
           },
           {
             foreignKeyName: "tarifarios_ars_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teleconsultas_vertical: {
+        Row: {
+          consentimiento_grabacion: boolean | null
+          created_at: string
+          diagnostico: string | null
+          duracion_minutos: number | null
+          enlace_sala: string | null
+          estado: string
+          fecha_hora: string
+          id: string
+          notas_clinicas: string | null
+          paciente_id: string | null
+          profesional_id: string | null
+          updated_at: string
+          url_grabacion: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          consentimiento_grabacion?: boolean | null
+          created_at?: string
+          diagnostico?: string | null
+          duracion_minutos?: number | null
+          enlace_sala?: string | null
+          estado?: string
+          fecha_hora?: string
+          id?: string
+          notas_clinicas?: string | null
+          paciente_id?: string | null
+          profesional_id?: string | null
+          updated_at?: string
+          url_grabacion?: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          consentimiento_grabacion?: boolean | null
+          created_at?: string
+          diagnostico?: string | null
+          duracion_minutos?: number | null
+          enlace_sala?: string | null
+          estado?: string
+          fecha_hora?: string
+          id?: string
+          notas_clinicas?: string | null
+          paciente_id?: string | null
+          profesional_id?: string | null
+          updated_at?: string
+          url_grabacion?: string | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teleconsultas_vertical_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teleconsultas_vertical_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teleconsultas_vertical_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
