@@ -93,6 +93,9 @@ const VisionCarePro = lazy(() => import("./pages/VisionCarePro"));
 const QuirofanoAvanzado = lazy(() => import("./pages/QuirofanoAvanzado"));
 const UrgenciasTriage = lazy(() => import("./pages/UrgenciasTriage"));
 const BancoSangreAvanzado = lazy(() => import("./pages/BancoSangreAvanzado"));
+const CensoCamas = lazy(() => import("./pages/CensoCamas"));
+const Oncologia = lazy(() => import("./pages/Oncologia"));
+const MaternidadNeonatologia = lazy(() => import("./pages/MaternidadNeonatologia"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -307,6 +310,18 @@ const App = () => {
                 <Route
                   path="/banco-sangre-avanzado"
                   element={session ? <Layout><BancoSangreAvanzado /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/censo-camas"
+                  element={session ? <Layout><CensoCamas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/oncologia"
+                  element={session ? <Layout><Oncologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/maternidad-neonatologia"
+                  element={session ? <Layout><MaternidadNeonatologia /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/checklist-rls"
