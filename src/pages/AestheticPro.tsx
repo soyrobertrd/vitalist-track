@@ -489,6 +489,7 @@ export default function AestheticPro() {
         <TabsContent value="crm_fideliz" className="mt-4"><VerticalCRMFidelizacionTab verticalTipo="estetica" /></TabsContent>
         <TabsContent value="api_gateway" className="mt-4"><VerticalAPIGatewayTab verticalTipo="estetica" /></TabsContent>
       </Tabs>
+      )}
     </div>
   );
 }
