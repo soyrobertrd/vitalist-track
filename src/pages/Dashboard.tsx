@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocale } from "@/hooks/useLocale";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
+import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 import {
   LineChart,
   Line,
@@ -36,6 +37,7 @@ const Dashboard = () => {
   const { timezone } = useLocale();
   const { currentWorkspace } = useWorkspace();
   const { activeSucursalId } = useActiveSucursal();
+  const { verticalActiva } = useVerticalFilter();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [stats, setStats] = useState({
@@ -101,6 +103,7 @@ const Dashboard = () => {
         let qq = q;
         if (wsId) qq = qq.eq("workspace_id", wsId);
         if (activeSucursalId) qq = qq.eq("sucursal_id", activeSucursalId);
+        if (verticalActiva && verticalActiva !== "todas") qq = qq.eq("vertical", verticalActiva);
         return qq;
       };
 
@@ -239,7 +242,7 @@ const Dashboard = () => {
     };
 
     fetchStats();
-  }, [currentUserId, currentWorkspace?.id, activeSucursalId]);
+  }, [currentUserId, currentWorkspace?.id, activeSucursalId, verticalActiva]);
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--warning))"];
   const localTime = toZonedTime(currentTime, timezone);

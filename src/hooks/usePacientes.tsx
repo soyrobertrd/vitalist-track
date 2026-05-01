@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
+import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 
 export interface Paciente {
   id: string;
@@ -51,6 +52,7 @@ const defaultFilters: PacienteFilters = {
 export function usePacientes(includeInactive: boolean = false) {
   const { currentWorkspace } = useWorkspace();
   const { activeSucursalId } = useActiveSucursal();
+  const { verticalActiva } = useVerticalFilter();
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<PacienteFilters>(defaultFilters);
@@ -68,6 +70,10 @@ export function usePacientes(includeInactive: boolean = false) {
     if (activeSucursalId) {
       query = query.eq("sucursal_id", activeSucursalId);
     }
+    // Aislamiento por vertical: filtra solo si hay una vertical específica activa
+    if (verticalActiva && verticalActiva !== "todas") {
+      query = (query as any).eq("vertical", verticalActiva);
+    }
 
     if (!includeInactive) {
       query = query.neq("status_px", "inactivo");
@@ -83,7 +89,7 @@ export function usePacientes(includeInactive: boolean = false) {
       setPacientes(data || []);
     }
     setLoading(false);
-  }, [includeInactive, currentWorkspace, activeSucursalId]);
+  }, [includeInactive, currentWorkspace, activeSucursalId, verticalActiva]);
 
   const filteredPacientes = useMemo(() => {
     return pacientes.filter((p) => {

@@ -24,6 +24,7 @@ import { useLocale } from "@/hooks/useLocale";
 import { TELEFONO_ERROR_MESSAGE } from "@/lib/validaciones";
 import type { Personal } from "@/hooks/usePersonal";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 import { useSucursales } from "@/hooks/useSucursales";
 import { SucursalSelect } from "@/components/SucursalSelect";
 import { ConsentimientoInformado, TERMS_VERSION_CURRENT, type ConsentimientoData } from "@/components/ConsentimientoInformado";
@@ -75,6 +76,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
   const [loading, setLoading] = useState(false);
   const { countryCode } = useLocale();
   const { currentWorkspace } = useWorkspace();
+  const { verticalParaInsert } = useVerticalFilter();
   const pacienteSchema = buildPacienteSchema(countryCode);
   const { loading: loadingCedula, data: cedulaData, lookup: lookupCedula } = useCedulaLookup();
   
@@ -225,6 +227,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       dias_no_visita: diasNoVisita,
       workspace_id: currentWorkspace?.id ?? null,
       sucursal_id: sucursalId ?? sucursales.find(s => s.es_principal)?.id ?? null,
+      vertical: verticalParaInsert,
     };
 
     const { data: paciente, error: pacienteError } = await supabase
