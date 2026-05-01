@@ -4388,6 +4388,59 @@ export type Database = {
           },
         ]
       }
+      device_registrations: {
+        Row: {
+          activo: boolean
+          app_version: string | null
+          created_at: string
+          device_id: string
+          device_name: string | null
+          id: string
+          last_sync_at: string | null
+          platform: string | null
+          push_token: string | null
+          updated_at: string
+          user_id: string
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean
+          app_version?: string | null
+          created_at?: string
+          device_id: string
+          device_name?: string | null
+          id?: string
+          last_sync_at?: string | null
+          platform?: string | null
+          push_token?: string | null
+          updated_at?: string
+          user_id: string
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean
+          app_version?: string | null
+          created_at?: string
+          device_id?: string
+          device_name?: string | null
+          id?: string
+          last_sync_at?: string | null
+          platform?: string | null
+          push_token?: string | null
+          updated_at?: string
+          user_id?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_registrations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       diagnosticos_auditoria: {
         Row: {
           accion: string
@@ -4573,6 +4626,157 @@ export type Database = {
           fecha?: string
         }
         Relationships: []
+      }
+      dicom_instances: {
+        Row: {
+          created_at: string
+          id: string
+          instance_number: number | null
+          preview_path: string | null
+          series_id: string
+          size_bytes: number | null
+          sop_instance_uid: string
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instance_number?: number | null
+          preview_path?: string | null
+          series_id: string
+          size_bytes?: number | null
+          sop_instance_uid: string
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instance_number?: number | null
+          preview_path?: string | null
+          series_id?: string
+          size_bytes?: number | null
+          sop_instance_uid?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dicom_instances_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "dicom_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dicom_series: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          modality: string | null
+          num_instances: number | null
+          series_instance_uid: string
+          series_number: number | null
+          study_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          modality?: string | null
+          num_instances?: number | null
+          series_instance_uid: string
+          series_number?: number | null
+          study_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          modality?: string | null
+          num_instances?: number | null
+          series_instance_uid?: string
+          series_number?: number | null
+          study_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dicom_series_study_id_fkey"
+            columns: ["study_id"]
+            isOneToOne: false
+            referencedRelation: "dicom_studies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dicom_studies: {
+        Row: {
+          accession_number: string | null
+          created_at: string
+          description: string | null
+          estado: string | null
+          id: string
+          metadata: Json | null
+          modality: string | null
+          num_instances: number | null
+          num_series: number | null
+          paciente_id: string | null
+          referring_physician: string | null
+          study_date: string | null
+          study_instance_uid: string
+          study_time: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          accession_number?: string | null
+          created_at?: string
+          description?: string | null
+          estado?: string | null
+          id?: string
+          metadata?: Json | null
+          modality?: string | null
+          num_instances?: number | null
+          num_series?: number | null
+          paciente_id?: string | null
+          referring_physician?: string | null
+          study_date?: string | null
+          study_instance_uid: string
+          study_time?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          accession_number?: string | null
+          created_at?: string
+          description?: string | null
+          estado?: string | null
+          id?: string
+          metadata?: Json | null
+          modality?: string | null
+          num_instances?: number | null
+          num_series?: number | null
+          paciente_id?: string | null
+          referring_physician?: string | null
+          study_date?: string | null
+          study_instance_uid?: string
+          study_time?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dicom_studies_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dicom_studies_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dietas_hospitalarias: {
         Row: {
@@ -6421,6 +6625,207 @@ export type Database = {
           },
         ]
       }
+      fhir_export_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          error_message: string | null
+          estado: string
+          exported_resources: number | null
+          filters: Json | null
+          id: string
+          resource_types: string[]
+          result_url: string | null
+          total_resources: number | null
+          workspace_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          error_message?: string | null
+          estado?: string
+          exported_resources?: number | null
+          filters?: Json | null
+          id?: string
+          resource_types: string[]
+          result_url?: string | null
+          total_resources?: number | null
+          workspace_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          error_message?: string | null
+          estado?: string
+          exported_resources?: number | null
+          filters?: Json | null
+          id?: string
+          resource_types?: string[]
+          result_url?: string | null
+          total_resources?: number | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fhir_export_jobs_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fhir_import_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          errors: Json | null
+          estado: string
+          failed_resources: number | null
+          id: string
+          imported_resources: number | null
+          source_system: string | null
+          total_resources: number | null
+          workspace_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          errors?: Json | null
+          estado?: string
+          failed_resources?: number | null
+          id?: string
+          imported_resources?: number | null
+          source_system?: string | null
+          total_resources?: number | null
+          workspace_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          errors?: Json | null
+          estado?: string
+          failed_resources?: number | null
+          id?: string
+          imported_resources?: number | null
+          source_system?: string | null
+          total_resources?: number | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fhir_import_jobs_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fhir_mappings: {
+        Row: {
+          created_at: string
+          external_system: string | null
+          fhir_id: string
+          fhir_resource_type: string
+          id: string
+          local_id: string
+          local_table: string
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          external_system?: string | null
+          fhir_id: string
+          fhir_resource_type: string
+          id?: string
+          local_id: string
+          local_table: string
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          external_system?: string | null
+          fhir_id?: string
+          fhir_resource_type?: string
+          id?: string
+          local_id?: string
+          local_table?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fhir_mappings_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fhir_resources: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          fhir_id: string
+          id: string
+          paciente_id: string | null
+          payload: Json
+          resource_type: string
+          source: string | null
+          updated_at: string
+          version_id: number
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          fhir_id: string
+          id?: string
+          paciente_id?: string | null
+          payload: Json
+          resource_type: string
+          source?: string | null
+          updated_at?: string
+          version_id?: number
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          fhir_id?: string
+          id?: string
+          paciente_id?: string | null
+          payload?: Json
+          resource_type?: string
+          source?: string | null
+          updated_at?: string
+          version_id?: number
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fhir_resources_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fhir_resources_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financiamiento_estetico: {
         Row: {
           balance_pendiente: number | null
@@ -6962,6 +7367,126 @@ export type Database = {
             columns: ["profesional_id"]
             isOneToOne: false
             referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hl7_endpoints: {
+        Row: {
+          activo: boolean
+          configuracion: Json | null
+          created_at: string
+          id: string
+          nombre: string
+          protocolo: string | null
+          tipo: string
+          updated_at: string
+          url: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean
+          configuracion?: Json | null
+          created_at?: string
+          id?: string
+          nombre: string
+          protocolo?: string | null
+          tipo: string
+          updated_at?: string
+          url?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean
+          configuracion?: Json | null
+          created_at?: string
+          id?: string
+          nombre?: string
+          protocolo?: string | null
+          tipo?: string
+          updated_at?: string
+          url?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hl7_endpoints_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hl7_messages: {
+        Row: {
+          control_id: string | null
+          created_at: string
+          direccion: string
+          endpoint_id: string | null
+          error_message: string | null
+          estado: string
+          id: string
+          message_type: string
+          paciente_id: string | null
+          parsed_json: Json | null
+          processed_at: string | null
+          raw_message: string
+          trigger_event: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          control_id?: string | null
+          created_at?: string
+          direccion: string
+          endpoint_id?: string | null
+          error_message?: string | null
+          estado?: string
+          id?: string
+          message_type: string
+          paciente_id?: string | null
+          parsed_json?: Json | null
+          processed_at?: string | null
+          raw_message: string
+          trigger_event?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          control_id?: string | null
+          created_at?: string
+          direccion?: string
+          endpoint_id?: string | null
+          error_message?: string | null
+          estado?: string
+          id?: string
+          message_type?: string
+          paciente_id?: string | null
+          parsed_json?: Json | null
+          processed_at?: string | null
+          raw_message?: string
+          trigger_event?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hl7_messages_endpoint_id_fkey"
+            columns: ["endpoint_id"]
+            isOneToOne: false
+            referencedRelation: "hl7_endpoints"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hl7_messages_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hl7_messages_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -9436,6 +9961,65 @@ export type Database = {
           },
           {
             foreignKeyName: "odontogramas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offline_sync_queue: {
+        Row: {
+          client_timestamp: string
+          created_at: string
+          device_id: string | null
+          error_message: string | null
+          estado: string
+          id: string
+          intentos: number
+          operation_type: string
+          payload: Json
+          record_id: string | null
+          synced_at: string | null
+          table_name: string
+          user_id: string
+          workspace_id: string | null
+        }
+        Insert: {
+          client_timestamp: string
+          created_at?: string
+          device_id?: string | null
+          error_message?: string | null
+          estado?: string
+          id?: string
+          intentos?: number
+          operation_type: string
+          payload: Json
+          record_id?: string | null
+          synced_at?: string | null
+          table_name: string
+          user_id: string
+          workspace_id?: string | null
+        }
+        Update: {
+          client_timestamp?: string
+          created_at?: string
+          device_id?: string | null
+          error_message?: string | null
+          estado?: string
+          id?: string
+          intentos?: number
+          operation_type?: string
+          payload?: Json
+          record_id?: string | null
+          synced_at?: string | null
+          table_name?: string
+          user_id?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offline_sync_queue_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
