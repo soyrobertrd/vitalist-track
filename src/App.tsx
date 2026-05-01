@@ -548,6 +548,12 @@ const App = () => {
                 <Route path="/catalogos-clinicos" element={session ? <Layout><CatalogosClinicos /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/vademecum" element={session ? <Layout><VademecumInteracciones /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/reglas-clinicas" element={session ? <Layout><ReglasClinicas /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/forecast-ingresos" element={session ? <Layout><ForecastIngresos /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/ar-aging" element={session ? <Layout><ARAging /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/costeo-servicios" element={session ? <Layout><CosteoServicios /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/evaluaciones-desempeno" element={session ? <Layout><EvaluacionesDesempeno /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/metas-incentivos" element={session ? <Layout><MetasIncentivos /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/capacitaciones" element={session ? <Layout><CapacitacionesEmpleados /></Layout> : <Navigate to="/auth" />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
