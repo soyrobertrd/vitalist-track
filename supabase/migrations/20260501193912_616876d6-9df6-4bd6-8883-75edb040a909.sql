@@ -1,0 +1,1 @@
+UPDATE public.planes SET limite_pacientes = 100 WHERE codigo = 'free';
