@@ -41,6 +41,7 @@ export default function AgendaUniversal() {
 
 function CitasTab() {
   const { currentWorkspace } = useWorkspace();
+  const { verticalActiva, verticalParaInsert } = useVerticalFilter();
   const [items, setItems] = useState<any[]>([]);
   const [areas, setAreas] = useState<any[]>([]);
   const [pacientes, setPacientes] = useState<any[]>([]);
@@ -49,19 +50,26 @@ function CitasTab() {
   const [filterArea, setFilterArea] = useState<string>("all");
   const [form, setForm] = useState<any>({ prioridad: "normal" });
 
-  useEffect(() => { if (currentWorkspace) { load(); loadCombos(); } }, [currentWorkspace, filterArea]);
+  useEffect(() => { if (currentWorkspace) { load(); loadCombos(); } }, [currentWorkspace, filterArea, verticalActiva]);
 
   async function load() {
-    let q = (supabase.from("citas_universales" as any) as any).select("*, pacientes(nombre,apellido), personal_salud(nombre,apellido), areas_servicio(nombre,tipo,color)").eq("workspace_id", currentWorkspace!.id).order("fecha_inicio",{ ascending: true }).limit(100);
+    let q: any = (supabase.from("citas_universales" as any) as any).select("*, pacientes(nombre,apellido), personal_salud(nombre,apellido), areas_servicio(nombre,tipo,color)").eq("workspace_id", currentWorkspace!.id).order("fecha_inicio",{ ascending: true }).limit(100);
     if (filterArea !== "all") q = q.eq("area_id", filterArea);
+    if (verticalActiva && verticalActiva !== "todas") q = q.eq("vertical", verticalActiva);
     const { data } = await q;
     setItems(data ?? []);
   }
   async function loadCombos() {
+    let pq: any = (supabase.from("pacientes") as any).select("id,nombre,apellido").eq("workspace_id", currentWorkspace!.id).eq("activo",true);
+    let prq: any = (supabase.from("personal_salud") as any).select("id,nombre,apellido").eq("workspace_id", currentWorkspace!.id);
+    if (verticalActiva && verticalActiva !== "todas") {
+      pq = pq.eq("vertical", verticalActiva);
+      prq = prq.eq("vertical", verticalActiva);
+    }
     const [a, p, pr] = await Promise.all([
       (supabase.from("areas_servicio" as any) as any).select("id,nombre,tipo,duracion_default_min").eq("workspace_id", currentWorkspace!.id).eq("activo",true),
-      (supabase.from("pacientes") as any).select("id,nombre,apellido").eq("workspace_id", currentWorkspace!.id).eq("activo",true).limit(500),
-      (supabase.from("personal_salud") as any).select("id,nombre,apellido").eq("workspace_id", currentWorkspace!.id),
+      pq.limit(500),
+      prq,
     ]);
     setAreas(a.data ?? []); setPacientes(p.data ?? []); setProfesionales(pr.data ?? []);
   }
@@ -72,6 +80,7 @@ function CitasTab() {
     const fin = new Date(inicio.getTime() + (area?.duracion_default_min ?? 30) * 60000);
     const { error } = await (supabase.from("citas_universales" as any) as any).insert({
       workspace_id: currentWorkspace!.id,
+      vertical: verticalParaInsert,
       area_id: form.area_id, paciente_id: form.paciente_id,
       profesional_id: form.profesional_id || null,
       fecha_inicio: inicio.toISOString(), fecha_fin: fin.toISOString(),
