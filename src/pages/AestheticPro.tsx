@@ -192,6 +192,7 @@ export default function AestheticPro() {
       )}
 
       {!isResumen && (
+      <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="hidden">
           <TabsTrigger value="leads">Leads CRM</TabsTrigger>
           <TabsTrigger value="evaluaciones">Evaluaciones</TabsTrigger>
