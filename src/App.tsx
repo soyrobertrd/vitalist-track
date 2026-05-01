@@ -538,6 +538,10 @@ const App = () => {
                 <Route path="/referidos" element={session ? <Layout><ProgramaReferidos /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/segmentacion" element={session ? <Layout><SegmentacionPacientes /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/perfil-valor" element={session ? <Layout><PerfilValorPacientes /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/protocolos-clinicos" element={session ? <Layout><ProtocolosClinicos /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/catalogos-clinicos" element={session ? <Layout><CatalogosClinicos /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/vademecum" element={session ? <Layout><VademecumInteracciones /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reglas-clinicas" element={session ? <Layout><ReglasClinicas /></Layout> : <Navigate to="/auth" />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
