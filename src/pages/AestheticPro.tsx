@@ -37,6 +37,9 @@ import VerticalRolesPermisosTab from "@/components/vertical/VerticalRolesPermiso
 import VerticalAgendaIATab from "@/components/vertical/VerticalAgendaIATab";
 import VerticalComunicacionesTab from "@/components/vertical/VerticalComunicacionesTab";
 import VerticalFinanzasAvanzadasTab from "@/components/vertical/VerticalFinanzasAvanzadasTab";
+import VerticalDocumentosTab from "@/components/vertical/VerticalDocumentosTab";
+import VerticalWorkflowsTab from "@/components/vertical/VerticalWorkflowsTab";
+import VerticalIdiomaAccesibilidadTab from "@/components/vertical/VerticalIdiomaAccesibilidadTab";
 
 const estadoLeadColor: Record<string, string> = {
   nuevo: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",

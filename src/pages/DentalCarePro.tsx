@@ -39,6 +39,9 @@ import VerticalRolesPermisosTab from "@/components/vertical/VerticalRolesPermiso
 import VerticalAgendaIATab from "@/components/vertical/VerticalAgendaIATab";
 import VerticalComunicacionesTab from "@/components/vertical/VerticalComunicacionesTab";
 import VerticalFinanzasAvanzadasTab from "@/components/vertical/VerticalFinanzasAvanzadasTab";
+import VerticalDocumentosTab from "@/components/vertical/VerticalDocumentosTab";
+import VerticalWorkflowsTab from "@/components/vertical/VerticalWorkflowsTab";
+import VerticalIdiomaAccesibilidadTab from "@/components/vertical/VerticalIdiomaAccesibilidadTab";
 
 const estadoPlanColor: Record<string, string> = {
   borrador: "bg-muted text-muted-foreground",
