@@ -93,6 +93,9 @@ const VisionCarePro = lazy(() => import("./pages/VisionCarePro"));
 const QuirofanoAvanzado = lazy(() => import("./pages/QuirofanoAvanzado"));
 const UrgenciasTriage = lazy(() => import("./pages/UrgenciasTriage"));
 const BancoSangreAvanzado = lazy(() => import("./pages/BancoSangreAvanzado"));
+const CensoCamas = lazy(() => import("./pages/CensoCamas"));
+const Oncologia = lazy(() => import("./pages/Oncologia"));
+const MaternidadNeonatologia = lazy(() => import("./pages/MaternidadNeonatologia"));
 
 // Loading fallback component
 const PageLoader = () => (
