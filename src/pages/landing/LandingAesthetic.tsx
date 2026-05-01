@@ -1,57 +1,58 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Sparkles, Activity, ArrowRight, Camera, Calendar, Heart, Target, Users } from "lucide-react";
+import LandingShell, { VerticalConfig } from "@/components/landing/LandingShell";
+import { Sparkles, Camera, Calendar, Heart, Target, Users, MessageSquare, DollarSign, Gift, Star, ShieldCheck, BarChart3 } from "lucide-react";
 
-const features = [
-  { icon: Camera, title: "Galería before/after", desc: "Comparativas visuales de cada tratamiento estético." },
-  { icon: Heart, title: "Fichas estéticas", desc: "Evaluación facial, corporal, mapeo de tratamientos." },
-  { icon: Calendar, title: "Paquetes y sesiones", desc: "Bonos de sesiones, suscripciones y planes de tratamiento." },
-  { icon: Target, title: "CRM & seguimiento", desc: "Lead-to-cliente, fidelización, segmentación VIP." },
-  { icon: Users, title: "Recovery integrado", desc: "Si ofreces post-operatorio, conecta directo con Recovery Care." },
-];
+const config: VerticalConfig = {
+  slug: "aesthetic",
+  name: "Aesthetic Pro",
+  tagline: "clínicas estéticas, spas médicos y centros de belleza",
+  hero: {
+    eyebrow: "Aesthetic Pro",
+    title: "Convierte cada paciente en cliente VIP de por vida",
+    subtitle: "Fichas estéticas, before/after, paquetes de sesiones, CRM con segmentación VIP y opcional Recovery integrado para post-operatorio.",
+    icon: Sparkles,
+    accent: "bg-gradient-to-br from-pink-500/10 via-background to-purple-500/10",
+  },
+  pains: [
+    { problem: "No tienes una galería ordenada de antes/después por paciente.", solution: "Galería visual cronológica con comparativas lado a lado y permisos de uso firmados." },
+    { problem: "Los paquetes de sesiones se llevan en una libreta y pierdes control.", solution: "Bonos de sesiones con descuento y contador automático de usos restantes." },
+    { problem: "Tus mejores clientes no se sienten especiales.", solution: "Programa VIP con niveles bronce/plata/oro/platino, beneficios automáticos y campañas exclusivas." },
+    { problem: "Después de un procedimiento estético no haces seguimiento al post-operatorio.", solution: "Módulo Recovery integrado: protocolos, control de evolución y alertas tempranas." },
+  ],
+  modules: [
+    { icon: Heart, title: "Fichas estéticas", desc: "Evaluación facial, corporal, mapeo de zonas a tratar y plan personalizado." },
+    { icon: Camera, title: "Galería before/after", desc: "Comparativas visuales con consentimiento de uso para marketing." },
+    { icon: Calendar, title: "Paquetes y bonos", desc: "Sesiones agrupadas, suscripciones mensuales y planes anuales." },
+    { icon: Target, title: "CRM con segmentación", desc: "Lead → cliente → VIP. Campañas dirigidas por perfil de valor." },
+    { icon: Star, title: "Programa VIP / Loyalty", desc: "Puntos, descuentos, niveles y beneficios exclusivos automáticos." },
+    { icon: Users, title: "Recovery integrado", desc: "Conecta directo con post-operatorio si ofreces casa de recuperación." },
+    { icon: MessageSquare, title: "WhatsApp & email", desc: "Recordatorios pre-sesión, cuidados post, cumpleaños y promos VIP." },
+    { icon: DollarSign, title: "Cobros & financiamiento", desc: "Cuotas sin tarjeta, tarjeta de crédito, transferencia, factura electrónica." },
+    { icon: Gift, title: "Referidos & comisiones", desc: "Cliente refiere → recibe beneficio. Empleado vende → recibe comisión." },
+    { icon: BarChart3, title: "Rentabilidad por servicio", desc: "Margen real por tratamiento, ranking de profesionales, ROI de campañas." },
+    { icon: ShieldCheck, title: "Consentimientos firmados", desc: "Firma digital legal para cada procedimiento, archivo seguro." },
+    { icon: Camera, title: "Inventario de productos", desc: "Cremas, ácidos, tóxico botulínico, hilos. Control de lote y caducidad." },
+  ],
+  workflow: [
+    "Lead llega por Instagram → entra al CRM y se le agenda valoración gratuita.",
+    "En consulta se hace ficha estética, fotos before y propuesta de paquete con financiamiento.",
+    "Cada sesión descuenta del bono, se toma foto de evolución y se programa la siguiente.",
+    "Tras el último tratamiento entra al programa VIP con seguimiento Recovery si aplica.",
+  ],
+  benefits: [
+    { metric: "+55%", label: "Conversión lead → cliente" },
+    { metric: "+3.2x", label: "Ticket anual de cliente VIP" },
+    { metric: "−80%", label: "Olvidos de cuidados post" },
+    { metric: "92%", label: "Retención a 12 meses" },
+  ],
+  useCases: ["Medicina estética", "Spas médicos", "Centros de depilación láser", "Cirugía plástica", "Tricología", "Tratamientos corporales", "Cosmiatría", "Wellness premium"],
+  testimonial: {
+    quote: "Los paquetes con bonos y el programa VIP triplicaron el ticket anual de mis mejores clientas. Ya no es 'una sesión cada tanto', es relación de por vida.",
+    author: "Dra. Valentina Ortiz",
+    role: "Fundadora, Aesthetic House",
+  },
+  pricingNote: "Desde $119/mes. Recovery integrado disponible como add-on.",
+};
 
 export default function LandingAesthetic() {
-  return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <Activity className="h-6 w-6 text-primary" />
-            <span className="font-bold">Health App</span>
-          </Link>
-          <Link to="/auth"><Button>Acceder</Button></Link>
-        </div>
-      </header>
-
-      <section className="container mx-auto px-4 py-20 text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-6">
-          <Sparkles className="h-4 w-4" /> Aesthetic Pro
-        </div>
-        <h1 className="text-5xl font-bold mb-6 max-w-3xl mx-auto">
-          Plataforma para clínicas estéticas
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-          Fichas estéticas, before/after, paquetes de sesiones, CRM y opcional Recovery integrado para post-operatorio.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link to="/auth"><Button size="lg">Empezar gratis <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-          <Link to="/"><Button size="lg" variant="outline">Ver otros productos</Button></Link>
-        </div>
-      </section>
-
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">Diseñado para tu vertical</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f) => (
-            <Card key={f.title} className="p-6">
-              <f.icon className="h-10 w-10 text-primary mb-4" />
-              <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
-              <p className="text-sm text-muted-foreground">{f.desc}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
+  return <LandingShell config={config} />;
 }
