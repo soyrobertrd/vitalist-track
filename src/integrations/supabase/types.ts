@@ -496,6 +496,129 @@ export type Database = {
           },
         ]
       }
+      alertas_clinicas: {
+        Row: {
+          asignado_a: string | null
+          atendida_at: string | null
+          atendida_por: string | null
+          created_at: string
+          datos: Json | null
+          descripcion: string | null
+          estado: string
+          id: string
+          modulo_origen: string | null
+          paciente_id: string | null
+          reconocida_at: string | null
+          reconocida_por: string | null
+          recurso_origen_id: string | null
+          severidad: string
+          tipo: string
+          titulo: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          asignado_a?: string | null
+          atendida_at?: string | null
+          atendida_por?: string | null
+          created_at?: string
+          datos?: Json | null
+          descripcion?: string | null
+          estado?: string
+          id?: string
+          modulo_origen?: string | null
+          paciente_id?: string | null
+          reconocida_at?: string | null
+          reconocida_por?: string | null
+          recurso_origen_id?: string | null
+          severidad?: string
+          tipo: string
+          titulo: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          asignado_a?: string | null
+          atendida_at?: string | null
+          atendida_por?: string | null
+          created_at?: string
+          datos?: Json | null
+          descripcion?: string | null
+          estado?: string
+          id?: string
+          modulo_origen?: string | null
+          paciente_id?: string | null
+          reconocida_at?: string | null
+          reconocida_por?: string | null
+          recurso_origen_id?: string | null
+          severidad?: string
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_clinicas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_clinicas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      alertas_clinicas_acciones: {
+        Row: {
+          accion: string
+          alerta_id: string
+          created_at: string
+          id: string
+          notas: string | null
+          user_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          accion: string
+          alerta_id: string
+          created_at?: string
+          id?: string
+          notas?: string | null
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          accion?: string
+          alerta_id?: string
+          created_at?: string
+          id?: string
+          notas?: string | null
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_clinicas_acciones_alerta_id_fkey"
+            columns: ["alerta_id"]
+            isOneToOne: false
+            referencedRelation: "alertas_clinicas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_clinicas_acciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertas_emergencia_recovery: {
         Row: {
           created_at: string | null
@@ -9744,6 +9867,139 @@ export type Database = {
           },
         ]
       }
+      ordenes_medicas: {
+        Row: {
+          created_at: string
+          descripcion: string
+          detalles: Json | null
+          estado: string
+          fecha_completada: string | null
+          fecha_solicitud: string
+          id: string
+          ingreso_id: string | null
+          modulo_destino: string | null
+          motivo_cancelacion: string | null
+          notas: string | null
+          paciente_id: string | null
+          prioridad: string
+          profesional_solicitante_id: string | null
+          recurso_destino_id: string | null
+          tipo: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          descripcion: string
+          detalles?: Json | null
+          estado?: string
+          fecha_completada?: string | null
+          fecha_solicitud?: string
+          id?: string
+          ingreso_id?: string | null
+          modulo_destino?: string | null
+          motivo_cancelacion?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          prioridad?: string
+          profesional_solicitante_id?: string | null
+          recurso_destino_id?: string | null
+          tipo: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string
+          detalles?: Json | null
+          estado?: string
+          fecha_completada?: string | null
+          fecha_solicitud?: string
+          id?: string
+          ingreso_id?: string | null
+          modulo_destino?: string | null
+          motivo_cancelacion?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          prioridad?: string
+          profesional_solicitante_id?: string | null
+          recurso_destino_id?: string | null
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordenes_medicas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordenes_medicas_profesional_solicitante_id_fkey"
+            columns: ["profesional_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordenes_medicas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ordenes_medicas_eventos: {
+        Row: {
+          created_at: string
+          estado_anterior: string | null
+          estado_nuevo: string
+          id: string
+          notas: string | null
+          orden_id: string
+          user_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          estado_anterior?: string | null
+          estado_nuevo: string
+          id?: string
+          notas?: string | null
+          orden_id: string
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          estado_anterior?: string | null
+          estado_nuevo?: string
+          id?: string
+          notas?: string | null
+          orden_id?: string
+          user_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordenes_medicas_eventos_orden_id_fkey"
+            columns: ["orden_id"]
+            isOneToOne: false
+            referencedRelation: "ordenes_medicas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordenes_medicas_eventos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ordenes_trabajo_optica: {
         Row: {
           costo_laboratorio: number | null
@@ -17694,6 +17950,101 @@ export type Database = {
           },
         ]
       }
+      workflows_clinicos: {
+        Row: {
+          acciones: Json
+          activo: boolean
+          condiciones: Json | null
+          created_at: string
+          descripcion: string | null
+          evento_disparador: string
+          id: string
+          nombre: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          acciones?: Json
+          activo?: boolean
+          condiciones?: Json | null
+          created_at?: string
+          descripcion?: string | null
+          evento_disparador: string
+          id?: string
+          nombre: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          acciones?: Json
+          activo?: boolean
+          condiciones?: Json | null
+          created_at?: string
+          descripcion?: string | null
+          evento_disparador?: string
+          id?: string
+          nombre?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflows_clinicos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflows_ejecuciones: {
+        Row: {
+          created_at: string
+          error_mensaje: string | null
+          evento: string
+          id: string
+          payload: Json | null
+          resultado: string
+          workflow_id: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_mensaje?: string | null
+          evento: string
+          id?: string
+          payload?: Json | null
+          resultado?: string
+          workflow_id?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_mensaje?: string | null
+          evento?: string
+          id?: string
+          payload?: Json | null
+          resultado?: string
+          workflow_id?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflows_ejecuciones_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "workflows_clinicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflows_ejecuciones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workspace_invitations: {
         Row: {
           accepted_at: string | null
@@ -17972,6 +18323,10 @@ export type Database = {
           tipo: string
           workspace_id: string
         }[]
+      }
+      paciente_timeline_360: {
+        Args: { _limite?: number; _paciente_id: string }
+        Returns: Json
       }
       portal_paciente_datos: { Args: { _token: string }; Returns: Json }
       registrar_acceso_ficha: {

@@ -82,3 +82,4 @@
 - [Vertical Independence](mem://features/vertical-independence-full-clinic) — VisionCare, DentalCare, AestheticPro, RecoveryCare as standalone products with full clinic ops
 - [Fase V - Camas, Regulatorio, CRM, API Gateway](mem://features/fase-v-camas-regulatorio-crm-apigateway) — Control de camas/ocupación, reportes regulatorios, fidelización/NPS, API keys + webhooks
 - [Fase W - Internamientos, Enfermería, Lab, Agenda Universal](mem://features/fase-w-internamientos-enfermeria-lab-agenda) — Rondas médicas, valoración/plan/signos/admin meds enfermería, trazabilidad muestras + QC + alertas lab, agenda multi-área
+- [Fase Z - Hub 360, CPOE y Alertas Clínicas](mem://features/fase-z-hub360-cpoe-alertas) — Hub Clínico 360° del paciente con timeline, motor de Órdenes Médicas (CPOE) y alertas inter-módulos

@@ -96,6 +96,9 @@ const BancoSangreAvanzado = lazy(() => import("./pages/BancoSangreAvanzado"));
 const CensoCamas = lazy(() => import("./pages/CensoCamas"));
 const Oncologia = lazy(() => import("./pages/Oncologia"));
 const MaternidadNeonatologia = lazy(() => import("./pages/MaternidadNeonatologia"));
+const HubPaciente360 = lazy(() => import("./pages/HubPaciente360"));
+const OrdenesMedicas = lazy(() => import("./pages/OrdenesMedicas"));
+const AlertasClinicas = lazy(() => import("./pages/AlertasClinicas"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -322,6 +325,18 @@ const App = () => {
                 <Route
                   path="/maternidad-neonatologia"
                   element={session ? <Layout><MaternidadNeonatologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/hub-paciente/:id"
+                  element={session ? <Layout><HubPaciente360 /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/ordenes-medicas"
+                  element={session ? <Layout><OrdenesMedicas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/alertas-clinicas"
+                  element={session ? <Layout><AlertasClinicas /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/checklist-rls"

@@ -169,6 +169,8 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/censo-camas", label: "Censo & Mapa de Camas" },
         { path: "/oncologia", label: "Oncología & Quimio" },
         { path: "/maternidad-neonatologia", label: "Maternidad & Neonatología" },
+        { path: "/ordenes-medicas", label: "Órdenes Médicas (CPOE)" },
+        { path: "/alertas-clinicas", label: "Alertas Clínicas" },
         { path: "/laboratorio", label: "Laboratorio" },
         { path: "/laboratorio-avanzado", label: "Laboratorio (avanzado)" },
         { path: "/agenda-universal", label: "Agenda universal" },
