@@ -20,6 +20,7 @@ import { OcrCedulaScanner } from "@/components/recepcion/OcrCedulaScanner";
 import { BuscarPacienteRecepcion } from "@/components/recepcion/BuscarPacienteRecepcion";
 import { DisponibilidadDiaTanda } from "@/components/recepcion/DisponibilidadDiaTanda";
 import { ListaEspera } from "@/components/ListaEspera";
+import { PortalSolicitudesInbox } from "@/components/portal/PortalSolicitudesInbox";
 
 export default function Recepcion() {
   const { buscarPorCodigo, buscarPorToken, marcarLlegada, marcarAtendido, marcarNoShow } = useCitaTickets();
@@ -112,12 +113,13 @@ export default function Recepcion() {
       <MobilePageHeader title="Recepción" description="Centro integrado para llegada de pacientes, validación de tickets y consultas." />
 
       <Tabs defaultValue="ticket" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-6">
           <TabsTrigger value="ticket"><ScanLine className="h-4 w-4 mr-2" />Tickets</TabsTrigger>
           <TabsTrigger value="paciente"><User className="h-4 w-4 mr-2" />Paciente</TabsTrigger>
           <TabsTrigger value="cedula"><ScanText className="h-4 w-4 mr-2" />OCR cédula</TabsTrigger>
           <TabsTrigger value="agenda"><CalendarSearch className="h-4 w-4 mr-2" />Agenda</TabsTrigger>
           <TabsTrigger value="espera"><ClockIcon className="h-4 w-4 mr-2" />Lista Espera</TabsTrigger>
+          <TabsTrigger value="portal"><FileText className="h-4 w-4 mr-2" />Portal</TabsTrigger>
         </TabsList>
 
         {/* TICKETS */}
@@ -304,6 +306,10 @@ export default function Recepcion() {
         {/* LISTA DE ESPERA */}
         <TabsContent value="espera" className="pt-4">
           <ListaEspera />
+        </TabsContent>
+
+        <TabsContent value="portal" className="pt-4">
+          <PortalSolicitudesInbox />
         </TabsContent>
       </Tabs>
     </div>

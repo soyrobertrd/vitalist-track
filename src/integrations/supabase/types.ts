@@ -13910,6 +13910,66 @@ export type Database = {
           },
         ]
       }
+      portal_solicitudes: {
+        Row: {
+          atendida_at: string | null
+          atendida_por: string | null
+          cita_id: string | null
+          created_at: string
+          estado: string
+          fecha_propuesta: string | null
+          id: string
+          mensaje: string | null
+          paciente_id: string
+          respuesta: string | null
+          tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          atendida_at?: string | null
+          atendida_por?: string | null
+          cita_id?: string | null
+          created_at?: string
+          estado?: string
+          fecha_propuesta?: string | null
+          id?: string
+          mensaje?: string | null
+          paciente_id: string
+          respuesta?: string | null
+          tipo: string
+          workspace_id: string
+        }
+        Update: {
+          atendida_at?: string | null
+          atendida_por?: string | null
+          cita_id?: string | null
+          created_at?: string
+          estado?: string
+          fecha_propuesta?: string | null
+          id?: string
+          mensaje?: string | null
+          paciente_id?: string
+          respuesta?: string | null
+          tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_solicitudes_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_solicitudes_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       preferencias_idioma: {
         Row: {
           created_at: string | null
@@ -21133,6 +21193,16 @@ export type Database = {
         }[]
       }
       portal_paciente_datos: { Args: { _token: string }; Returns: Json }
+      portal_paciente_solicitar_accion: {
+        Args: {
+          _cita_id?: string
+          _fecha_propuesta?: string
+          _mensaje?: string
+          _tipo: string
+          _token: string
+        }
+        Returns: Json
+      }
       registrar_acceso_ficha: {
         Args: {
           _accion?: string
