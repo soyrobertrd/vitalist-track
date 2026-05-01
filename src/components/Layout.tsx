@@ -47,6 +47,10 @@ import {
   BedDouble,
   Eye,
   SmilePlus,
+  Workflow,
+  ListTodo,
+  MessageCircle,
+  FileSignature,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -135,6 +139,15 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/organizaciones", icon: Building2, label: "Organizaciones", adminOnly: true },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
+    {
+      path: "/operaciones", icon: Workflow, label: "Operaciones",
+      subItems: [
+        { path: "/workflows-avanzados", label: "Workflows automáticos", icon: Workflow },
+        { path: "/tareas", label: "Tareas internas", icon: ListTodo },
+        { path: "/chat", label: "Chat interno", icon: MessageCircle },
+        { path: "/firmas", label: "Firmas digitales", icon: FileSignature },
+      ]
+    },
     { path: "/inventario", icon: Boxes, label: "Inventario" },
     { path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true },
     { path: "/turnos", icon: Monitor, label: "Turnos y Colas" },

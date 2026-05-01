@@ -54,6 +54,10 @@ const Consultorios = lazy(() => import("./pages/Consultorios"));
 const Hospitalizacion = lazy(() => import("./pages/Hospitalizacion"));
 const AltaHospitalaria = lazy(() => import("./pages/AltaHospitalaria"));
 const VerticalesAdmin = lazy(() => import("./pages/VerticalesAdmin"));
+const WorkflowsAvanzados = lazy(() => import("./pages/WorkflowsAvanzados"));
+const TareasInternas = lazy(() => import("./pages/TareasInternas"));
+const ChatInterno = lazy(() => import("./pages/ChatInterno"));
+const FirmasDigitales = lazy(() => import("./pages/FirmasDigitales"));
 const Triaje = lazy(() => import("./pages/Triaje"));
 const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
 const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
@@ -285,6 +289,10 @@ const App = () => {
                   path="/alta-hospitalaria"
                   element={session ? <Layout><AltaHospitalaria /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route path="/workflows-avanzados" element={session ? <Layout><WorkflowsAvanzados /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/tareas" element={session ? <Layout><TareasInternas /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/chat" element={session ? <Layout><ChatInterno /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/firmas" element={session ? <Layout><FirmasDigitales /></Layout> : <Navigate to="/auth" />} />
                 <Route
                   path="/verticales"
                   element={session ? <Layout><VerticalesAdmin /></Layout> : <Navigate to="/auth" />}
