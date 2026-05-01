@@ -18,6 +18,12 @@ import VerticalCitasTab from "@/components/vertical/VerticalCitasTab";
 import VerticalFacturacionTab from "@/components/vertical/VerticalFacturacionTab";
 import VerticalNominaTab from "@/components/vertical/VerticalNominaTab";
 import VerticalPacientesTab from "@/components/vertical/VerticalPacientesTab";
+import VerticalSucursalesTab from "@/components/vertical/VerticalSucursalesTab";
+import VerticalLeadsCRMTab from "@/components/vertical/VerticalLeadsCRMTab";
+import VerticalMarketingTab from "@/components/vertical/VerticalMarketingTab";
+import VerticalBITab from "@/components/vertical/VerticalBITab";
+import VerticalPortalTab from "@/components/vertical/VerticalPortalTab";
+import VerticalPagosTab from "@/components/vertical/VerticalPagosTab";
 
 const estadoOrdenColor: Record<string, string> = {
   solicitada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -108,6 +114,12 @@ export default function VisionCarePro() {
           <TabsTrigger value="personal"><Users className="h-3.5 w-3.5 mr-1" />Doctores</TabsTrigger>
           <TabsTrigger value="facturacion"><DollarSign className="h-3.5 w-3.5 mr-1" />Facturación</TabsTrigger>
           <TabsTrigger value="nomina"><Calculator className="h-3.5 w-3.5 mr-1" />Nómina</TabsTrigger>
+          <TabsTrigger value="sucursales">Sucursales</TabsTrigger>
+          <TabsTrigger value="leads">CRM Leads</TabsTrigger>
+          <TabsTrigger value="marketing">Marketing</TabsTrigger>
+          <TabsTrigger value="pagos_online">Pagos Online</TabsTrigger>
+          <TabsTrigger value="portal">Portal</TabsTrigger>
+          <TabsTrigger value="bi">BI</TabsTrigger>
         </TabsList>
 
         <TabsContent value="recetas" className="space-y-3">
@@ -235,6 +247,12 @@ export default function VisionCarePro() {
         <TabsContent value="personal" className="mt-4"><VerticalPersonalTab profesionalLabel="Doctores" especialidades={["Oftalmología", "Optometría", "Contactología", "Cirugía refractiva", "Glaucoma", "Retina"]} /></TabsContent>
         <TabsContent value="facturacion" className="mt-4"><VerticalFacturacionTab /></TabsContent>
         <TabsContent value="nomina" className="mt-4"><VerticalNominaTab /></TabsContent>
+        <TabsContent value="sucursales" className="mt-4"><VerticalSucursalesTab verticalTipo="vision" /></TabsContent>
+        <TabsContent value="leads" className="mt-4"><VerticalLeadsCRMTab verticalTipo="vision" /></TabsContent>
+        <TabsContent value="marketing" className="mt-4"><VerticalMarketingTab verticalTipo="vision" /></TabsContent>
+        <TabsContent value="pagos_online" className="mt-4"><VerticalPagosTab verticalTipo="vision" /></TabsContent>
+        <TabsContent value="portal" className="mt-4"><VerticalPortalTab verticalTipo="vision" /></TabsContent>
+        <TabsContent value="bi" className="mt-4"><VerticalBITab verticalTipo="vision" /></TabsContent>
       </Tabs>
     </div>
   );
