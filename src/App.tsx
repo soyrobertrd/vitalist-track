@@ -9,6 +9,7 @@ import { Session } from "@supabase/supabase-js";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { WorkspaceProvider } from "./contexts/WorkspaceContext";
 import { ActiveSucursalProvider } from "./contexts/ActiveSucursalContext";
+import { VerticalProvider } from "./contexts/VerticalContext";
 import { LocaleProvider } from "./hooks/useLocale";
 import Layout from "./components/Layout";
 import { InstallPWAPrompt } from "./components/InstallPWAPrompt";
@@ -51,6 +52,8 @@ const ReportesProgramados = lazy(() => import("./pages/ReportesProgramados"));
 const SalaVirtual = lazy(() => import("./pages/SalaVirtual"));
 const Consultorios = lazy(() => import("./pages/Consultorios"));
 const Hospitalizacion = lazy(() => import("./pages/Hospitalizacion"));
+const AltaHospitalaria = lazy(() => import("./pages/AltaHospitalaria"));
+const VerticalesAdmin = lazy(() => import("./pages/VerticalesAdmin"));
 const Triaje = lazy(() => import("./pages/Triaje"));
 const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
 const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
@@ -145,6 +148,7 @@ const App = () => {
       <ThemeProvider>
         <WorkspaceProvider>
         <ActiveSucursalProvider>
+        <VerticalProvider>
         <LocaleProvider>
         <TooltipProvider>
           <Toaster />
@@ -276,6 +280,14 @@ const App = () => {
                 <Route
                   path="/hospitalizacion"
                   element={session ? <Layout><Hospitalizacion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/alta-hospitalaria"
+                  element={session ? <Layout><AltaHospitalaria /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/verticales"
+                  element={session ? <Layout><VerticalesAdmin /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/triaje"
@@ -496,6 +508,7 @@ const App = () => {
           </BrowserRouter>
         </TooltipProvider>
         </LocaleProvider>
+        </VerticalProvider>
         </ActiveSucursalProvider>
         </WorkspaceProvider>
       </ThemeProvider>

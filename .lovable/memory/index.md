@@ -14,6 +14,7 @@
 - Verticals (VisionCare, DentalCare, AestheticPro, RecoveryCare) are standalone products with full clinic ops (pacientes, citas, personal, facturación, nómina).
 
 ## Memories
+- [Fase DD - Verticales por centro](mem://features/fase-dd-verticales-y-alta) — Workspace verticales (clinica/dental/aesthetic/recovery/vision), filtrado del menú por vertical activa, conmutador admin y módulo de alta hospitalaria
 - [Profile Creation on Admin Add](mem://user-management/automatic-profile-creation-on-admin-add) — Automatically create profile records when admins add users
 - [Actionable Contact Links](mem://ui/actionable-contact-links) — Render phone/email as tel: and mailto: links
 - [WhatsApp Communication](mem://integrations/whatsapp-communication) — WhatsApp wa.me links next to phone numbers

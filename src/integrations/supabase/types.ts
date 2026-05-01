@@ -911,6 +911,118 @@ export type Database = {
           },
         ]
       }
+      altas_hospitalarias: {
+        Row: {
+          actividad_fisica: string | null
+          created_at: string
+          created_by: string | null
+          cuidados_domicilio: string | null
+          diagnostico_principal: string | null
+          diagnosticos_secundarios: string[] | null
+          dieta_recomendada: string | null
+          documento_pdf_url: string | null
+          estado: string
+          fecha_alta: string
+          firma_medico_url: string | null
+          firma_paciente_url: string | null
+          hospitalizacion_id: string | null
+          id: string
+          indicaciones_paciente: string | null
+          medicamentos_alta: Json | null
+          medico_alta_id: string | null
+          notas_adicionales: string | null
+          paciente_id: string
+          procedimientos_realizados: string | null
+          proxima_cita_especialidad: string | null
+          proxima_cita_fecha: string | null
+          resumen_clinico: string | null
+          signos_alarma: string | null
+          tipo_alta: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          actividad_fisica?: string | null
+          created_at?: string
+          created_by?: string | null
+          cuidados_domicilio?: string | null
+          diagnostico_principal?: string | null
+          diagnosticos_secundarios?: string[] | null
+          dieta_recomendada?: string | null
+          documento_pdf_url?: string | null
+          estado?: string
+          fecha_alta?: string
+          firma_medico_url?: string | null
+          firma_paciente_url?: string | null
+          hospitalizacion_id?: string | null
+          id?: string
+          indicaciones_paciente?: string | null
+          medicamentos_alta?: Json | null
+          medico_alta_id?: string | null
+          notas_adicionales?: string | null
+          paciente_id: string
+          procedimientos_realizados?: string | null
+          proxima_cita_especialidad?: string | null
+          proxima_cita_fecha?: string | null
+          resumen_clinico?: string | null
+          signos_alarma?: string | null
+          tipo_alta?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          actividad_fisica?: string | null
+          created_at?: string
+          created_by?: string | null
+          cuidados_domicilio?: string | null
+          diagnostico_principal?: string | null
+          diagnosticos_secundarios?: string[] | null
+          dieta_recomendada?: string | null
+          documento_pdf_url?: string | null
+          estado?: string
+          fecha_alta?: string
+          firma_medico_url?: string | null
+          firma_paciente_url?: string | null
+          hospitalizacion_id?: string | null
+          id?: string
+          indicaciones_paciente?: string | null
+          medicamentos_alta?: Json | null
+          medico_alta_id?: string | null
+          notas_adicionales?: string | null
+          paciente_id?: string
+          procedimientos_realizados?: string | null
+          proxima_cita_especialidad?: string | null
+          proxima_cita_fecha?: string | null
+          resumen_clinico?: string | null
+          signos_alarma?: string | null
+          tipo_alta?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "altas_hospitalarias_medico_alta_id_fkey"
+            columns: ["medico_alta_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "altas_hospitalarias_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "altas_hospitalarias_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       antecedentes_medicos: {
         Row: {
           activo: boolean
@@ -13329,6 +13441,7 @@ export type Database = {
           telefono: string | null
           timezone: string | null
           updated_at: string | null
+          vertical_asignada: Database["public"]["Enums"]["vertical_tipo"] | null
         }
         Insert: {
           activo?: boolean | null
@@ -13348,6 +13461,9 @@ export type Database = {
           telefono?: string | null
           timezone?: string | null
           updated_at?: string | null
+          vertical_asignada?:
+            | Database["public"]["Enums"]["vertical_tipo"]
+            | null
         }
         Update: {
           activo?: boolean | null
@@ -13367,6 +13483,9 @@ export type Database = {
           telefono?: string | null
           timezone?: string | null
           updated_at?: string | null
+          vertical_asignada?:
+            | Database["public"]["Enums"]["vertical_tipo"]
+            | null
         }
         Relationships: []
       }
@@ -19331,6 +19450,47 @@ export type Database = {
           },
         ]
       }
+      workspace_verticales: {
+        Row: {
+          activa: boolean
+          configuracion: Json
+          created_at: string
+          es_principal: boolean
+          id: string
+          updated_at: string
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
+          workspace_id: string
+        }
+        Insert: {
+          activa?: boolean
+          configuracion?: Json
+          created_at?: string
+          es_principal?: boolean
+          id?: string
+          updated_at?: string
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
+          workspace_id: string
+        }
+        Update: {
+          activa?: boolean
+          configuracion?: Json
+          created_at?: string
+          es_principal?: boolean
+          id?: string
+          updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_verticales_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workspaces: {
         Row: {
           configuracion: Json
@@ -19740,6 +19900,7 @@ export type Database = {
         | "enfermera"
         | "coordinador"
         | "recepcion"
+      vertical_tipo: "clinica" | "dental" | "aesthetic" | "recovery" | "vision"
       workspace_member_role: "owner" | "admin" | "member"
       zona_distrito:
         | "santo_domingo_oeste"
@@ -20067,6 +20228,7 @@ export const Constants = {
         "coordinador",
         "recepcion",
       ],
+      vertical_tipo: ["clinica", "dental", "aesthetic", "recovery", "vision"],
       workspace_member_role: ["owner", "admin", "member"],
       zona_distrito: [
         "santo_domingo_oeste",
