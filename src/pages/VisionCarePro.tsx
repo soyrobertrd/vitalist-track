@@ -64,6 +64,7 @@ export default function VisionCarePro() {
   const fmt = (v: number) => formatCurrency(v, cur);
   const [tab, setTab] = useTabParam("");
   const isResumen = !tab;
+  if (isResumen) return <Navigate to="/dashboard" replace />;
 
   const { data: recetas = [] } = useQuery({
     queryKey: ["recetas_oftalmicas", wsId], enabled: !!wsId,

@@ -83,6 +83,7 @@ export default function RecoveryCare() {
   const fmt = (v: number) => formatCurrency(v, cur);
   const [tab, setTab] = useTabParam("");
   const isResumen = !tab;
+  if (isResumen) return <Navigate to="/dashboard" replace />;
 
   const { data: pacientesRec = [] } = useQuery({
     queryKey: ["pacientes_recovery", wsId], enabled: !!wsId,
