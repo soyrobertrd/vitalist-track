@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useTabParam } from "@/hooks/useTabParam";
 import { useQuery } from "@tanstack/react-query";
@@ -85,6 +86,7 @@ export default function DentalCarePro() {
   const fmt = (v: number) => formatCurrency(v, cur);
   const [tab, setTab] = useTabParam("");
   const isResumen = !tab;
+  if (isResumen) return <Navigate to="/dashboard" replace />;
 
   const { data: planes = [] } = useQuery({
     queryKey: ["planes_tratamiento_dental", wsId],

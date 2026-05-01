@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useTabParam } from "@/hooks/useTabParam";
 import { useQuery } from "@tanstack/react-query";
@@ -79,6 +80,8 @@ export default function AestheticPro() {
   const fmt = (v: number) => formatCurrency(v, cur);
   const [tab, setTab] = useTabParam("");
   const isResumen = !tab;
+  // El "Resumen" se fusiona con el Dashboard adaptativo por vertical.
+  if (isResumen) return <Navigate to="/dashboard" replace />;
 
   // Existing queries
   const { data: leads = [] } = useQuery({

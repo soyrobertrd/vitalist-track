@@ -24,6 +24,7 @@ import { Cie10Workbench } from "@/components/ficha-clinica/Cie10Workbench";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
 import { RecetasPaciente } from "@/components/ficha-clinica/RecetasPaciente";
 import { ConsultasEspecialidad } from "@/components/ficha-clinica/PlantillasEspecialidad";
+import { AgendarCitaButton } from "@/components/AgendarCitaButton";
 
 interface Props {
   pacienteId: string;
@@ -206,11 +207,12 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between gap-4 flex-wrap">
         <CardTitle className="text-lg flex items-center gap-2">
           <ClipboardList className="h-5 w-5" />
           Ficha Clínica
         </CardTitle>
+        <AgendarCitaButton size="sm" pacienteId={pacienteId} />
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="timeline" className="w-full">

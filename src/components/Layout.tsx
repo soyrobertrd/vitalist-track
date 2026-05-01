@@ -79,6 +79,7 @@ import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
 import { SucursalSwitcher } from "@/components/SucursalSwitcher";
 import { VerticalSwitcher } from "@/components/VerticalSwitcher";
 import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
+import { useFreePlan } from "@/hooks/useFreePlan";
 
 interface LayoutProps {
   children: ReactNode;
@@ -91,6 +92,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { profile } = useUserProfile();
   const { isAdmin } = useUserRole();
   const { verticalActiva } = useVertical();
+  const { isFree } = useFreePlan();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
@@ -129,16 +131,11 @@ const Layout = ({ children }: LayoutProps) => {
     vision: "/vision-care",
   };
 
-  // Resumen de la vertical activa (si no es "todas")
-  const resumenVerticalItem = (va !== "todas") ? {
-    path: verticalRoot[va as VTipo],
-    icon: verticalIcon[va as VTipo],
-    label: `Resumen ${verticalLabel[va as VTipo]}`,
-  } : null;
+  // El "Resumen [Vertical]" se fusiona con el Dashboard; no se muestra
+  // como item separado en el menú lateral.
 
   const menuItems: any[] = [
     { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    ...(resumenVerticalItem ? [resumenVerticalItem] : []),
 
     {
       path: "/agenda", icon: CalendarDays, label: "Agenda",
@@ -341,6 +338,23 @@ const Layout = ({ children }: LayoutProps) => {
     return true;
   };
 
+  // Plan FREE: solo Dashboard, Agenda (calendario), Pacientes, Ficha clínica.
+  // Las rutas permitidas en plan free están en esta whitelist.
+  const FREE_ALLOWED_PATHS = new Set<string>([
+    "/dashboard",
+    "/agenda", // grupo padre
+    "/calendario",
+    "/recepcion",
+    "/pacientes", // grupo padre + lista
+    "/atencion-paciente",
+    "/soporte",
+    "/configuracion",
+  ]);
+  const isFreeAllowed = (path: string) => {
+    const base = path.split("?")[0];
+    return FREE_ALLOWED_PATHS.has(base);
+  };
+
   // Filtrado por vertical activa: oculta items específicos no aplicables
   // y filtra subItems individualmente. Si un grupo queda vacío, se oculta.
   const visibleMenuItems = menuItems
@@ -351,10 +365,15 @@ const Layout = ({ children }: LayoutProps) => {
     })
     .map((item) => {
       if (!item.subItems) return item;
-      const filtered = item.subItems.filter(subItemAplica);
+      let filtered = item.subItems.filter(subItemAplica);
+      if (isFree) filtered = filtered.filter((s: any) => isFreeAllowed(s.path));
       return { ...item, subItems: filtered };
     })
-    .filter((item) => !item.subItems || item.subItems.length > 0);
+    .filter((item) => {
+      if (item.subItems) return item.subItems.length > 0;
+      if (isFree) return isFreeAllowed(item.path);
+      return true;
+    });
 
   // Helpers para comparar rutas con o sin query param `?tab=`
   const splitPath = (full: string) => {
