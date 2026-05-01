@@ -90,3 +90,4 @@
 - [Fase GG - Clínico Pro](mem://features/fase-gg-clinico-pro) — Protocolos clínicos por especialidad (sepsis/IAM/ACV), catálogos CIE-10 y CPT, vademécum con verificador de interacciones farmacológicas, motor de reglas clínicas configurable
 - [Fase HH - Finanzas Pro + RRHH Pro](mem://features/fase-hh-finanzas-rrhh-pro) — Forecast ingresos, AR aging por antigüedad, centros de costo, costeo por servicio, evaluaciones de desempeño 0-5, metas con bonos auto-cumplimiento, capacitaciones
 - [Vertical Data Isolation](mem://features/vertical-data-isolation) — Aislamiento por vertical en pacientes/citas/personal/facturas vía columna `vertical` + hook `useVerticalFilter`
+- [Vertical Adaptive Sidebar Menu](mem://features/vertical-adaptive-menu) — Sidebar reorganizes per active vertical: specific options distributed into existing groups + Resumen vertical entry; non-applicable items hidden
