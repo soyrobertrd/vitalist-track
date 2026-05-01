@@ -202,6 +202,7 @@ export type Database = {
           tipo: string
           tipo_alta: string | null
           updated_at: string
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id: string | null
         }
         Insert: {
@@ -222,6 +223,7 @@ export type Database = {
           tipo?: string
           tipo_alta?: string | null
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
         }
         Update: {
@@ -242,6 +244,7 @@ export type Database = {
           tipo?: string
           tipo_alta?: string | null
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
         }
         Relationships: [
@@ -939,6 +942,7 @@ export type Database = {
           signos_alarma: string | null
           tipo_alta: string
           updated_at: string
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id: string
         }
         Insert: {
@@ -968,6 +972,7 @@ export type Database = {
           signos_alarma?: string | null
           tipo_alta?: string
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id: string
         }
         Update: {
@@ -997,6 +1002,7 @@ export type Database = {
           signos_alarma?: string | null
           tipo_alta?: string
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string
         }
         Relationships: [
@@ -3603,6 +3609,7 @@ export type Database = {
           recurso_id: string | null
           sucursal_id: string | null
           updated_at: string | null
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id: string | null
         }
         Insert: {
@@ -3624,6 +3631,7 @@ export type Database = {
           recurso_id?: string | null
           sucursal_id?: string | null
           updated_at?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
         }
         Update: {
@@ -3645,6 +3653,7 @@ export type Database = {
           recurso_id?: string | null
           sucursal_id?: string | null
           updated_at?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
         }
         Relationships: [
@@ -4108,6 +4117,7 @@ export type Database = {
           plantilla_id: string | null
           profesional_id: string
           updated_at: string
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           visita_id: string | null
           workspace_id: string | null
         }
@@ -4120,6 +4130,7 @@ export type Database = {
           plantilla_id?: string | null
           profesional_id: string
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           visita_id?: string | null
           workspace_id?: string | null
         }
@@ -4132,6 +4143,7 @@ export type Database = {
           plantilla_id?: string | null
           profesional_id?: string
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           visita_id?: string | null
           workspace_id?: string | null
         }
@@ -4562,6 +4574,7 @@ export type Database = {
           sucursal_id: string | null
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at: string | null
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           video_enlace: string | null
           video_estado: string | null
           video_finalizado_at: string | null
@@ -4586,6 +4599,7 @@ export type Database = {
           sucursal_id?: string | null
           tipo_visita: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           video_enlace?: string | null
           video_estado?: string | null
           video_finalizado_at?: string | null
@@ -4610,6 +4624,7 @@ export type Database = {
           sucursal_id?: string | null
           tipo_visita?: Database["public"]["Enums"]["tipo_visita"]
           updated_at?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           video_enlace?: string | null
           video_estado?: string | null
           video_finalizado_at?: string | null
@@ -7435,6 +7450,7 @@ export type Database = {
           numero_factura: string
           paciente_id: string
           updated_at: string
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           visita_id: string | null
           workspace_id: string | null
         }
@@ -7456,6 +7472,7 @@ export type Database = {
           numero_factura: string
           paciente_id: string
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           visita_id?: string | null
           workspace_id?: string | null
         }
@@ -7477,6 +7494,7 @@ export type Database = {
           numero_factura?: string
           paciente_id?: string
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           visita_id?: string | null
           workspace_id?: string | null
         }
@@ -11852,6 +11870,7 @@ export type Database = {
           recurso_destino_id: string | null
           tipo: string
           updated_at: string
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id: string | null
         }
         Insert: {
@@ -11872,6 +11891,7 @@ export type Database = {
           recurso_destino_id?: string | null
           tipo: string
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
         }
         Update: {
@@ -11892,6 +11912,7 @@ export type Database = {
           recurso_destino_id?: string | null
           tipo?: string
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
         }
         Relationships: [
@@ -12097,6 +12118,7 @@ export type Database = {
           tipo_atencion: string | null
           tipo_documento: string
           updated_at: string | null
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           whatsapp_cuidador: boolean | null
           whatsapp_px: boolean | null
           workspace_id: string | null
@@ -12140,6 +12162,7 @@ export type Database = {
           tipo_atencion?: string | null
           tipo_documento?: string
           updated_at?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           whatsapp_cuidador?: boolean | null
           whatsapp_px?: boolean | null
           workspace_id?: string | null
@@ -12183,6 +12206,7 @@ export type Database = {
           tipo_atencion?: string | null
           tipo_documento?: string
           updated_at?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           whatsapp_cuidador?: boolean | null
           whatsapp_px?: boolean | null
           workspace_id?: string | null
@@ -13013,6 +13037,7 @@ export type Database = {
           sucursal_id: string | null
           updated_at: string | null
           user_id: string | null
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id: string | null
           zona: string | null
         }
@@ -13032,6 +13057,7 @@ export type Database = {
           sucursal_id?: string | null
           updated_at?: string | null
           user_id?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
           zona?: string | null
         }
@@ -13051,6 +13077,7 @@ export type Database = {
           sucursal_id?: string | null
           updated_at?: string | null
           user_id?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
           zona?: string | null
         }
@@ -16348,6 +16375,7 @@ export type Database = {
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
           sucursal_id: string | null
+          vertical: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id: string | null
         }
         Insert: {
@@ -16374,6 +16402,7 @@ export type Database = {
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
           sucursal_id?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
         }
         Update: {
@@ -16400,6 +16429,7 @@ export type Database = {
             | Database["public"]["Enums"]["resultado_seguimiento"]
             | null
           sucursal_id?: string | null
+          vertical?: Database["public"]["Enums"]["vertical_tipo"]
           workspace_id?: string | null
         }
         Relationships: [
