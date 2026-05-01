@@ -356,6 +356,14 @@ const App = () => {
                   element={session ? <Layout><PWAOffline /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
+                  path="/calidad"
+                  element={session ? <Layout><GestionCalidad /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/telemedicina"
+                  element={session ? <Layout><CentroTelemedicina /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
                   path="/checklist-rls"
                   element={session ? <Layout><ChecklistRLS /></Layout> : <Navigate to="/auth" />}
                 />
