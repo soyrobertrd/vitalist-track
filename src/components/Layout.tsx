@@ -310,11 +310,26 @@ const Layout = ({ children }: LayoutProps) => {
     return item.verticales.includes(verticalActiva);
   });
 
+  // Helpers para comparar rutas con o sin query param `?tab=`
+  const splitPath = (full: string) => {
+    const [p, q = ""] = full.split("?");
+    const tab = new URLSearchParams(q).get("tab") || "";
+    return { p, tab };
+  };
+  const currentTab = new URLSearchParams(location.search).get("tab") || "";
+  const isSubItemActive = (subPath: string) => {
+    const { p, tab } = splitPath(subPath);
+    if (p !== location.pathname) return false;
+    // Si el subItem no especifica tab, sólo activa cuando no hay tab en URL (resumen)
+    if (!tab) return !currentTab;
+    return tab === currentTab;
+  };
+
   // Auto-expand the correct parent menu based on current route
   const getActiveParentMenu = () => {
     for (const item of visibleMenuItems) {
       if ('subItems' in item && item.subItems) {
-        if (item.subItems.some(sub => sub.path === location.pathname)) {
+        if (item.subItems.some(sub => splitPath(sub.path).p === location.pathname)) {
           return item.path;
         }
       }
@@ -425,7 +440,7 @@ const Layout = ({ children }: LayoutProps) => {
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
                         "flex items-center gap-3 px-3 py-2 ml-6 rounded-lg text-sm font-medium transition-all duration-200",
-                        location.pathname === subItem.path
+                        isSubItemActive(subItem.path)
                           ? "bg-primary/10 text-primary"
                           : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                       )}
