@@ -286,6 +286,10 @@ const App = () => {
                   element={session ? <Layout><AltaHospitalaria /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
+                  path="/verticales"
+                  element={session ? <Layout><VerticalesAdmin /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
                   path="/triaje"
                   element={session ? <Layout><Triaje /></Layout> : <Navigate to="/auth" />}
                 />
