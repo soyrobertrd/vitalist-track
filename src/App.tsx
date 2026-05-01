@@ -56,6 +56,10 @@ const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
 const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
 const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesional"));
 const UciManagement = lazy(() => import("./pages/UciManagement"));
+const RondasMedicas = lazy(() => import("./pages/RondasMedicas"));
+const Enfermeria = lazy(() => import("./pages/Enfermeria"));
+const LaboratorioAvanzado = lazy(() => import("./pages/LaboratorioAvanzado"));
+const AgendaUniversal = lazy(() => import("./pages/AgendaUniversal"));
 const ChecklistRLS = lazy(() => import("./pages/ChecklistRLS"));
 const ConfiguracionAuditoria = lazy(() => import("./pages/ConfiguracionAuditoria"));
 const DashboardBI = lazy(() => import("./pages/DashboardBI"));
@@ -272,6 +276,22 @@ const App = () => {
                 <Route
                   path="/uci"
                   element={session ? <Layout><UciManagement /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/rondas-medicas"
+                  element={session ? <Layout><RondasMedicas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/enfermeria"
+                  element={session ? <Layout><Enfermeria /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/laboratorio-avanzado"
+                  element={session ? <Layout><LaboratorioAvanzado /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/agenda-universal"
+                  element={session ? <Layout><AgendaUniversal /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/checklist-rls"

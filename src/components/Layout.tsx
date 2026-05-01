@@ -159,9 +159,13 @@ const Layout = ({ children }: LayoutProps) => {
       subItems: [
         { path: "/triaje", label: "Triaje" },
         { path: "/hospitalizacion", label: "Hospitalización" },
+        { path: "/rondas-medicas", label: "Rondas / Visitas médicas" },
+        { path: "/enfermeria", label: "Enfermería" },
         { path: "/uci", label: "UCI: infusiones / kardex" },
         { path: "/quirofano", label: "Quirófano / Cirugía" },
         { path: "/laboratorio", label: "Laboratorio" },
+        { path: "/laboratorio-avanzado", label: "Laboratorio (avanzado)" },
+        { path: "/agenda-universal", label: "Agenda universal" },
         { path: "/imagenologia", label: "Imagenología" },
         { path: "/consultorios", label: "Consultorios", icon: Building2 },
         { path: "/farmacia", label: "Farmacia", icon: Pill },

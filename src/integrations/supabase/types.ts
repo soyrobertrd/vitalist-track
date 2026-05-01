@@ -53,6 +53,76 @@ export type Database = {
         }
         Relationships: []
       }
+      administracion_medicamentos: {
+        Row: {
+          admision_id: string | null
+          created_at: string | null
+          dosis: string | null
+          enfermera_id: string | null
+          estado: string | null
+          hora_administrada: string | null
+          hora_programada: string | null
+          id: string
+          medicamento: string
+          motivo_omision: string | null
+          observaciones: string | null
+          paciente_id: string
+          via: string | null
+        }
+        Insert: {
+          admision_id?: string | null
+          created_at?: string | null
+          dosis?: string | null
+          enfermera_id?: string | null
+          estado?: string | null
+          hora_administrada?: string | null
+          hora_programada?: string | null
+          id?: string
+          medicamento: string
+          motivo_omision?: string | null
+          observaciones?: string | null
+          paciente_id: string
+          via?: string | null
+        }
+        Update: {
+          admision_id?: string | null
+          created_at?: string | null
+          dosis?: string | null
+          enfermera_id?: string | null
+          estado?: string | null
+          hora_administrada?: string | null
+          hora_programada?: string | null
+          id?: string
+          medicamento?: string
+          motivo_omision?: string | null
+          observaciones?: string | null
+          paciente_id?: string
+          via?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "administracion_medicamentos_admision_id_fkey"
+            columns: ["admision_id"]
+            isOneToOne: false
+            referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "administracion_medicamentos_enfermera_id_fkey"
+            columns: ["enfermera_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "administracion_medicamentos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admisiones: {
         Row: {
           ala_id: string | null
@@ -493,6 +563,77 @@ export type Database = {
           },
         ]
       }
+      alertas_laboratorio: {
+        Row: {
+          created_at: string | null
+          descripcion: string
+          id: string
+          notificado_a: string | null
+          notificado_at: string | null
+          orden_id: string | null
+          paciente_id: string | null
+          resuelto: boolean | null
+          severidad: string | null
+          tipo: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          descripcion: string
+          id?: string
+          notificado_a?: string | null
+          notificado_at?: string | null
+          orden_id?: string | null
+          paciente_id?: string | null
+          resuelto?: boolean | null
+          severidad?: string | null
+          tipo?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          descripcion?: string
+          id?: string
+          notificado_a?: string | null
+          notificado_at?: string | null
+          orden_id?: string | null
+          paciente_id?: string | null
+          resuelto?: boolean | null
+          severidad?: string | null
+          tipo?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_laboratorio_notificado_a_fkey"
+            columns: ["notificado_a"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_laboratorio_orden_id_fkey"
+            columns: ["orden_id"]
+            isOneToOne: false
+            referencedRelation: "ordenes_laboratorio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_laboratorio_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_laboratorio_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertas_notificaciones: {
         Row: {
           alerta_id: string | null
@@ -736,6 +877,59 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "areas_seguridad_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      areas_servicio: {
+        Row: {
+          activo: boolean | null
+          capacidad_simultanea: number | null
+          codigo: string
+          color: string | null
+          created_at: string | null
+          duracion_default_min: number | null
+          id: string
+          nombre: string
+          requiere_ayuno: boolean | null
+          requiere_preparacion: string | null
+          tipo: string
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean | null
+          capacidad_simultanea?: number | null
+          codigo: string
+          color?: string | null
+          created_at?: string | null
+          duracion_default_min?: number | null
+          id?: string
+          nombre: string
+          requiere_ayuno?: boolean | null
+          requiere_preparacion?: string | null
+          tipo: string
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean | null
+          capacidad_simultanea?: number | null
+          codigo?: string
+          color?: string | null
+          created_at?: string | null
+          duracion_default_min?: number | null
+          id?: string
+          nombre?: string
+          requiere_ayuno?: boolean | null
+          requiere_preparacion?: string | null
+          tipo?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "areas_servicio_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -2423,6 +2617,108 @@ export type Database = {
           },
         ]
       }
+      citas_universales: {
+        Row: {
+          area_id: string | null
+          cita_padre_id: string | null
+          created_at: string | null
+          created_by: string | null
+          estado: string | null
+          fecha_fin: string
+          fecha_inicio: string
+          id: string
+          metadata: Json | null
+          motivo: string | null
+          notas: string | null
+          origen: string | null
+          paciente_id: string
+          prioridad: string | null
+          profesional_id: string | null
+          recurso_id: string | null
+          sucursal_id: string | null
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          area_id?: string | null
+          cita_padre_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          estado?: string | null
+          fecha_fin: string
+          fecha_inicio: string
+          id?: string
+          metadata?: Json | null
+          motivo?: string | null
+          notas?: string | null
+          origen?: string | null
+          paciente_id: string
+          prioridad?: string | null
+          profesional_id?: string | null
+          recurso_id?: string | null
+          sucursal_id?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          area_id?: string | null
+          cita_padre_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          estado?: string | null
+          fecha_fin?: string
+          fecha_inicio?: string
+          id?: string
+          metadata?: Json | null
+          motivo?: string | null
+          notas?: string | null
+          origen?: string | null
+          paciente_id?: string
+          prioridad?: string | null
+          profesional_id?: string | null
+          recurso_id?: string | null
+          sucursal_id?: string | null
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "citas_universales_area_id_fkey"
+            columns: ["area_id"]
+            isOneToOne: false
+            referencedRelation: "areas_servicio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citas_universales_cita_padre_id_fkey"
+            columns: ["cita_padre_id"]
+            isOneToOne: false
+            referencedRelation: "citas_universales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citas_universales_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citas_universales_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citas_universales_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       combos_optica: {
         Row: {
           activo: boolean | null
@@ -2986,6 +3282,66 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      control_calidad_lab: {
+        Row: {
+          aprobado: boolean | null
+          desviacion: number | null
+          equipo: string
+          fecha: string | null
+          id: string
+          nivel_control: string | null
+          observaciones: string | null
+          prueba: string
+          tecnico_id: string | null
+          valor_esperado: number | null
+          valor_obtenido: number | null
+          workspace_id: string | null
+        }
+        Insert: {
+          aprobado?: boolean | null
+          desviacion?: number | null
+          equipo: string
+          fecha?: string | null
+          id?: string
+          nivel_control?: string | null
+          observaciones?: string | null
+          prueba: string
+          tecnico_id?: string | null
+          valor_esperado?: number | null
+          valor_obtenido?: number | null
+          workspace_id?: string | null
+        }
+        Update: {
+          aprobado?: boolean | null
+          desviacion?: number | null
+          equipo?: string
+          fecha?: string | null
+          id?: string
+          nivel_control?: string | null
+          observaciones?: string | null
+          prueba?: string
+          tecnico_id?: string | null
+          valor_esperado?: number | null
+          valor_obtenido?: number | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "control_calidad_lab_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_calidad_lab_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       control_visitas: {
         Row: {
@@ -7750,6 +8106,85 @@ export type Database = {
           },
         ]
       }
+      muestras_laboratorio: {
+        Row: {
+          codigo_barras: string | null
+          created_at: string | null
+          estado: string | null
+          fecha_recepcion: string | null
+          fecha_recoleccion: string | null
+          flebotomista_id: string | null
+          id: string
+          motivo_rechazo: string | null
+          observaciones: string | null
+          orden_id: string
+          paciente_id: string
+          recipiente: string | null
+          temperatura_transporte: string | null
+          tipo_muestra: string
+          updated_at: string | null
+          volumen: string | null
+        }
+        Insert: {
+          codigo_barras?: string | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_recepcion?: string | null
+          fecha_recoleccion?: string | null
+          flebotomista_id?: string | null
+          id?: string
+          motivo_rechazo?: string | null
+          observaciones?: string | null
+          orden_id: string
+          paciente_id: string
+          recipiente?: string | null
+          temperatura_transporte?: string | null
+          tipo_muestra: string
+          updated_at?: string | null
+          volumen?: string | null
+        }
+        Update: {
+          codigo_barras?: string | null
+          created_at?: string | null
+          estado?: string | null
+          fecha_recepcion?: string | null
+          fecha_recoleccion?: string | null
+          flebotomista_id?: string | null
+          id?: string
+          motivo_rechazo?: string | null
+          observaciones?: string | null
+          orden_id?: string
+          paciente_id?: string
+          recipiente?: string | null
+          temperatura_transporte?: string | null
+          tipo_muestra?: string
+          updated_at?: string | null
+          volumen?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "muestras_laboratorio_flebotomista_id_fkey"
+            columns: ["flebotomista_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "muestras_laboratorio_orden_id_fkey"
+            columns: ["orden_id"]
+            isOneToOne: false
+            referencedRelation: "ordenes_laboratorio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "muestras_laboratorio_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notas_credito: {
         Row: {
           aprobada_por: string | null
@@ -9510,6 +9945,79 @@ export type Database = {
           },
         ]
       }
+      plan_cuidados_enfermeria: {
+        Row: {
+          admision_id: string
+          created_at: string | null
+          diagnostico_nanda: string
+          enfermera_id: string | null
+          estado: string | null
+          fecha_evaluacion: string | null
+          fecha_inicio: string | null
+          id: string
+          intervencion_nic: string | null
+          observaciones: string | null
+          paciente_id: string
+          prioridad: string | null
+          resultado_noc: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admision_id: string
+          created_at?: string | null
+          diagnostico_nanda: string
+          enfermera_id?: string | null
+          estado?: string | null
+          fecha_evaluacion?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          intervencion_nic?: string | null
+          observaciones?: string | null
+          paciente_id: string
+          prioridad?: string | null
+          resultado_noc?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admision_id?: string
+          created_at?: string | null
+          diagnostico_nanda?: string
+          enfermera_id?: string | null
+          estado?: string | null
+          fecha_evaluacion?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          intervencion_nic?: string | null
+          observaciones?: string | null
+          paciente_id?: string
+          prioridad?: string | null
+          resultado_noc?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_cuidados_enfermeria_admision_id_fkey"
+            columns: ["admision_id"]
+            isOneToOne: false
+            referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plan_cuidados_enfermeria_enfermera_id_fkey"
+            columns: ["enfermera_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plan_cuidados_enfermeria_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       planes: {
         Row: {
           activo: boolean
@@ -10377,6 +10885,70 @@ export type Database = {
           },
         ]
       }
+      procedimientos_enfermeria: {
+        Row: {
+          admision_id: string | null
+          complicaciones: string | null
+          created_at: string | null
+          descripcion: string | null
+          fecha_hora: string
+          id: string
+          insumos_usados: Json | null
+          paciente_id: string
+          realizado_por: string | null
+          resultado: string | null
+          tipo: string
+        }
+        Insert: {
+          admision_id?: string | null
+          complicaciones?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          fecha_hora?: string
+          id?: string
+          insumos_usados?: Json | null
+          paciente_id: string
+          realizado_por?: string | null
+          resultado?: string | null
+          tipo: string
+        }
+        Update: {
+          admision_id?: string | null
+          complicaciones?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          fecha_hora?: string
+          id?: string
+          insumos_usados?: Json | null
+          paciente_id?: string
+          realizado_por?: string | null
+          resultado?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "procedimientos_enfermeria_admision_id_fkey"
+            columns: ["admision_id"]
+            isOneToOne: false
+            referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "procedimientos_enfermeria_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "procedimientos_enfermeria_realizado_por_fkey"
+            columns: ["realizado_por"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       procedimientos_esteticos: {
         Row: {
           activo: boolean | null
@@ -10426,6 +10998,89 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      procesamiento_lab: {
+        Row: {
+          created_at: string | null
+          critico: boolean | null
+          equipo: string | null
+          fecha_procesamiento: string | null
+          fecha_validacion: string | null
+          fuera_rango: boolean | null
+          id: string
+          muestra_id: string
+          observaciones: string | null
+          prueba_id: string | null
+          resultado: string | null
+          tecnico_id: string | null
+          unidad: string | null
+          validado_por: string | null
+          valor_referencia: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          critico?: boolean | null
+          equipo?: string | null
+          fecha_procesamiento?: string | null
+          fecha_validacion?: string | null
+          fuera_rango?: boolean | null
+          id?: string
+          muestra_id: string
+          observaciones?: string | null
+          prueba_id?: string | null
+          resultado?: string | null
+          tecnico_id?: string | null
+          unidad?: string | null
+          validado_por?: string | null
+          valor_referencia?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          critico?: boolean | null
+          equipo?: string | null
+          fecha_procesamiento?: string | null
+          fecha_validacion?: string | null
+          fuera_rango?: boolean | null
+          id?: string
+          muestra_id?: string
+          observaciones?: string | null
+          prueba_id?: string | null
+          resultado?: string | null
+          tecnico_id?: string | null
+          unidad?: string | null
+          validado_por?: string | null
+          valor_referencia?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "procesamiento_lab_muestra_id_fkey"
+            columns: ["muestra_id"]
+            isOneToOne: false
+            referencedRelation: "muestras_laboratorio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "procesamiento_lab_prueba_id_fkey"
+            columns: ["prueba_id"]
+            isOneToOne: false
+            referencedRelation: "pruebas_laboratorio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "procesamiento_lab_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "procesamiento_lab_validado_por_fkey"
+            columns: ["validado_por"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
             referencedColumns: ["id"]
           },
         ]
@@ -12796,6 +13451,130 @@ export type Database = {
           },
         ]
       }
+      ronda_paciente_notas: {
+        Row: {
+          admision_id: string | null
+          cambios_plan: string | null
+          created_at: string | null
+          duracion_minutos: number | null
+          estado_paciente: string | null
+          evolucion: string | null
+          id: string
+          ordenes_nuevas: Json | null
+          paciente_id: string
+          ronda_id: string
+        }
+        Insert: {
+          admision_id?: string | null
+          cambios_plan?: string | null
+          created_at?: string | null
+          duracion_minutos?: number | null
+          estado_paciente?: string | null
+          evolucion?: string | null
+          id?: string
+          ordenes_nuevas?: Json | null
+          paciente_id: string
+          ronda_id: string
+        }
+        Update: {
+          admision_id?: string | null
+          cambios_plan?: string | null
+          created_at?: string | null
+          duracion_minutos?: number | null
+          estado_paciente?: string | null
+          evolucion?: string | null
+          id?: string
+          ordenes_nuevas?: Json | null
+          paciente_id?: string
+          ronda_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ronda_paciente_notas_admision_id_fkey"
+            columns: ["admision_id"]
+            isOneToOne: false
+            referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ronda_paciente_notas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ronda_paciente_notas_ronda_id_fkey"
+            columns: ["ronda_id"]
+            isOneToOne: false
+            referencedRelation: "rondas_medicas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rondas_medicas: {
+        Row: {
+          ala_id: string | null
+          created_at: string | null
+          created_by: string | null
+          estado: string | null
+          fecha_ronda: string
+          id: string
+          medico_lider_id: string | null
+          observaciones_generales: string | null
+          participantes: Json | null
+          sucursal_id: string | null
+          tipo: string
+          updated_at: string | null
+          workspace_id: string | null
+        }
+        Insert: {
+          ala_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          estado?: string | null
+          fecha_ronda?: string
+          id?: string
+          medico_lider_id?: string | null
+          observaciones_generales?: string | null
+          participantes?: Json | null
+          sucursal_id?: string | null
+          tipo?: string
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Update: {
+          ala_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          estado?: string | null
+          fecha_ronda?: string
+          id?: string
+          medico_lider_id?: string | null
+          observaciones_generales?: string | null
+          participantes?: Json | null
+          sucursal_id?: string | null
+          tipo?: string
+          updated_at?: string | null
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rondas_medicas_medico_lider_id_fkey"
+            columns: ["medico_lider_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rondas_medicas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       salas_operacion: {
         Row: {
           activa: boolean
@@ -13153,6 +13932,88 @@ export type Database = {
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "planes_rehabilitacion"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signos_vitales_turno: {
+        Row: {
+          admision_id: string | null
+          created_at: string | null
+          diuresis_ml: number | null
+          dolor_eva: number | null
+          enfermera_id: string | null
+          fc: number | null
+          fecha_registro: string
+          fr: number | null
+          glicemia: number | null
+          id: string
+          observaciones: string | null
+          paciente_id: string
+          saturacion: number | null
+          ta_diastolica: number | null
+          ta_sistolica: number | null
+          temperatura: number | null
+          turno: string | null
+        }
+        Insert: {
+          admision_id?: string | null
+          created_at?: string | null
+          diuresis_ml?: number | null
+          dolor_eva?: number | null
+          enfermera_id?: string | null
+          fc?: number | null
+          fecha_registro?: string
+          fr?: number | null
+          glicemia?: number | null
+          id?: string
+          observaciones?: string | null
+          paciente_id: string
+          saturacion?: number | null
+          ta_diastolica?: number | null
+          ta_sistolica?: number | null
+          temperatura?: number | null
+          turno?: string | null
+        }
+        Update: {
+          admision_id?: string | null
+          created_at?: string | null
+          diuresis_ml?: number | null
+          dolor_eva?: number | null
+          enfermera_id?: string | null
+          fc?: number | null
+          fecha_registro?: string
+          fr?: number | null
+          glicemia?: number | null
+          id?: string
+          observaciones?: string | null
+          paciente_id?: string
+          saturacion?: number | null
+          ta_diastolica?: number | null
+          ta_sistolica?: number | null
+          temperatura?: number | null
+          turno?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signos_vitales_turno_admision_id_fkey"
+            columns: ["admision_id"]
+            isOneToOne: false
+            referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "signos_vitales_turno_enfermera_id_fkey"
+            columns: ["enfermera_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "signos_vitales_turno_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
             referencedColumns: ["id"]
           },
         ]
@@ -14580,6 +15441,88 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      valoracion_inicial_enfermeria: {
+        Row: {
+          admision_id: string
+          alergias: string | null
+          antecedentes: string | null
+          created_at: string | null
+          enfermera_id: string | null
+          estado_emocional: string | null
+          estado_nutricional: string | null
+          fecha: string
+          id: string
+          medicacion_habitual: string | null
+          motivo_ingreso: string | null
+          observaciones: string | null
+          paciente_id: string
+          patrones_funcionales: Json | null
+          red_apoyo: string | null
+          riesgo_caidas: number | null
+          riesgo_upp: number | null
+        }
+        Insert: {
+          admision_id: string
+          alergias?: string | null
+          antecedentes?: string | null
+          created_at?: string | null
+          enfermera_id?: string | null
+          estado_emocional?: string | null
+          estado_nutricional?: string | null
+          fecha?: string
+          id?: string
+          medicacion_habitual?: string | null
+          motivo_ingreso?: string | null
+          observaciones?: string | null
+          paciente_id: string
+          patrones_funcionales?: Json | null
+          red_apoyo?: string | null
+          riesgo_caidas?: number | null
+          riesgo_upp?: number | null
+        }
+        Update: {
+          admision_id?: string
+          alergias?: string | null
+          antecedentes?: string | null
+          created_at?: string | null
+          enfermera_id?: string | null
+          estado_emocional?: string | null
+          estado_nutricional?: string | null
+          fecha?: string
+          id?: string
+          medicacion_habitual?: string | null
+          motivo_ingreso?: string | null
+          observaciones?: string | null
+          paciente_id?: string
+          patrones_funcionales?: Json | null
+          red_apoyo?: string | null
+          riesgo_caidas?: number | null
+          riesgo_upp?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "valoracion_inicial_enfermeria_admision_id_fkey"
+            columns: ["admision_id"]
+            isOneToOne: false
+            referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "valoracion_inicial_enfermeria_enfermera_id_fkey"
+            columns: ["enfermera_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "valoracion_inicial_enfermeria_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
             referencedColumns: ["id"]
           },
         ]
