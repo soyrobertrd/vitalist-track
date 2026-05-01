@@ -5573,6 +5573,77 @@ export type Database = {
           },
         ]
       }
+      inventario_vertical: {
+        Row: {
+          activo: boolean | null
+          categoria: string | null
+          created_at: string | null
+          fecha_vencimiento: string | null
+          id: string
+          lote: string | null
+          nombre: string
+          precio_costo: number | null
+          precio_venta: number | null
+          proveedor: string | null
+          sku: string | null
+          stock_actual: number | null
+          stock_minimo: number | null
+          ubicacion: string | null
+          unidad: string | null
+          updated_at: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          categoria?: string | null
+          created_at?: string | null
+          fecha_vencimiento?: string | null
+          id?: string
+          lote?: string | null
+          nombre: string
+          precio_costo?: number | null
+          precio_venta?: number | null
+          proveedor?: string | null
+          sku?: string | null
+          stock_actual?: number | null
+          stock_minimo?: number | null
+          ubicacion?: string | null
+          unidad?: string | null
+          updated_at?: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          categoria?: string | null
+          created_at?: string | null
+          fecha_vencimiento?: string | null
+          id?: string
+          lote?: string | null
+          nombre?: string
+          precio_costo?: number | null
+          precio_venta?: number | null
+          proveedor?: string | null
+          sku?: string | null
+          stock_actual?: number | null
+          stock_minimo?: number | null
+          ubicacion?: string | null
+          unidad?: string | null
+          updated_at?: string | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventario_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       items_despacho: {
         Row: {
           cantidad_despachada: number
@@ -6484,6 +6555,57 @@ export type Database = {
         }
         Relationships: []
       }
+      movimientos_inventario_vertical: {
+        Row: {
+          cantidad: number
+          created_at: string | null
+          id: string
+          item_id: string
+          motivo: string | null
+          tipo: string
+          usuario_id: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          cantidad: number
+          created_at?: string | null
+          id?: string
+          item_id: string
+          motivo?: string | null
+          tipo: string
+          usuario_id?: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          cantidad?: number
+          created_at?: string | null
+          id?: string
+          item_id?: string
+          motivo?: string | null
+          tipo?: string
+          usuario_id?: string | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimientos_inventario_vertical_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "inventario_vertical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimientos_inventario_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       movimientos_stock_farmacia: {
         Row: {
           cantidad: number
@@ -6708,6 +6830,50 @@ export type Database = {
           },
           {
             foreignKeyName: "odontogramas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_vertical: {
+        Row: {
+          completado: boolean | null
+          created_at: string | null
+          datos: Json | null
+          id: string
+          paso_actual: number | null
+          plantilla_seleccionada: string | null
+          updated_at: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          completado?: boolean | null
+          created_at?: string | null
+          datos?: Json | null
+          id?: string
+          paso_actual?: number | null
+          plantilla_seleccionada?: string | null
+          updated_at?: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          completado?: boolean | null
+          created_at?: string | null
+          datos?: Json | null
+          id?: string
+          paso_actual?: number | null
+          plantilla_seleccionada?: string | null
+          updated_at?: string | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_vertical_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -8572,6 +8738,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      plantillas_servicio_vertical: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          descripcion: string | null
+          duracion_minutos: number | null
+          id: string
+          nombre_servicio: string
+          precio_sugerido: number | null
+          subnicho: string
+          vertical_tipo: string
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          duracion_minutos?: number | null
+          id?: string
+          nombre_servicio: string
+          precio_sugerido?: number | null
+          subnicho: string
+          vertical_tipo: string
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          duracion_minutos?: number | null
+          id?: string
+          nombre_servicio?: string
+          precio_sugerido?: number | null
+          subnicho?: string
+          vertical_tipo?: string
+        }
+        Relationships: []
       }
       plantillas_whatsapp: {
         Row: {
@@ -10523,6 +10725,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "reportes_fiscales_vertical_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reportes_kpi_vertical: {
+        Row: {
+          created_at: string | null
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          id: string
+          metadata: Json | null
+          periodo: string
+          tipo_kpi: string
+          valor: number | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          metadata?: Json | null
+          periodo: string
+          tipo_kpi: string
+          valor?: number | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          metadata?: Json | null
+          periodo?: string
+          tipo_kpi?: string
+          valor?: number | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reportes_kpi_vertical_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
