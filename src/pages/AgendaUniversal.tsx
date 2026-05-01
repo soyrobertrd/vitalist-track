@@ -59,8 +59,8 @@ function CitasTab() {
   async function loadCombos() {
     const [a, p, pr] = await Promise.all([
       (supabase.from("areas_servicio" as any) as any).select("id,nombre,tipo,duracion_default_min").eq("workspace_id", currentWorkspace!.id).eq("activo",true),
-      supabase.from("pacientes").select("id,nombre,apellido").eq("workspace_id", currentWorkspace!.id).eq("activo",true).limit(500),
-      supabase.from("personal_salud").select("id,nombre,apellido").eq("workspace_id", currentWorkspace!.id),
+      (supabase.from("pacientes") as any).select("id,nombre,apellido").eq("workspace_id", currentWorkspace!.id).eq("activo",true).limit(500),
+      (supabase.from("personal_salud") as any).select("id,nombre,apellido").eq("workspace_id", currentWorkspace!.id),
     ]);
     setAreas(a.data ?? []); setPacientes(p.data ?? []); setProfesionales(pr.data ?? []);
   }
