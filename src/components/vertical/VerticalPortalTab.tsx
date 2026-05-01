@@ -57,7 +57,7 @@ export default function VerticalPortalTab({ verticalTipo }: Props) {
         <div className="flex items-end gap-3">
           <div className="flex-1">
             <Label>Paciente</Label>
-            <PacienteCombobox value={pacienteId} onChange={setPacienteId} />
+            <PacienteCombobox value={pacienteId} onValueChange={setPacienteId} />
           </div>
           <Button onClick={generar} size="sm"><Link2 className="h-4 w-4 mr-1" /> Generar enlace</Button>
         </div>
