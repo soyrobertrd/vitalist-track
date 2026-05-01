@@ -242,7 +242,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   // Auto-expand the correct parent menu based on current route
   const getActiveParentMenu = () => {
-    for (const item of menuItems) {
+    for (const item of visibleMenuItems) {
       if ('subItems' in item && item.subItems) {
         if (item.subItems.some(sub => sub.path === location.pathname)) {
           return item.path;
@@ -320,7 +320,7 @@ const Layout = ({ children }: LayoutProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
-        {menuItems.filter(item => !item.adminOnly || (item.adminOnly && isAdmin)).map((item) => (
+        {visibleMenuItems.filter(item => !item.adminOnly || (item.adminOnly && isAdmin)).map((item) => (
           <div key={item.path}>
             {'subItems' in item && item.subItems ? (
               <Collapsible open={openSubmenu === item.path} onOpenChange={() => toggleSubmenu(item.path)}>
