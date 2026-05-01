@@ -134,9 +134,10 @@ const Layout = ({ children }: LayoutProps) => {
       subItems: [
         { path: "/personal", label: "Personal de salud" },
         { path: "/rrhh", label: "Recursos Humanos" },
+        { path: "/organizaciones", label: "Organizaciones", icon: Building2 },
+        { path: "/comisiones-empleados", label: "Comisiones empleados", icon: DollarSign },
       ]
     },
-    { path: "/organizaciones", icon: Building2, label: "Organizaciones", adminOnly: true },
     { path: "/encuestas", icon: MessageSquare, label: "Encuestas" },
     { path: "/automatizaciones", icon: Cog, label: "Automatizaciones" },
     {
@@ -149,7 +150,16 @@ const Layout = ({ children }: LayoutProps) => {
       ]
     },
     { path: "/inventario", icon: Boxes, label: "Inventario" },
-    { path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true },
+    {
+      path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true,
+      subItems: [
+        { path: "/crm", label: "CRM principal" },
+        { path: "/segmentacion", label: "Segmentación", icon: Target },
+        { path: "/perfil-valor", label: "Perfil de valor (LTV)", icon: BarChart3 },
+        { path: "/referidos", label: "Programa de referidos", icon: Users },
+        { path: "/beneficios-usuarios", label: "Beneficios / Loyalty", icon: Heart },
+      ]
+    },
     { path: "/turnos", icon: Monitor, label: "Turnos y Colas" },
 
     // ===== ODONTOLOGÍA =====
