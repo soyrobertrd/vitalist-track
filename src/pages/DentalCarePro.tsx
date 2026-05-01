@@ -27,6 +27,10 @@ import VerticalMarketingTab from "@/components/vertical/VerticalMarketingTab";
 import VerticalBITab from "@/components/vertical/VerticalBITab";
 import VerticalPortalTab from "@/components/vertical/VerticalPortalTab";
 import VerticalPagosTab from "@/components/vertical/VerticalPagosTab";
+import VerticalTelemedicinaTab from "@/components/vertical/VerticalTelemedicinaTab";
+import VerticalRecetasTab from "@/components/vertical/VerticalRecetasTab";
+import VerticalFacturacionElectronicaTab from "@/components/vertical/VerticalFacturacionElectronicaTab";
+import VerticalIntegracionesTab from "@/components/vertical/VerticalIntegracionesTab";
 
 const estadoPlanColor: Record<string, string> = {
   borrador: "bg-muted text-muted-foreground",
@@ -231,6 +235,10 @@ export default function DentalCarePro() {
           <TabsTrigger value="pagos_online">Pagos Online</TabsTrigger>
           <TabsTrigger value="portal">Portal</TabsTrigger>
           <TabsTrigger value="bi">BI</TabsTrigger>
+          <TabsTrigger value="telemedicina">Telemedicina</TabsTrigger>
+          <TabsTrigger value="recetas">Recetas</TabsTrigger>
+          <TabsTrigger value="ecf">e-CF / DGII</TabsTrigger>
+          <TabsTrigger value="integraciones">Integraciones</TabsTrigger>
         </TabsList>
 
         <TabsContent value="planes" className="space-y-3">
@@ -425,6 +433,10 @@ export default function DentalCarePro() {
         <TabsContent value="pagos_online" className="mt-4"><VerticalPagosTab verticalTipo="dental" /></TabsContent>
         <TabsContent value="portal" className="mt-4"><VerticalPortalTab verticalTipo="dental" /></TabsContent>
         <TabsContent value="bi" className="mt-4"><VerticalBITab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="telemedicina" className="mt-4"><VerticalTelemedicinaTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="recetas" className="mt-4"><VerticalRecetasTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="ecf" className="mt-4"><VerticalFacturacionElectronicaTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="integraciones" className="mt-4"><VerticalIntegracionesTab verticalTipo="dental" /></TabsContent>
       </Tabs>
     </div>
   );
