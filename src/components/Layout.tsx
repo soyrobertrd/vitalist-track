@@ -94,13 +94,12 @@ const Layout = ({ children }: LayoutProps) => {
   // Enable automatic notifications for suspect patients
   useNotificacionesSospechosos();
 
-  // Menu items configuration
-  const menuItems = [
+  // Items COMUNES (sin verticales = visibles en todas)
+  // Items específicos: tag con `verticales: VerticalTipo[]`
+  const menuItems: any[] = [
     { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     {
-      path: "/agenda",
-      icon: CalendarDays,
-      label: "Agenda",
+      path: "/agenda", icon: CalendarDays, label: "Agenda",
       subItems: [
         { path: "/calendario", label: "Calendario", icon: CalendarDays },
         { path: "/llamadas", label: "Llamadas", icon: Phone },
@@ -110,9 +109,7 @@ const Layout = ({ children }: LayoutProps) => {
       ]
     },
     {
-      path: "/pacientes",
-      icon: Users,
-      label: "Pacientes",
+      path: "/pacientes", icon: Users, label: "Pacientes",
       subItems: [
         { path: "/pacientes", label: "Lista de Pacientes" },
         { path: "/sospechosos", label: "Sospechosos" },
@@ -120,10 +117,7 @@ const Layout = ({ children }: LayoutProps) => {
       ]
     },
     {
-      path: "/financiero",
-      icon: DollarSign,
-      label: "Financiero",
-      adminOnly: true,
+      path: "/financiero", icon: DollarSign, label: "Financiero", adminOnly: true,
       subItems: [
         { path: "/finanzas", label: "Finanzas & ARS" },
         { path: "/contabilidad", label: "Contabilidad" },
@@ -132,10 +126,7 @@ const Layout = ({ children }: LayoutProps) => {
       ]
     },
     {
-      path: "/equipo",
-      icon: UserCog,
-      label: "Equipo & RRHH",
-      adminOnly: true,
+      path: "/equipo", icon: UserCog, label: "Equipo & RRHH", adminOnly: true,
       subItems: [
         { path: "/personal", label: "Personal de salud" },
         { path: "/rrhh", label: "Recursos Humanos" },
@@ -147,21 +138,25 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/inventario", icon: Boxes, label: "Inventario" },
     { path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true },
     { path: "/turnos", icon: Monitor, label: "Turnos y Colas" },
+
+    // ===== ODONTOLOGÍA =====
     {
-      path: "/odontologia",
-      icon: CircleDot,
-      label: "Odontología",
+      path: "/odontologia", icon: CircleDot, label: "Odontología",
+      verticales: ["dental"] as VerticalTipo[],
       subItems: [
+        { path: "/dental-care", label: "DentalCare Pro" },
         { path: "/odontograma", label: "Odontograma" },
       ]
     },
+
+    // ===== HOSPITAL / CLÍNICA =====
     {
-      path: "/hospital",
-      icon: Activity,
-      label: "Hospital",
+      path: "/hospital", icon: Activity, label: "Hospital",
+      verticales: ["clinica"] as VerticalTipo[],
       subItems: [
         { path: "/triaje", label: "Triaje" },
         { path: "/hospitalizacion", label: "Hospitalización" },
+        { path: "/alta-hospitalaria", label: "Alta Hospitalaria" },
         { path: "/rondas-medicas", label: "Rondas / Visitas médicas" },
         { path: "/enfermeria", label: "Enfermería" },
         { path: "/uci", label: "UCI: infusiones / kardex" },
@@ -181,7 +176,6 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/visor-dicom", label: "Visor DICOM" },
         { path: "/interoperabilidad", label: "Interoperabilidad HL7/FHIR" },
         { path: "/pwa-offline", label: "PWA Offline / Dispositivos" },
-        { path: "/telemedicina", label: "Centro de Telemedicina" },
         { path: "/calidad", label: "Gestión de Calidad" },
         { path: "/centro-comando", label: "Centro de Comando" },
         { path: "/workflows-clinicos", label: "Workflows Clínicos" },
@@ -200,44 +194,34 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/trabajo-social", label: "Trabajo Social", icon: Heart },
       ]
     },
+
+    // Telemedicina = común a todos (no se duplica)
+    { path: "/telemedicina", icon: Activity, label: "Telemedicina" },
+
+    // ===== RECOVERY =====
     {
-      path: "/recovery-care",
-      icon: BedDouble,
-      label: "Recovery Care",
-      subItems: [
-        { path: "/recovery-care", label: "Pacientes Recovery" },
-      ]
+      path: "/recovery-care", icon: BedDouble, label: "Recovery Care",
+      verticales: ["recovery"] as VerticalTipo[],
+      subItems: [{ path: "/recovery-care", label: "Pacientes Recovery" }]
     },
+
+    // ===== ESTÉTICA =====
     {
-      path: "/aesthetic-pro",
-      icon: Sparkles,
-      label: "Aesthetic Pro",
-      subItems: [
-        { path: "/aesthetic-pro", label: "CRM & Evaluaciones" },
-      ]
+      path: "/aesthetic-pro", icon: Sparkles, label: "Aesthetic Pro",
+      verticales: ["aesthetic"] as VerticalTipo[],
+      subItems: [{ path: "/aesthetic-pro", label: "CRM & Evaluaciones" }]
     },
+
+    // ===== VISIÓN =====
     {
-      path: "/dental-care",
-      icon: SmilePlus,
-      label: "DentalCare Pro",
-      subItems: [
-        { path: "/dental-care", label: "Planes & Ortodoncia" },
-      ]
+      path: "/vision-care", icon: Eye, label: "VisionCare Pro",
+      verticales: ["vision"] as VerticalTipo[],
+      subItems: [{ path: "/vision-care", label: "Recetas & Óptica" }]
     },
-    {
-      path: "/vision-care",
-      icon: Eye,
-      label: "VisionCare Pro",
-      subItems: [
-        { path: "/vision-care", label: "Recetas & Óptica" },
-      ]
-    },
+
     { path: "/afiliaciones", icon: Building2, label: "Mis afiliaciones" },
     {
-      path: "/config-grupo",
-      icon: Settings,
-      label: "Configuración",
-      adminOnly: true,
+      path: "/config-grupo", icon: Settings, label: "Configuración", adminOnly: true,
       subItems: [
         { path: "/configuracion-admin", label: "Sistema", icon: Cog },
         { path: "/plantillas", label: "Plantillas (WhatsApp/Email)", icon: MessageSquare },
@@ -248,6 +232,13 @@ const Layout = ({ children }: LayoutProps) => {
     },
     { path: "/soporte", icon: HelpCircle, label: "Soporte" },
   ];
+
+  // Filtrado por vertical activa: si es "todas" → todo; si es específica → comunes + de esa vertical
+  const visibleMenuItems = menuItems.filter((item) => {
+    if (!item.verticales) return true; // común
+    if (verticalActiva === "todas") return true;
+    return item.verticales.includes(verticalActiva);
+  });
 
   // Auto-expand the correct parent menu based on current route
   const getActiveParentMenu = () => {
