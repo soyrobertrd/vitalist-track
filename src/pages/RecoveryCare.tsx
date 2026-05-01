@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Heart, BedDouble, Activity, Plane, Users, CalendarDays, DollarSign, Calculator, AlertTriangle, Concierge, Plus, ShieldAlert } from "lucide-react";
+import { Heart, BedDouble, Activity, Plane, Users, CalendarDays, DollarSign, Calculator, Plus, ShieldAlert } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { formatCurrency, resolveCurrency } from "@/lib/currency";
