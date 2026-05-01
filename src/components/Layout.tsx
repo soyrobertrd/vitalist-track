@@ -389,6 +389,9 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="p-2 border-t border-sidebar-border space-y-2">
         {/* Workspace Switcher */}
         <WorkspaceSwitcher collapsed={sidebarCollapsed} />
+        <div className={sidebarCollapsed ? "flex justify-center" : ""}>
+          <VerticalSwitcher collapsed={sidebarCollapsed} />
+        </div>
 
         {/* User Profile Dropdown */}
         {profile && (
