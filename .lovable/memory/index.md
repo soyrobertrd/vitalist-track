@@ -80,4 +80,4 @@
 - [ARS Avanzado Fase C](mem://features/ars-avanzado-fase-c) — Aseguradoras, planes, tarifarios, autorizaciones y reclamaciones ARS
 - [Portal Paciente + Dashboard BI Fase D](mem://features/portal-paciente-dashboard-bi-fase-d) — Public patient portal with tokens + BI analytics dashboard
 - [Vertical Independence](mem://features/vertical-independence-full-clinic) — VisionCare, DentalCare, AestheticPro, RecoveryCare as standalone products with full clinic ops
-- [Fase T - Documentos, Workflows, i18n/A11y](mem://features/fase-t-documentos-workflows-i18n-accesibilidad) — Expedientes digitales con firma/OCR, motor workflows if/then, multi-idioma y WCAG 2.1 AA
+- [Fase V - Camas, Regulatorio, CRM, API Gateway](mem://features/fase-v-camas-regulatorio-crm-apigateway) — Control de camas/ocupación, reportes regulatorios, fidelización/NPS, API keys + webhooks

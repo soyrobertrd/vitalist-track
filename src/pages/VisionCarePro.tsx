@@ -43,6 +43,10 @@ import VerticalMarketplaceTab from "@/components/vertical/VerticalMarketplaceTab
 import VerticalTelemedicinaAvanzadaTab from "@/components/vertical/VerticalTelemedicinaAvanzadaTab";
 import VerticalIAPredictivaTab from "@/components/vertical/VerticalIAPredictivaTab";
 import VerticalIoTTab from "@/components/vertical/VerticalIoTTab";
+import VerticalCamasTab from "@/components/vertical/VerticalCamasTab";
+import VerticalReportesRegulatoriosTab from "@/components/vertical/VerticalReportesRegulatoriosTab";
+import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFidelizacionTab";
+import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
 
 const estadoOrdenColor: Record<string, string> = {
   solicitada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -158,6 +162,10 @@ export default function VisionCarePro() {
           <TabsTrigger value="telemed_avz">Telemedicina Avz</TabsTrigger>
           <TabsTrigger value="ia_predictiva">IA Predictiva</TabsTrigger>
           <TabsTrigger value="iot">IoT</TabsTrigger>
+          <TabsTrigger value="camas">Camas</TabsTrigger>
+          <TabsTrigger value="regulatorio">Regulatorio</TabsTrigger>
+          <TabsTrigger value="crm_fideliz">CRM / Fidelización</TabsTrigger>
+          <TabsTrigger value="api_gateway">API Gateway</TabsTrigger>
         </TabsList>
 
         <TabsContent value="recetas" className="space-y-3">
@@ -310,6 +318,10 @@ export default function VisionCarePro() {
         <TabsContent value="telemed_avz" className="mt-4"><VerticalTelemedicinaAvanzadaTab verticalTipo="vision" /></TabsContent>
         <TabsContent value="ia_predictiva" className="mt-4"><VerticalIAPredictivaTab verticalTipo="vision" /></TabsContent>
         <TabsContent value="iot" className="mt-4"><VerticalIoTTab verticalTipo="vision" /></TabsContent>
+        <TabsContent value="camas" className="mt-4"><VerticalCamasTab verticalTipo="vision" /></TabsContent>
+        <TabsContent value="regulatorio" className="mt-4"><VerticalReportesRegulatoriosTab verticalTipo="vision" /></TabsContent>
+        <TabsContent value="crm_fideliz" className="mt-4"><VerticalCRMFidelizacionTab verticalTipo="vision" /></TabsContent>
+        <TabsContent value="api_gateway" className="mt-4"><VerticalAPIGatewayTab verticalTipo="vision" /></TabsContent>
       </Tabs>
     </div>
   );

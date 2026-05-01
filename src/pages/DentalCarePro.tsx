@@ -46,6 +46,10 @@ import VerticalMarketplaceTab from "@/components/vertical/VerticalMarketplaceTab
 import VerticalTelemedicinaAvanzadaTab from "@/components/vertical/VerticalTelemedicinaAvanzadaTab";
 import VerticalIAPredictivaTab from "@/components/vertical/VerticalIAPredictivaTab";
 import VerticalIoTTab from "@/components/vertical/VerticalIoTTab";
+import VerticalCamasTab from "@/components/vertical/VerticalCamasTab";
+import VerticalReportesRegulatoriosTab from "@/components/vertical/VerticalReportesRegulatoriosTab";
+import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFidelizacionTab";
+import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
 
 const estadoPlanColor: Record<string, string> = {
   borrador: "bg-muted text-muted-foreground",
@@ -269,6 +273,10 @@ export default function DentalCarePro() {
           <TabsTrigger value="telemed_avz">Telemedicina Avz</TabsTrigger>
           <TabsTrigger value="ia_predictiva">IA Predictiva</TabsTrigger>
           <TabsTrigger value="iot">IoT</TabsTrigger>
+          <TabsTrigger value="camas">Camas</TabsTrigger>
+          <TabsTrigger value="regulatorio">Regulatorio</TabsTrigger>
+          <TabsTrigger value="crm_fideliz">CRM / Fidelización</TabsTrigger>
+          <TabsTrigger value="api_gateway">API Gateway</TabsTrigger>
         </TabsList>
 
         <TabsContent value="planes" className="space-y-3">
@@ -482,6 +490,10 @@ export default function DentalCarePro() {
         <TabsContent value="telemed_avz" className="mt-4"><VerticalTelemedicinaAvanzadaTab verticalTipo="dental" /></TabsContent>
         <TabsContent value="ia_predictiva" className="mt-4"><VerticalIAPredictivaTab verticalTipo="dental" /></TabsContent>
         <TabsContent value="iot" className="mt-4"><VerticalIoTTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="camas" className="mt-4"><VerticalCamasTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="regulatorio" className="mt-4"><VerticalReportesRegulatoriosTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="crm_fideliz" className="mt-4"><VerticalCRMFidelizacionTab verticalTipo="dental" /></TabsContent>
+        <TabsContent value="api_gateway" className="mt-4"><VerticalAPIGatewayTab verticalTipo="dental" /></TabsContent>
       </Tabs>
     </div>
   );
