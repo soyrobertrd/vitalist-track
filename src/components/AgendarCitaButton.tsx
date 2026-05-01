@@ -34,7 +34,6 @@ export function AgendarCitaButton({ size = "default", variant = "default", label
         onOpenChange={setOpen}
         pacientes={pacientes.map((p) => ({ ...p, id: p.id }))}
         personal={personal}
-        pacientePreseleccionadoId={pacienteId}
         onSuccess={() => {
           toast.success("Cita agendada");
           setOpen(false);
