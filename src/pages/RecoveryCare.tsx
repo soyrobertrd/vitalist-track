@@ -27,6 +27,10 @@ import VerticalMarketingTab from "@/components/vertical/VerticalMarketingTab";
 import VerticalBITab from "@/components/vertical/VerticalBITab";
 import VerticalPortalTab from "@/components/vertical/VerticalPortalTab";
 import VerticalPagosTab from "@/components/vertical/VerticalPagosTab";
+import VerticalTelemedicinaTab from "@/components/vertical/VerticalTelemedicinaTab";
+import VerticalRecetasTab from "@/components/vertical/VerticalRecetasTab";
+import VerticalFacturacionElectronicaTab from "@/components/vertical/VerticalFacturacionElectronicaTab";
+import VerticalIntegracionesTab from "@/components/vertical/VerticalIntegracionesTab";
 
 const estadoPacColor: Record<string, string> = {
   reservado: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -129,6 +133,10 @@ export default function RecoveryCare() {
           <TabsTrigger value="pagos_online">Pagos Online</TabsTrigger>
           <TabsTrigger value="portal">Portal</TabsTrigger>
           <TabsTrigger value="bi">BI</TabsTrigger>
+          <TabsTrigger value="telemedicina">Telemedicina</TabsTrigger>
+          <TabsTrigger value="recetas">Recetas</TabsTrigger>
+          <TabsTrigger value="ecf">e-CF / DGII</TabsTrigger>
+          <TabsTrigger value="integraciones">Integraciones</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pacientes" className="space-y-3">
@@ -244,6 +252,10 @@ export default function RecoveryCare() {
         <TabsContent value="pagos_online" className="mt-4"><VerticalPagosTab verticalTipo="recovery" /></TabsContent>
         <TabsContent value="portal" className="mt-4"><VerticalPortalTab verticalTipo="recovery" /></TabsContent>
         <TabsContent value="bi" className="mt-4"><VerticalBITab verticalTipo="recovery" /></TabsContent>
+        <TabsContent value="telemedicina" className="mt-4"><VerticalTelemedicinaTab verticalTipo="recovery" /></TabsContent>
+        <TabsContent value="recetas" className="mt-4"><VerticalRecetasTab verticalTipo="recovery" /></TabsContent>
+        <TabsContent value="ecf" className="mt-4"><VerticalFacturacionElectronicaTab verticalTipo="recovery" /></TabsContent>
+        <TabsContent value="integraciones" className="mt-4"><VerticalIntegracionesTab verticalTipo="recovery" /></TabsContent>
       </Tabs>
     </div>
   );
