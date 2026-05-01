@@ -76,6 +76,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
   const [loading, setLoading] = useState(false);
   const { countryCode } = useLocale();
   const { currentWorkspace } = useWorkspace();
+  const { verticalParaInsert } = useVerticalFilter();
   const pacienteSchema = buildPacienteSchema(countryCode);
   const { loading: loadingCedula, data: cedulaData, lookup: lookupCedula } = useCedulaLookup();
   
