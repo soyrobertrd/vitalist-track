@@ -33,6 +33,10 @@ import VerticalInventarioTab from "@/components/vertical/VerticalInventarioTab";
 import VerticalReportesKPITab from "@/components/vertical/VerticalReportesKPITab";
 import VerticalOnboardingTab from "@/components/vertical/VerticalOnboardingTab";
 import VerticalPWATab from "@/components/vertical/VerticalPWATab";
+import VerticalRolesPermisosTab from "@/components/vertical/VerticalRolesPermisosTab";
+import VerticalAgendaIATab from "@/components/vertical/VerticalAgendaIATab";
+import VerticalComunicacionesTab from "@/components/vertical/VerticalComunicacionesTab";
+import VerticalFinanzasAvanzadasTab from "@/components/vertical/VerticalFinanzasAvanzadasTab";
 
 const estadoLeadColor: Record<string, string> = {
   nuevo: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -194,6 +198,10 @@ export default function AestheticPro() {
           <TabsTrigger value="kpis">KPIs</TabsTrigger>
           <TabsTrigger value="onboarding">Setup</TabsTrigger>
           <TabsTrigger value="pwa">PWA</TabsTrigger>
+          <TabsTrigger value="roles_permisos">Roles</TabsTrigger>
+          <TabsTrigger value="agenda_ia">Agenda IA</TabsTrigger>
+          <TabsTrigger value="comunicaciones">Comunicaciones</TabsTrigger>
+          <TabsTrigger value="finanzas_avz">Finanzas</TabsTrigger>
         </TabsList>
 
         {/* LEADS CRM */}
@@ -431,6 +439,10 @@ export default function AestheticPro() {
         <TabsContent value="kpis" className="mt-4"><VerticalReportesKPITab verticalTipo="estetica" /></TabsContent>
         <TabsContent value="onboarding" className="mt-4"><VerticalOnboardingTab verticalTipo="estetica" /></TabsContent>
         <TabsContent value="pwa" className="mt-4"><VerticalPWATab /></TabsContent>
+        <TabsContent value="roles_permisos" className="mt-4"><VerticalRolesPermisosTab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="agenda_ia" className="mt-4"><VerticalAgendaIATab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="comunicaciones" className="mt-4"><VerticalComunicacionesTab verticalTipo="estetica" /></TabsContent>
+        <TabsContent value="finanzas_avz" className="mt-4"><VerticalFinanzasAvanzadasTab verticalTipo="estetica" /></TabsContent>
       </Tabs>
     </div>
   );
