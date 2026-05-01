@@ -312,6 +312,18 @@ const App = () => {
                   element={session ? <Layout><BancoSangreAvanzado /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
+                  path="/censo-camas"
+                  element={session ? <Layout><CensoCamas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/oncologia"
+                  element={session ? <Layout><Oncologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/maternidad-neonatologia"
+                  element={session ? <Layout><MaternidadNeonatologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
                   path="/checklist-rls"
                   element={session ? <Layout><ChecklistRLS /></Layout> : <Navigate to="/auth" />}
                 />
