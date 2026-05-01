@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
+import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 
 export interface Paciente {
   id: string;
