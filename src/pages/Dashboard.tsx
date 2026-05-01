@@ -37,6 +37,7 @@ const Dashboard = () => {
   const { timezone } = useLocale();
   const { currentWorkspace } = useWorkspace();
   const { activeSucursalId } = useActiveSucursal();
+  const { verticalActiva } = useVerticalFilter();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [stats, setStats] = useState({
