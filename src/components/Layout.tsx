@@ -73,6 +73,8 @@ import { ThemeCustomizer } from "@/components/ThemeCustomizer";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
 import { SucursalSwitcher } from "@/components/SucursalSwitcher";
+import { VerticalSwitcher } from "@/components/VerticalSwitcher";
+import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
 
 interface LayoutProps {
   children: ReactNode;
