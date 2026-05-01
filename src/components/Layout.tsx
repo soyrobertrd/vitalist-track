@@ -224,6 +224,7 @@ const Layout = ({ children }: LayoutProps) => {
       path: "/config-grupo", icon: Settings, label: "Configuración", adminOnly: true,
       subItems: [
         { path: "/configuracion-admin", label: "Sistema", icon: Cog },
+        { path: "/verticales", label: "Verticales del centro", icon: Building2 },
         { path: "/plantillas", label: "Plantillas (WhatsApp/Email)", icon: MessageSquare },
         { path: "/api-citas", label: "API Pública Citas", icon: Cog },
         { path: "/auditoria", label: "Auditoría", icon: Shield },
