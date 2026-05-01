@@ -134,7 +134,7 @@ export default function RecoveryCare() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex-wrap h-auto gap-1">
+        <TabsList className="hidden">
           <TabsTrigger value="pacientes">Pacientes</TabsTrigger>
           <TabsTrigger value="habitaciones">Habitaciones</TabsTrigger>
           <TabsTrigger value="reservas">Reservas</TabsTrigger>

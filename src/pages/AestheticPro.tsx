@@ -181,7 +181,7 @@ export default function AestheticPro() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex-wrap h-auto gap-1">
+        <TabsList className="hidden">
           <TabsTrigger value="leads">Leads CRM</TabsTrigger>
           <TabsTrigger value="evaluaciones">Evaluaciones</TabsTrigger>
           <TabsTrigger value="procedimientos">Procedimientos</TabsTrigger>

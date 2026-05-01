@@ -236,7 +236,7 @@ export default function DentalCarePro() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex-wrap h-auto gap-1">
+        <TabsList className="hidden">
           <TabsTrigger value="planes">Tratamientos</TabsTrigger>
           <TabsTrigger value="ortodoncia">Ortodoncia</TabsTrigger>
           <TabsTrigger value="laboratorio">Laboratorio</TabsTrigger>

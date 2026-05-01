@@ -126,7 +126,7 @@ export default function VisionCarePro() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex-wrap h-auto gap-1">
+        <TabsList className="hidden">
           <TabsTrigger value="recetas">Recetas</TabsTrigger>
           <TabsTrigger value="inventario">Inventario</TabsTrigger>
           <TabsTrigger value="ordenes">Órdenes Lab</TabsTrigger>
