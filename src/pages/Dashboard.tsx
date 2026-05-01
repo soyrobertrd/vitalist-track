@@ -242,7 +242,7 @@ const Dashboard = () => {
     };
 
     fetchStats();
-  }, [currentUserId, currentWorkspace?.id, activeSucursalId]);
+  }, [currentUserId, currentWorkspace?.id, activeSucursalId, verticalActiva]);
 
   const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--warning))"];
   const localTime = toZonedTime(currentTime, timezone);
