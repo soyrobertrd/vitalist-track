@@ -80,7 +80,7 @@ export default function RecoveryCare() {
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
-  const [tab, setTab] = useState("pacientes");
+  const [tab, setTab] = useTabParam("pacientes");
 
   const { data: pacientesRec = [] } = useQuery({
     queryKey: ["pacientes_recovery", wsId], enabled: !!wsId,
