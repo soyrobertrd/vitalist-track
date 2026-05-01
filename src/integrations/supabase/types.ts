@@ -3643,6 +3643,66 @@ export type Database = {
           },
         ]
       }
+      dispositivos_iot: {
+        Row: {
+          activo: boolean | null
+          bateria_pct: number | null
+          created_at: string | null
+          estado_conexion: string | null
+          fabricante: string | null
+          id: string
+          modelo: string | null
+          paciente_id: string | null
+          serial_number: string | null
+          tipo: string
+          ultima_lectura: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          bateria_pct?: number | null
+          created_at?: string | null
+          estado_conexion?: string | null
+          fabricante?: string | null
+          id?: string
+          modelo?: string | null
+          paciente_id?: string | null
+          serial_number?: string | null
+          tipo: string
+          ultima_lectura?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          bateria_pct?: number | null
+          created_at?: string | null
+          estado_conexion?: string | null
+          fabricante?: string | null
+          id?: string
+          modelo?: string | null
+          paciente_id?: string | null
+          serial_number?: string | null
+          tipo?: string
+          ultima_lectura?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dispositivos_iot_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dispositivos_iot_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documentos_clinicos: {
         Row: {
           archivo_nombre: string | null
@@ -5754,6 +5814,120 @@ export type Database = {
           },
         ]
       }
+      ia_alertas_tempranas: {
+        Row: {
+          created_at: string | null
+          datos_soporte: Json | null
+          id: string
+          modelo_id: string | null
+          paciente_id: string | null
+          probabilidad: number | null
+          recomendacion: string | null
+          revisada: boolean | null
+          revisada_por: string | null
+          severidad: string | null
+          tipo_alerta: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          datos_soporte?: Json | null
+          id?: string
+          modelo_id?: string | null
+          paciente_id?: string | null
+          probabilidad?: number | null
+          recomendacion?: string | null
+          revisada?: boolean | null
+          revisada_por?: string | null
+          severidad?: string | null
+          tipo_alerta: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          datos_soporte?: Json | null
+          id?: string
+          modelo_id?: string | null
+          paciente_id?: string | null
+          probabilidad?: number | null
+          recomendacion?: string | null
+          revisada?: boolean | null
+          revisada_por?: string | null
+          severidad?: string | null
+          tipo_alerta?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ia_alertas_tempranas_modelo_id_fkey"
+            columns: ["modelo_id"]
+            isOneToOne: false
+            referencedRelation: "ia_modelos_predictivos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ia_alertas_tempranas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ia_alertas_tempranas_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ia_modelos_predictivos: {
+        Row: {
+          activo: boolean | null
+          created_at: string | null
+          descripcion: string | null
+          id: string
+          nombre: string
+          parametros: Json | null
+          precision_score: number | null
+          tipo: string
+          ultima_ejecucion: string | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          parametros?: Json | null
+          precision_score?: number | null
+          tipo: string
+          ultima_ejecucion?: string | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string | null
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          parametros?: Json | null
+          precision_score?: number | null
+          tipo?: string
+          ultima_ejecucion?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ia_modelos_predictivos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integraciones_externas_vertical: {
         Row: {
           activo: boolean | null
@@ -6597,6 +6771,44 @@ export type Database = {
           },
         ]
       }
+      lecturas_iot: {
+        Row: {
+          created_at: string | null
+          dispositivo_id: string
+          id: string
+          metadata: Json | null
+          tipo_medicion: string
+          unidad: string
+          valor: number
+        }
+        Insert: {
+          created_at?: string | null
+          dispositivo_id: string
+          id?: string
+          metadata?: Json | null
+          tipo_medicion: string
+          unidad: string
+          valor: number
+        }
+        Update: {
+          created_at?: string | null
+          dispositivo_id?: string
+          id?: string
+          metadata?: Json | null
+          tipo_medicion?: string
+          unidad?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lecturas_iot_dispositivo_id_fkey"
+            columns: ["dispositivo_id"]
+            isOneToOne: false
+            referencedRelation: "dispositivos_iot"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lineas_asiento: {
         Row: {
           asiento_id: string
@@ -6780,6 +6992,176 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "manifiestos_residuos_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_bookings: {
+        Row: {
+          created_at: string | null
+          estado: string | null
+          fecha_deseada: string
+          hora_deseada: string | null
+          id: string
+          notas: string | null
+          paciente_email: string | null
+          paciente_nombre: string
+          paciente_telefono: string | null
+          servicio_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          estado?: string | null
+          fecha_deseada: string
+          hora_deseada?: string | null
+          id?: string
+          notas?: string | null
+          paciente_email?: string | null
+          paciente_nombre: string
+          paciente_telefono?: string | null
+          servicio_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          estado?: string | null
+          fecha_deseada?: string
+          hora_deseada?: string | null
+          id?: string
+          notas?: string | null
+          paciente_email?: string | null
+          paciente_nombre?: string
+          paciente_telefono?: string | null
+          servicio_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_bookings_servicio_id_fkey"
+            columns: ["servicio_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_servicios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_bookings_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_reviews: {
+        Row: {
+          comentario: string | null
+          created_at: string | null
+          id: string
+          paciente_id: string | null
+          puntuacion: number
+          servicio_id: string
+          verificado: boolean | null
+        }
+        Insert: {
+          comentario?: string | null
+          created_at?: string | null
+          id?: string
+          paciente_id?: string | null
+          puntuacion: number
+          servicio_id: string
+          verificado?: boolean | null
+        }
+        Update: {
+          comentario?: string | null
+          created_at?: string | null
+          id?: string
+          paciente_id?: string | null
+          puntuacion?: number
+          servicio_id?: string
+          verificado?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_reviews_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_reviews_servicio_id_fkey"
+            columns: ["servicio_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_servicios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_servicios: {
+        Row: {
+          activo: boolean | null
+          categoria: string | null
+          created_at: string | null
+          descripcion: string | null
+          duracion_minutos: number | null
+          id: string
+          imagen_url: string | null
+          nombre: string
+          precio: number | null
+          rating_promedio: number | null
+          seo_descripcion: string | null
+          seo_titulo: string | null
+          slug: string | null
+          total_reviews: number | null
+          updated_at: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          categoria?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          duracion_minutos?: number | null
+          id?: string
+          imagen_url?: string | null
+          nombre: string
+          precio?: number | null
+          rating_promedio?: number | null
+          seo_descripcion?: string | null
+          seo_titulo?: string | null
+          slug?: string | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          vertical_tipo: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          categoria?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          duracion_minutos?: number | null
+          id?: string
+          imagen_url?: string | null
+          nombre?: string
+          precio?: number | null
+          rating_promedio?: number | null
+          seo_descripcion?: string | null
+          seo_titulo?: string | null
+          slug?: string | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          vertical_tipo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_servicios_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -12921,6 +13303,150 @@ export type Database = {
           },
         ]
       }
+      telemedicina_recetas_digitales: {
+        Row: {
+          created_at: string | null
+          firma_digital: string | null
+          id: string
+          indicaciones: string | null
+          medicamentos: Json | null
+          paciente_id: string | null
+          profesional_id: string | null
+          qr_verificacion: string | null
+          sesion_id: string | null
+          valida_hasta: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          firma_digital?: string | null
+          id?: string
+          indicaciones?: string | null
+          medicamentos?: Json | null
+          paciente_id?: string | null
+          profesional_id?: string | null
+          qr_verificacion?: string | null
+          sesion_id?: string | null
+          valida_hasta?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string | null
+          firma_digital?: string | null
+          id?: string
+          indicaciones?: string | null
+          medicamentos?: Json | null
+          paciente_id?: string | null
+          profesional_id?: string | null
+          qr_verificacion?: string | null
+          sesion_id?: string | null
+          valida_hasta?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "telemedicina_recetas_digitales_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "telemedicina_recetas_digitales_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "telemedicina_recetas_digitales_sesion_id_fkey"
+            columns: ["sesion_id"]
+            isOneToOne: false
+            referencedRelation: "telemedicina_sesiones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "telemedicina_recetas_digitales_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      telemedicina_sesiones: {
+        Row: {
+          chat_log: Json | null
+          compartir_pantalla: boolean | null
+          created_at: string | null
+          duracion_minutos: number | null
+          estado: string | null
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          grabacion_url: string | null
+          id: string
+          notas_clinicas: string | null
+          paciente_id: string | null
+          profesional_id: string | null
+          receta_generada: boolean | null
+          workspace_id: string
+        }
+        Insert: {
+          chat_log?: Json | null
+          compartir_pantalla?: boolean | null
+          created_at?: string | null
+          duracion_minutos?: number | null
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          grabacion_url?: string | null
+          id?: string
+          notas_clinicas?: string | null
+          paciente_id?: string | null
+          profesional_id?: string | null
+          receta_generada?: boolean | null
+          workspace_id: string
+        }
+        Update: {
+          chat_log?: Json | null
+          compartir_pantalla?: boolean | null
+          created_at?: string | null
+          duracion_minutos?: number | null
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          grabacion_url?: string | null
+          id?: string
+          notas_clinicas?: string | null
+          paciente_id?: string | null
+          profesional_id?: string | null
+          receta_generada?: boolean | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "telemedicina_sesiones_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "telemedicina_sesiones_profesional_id_fkey"
+            columns: ["profesional_id"]
+            isOneToOne: false
+            referencedRelation: "personal_salud"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "telemedicina_sesiones_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tratamientos_dentales: {
         Row: {
           costo_estimado: number
@@ -13302,6 +13828,47 @@ export type Database = {
             columns: ["admision_id"]
             isOneToOne: false
             referencedRelation: "admisiones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      umbrales_alerta_iot: {
+        Row: {
+          accion: string | null
+          activo: boolean | null
+          created_at: string | null
+          dispositivo_id: string
+          id: string
+          tipo_medicion: string
+          valor_maximo: number | null
+          valor_minimo: number | null
+        }
+        Insert: {
+          accion?: string | null
+          activo?: boolean | null
+          created_at?: string | null
+          dispositivo_id: string
+          id?: string
+          tipo_medicion: string
+          valor_maximo?: number | null
+          valor_minimo?: number | null
+        }
+        Update: {
+          accion?: string | null
+          activo?: boolean | null
+          created_at?: string | null
+          dispositivo_id?: string
+          id?: string
+          tipo_medicion?: string
+          valor_maximo?: number | null
+          valor_minimo?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "umbrales_alerta_iot_dispositivo_id_fkey"
+            columns: ["dispositivo_id"]
+            isOneToOne: false
+            referencedRelation: "dispositivos_iot"
             referencedColumns: ["id"]
           },
         ]
