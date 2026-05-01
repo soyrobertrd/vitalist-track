@@ -90,6 +90,9 @@ const RecoveryCare = lazy(() => import("./pages/RecoveryCare"));
 const AestheticPro = lazy(() => import("./pages/AestheticPro"));
 const DentalCarePro = lazy(() => import("./pages/DentalCarePro"));
 const VisionCarePro = lazy(() => import("./pages/VisionCarePro"));
+const QuirofanoAvanzado = lazy(() => import("./pages/QuirofanoAvanzado"));
+const UrgenciasTriage = lazy(() => import("./pages/UrgenciasTriage"));
+const BancoSangreAvanzado = lazy(() => import("./pages/BancoSangreAvanzado"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -292,6 +295,18 @@ const App = () => {
                 <Route
                   path="/agenda-universal"
                   element={session ? <Layout><AgendaUniversal /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/quirofano-avanzado"
+                  element={session ? <Layout><QuirofanoAvanzado /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/urgencias-triage"
+                  element={session ? <Layout><UrgenciasTriage /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/banco-sangre-avanzado"
+                  element={session ? <Layout><BancoSangreAvanzado /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/checklist-rls"
