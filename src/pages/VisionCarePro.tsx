@@ -62,7 +62,8 @@ export default function VisionCarePro() {
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
-  const [tab, setTab] = useTabParam("recetas");
+  const [tab, setTab] = useTabParam("");
+  const isResumen = !tab;
 
   const { data: recetas = [] } = useQuery({
     queryKey: ["recetas_oftalmicas", wsId], enabled: !!wsId,
@@ -115,6 +116,7 @@ export default function VisionCarePro() {
         <p className="text-muted-foreground">Ópticas, centros oftalmológicos, cadenas multi-sucursal — recetas, inventario, combos, garantías</p>
       </div>
 
+      {isResumen && (
       <div className="grid grid-cols-2 md:grid-cols-7 gap-3">
         <Card><CardContent className="pt-3 text-center"><FileText className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{recetas.length}</p><p className="text-[10px] text-muted-foreground">Recetas</p></CardContent></Card>
         <Card><CardContent className="pt-3 text-center"><Glasses className="h-4 w-4 mx-auto mb-1 text-blue-500" /><p className="text-xl font-bold">{monturas}</p><p className="text-[10px] text-muted-foreground">Monturas</p></CardContent></Card>
@@ -124,7 +126,15 @@ export default function VisionCarePro() {
         <Card><CardContent className="pt-3 text-center"><ShieldCheck className="h-4 w-4 mx-auto mb-1 text-cyan-500" /><p className="text-xl font-bold">{garantiasVigentes}</p><p className="text-[10px] text-muted-foreground">Garantías</p></CardContent></Card>
         <Card><CardContent className="pt-3 text-center"><Bell className="h-4 w-4 mx-auto mb-1 text-orange-500" /><p className="text-xl font-bold">{recordPendientes}</p><p className="text-[10px] text-muted-foreground">Recordatorios</p></CardContent></Card>
       </div>
+      )}
 
+      {isResumen && (
+        <Card><CardContent className="py-6 text-sm text-muted-foreground">
+          Selecciona una sección desde el menú lateral (<strong>VisionCare Pro</strong>): Recetas ópticas, Inventario óptico, Órdenes de laboratorio, Combos, Garantías.
+        </CardContent></Card>
+      )}
+
+      {!isResumen && (
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="hidden">
           <TabsTrigger value="recetas">Recetas</TabsTrigger>
@@ -324,6 +334,7 @@ export default function VisionCarePro() {
         <TabsContent value="crm_fideliz" className="mt-4"><VerticalCRMFidelizacionTab verticalTipo="vision" /></TabsContent>
         <TabsContent value="api_gateway" className="mt-4"><VerticalAPIGatewayTab verticalTipo="vision" /></TabsContent>
       </Tabs>
+      )}
     </div>
   );
 }
