@@ -289,6 +289,10 @@ const App = () => {
                   path="/alta-hospitalaria"
                   element={session ? <Layout><AltaHospitalaria /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route path="/workflows-avanzados" element={session ? <Layout><WorkflowsAvanzados /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/tareas" element={session ? <Layout><TareasInternas /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/chat" element={session ? <Layout><ChatInterno /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/firmas" element={session ? <Layout><FirmasDigitales /></Layout> : <Navigate to="/auth" />} />
                 <Route
                   path="/verticales"
                   element={session ? <Layout><VerticalesAdmin /></Layout> : <Navigate to="/auth" />}
