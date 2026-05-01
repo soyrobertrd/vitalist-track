@@ -2009,6 +2009,60 @@ export type Database = {
           },
         ]
       }
+      beneficios_usuarios: {
+        Row: {
+          concepto: string
+          created_at: string
+          estado: string
+          fecha_expiracion: string | null
+          fecha_otorgado: string
+          id: string
+          monto_descuento: number | null
+          nivel: string | null
+          notas: string | null
+          origen: string | null
+          paciente_id: string
+          puntos: number | null
+          tipo: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          concepto: string
+          created_at?: string
+          estado?: string
+          fecha_expiracion?: string | null
+          fecha_otorgado?: string
+          id?: string
+          monto_descuento?: number | null
+          nivel?: string | null
+          notas?: string | null
+          origen?: string | null
+          paciente_id: string
+          puntos?: number | null
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          concepto?: string
+          created_at?: string
+          estado?: string
+          fecha_expiracion?: string | null
+          fecha_otorgado?: string
+          id?: string
+          monto_descuento?: number | null
+          nivel?: string | null
+          notas?: string | null
+          origen?: string | null
+          paciente_id?: string
+          puntos?: number | null
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
       bitacora_accesos: {
         Row: {
           area_id: string | null
@@ -3452,6 +3506,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      comisiones_empleados: {
+        Row: {
+          concepto: string
+          created_at: string
+          empleado_id: string
+          estado: string
+          fecha_generada: string
+          fecha_pago: string | null
+          id: string
+          monto_base: number
+          monto_comision: number
+          notas: string | null
+          origen: string
+          paciente_id: string | null
+          porcentaje: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          concepto: string
+          created_at?: string
+          empleado_id: string
+          estado?: string
+          fecha_generada?: string
+          fecha_pago?: string | null
+          id?: string
+          monto_base?: number
+          monto_comision?: number
+          notas?: string | null
+          origen?: string
+          paciente_id?: string | null
+          porcentaje?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          concepto?: string
+          created_at?: string
+          empleado_id?: string
+          estado?: string
+          fecha_generada?: string
+          fecha_pago?: string | null
+          id?: string
+          monto_base?: number
+          monto_comision?: number
+          notas?: string | null
+          origen?: string
+          paciente_id?: string | null
+          porcentaje?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
       }
       comisiones_profesional: {
         Row: {
@@ -12273,6 +12381,48 @@ export type Database = {
           },
         ]
       }
+      perfil_valor_paciente: {
+        Row: {
+          frecuencia_dias: number | null
+          ltv_anual: number
+          ltv_total: number
+          nivel_engagement: string | null
+          nps_promedio: number | null
+          paciente_id: string
+          riesgo_churn: string | null
+          ultima_visita: string | null
+          updated_at: string
+          visitas_totales: number
+          workspace_id: string | null
+        }
+        Insert: {
+          frecuencia_dias?: number | null
+          ltv_anual?: number
+          ltv_total?: number
+          nivel_engagement?: string | null
+          nps_promedio?: number | null
+          paciente_id: string
+          riesgo_churn?: string | null
+          ultima_visita?: string | null
+          updated_at?: string
+          visitas_totales?: number
+          workspace_id?: string | null
+        }
+        Update: {
+          frecuencia_dias?: number | null
+          ltv_anual?: number
+          ltv_total?: number
+          nivel_engagement?: string | null
+          nps_promedio?: number | null
+          paciente_id?: string
+          riesgo_churn?: string | null
+          ultima_visita?: string | null
+          updated_at?: string
+          visitas_totales?: number
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
       periodos_nomina: {
         Row: {
           created_at: string
@@ -15381,6 +15531,57 @@ export type Database = {
           },
         ]
       }
+      referidos: {
+        Row: {
+          contacto_prospecto: string | null
+          created_at: string
+          estado: string
+          fecha_conversion: string | null
+          fecha_referido: string
+          id: string
+          nombre_prospecto: string | null
+          notas: string | null
+          paciente_referido_id: string | null
+          recompensa_otorgada: boolean
+          referidor_id: string
+          referidor_tipo: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          contacto_prospecto?: string | null
+          created_at?: string
+          estado?: string
+          fecha_conversion?: string | null
+          fecha_referido?: string
+          id?: string
+          nombre_prospecto?: string | null
+          notas?: string | null
+          paciente_referido_id?: string | null
+          recompensa_otorgada?: boolean
+          referidor_id: string
+          referidor_tipo: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          contacto_prospecto?: string | null
+          created_at?: string
+          estado?: string
+          fecha_conversion?: string | null
+          fecha_referido?: string
+          id?: string
+          nombre_prospecto?: string | null
+          notas?: string | null
+          paciente_referido_id?: string | null
+          recompensa_otorgada?: boolean
+          referidor_id?: string
+          referidor_tipo?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
       referidos_paciente: {
         Row: {
           created_at: string
@@ -16799,6 +17000,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      segmentos_pacientes: {
+        Row: {
+          activo: boolean
+          created_at: string
+          criterios: Json
+          descripcion: string | null
+          id: string
+          nombre: string
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          criterios?: Json
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          criterios?: Json
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: []
       }
       seguimiento_diario_recovery: {
         Row: {
