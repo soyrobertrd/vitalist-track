@@ -21,6 +21,16 @@ import NotFound from "./pages/NotFound";
 import ConfirmarCita from "./pages/ConfirmarCita";
 import TicketPublico from "./pages/TicketPublico";
 import Landing from "./pages/Landing";
+const LandingClinica = lazy(() => import("./pages/landing/LandingClinica"));
+const LandingDental = lazy(() => import("./pages/landing/LandingDental"));
+const LandingAesthetic = lazy(() => import("./pages/landing/LandingAesthetic"));
+const LandingRecovery = lazy(() => import("./pages/landing/LandingRecovery"));
+const LandingVision = lazy(() => import("./pages/landing/LandingVision"));
+const ComisionesEmpleados = lazy(() => import("./pages/ComisionesEmpleados"));
+const BeneficiosUsuarios = lazy(() => import("./pages/BeneficiosUsuarios"));
+const ProgramaReferidos = lazy(() => import("./pages/ProgramaReferidos"));
+const SegmentacionPacientes = lazy(() => import("./pages/SegmentacionPacientes"));
+const PerfilValorPacientes = lazy(() => import("./pages/PerfilValorPacientes"));
 
 // Lazy loaded pages for better performance & smaller initial bundle
 const Recepcion = lazy(() => import("./pages/Recepcion"));
@@ -510,6 +520,21 @@ const App = () => {
                   path="/vision-care"
                   element={session ? <Layout><VisionCarePro /></Layout> : <Navigate to="/auth" />}
                 />
+
+                {/* Landings públicos por vertical */}
+                <Route path="/clinica" element={<LandingClinica />} />
+                <Route path="/odontologia" element={<LandingDental />} />
+                <Route path="/aesthetic" element={<LandingAesthetic />} />
+                <Route path="/recovery" element={<LandingRecovery />} />
+                <Route path="/vision" element={<LandingVision />} />
+
+                {/* Afiliados dual + Paciente 360 */}
+                <Route path="/comisiones-empleados" element={session ? <Layout><ComisionesEmpleados /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/beneficios-usuarios" element={session ? <Layout><BeneficiosUsuarios /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/referidos" element={session ? <Layout><ProgramaReferidos /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/segmentacion" element={session ? <Layout><SegmentacionPacientes /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/perfil-valor" element={session ? <Layout><PerfilValorPacientes /></Layout> : <Navigate to="/auth" />} />
+
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
