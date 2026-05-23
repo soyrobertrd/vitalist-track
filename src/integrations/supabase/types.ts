@@ -8184,6 +8184,42 @@ export type Database = {
           },
         ]
       }
+      exportaciones_historia_clinica: {
+        Row: {
+          created_at: string
+          destinatario: string | null
+          exportado_por: string
+          formato: string
+          hash_contenido: string | null
+          id: string
+          motivo: string
+          paciente_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          destinatario?: string | null
+          exportado_por: string
+          formato?: string
+          hash_contenido?: string | null
+          id?: string
+          motivo: string
+          paciente_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          destinatario?: string | null
+          exportado_por?: string
+          formato?: string
+          hash_contenido?: string | null
+          id?: string
+          motivo?: string
+          paciente_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       facturas: {
         Row: {
           aseguradora: string | null
@@ -8358,6 +8394,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      facturas_psicologia: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          estado: string
+          fecha_emision: string
+          fecha_pago: string | null
+          id: string
+          itbis: number
+          metodo_pago: string | null
+          nota: string | null
+          numero: string
+          paciente_id: string
+          paquete_id: string | null
+          sesion_id: string | null
+          subtotal: number
+          total: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          estado?: string
+          fecha_emision?: string
+          fecha_pago?: string | null
+          id?: string
+          itbis?: number
+          metodo_pago?: string | null
+          nota?: string | null
+          numero: string
+          paciente_id: string
+          paquete_id?: string | null
+          sesion_id?: string | null
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          estado?: string
+          fecha_emision?: string
+          fecha_pago?: string | null
+          id?: string
+          itbis?: number
+          metodo_pago?: string | null
+          nota?: string | null
+          numero?: string
+          paciente_id?: string
+          paquete_id?: string | null
+          sesion_id?: string | null
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
       }
       fhir_export_jobs: {
         Row: {
@@ -8772,6 +8868,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      firmas_prescripciones_psiq: {
+        Row: {
+          firma_base64: string
+          firmado_at: string
+          hash_contenido: string
+          id: string
+          ip: string | null
+          medico_id: string
+          prescripcion_id: string
+          user_agent: string | null
+          workspace_id: string
+        }
+        Insert: {
+          firma_base64: string
+          firmado_at?: string
+          hash_contenido: string
+          id?: string
+          ip?: string | null
+          medico_id: string
+          prescripcion_id: string
+          user_agent?: string | null
+          workspace_id: string
+        }
+        Update: {
+          firma_base64?: string
+          firmado_at?: string
+          hash_contenido?: string
+          id?: string
+          ip?: string | null
+          medico_id?: string
+          prescripcion_id?: string
+          user_agent?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
       }
       forecast_ingresos: {
         Row: {
@@ -15072,6 +15204,8 @@ export type Database = {
           estado: string | null
           fecha_fin: string | null
           fecha_inicio: string | null
+          firmada: boolean
+          firmada_at: string | null
           frecuencia: string | null
           id: string
           medicamento: string
@@ -15093,6 +15227,8 @@ export type Database = {
           estado?: string | null
           fecha_fin?: string | null
           fecha_inicio?: string | null
+          firmada?: boolean
+          firmada_at?: string | null
           frecuencia?: string | null
           id?: string
           medicamento: string
@@ -15114,6 +15250,8 @@ export type Database = {
           estado?: string | null
           fecha_fin?: string | null
           fecha_inicio?: string | null
+          firmada?: boolean
+          firmada_at?: string | null
           frecuencia?: string | null
           id?: string
           medicamento?: string
@@ -22604,6 +22742,25 @@ export type Database = {
         Returns: boolean
       }
       estadisticas_salud_sistema: { Args: never; Returns: Json }
+      exportar_historia_clinica_psico: {
+        Args: {
+          _destinatario?: string
+          _formato?: string
+          _motivo: string
+          _paciente_id: string
+        }
+        Returns: Json
+      }
+      firmar_prescripcion_psiquiatrica: {
+        Args: {
+          _firma_base64: string
+          _hash_contenido: string
+          _ip?: string
+          _prescripcion_id: string
+          _user_agent?: string
+        }
+        Returns: string
+      }
       generar_codigo_ticket: { Args: never; Returns: string }
       generar_resumen_auditoria: {
         Args: { _periodo?: string; _workspace_id?: string }

@@ -14,11 +14,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock, Layers, LineChart, ClipboardList } from "lucide-react";
+import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock, Layers, LineChart, ClipboardList, Receipt, FileDown } from "lucide-react";
 import SubmodulosNicho from "@/components/psicologia/SubmodulosNicho";
 import GraficasProgresoEmocional from "@/components/psicologia/GraficasProgresoEmocional";
 import CuestionariosPreSesion from "@/components/psicologia/CuestionariosPreSesion";
 import NotasUltraPrivadas from "@/components/psicologia/NotasUltraPrivadas";
+import FacturacionPsico from "@/components/psicologia/FacturacionPsico";
+import ExportarHistoriaPsico from "@/components/psicologia/ExportarHistoriaPsico";
+import FirmaPrescripcion from "@/components/psicologia/FirmaPrescripcion";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -253,6 +256,8 @@ export default function PsicologiaPro() {
           <TabsTrigger value="cuestionarios"><ClipboardList className="h-4 w-4 mr-1" />Cuestionarios</TabsTrigger>
           <TabsTrigger value="graficas"><LineChart className="h-4 w-4 mr-1" />Progreso</TabsTrigger>
           <TabsTrigger value="ultra-privadas"><Lock className="h-4 w-4 mr-1" />Ultra privadas</TabsTrigger>
+          <TabsTrigger value="facturacion"><Receipt className="h-4 w-4 mr-1" />Facturación</TabsTrigger>
+          <TabsTrigger value="exportar"><FileDown className="h-4 w-4 mr-1" />Exportar HC</TabsTrigger>
         </TabsList>
 
         {/* FICHAS */}
@@ -565,10 +570,11 @@ export default function PsicologiaPro() {
                 <p className="font-medium">{p.medicamento} {p.dosis} · {p.frecuencia}</p>
                 <p className="text-sm text-muted-foreground">{p.pacientes?.nombre} {p.pacientes?.apellido} · adherencia {p.adherencia ?? "-"}%</p>
               </div>
-              <div className="text-right">
+              <div className="flex items-center gap-2">
                 <Badge>{p.estado}</Badge>
-                {p.refill_pendiente && <Badge variant="destructive" className="ml-1">Refill</Badge>}
-                {p.alerta_suspension_abrupta && <Badge variant="destructive" className="ml-1">Suspensión</Badge>}
+                {p.refill_pendiente && <Badge variant="destructive">Refill</Badge>}
+                {p.alerta_suspension_abrupta && <Badge variant="destructive">Suspensión</Badge>}
+                <FirmaPrescripcion prescripcion={p} onSigned={refPres} />
               </div>
             </CardContent></Card>
           ))}
@@ -636,6 +642,14 @@ export default function PsicologiaPro() {
 
         <TabsContent value="ultra-privadas">
           <NotasUltraPrivadas pacientes={pacientes as any} />
+        </TabsContent>
+
+        <TabsContent value="facturacion">
+          <FacturacionPsico pacientes={pacientes as any} />
+        </TabsContent>
+
+        <TabsContent value="exportar">
+          <ExportarHistoriaPsico pacientes={pacientes as any} />
         </TabsContent>
       </Tabs>
     </div>
