@@ -14,7 +14,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock } from "lucide-react";
+import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock, Layers } from "lucide-react";
+import SubmodulosNicho from "@/components/psicologia/SubmodulosNicho";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -245,6 +246,7 @@ export default function PsicologiaPro() {
           <TabsTrigger value="seguimiento">Seguimiento</TabsTrigger>
           <TabsTrigger value="psiquiatria">Psiquiatría</TabsTrigger>
           <TabsTrigger value="paquetes">Paquetes</TabsTrigger>
+          <TabsTrigger value="nichos"><Layers className="h-4 w-4 mr-1" />Sub-módulos</TabsTrigger>
         </TabsList>
 
         {/* FICHAS */}
@@ -611,6 +613,11 @@ export default function PsicologiaPro() {
               <Badge variant={p.activo ? "default" : "secondary"}>{p.activo ? "Activo" : "Inactivo"}</Badge>
             </CardContent></Card>
           ))}
+        </TabsContent>
+
+        {/* SUB-MÓDULOS DE NICHO */}
+        <TabsContent value="nichos">
+          <SubmodulosNicho pacientes={pacientes as any} />
         </TabsContent>
       </Tabs>
     </div>
