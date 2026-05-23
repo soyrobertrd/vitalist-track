@@ -468,3 +468,18 @@ export function RecetasPaciente({ pacienteId }: Props) {
     </div>
   );
 }
+
+function RecetasNewButton({ onClick }: { onClick: () => void }) {
+  const { canActHere, verticalProfesional } = useProfessionalVertical();
+  return (
+    <div className="flex justify-end items-center gap-2">
+      {!canActHere && verticalProfesional && (
+        <span className="text-xs text-muted-foreground">Tu vertical asignada: <b>{verticalProfesional}</b></span>
+      )}
+      <Button size="sm" onClick={onClick} disabled={!canActHere} title={!canActHere ? "No autorizado en esta vertical" : ""}>
+        <Plus className="h-4 w-4 mr-1" /> Nueva receta
+      </Button>
+    </div>
+  );
+}
+
