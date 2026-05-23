@@ -16,6 +16,7 @@ import { useLocale } from "@/hooks/useLocale";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { useVerticalFilter } from "@/hooks/useVerticalFilter";
+import { useTranslation } from "react-i18next";
 import {
   LineChart,
   Line,
