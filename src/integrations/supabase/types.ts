@@ -113,6 +113,56 @@ export type Database = {
           },
         ]
       }
+      acuerdos_pareja: {
+        Row: {
+          caso_id: string
+          created_at: string
+          created_by: string | null
+          cumplido: boolean | null
+          descripcion: string | null
+          fecha: string
+          fecha_revision: string | null
+          id: string
+          responsable: string | null
+          titulo: string
+          workspace_id: string
+        }
+        Insert: {
+          caso_id: string
+          created_at?: string
+          created_by?: string | null
+          cumplido?: boolean | null
+          descripcion?: string | null
+          fecha?: string
+          fecha_revision?: string | null
+          id?: string
+          responsable?: string | null
+          titulo: string
+          workspace_id: string
+        }
+        Update: {
+          caso_id?: string
+          created_at?: string
+          created_by?: string | null
+          cumplido?: boolean | null
+          descripcion?: string | null
+          fecha?: string
+          fecha_revision?: string | null
+          id?: string
+          responsable?: string | null
+          titulo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acuerdos_pareja_caso_id_fkey"
+            columns: ["caso_id"]
+            isOneToOne: false
+            referencedRelation: "casos_pareja"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       administracion_medicamentos: {
         Row: {
           admision_id: string | null
@@ -2626,41 +2676,65 @@ export type Database = {
       casos_adicciones: {
         Row: {
           created_at: string
+          created_by: string | null
+          dias_sobriedad: number | null
           fecha_ultima_recaida: string | null
+          grupo_apoyo: string | null
           id: string
           notas: string | null
           paciente_id: string
+          plan_recuperacion: string | null
           prueba_toxicologica: Json | null
           sponsor_contacto: string | null
           sponsor_nombre: string | null
+          sponsor_telefono: string | null
           sustancia_principal: string | null
+          sustancias_secundarias: string[] | null
+          tiempo_consumo: string | null
           total_recaidas: number | null
+          updated_at: string
           workspace_id: string
         }
         Insert: {
           created_at?: string
+          created_by?: string | null
+          dias_sobriedad?: number | null
           fecha_ultima_recaida?: string | null
+          grupo_apoyo?: string | null
           id?: string
           notas?: string | null
           paciente_id: string
+          plan_recuperacion?: string | null
           prueba_toxicologica?: Json | null
           sponsor_contacto?: string | null
           sponsor_nombre?: string | null
+          sponsor_telefono?: string | null
           sustancia_principal?: string | null
+          sustancias_secundarias?: string[] | null
+          tiempo_consumo?: string | null
           total_recaidas?: number | null
+          updated_at?: string
           workspace_id: string
         }
         Update: {
           created_at?: string
+          created_by?: string | null
+          dias_sobriedad?: number | null
           fecha_ultima_recaida?: string | null
+          grupo_apoyo?: string | null
           id?: string
           notas?: string | null
           paciente_id?: string
+          plan_recuperacion?: string | null
           prueba_toxicologica?: Json | null
           sponsor_contacto?: string | null
           sponsor_nombre?: string | null
+          sponsor_telefono?: string | null
           sustancia_principal?: string | null
+          sustancias_secundarias?: string[] | null
+          tiempo_consumo?: string | null
           total_recaidas?: number | null
+          updated_at?: string
           workspace_id?: string
         }
         Relationships: []
@@ -2747,55 +2821,124 @@ export type Database = {
         Row: {
           acuerdos: string | null
           created_at: string
+          created_by: string | null
           cronologia_conflicto: string | null
+          hijos_comunes: number | null
           id: string
+          motivo_consulta: string | null
           notas: string | null
           paciente_id_a: string
           paciente_id_b: string | null
+          pareja_email: string | null
+          pareja_nombre: string | null
+          pareja_telefono: string | null
+          tiempo_relacion: string | null
+          updated_at: string
           workspace_id: string
         }
         Insert: {
           acuerdos?: string | null
           created_at?: string
+          created_by?: string | null
           cronologia_conflicto?: string | null
+          hijos_comunes?: number | null
           id?: string
+          motivo_consulta?: string | null
           notas?: string | null
           paciente_id_a: string
           paciente_id_b?: string | null
+          pareja_email?: string | null
+          pareja_nombre?: string | null
+          pareja_telefono?: string | null
+          tiempo_relacion?: string | null
+          updated_at?: string
           workspace_id: string
         }
         Update: {
           acuerdos?: string | null
           created_at?: string
+          created_by?: string | null
           cronologia_conflicto?: string | null
+          hijos_comunes?: number | null
           id?: string
+          motivo_consulta?: string | null
           notas?: string | null
           paciente_id_a?: string
           paciente_id_b?: string | null
+          pareja_email?: string | null
+          pareja_nombre?: string | null
+          pareja_telefono?: string | null
+          tiempo_relacion?: string | null
+          updated_at?: string
           workspace_id?: string
         }
         Relationships: []
       }
       casos_psico_infantil: {
         Row: {
+          alertas_desarrollo: string | null
+          conducta_observada: string | null
           created_at: string
+          created_by: string | null
+          custodia: string | null
+          desarrollo_lenguaje: string | null
+          desarrollo_psicomotor: string | null
+          desarrollo_social: string | null
+          escuela_contacto: string | null
+          escuela_grado: string | null
+          escuela_nombre: string | null
+          hitos_alcanzados: string | null
           id: string
           notas: string | null
           paciente_id: string
+          padres_separados: boolean | null
+          rendimiento_escolar: string | null
+          tutor_legal: string | null
+          updated_at: string
           workspace_id: string
         }
         Insert: {
+          alertas_desarrollo?: string | null
+          conducta_observada?: string | null
           created_at?: string
+          created_by?: string | null
+          custodia?: string | null
+          desarrollo_lenguaje?: string | null
+          desarrollo_psicomotor?: string | null
+          desarrollo_social?: string | null
+          escuela_contacto?: string | null
+          escuela_grado?: string | null
+          escuela_nombre?: string | null
+          hitos_alcanzados?: string | null
           id?: string
           notas?: string | null
           paciente_id: string
+          padres_separados?: boolean | null
+          rendimiento_escolar?: string | null
+          tutor_legal?: string | null
+          updated_at?: string
           workspace_id: string
         }
         Update: {
+          alertas_desarrollo?: string | null
+          conducta_observada?: string | null
           created_at?: string
+          created_by?: string | null
+          custodia?: string | null
+          desarrollo_lenguaje?: string | null
+          desarrollo_psicomotor?: string | null
+          desarrollo_social?: string | null
+          escuela_contacto?: string | null
+          escuela_grado?: string | null
+          escuela_nombre?: string | null
+          hitos_alcanzados?: string | null
           id?: string
           notas?: string | null
           paciente_id?: string
+          padres_separados?: boolean | null
+          rendimiento_escolar?: string | null
+          tutor_legal?: string | null
+          updated_at?: string
           workspace_id?: string
         }
         Relationships: []
@@ -4673,6 +4816,60 @@ export type Database = {
           },
         ]
       }
+      contratos_eap: {
+        Row: {
+          activo: boolean | null
+          contacto_rrhh: string | null
+          created_at: string
+          created_by: string | null
+          email_rrhh: string | null
+          empresa_nombre: string
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          id: string
+          notas: string | null
+          sesiones_anuales_por_empleado: number | null
+          tarifa_sesion: number | null
+          telefono_rrhh: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          contacto_rrhh?: string | null
+          created_at?: string
+          created_by?: string | null
+          email_rrhh?: string | null
+          empresa_nombre: string
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          notas?: string | null
+          sesiones_anuales_por_empleado?: number | null
+          tarifa_sesion?: number | null
+          telefono_rrhh?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          contacto_rrhh?: string | null
+          created_at?: string
+          created_by?: string | null
+          email_rrhh?: string | null
+          empresa_nombre?: string
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          id?: string
+          notas?: string | null
+          sesiones_anuales_por_empleado?: number | null
+          tarifa_sesion?: number | null
+          telefono_rrhh?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       control_calidad_lab: {
         Row: {
           aprobado: boolean | null
@@ -5156,6 +5353,50 @@ export type Database = {
           resultado?: Json | null
         }
         Relationships: []
+      }
+      cronologia_conflicto_pareja: {
+        Row: {
+          caso_id: string
+          created_at: string
+          created_by: string | null
+          evento: string
+          fecha: string
+          id: string
+          impacto: string | null
+          notas: string | null
+          workspace_id: string
+        }
+        Insert: {
+          caso_id: string
+          created_at?: string
+          created_by?: string | null
+          evento: string
+          fecha: string
+          id?: string
+          impacto?: string | null
+          notas?: string | null
+          workspace_id: string
+        }
+        Update: {
+          caso_id?: string
+          created_at?: string
+          created_by?: string | null
+          evento?: string
+          fecha?: string
+          id?: string
+          impacto?: string | null
+          notas?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cronologia_conflicto_pareja_caso_id_fkey"
+            columns: ["caso_id"]
+            isOneToOne: false
+            referencedRelation: "casos_pareja"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       cuentas_contables: {
         Row: {
@@ -6481,6 +6722,59 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      empleados_eap: {
+        Row: {
+          activo: boolean | null
+          cargo: string | null
+          codigo_anonimo: string
+          contrato_id: string
+          created_at: string
+          created_by: string | null
+          departamento: string | null
+          id: string
+          paciente_id: string
+          sesiones_disponibles: number | null
+          sesiones_usadas: number | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          cargo?: string | null
+          codigo_anonimo: string
+          contrato_id: string
+          created_at?: string
+          created_by?: string | null
+          departamento?: string | null
+          id?: string
+          paciente_id: string
+          sesiones_disponibles?: number | null
+          sesiones_usadas?: number | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          cargo?: string | null
+          codigo_anonimo?: string
+          contrato_id?: string
+          created_at?: string
+          created_by?: string | null
+          departamento?: string | null
+          id?: string
+          paciente_id?: string
+          sesiones_disponibles?: number | null
+          sesiones_usadas?: number | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "empleados_eap_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contratos_eap"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       empleados_nomina: {
         Row: {
@@ -15891,6 +16185,59 @@ export type Database = {
           },
         ]
       }
+      pruebas_sustancias: {
+        Row: {
+          caso_id: string | null
+          created_at: string
+          created_by: string | null
+          detalles: string | null
+          fecha: string
+          id: string
+          laboratorio: string | null
+          paciente_id: string
+          resultado: string | null
+          sustancias_evaluadas: string[] | null
+          tipo_prueba: string | null
+          workspace_id: string
+        }
+        Insert: {
+          caso_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          detalles?: string | null
+          fecha?: string
+          id?: string
+          laboratorio?: string | null
+          paciente_id: string
+          resultado?: string | null
+          sustancias_evaluadas?: string[] | null
+          tipo_prueba?: string | null
+          workspace_id: string
+        }
+        Update: {
+          caso_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          detalles?: string | null
+          fecha?: string
+          id?: string
+          laboratorio?: string | null
+          paciente_id?: string
+          resultado?: string | null
+          sustancias_evaluadas?: string[] | null
+          tipo_prueba?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pruebas_sustancias_caso_id_fkey"
+            columns: ["caso_id"]
+            isOneToOne: false
+            referencedRelation: "casos_adicciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_appointment_tokens: {
         Row: {
           activo: boolean
@@ -16124,6 +16471,59 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recaidas_adicciones: {
+        Row: {
+          caso_id: string
+          created_at: string
+          created_by: string | null
+          desencadenante: string | null
+          duracion: string | null
+          fecha: string
+          id: string
+          intervencion: string | null
+          notas: string | null
+          paciente_id: string
+          sustancia: string | null
+          workspace_id: string
+        }
+        Insert: {
+          caso_id: string
+          created_at?: string
+          created_by?: string | null
+          desencadenante?: string | null
+          duracion?: string | null
+          fecha?: string
+          id?: string
+          intervencion?: string | null
+          notas?: string | null
+          paciente_id: string
+          sustancia?: string | null
+          workspace_id: string
+        }
+        Update: {
+          caso_id?: string
+          created_at?: string
+          created_by?: string | null
+          desencadenante?: string | null
+          duracion?: string | null
+          fecha?: string
+          id?: string
+          intervencion?: string | null
+          notas?: string | null
+          paciente_id?: string
+          sustancia?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recaidas_adicciones_caso_id_fkey"
+            columns: ["caso_id"]
+            isOneToOne: false
+            referencedRelation: "casos_adicciones"
             referencedColumns: ["id"]
           },
         ]
@@ -18797,6 +19197,44 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sesiones_cubiertas_eap: {
+        Row: {
+          created_at: string
+          empleado_id: string
+          facturada: boolean | null
+          fecha: string
+          id: string
+          sesion_id: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          empleado_id: string
+          facturada?: boolean | null
+          fecha?: string
+          id?: string
+          sesion_id?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          empleado_id?: string
+          facturada?: boolean | null
+          fecha?: string
+          id?: string
+          sesion_id?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sesiones_cubiertas_eap_empleado_id_fkey"
+            columns: ["empleado_id"]
+            isOneToOne: false
+            referencedRelation: "empleados_eap"
             referencedColumns: ["id"]
           },
         ]
