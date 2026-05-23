@@ -140,7 +140,7 @@ const Layout = ({ children }: LayoutProps) => {
   // como item separado en el menú lateral.
 
   const menuItems: any[] = [
-    { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard", moduleKey: "dashboard" },
 
     {
       path: "/agenda", icon: CalendarDays, label: "Agenda",
