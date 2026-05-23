@@ -2623,6 +2623,159 @@ export type Database = {
         }
         Relationships: []
       }
+      casos_adicciones: {
+        Row: {
+          created_at: string
+          fecha_ultima_recaida: string | null
+          id: string
+          notas: string | null
+          paciente_id: string
+          prueba_toxicologica: Json | null
+          sponsor_contacto: string | null
+          sponsor_nombre: string | null
+          sustancia_principal: string | null
+          total_recaidas: number | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          fecha_ultima_recaida?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          prueba_toxicologica?: Json | null
+          sponsor_contacto?: string | null
+          sponsor_nombre?: string | null
+          sustancia_principal?: string | null
+          total_recaidas?: number | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          fecha_ultima_recaida?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          prueba_toxicologica?: Json | null
+          sponsor_contacto?: string | null
+          sponsor_nombre?: string | null
+          sustancia_principal?: string | null
+          total_recaidas?: number | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      casos_eap_corporativo: {
+        Row: {
+          anonimo_en_reportes: boolean | null
+          created_at: string
+          empleado_codigo: string | null
+          empresa: string
+          id: string
+          notas: string | null
+          paciente_id: string
+          sesiones_cubiertas: number | null
+          sesiones_usadas: number | null
+          workspace_id: string
+        }
+        Insert: {
+          anonimo_en_reportes?: boolean | null
+          created_at?: string
+          empleado_codigo?: string | null
+          empresa: string
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          sesiones_cubiertas?: number | null
+          sesiones_usadas?: number | null
+          workspace_id: string
+        }
+        Update: {
+          anonimo_en_reportes?: boolean | null
+          created_at?: string
+          empleado_codigo?: string | null
+          empresa?: string
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          sesiones_cubiertas?: number | null
+          sesiones_usadas?: number | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      casos_infantil_psico: {
+        Row: {
+          created_at: string
+          custodia: string | null
+          escuela_nombre: string | null
+          hitos_desarrollo: string | null
+          id: string
+          notas: string | null
+          paciente_id: string
+          padres_separados: boolean | null
+          reporte_conducta: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          custodia?: string | null
+          escuela_nombre?: string | null
+          hitos_desarrollo?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          padres_separados?: boolean | null
+          reporte_conducta?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          custodia?: string | null
+          escuela_nombre?: string | null
+          hitos_desarrollo?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          padres_separados?: boolean | null
+          reporte_conducta?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      casos_pareja: {
+        Row: {
+          acuerdos: string | null
+          created_at: string
+          cronologia_conflicto: string | null
+          id: string
+          notas: string | null
+          paciente_id_a: string
+          paciente_id_b: string | null
+          workspace_id: string
+        }
+        Insert: {
+          acuerdos?: string | null
+          created_at?: string
+          cronologia_conflicto?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id_a: string
+          paciente_id_b?: string | null
+          workspace_id: string
+        }
+        Update: {
+          acuerdos?: string | null
+          created_at?: string
+          cronologia_conflicto?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id_a?: string
+          paciente_id_b?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       casos_trabajo_social: {
         Row: {
           composicion_familiar: Json | null
@@ -7034,6 +7187,54 @@ export type Database = {
           },
         ]
       }
+      evaluaciones_psicometricas: {
+        Row: {
+          auto_completado_paciente: boolean | null
+          created_at: string
+          escala: string
+          fecha_aplicacion: string | null
+          id: string
+          notas: string | null
+          paciente_id: string
+          puntaje_total: number | null
+          respuestas: Json | null
+          severidad: string | null
+          terapeuta_id: string | null
+          token_paciente: string | null
+          workspace_id: string
+        }
+        Insert: {
+          auto_completado_paciente?: boolean | null
+          created_at?: string
+          escala: string
+          fecha_aplicacion?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          puntaje_total?: number | null
+          respuestas?: Json | null
+          severidad?: string | null
+          terapeuta_id?: string | null
+          token_paciente?: string | null
+          workspace_id: string
+        }
+        Update: {
+          auto_completado_paciente?: boolean | null
+          created_at?: string
+          escala?: string
+          fecha_aplicacion?: string | null
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          puntaje_total?: number | null
+          respuestas?: Json | null
+          severidad?: string | null
+          terapeuta_id?: string | null
+          token_paciente?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       eventos_adversos: {
         Row: {
           causa_raiz: string | null
@@ -11120,6 +11321,97 @@ export type Database = {
           },
         ]
       }
+      notas_psicologia: {
+        Row: {
+          bloqueada_supervisor: boolean | null
+          contenido: string | null
+          contenido_compartible: string | null
+          created_at: string
+          created_by: string | null
+          es_privada: boolean | null
+          id: string
+          paciente_id: string
+          sesion_id: string | null
+          supervisor_id: string | null
+          terapeuta_id: string | null
+          tipo_nota: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          bloqueada_supervisor?: boolean | null
+          contenido?: string | null
+          contenido_compartible?: string | null
+          created_at?: string
+          created_by?: string | null
+          es_privada?: boolean | null
+          id?: string
+          paciente_id: string
+          sesion_id?: string | null
+          supervisor_id?: string | null
+          terapeuta_id?: string | null
+          tipo_nota: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          bloqueada_supervisor?: boolean | null
+          contenido?: string | null
+          contenido_compartible?: string | null
+          created_at?: string
+          created_by?: string | null
+          es_privada?: boolean | null
+          id?: string
+          paciente_id?: string
+          sesion_id?: string | null
+          supervisor_id?: string | null
+          terapeuta_id?: string | null
+          tipo_nota?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_psicologia_sesion_id_fkey"
+            columns: ["sesion_id"]
+            isOneToOne: false
+            referencedRelation: "sesiones_psicologia"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notas_psicologia_accesos: {
+        Row: {
+          accion: string | null
+          created_at: string
+          id: string
+          nota_id: string
+          user_id: string | null
+        }
+        Insert: {
+          accion?: string | null
+          created_at?: string
+          id?: string
+          nota_id: string
+          user_id?: string | null
+        }
+        Update: {
+          accion?: string | null
+          created_at?: string
+          id?: string
+          nota_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_psicologia_accesos_nota_id_fkey"
+            columns: ["nota_id"]
+            isOneToOne: false
+            referencedRelation: "notas_psicologia"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notificaciones_plan_accion: {
         Row: {
           completada: boolean | null
@@ -12236,6 +12528,98 @@ export type Database = {
           },
         ]
       }
+      pacientes_psicologia: {
+        Row: {
+          alerta_interna_activa: boolean | null
+          antecedentes_familiares: string | null
+          consumo_sustancias: string | null
+          contacto_emergencia_nombre: string | null
+          contacto_emergencia_relacion: string | null
+          contacto_emergencia_telefono: string | null
+          created_at: string
+          created_by: string | null
+          diagnosticos_previos: string | null
+          es_menor: boolean | null
+          historia_trauma: string | null
+          historia_trauma_restringida: boolean | null
+          id: string
+          medicacion_actual: string | null
+          motivo_consulta: string | null
+          notas_generales: string | null
+          paciente_id: string | null
+          riesgo_autolesion: string | null
+          riesgo_suicida: string | null
+          terapeuta_id: string | null
+          tutor_nombre: string | null
+          tutor_relacion: string | null
+          tutor_telefono: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          alerta_interna_activa?: boolean | null
+          antecedentes_familiares?: string | null
+          consumo_sustancias?: string | null
+          contacto_emergencia_nombre?: string | null
+          contacto_emergencia_relacion?: string | null
+          contacto_emergencia_telefono?: string | null
+          created_at?: string
+          created_by?: string | null
+          diagnosticos_previos?: string | null
+          es_menor?: boolean | null
+          historia_trauma?: string | null
+          historia_trauma_restringida?: boolean | null
+          id?: string
+          medicacion_actual?: string | null
+          motivo_consulta?: string | null
+          notas_generales?: string | null
+          paciente_id?: string | null
+          riesgo_autolesion?: string | null
+          riesgo_suicida?: string | null
+          terapeuta_id?: string | null
+          tutor_nombre?: string | null
+          tutor_relacion?: string | null
+          tutor_telefono?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          alerta_interna_activa?: boolean | null
+          antecedentes_familiares?: string | null
+          consumo_sustancias?: string | null
+          contacto_emergencia_nombre?: string | null
+          contacto_emergencia_relacion?: string | null
+          contacto_emergencia_telefono?: string | null
+          created_at?: string
+          created_by?: string | null
+          diagnosticos_previos?: string | null
+          es_menor?: boolean | null
+          historia_trauma?: string | null
+          historia_trauma_restringida?: boolean | null
+          id?: string
+          medicacion_actual?: string | null
+          motivo_consulta?: string | null
+          notas_generales?: string | null
+          paciente_id?: string | null
+          riesgo_autolesion?: string | null
+          riesgo_suicida?: string | null
+          terapeuta_id?: string | null
+          tutor_nombre?: string | null
+          tutor_relacion?: string | null
+          tutor_telefono?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pacientes_psicologia_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pacientes_recovery: {
         Row: {
           acompanante_nombre: string | null
@@ -12741,6 +13125,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      paquetes_sesiones: {
+        Row: {
+          activo: boolean | null
+          cobro_automatico: boolean | null
+          created_at: string
+          fecha_inicio: string | null
+          fecha_vencimiento: string | null
+          fee_cancelacion_tardia: number | null
+          id: string
+          nombre: string
+          notas: string | null
+          paciente_id: string | null
+          precio: number | null
+          sesiones_usadas: number | null
+          tipo: string | null
+          total_sesiones: number | null
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          cobro_automatico?: boolean | null
+          created_at?: string
+          fecha_inicio?: string | null
+          fecha_vencimiento?: string | null
+          fee_cancelacion_tardia?: number | null
+          id?: string
+          nombre: string
+          notas?: string | null
+          paciente_id?: string | null
+          precio?: number | null
+          sesiones_usadas?: number | null
+          tipo?: string | null
+          total_sesiones?: number | null
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          cobro_automatico?: boolean | null
+          created_at?: string
+          fecha_inicio?: string | null
+          fecha_vencimiento?: string | null
+          fee_cancelacion_tardia?: number | null
+          id?: string
+          nombre?: string
+          notas?: string | null
+          paciente_id?: string | null
+          precio?: number | null
+          sesiones_usadas?: number | null
+          tipo?: string | null
+          total_sesiones?: number | null
+          workspace_id?: string
+        }
+        Relationships: []
       }
       parametros_seguimiento: {
         Row: {
@@ -14000,6 +14438,72 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           zona_horaria?: string | null
+        }
+        Relationships: []
+      }
+      prescripciones_psiquiatricas: {
+        Row: {
+          adherencia: number | null
+          alerta_interaccion: boolean | null
+          alerta_suspension_abrupta: boolean | null
+          created_at: string
+          dosis: string | null
+          efectos_secundarios: string | null
+          estado: string | null
+          fecha_fin: string | null
+          fecha_inicio: string | null
+          frecuencia: string | null
+          id: string
+          medicamento: string
+          notas: string | null
+          paciente_id: string
+          psiquiatra_id: string | null
+          refill_pendiente: boolean | null
+          updated_at: string
+          via: string | null
+          workspace_id: string
+        }
+        Insert: {
+          adherencia?: number | null
+          alerta_interaccion?: boolean | null
+          alerta_suspension_abrupta?: boolean | null
+          created_at?: string
+          dosis?: string | null
+          efectos_secundarios?: string | null
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          frecuencia?: string | null
+          id?: string
+          medicamento: string
+          notas?: string | null
+          paciente_id: string
+          psiquiatra_id?: string | null
+          refill_pendiente?: boolean | null
+          updated_at?: string
+          via?: string | null
+          workspace_id: string
+        }
+        Update: {
+          adherencia?: number | null
+          alerta_interaccion?: boolean | null
+          alerta_suspension_abrupta?: boolean | null
+          created_at?: string
+          dosis?: string | null
+          efectos_secundarios?: string | null
+          estado?: string | null
+          fecha_fin?: string | null
+          fecha_inicio?: string | null
+          frecuencia?: string | null
+          id?: string
+          medicamento?: string
+          notas?: string | null
+          paciente_id?: string
+          psiquiatra_id?: string | null
+          refill_pendiente?: boolean | null
+          updated_at?: string
+          via?: string | null
+          workspace_id?: string
         }
         Relationships: []
       }
@@ -17926,6 +18430,57 @@ export type Database = {
           },
         ]
       }
+      seguimiento_emocional: {
+        Row: {
+          animo: number | null
+          ansiedad: number | null
+          created_at: string
+          crisis_reciente: boolean | null
+          disparadores: string | null
+          estres: number | null
+          fecha: string
+          id: string
+          notas: string | null
+          objetivo_terapeutico: string | null
+          paciente_id: string
+          reportado_por_paciente: boolean | null
+          sueno: number | null
+          workspace_id: string
+        }
+        Insert: {
+          animo?: number | null
+          ansiedad?: number | null
+          created_at?: string
+          crisis_reciente?: boolean | null
+          disparadores?: string | null
+          estres?: number | null
+          fecha?: string
+          id?: string
+          notas?: string | null
+          objetivo_terapeutico?: string | null
+          paciente_id: string
+          reportado_por_paciente?: boolean | null
+          sueno?: number | null
+          workspace_id: string
+        }
+        Update: {
+          animo?: number | null
+          ansiedad?: number | null
+          created_at?: string
+          crisis_reciente?: boolean | null
+          disparadores?: string | null
+          estres?: number | null
+          fecha?: string
+          id?: string
+          notas?: string | null
+          objetivo_terapeutico?: string | null
+          paciente_id?: string
+          reportado_por_paciente?: boolean | null
+          sueno?: number | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       seguros_paciente: {
         Row: {
           activo: boolean
@@ -18088,6 +18643,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sesiones_psicologia: {
+        Row: {
+          created_at: string
+          duracion_minutos: number | null
+          estado: string | null
+          fecha_hora: string
+          id: string
+          lista_espera: boolean | null
+          modalidad: string | null
+          motivo: string | null
+          notas_previas: string | null
+          paciente_id: string
+          recurrencia_semanal: boolean | null
+          sala_virtual_token: string | null
+          terapeuta_id: string | null
+          tipo_sesion: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          duracion_minutos?: number | null
+          estado?: string | null
+          fecha_hora: string
+          id?: string
+          lista_espera?: boolean | null
+          modalidad?: string | null
+          motivo?: string | null
+          notas_previas?: string | null
+          paciente_id: string
+          recurrencia_semanal?: boolean | null
+          sala_virtual_token?: string | null
+          terapeuta_id?: string | null
+          tipo_sesion: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          duracion_minutos?: number | null
+          estado?: string | null
+          fecha_hora?: string
+          id?: string
+          lista_espera?: boolean | null
+          modalidad?: string | null
+          motivo?: string | null
+          notas_previas?: string | null
+          paciente_id?: string
+          recurrencia_semanal?: boolean | null
+          sala_virtual_token?: string | null
+          terapeuta_id?: string | null
+          tipo_sesion?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
       }
       sesiones_rehabilitacion: {
         Row: {
@@ -18861,6 +19473,62 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tareas_terapeuticas: {
+        Row: {
+          comentario_paciente: string | null
+          created_at: string
+          cumplida: boolean | null
+          descripcion: string | null
+          fecha_asignacion: string | null
+          fecha_cumplimiento: string | null
+          fecha_limite: string | null
+          id: string
+          paciente_id: string
+          sesion_id: string | null
+          terapeuta_id: string | null
+          titulo: string
+          workspace_id: string
+        }
+        Insert: {
+          comentario_paciente?: string | null
+          created_at?: string
+          cumplida?: boolean | null
+          descripcion?: string | null
+          fecha_asignacion?: string | null
+          fecha_cumplimiento?: string | null
+          fecha_limite?: string | null
+          id?: string
+          paciente_id: string
+          sesion_id?: string | null
+          terapeuta_id?: string | null
+          titulo: string
+          workspace_id: string
+        }
+        Update: {
+          comentario_paciente?: string | null
+          created_at?: string
+          cumplida?: boolean | null
+          descripcion?: string | null
+          fecha_asignacion?: string | null
+          fecha_cumplimiento?: string | null
+          fecha_limite?: string | null
+          id?: string
+          paciente_id?: string
+          sesion_id?: string | null
+          terapeuta_id?: string | null
+          titulo?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tareas_terapeuticas_sesion_id_fkey"
+            columns: ["sesion_id"]
+            isOneToOne: false
+            referencedRelation: "sesiones_psicologia"
             referencedColumns: ["id"]
           },
         ]
@@ -21404,7 +22072,13 @@ export type Database = {
         | "enfermera"
         | "coordinador"
         | "recepcion"
-      vertical_tipo: "clinica" | "dental" | "aesthetic" | "recovery" | "vision"
+      vertical_tipo:
+        | "clinica"
+        | "dental"
+        | "aesthetic"
+        | "recovery"
+        | "vision"
+        | "psicologia"
       wf_evento:
         | "cita_no_confirmada"
         | "cita_proxima_24h"
@@ -21746,7 +22420,14 @@ export const Constants = {
         "coordinador",
         "recepcion",
       ],
-      vertical_tipo: ["clinica", "dental", "aesthetic", "recovery", "vision"],
+      vertical_tipo: [
+        "clinica",
+        "dental",
+        "aesthetic",
+        "recovery",
+        "vision",
+        "psicologia",
+      ],
       wf_evento: [
         "cita_no_confirmada",
         "cita_proxima_24h",
