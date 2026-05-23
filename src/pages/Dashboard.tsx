@@ -335,8 +335,8 @@ const Dashboard = () => {
         {/* Weekly Activity */}
         <Card>
           <CardHeader>
-            <CardTitle>Actividad Semanal</CardTitle>
-            <CardDescription>Llamadas y visitas por día</CardDescription>
+            <CardTitle>{t("weekly_activity")}</CardTitle>
+            <CardDescription>{t("calls_visits_by_day")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -356,8 +356,8 @@ const Dashboard = () => {
         {/* Calls Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle>Distribución de Llamadas</CardTitle>
-            <CardDescription>Estado de las llamadas del mes</CardDescription>
+            <CardTitle>{t("calls_distribution")}</CardTitle>
+            <CardDescription>{t("monthly_calls_status")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -384,8 +384,8 @@ const Dashboard = () => {
         {/* Visits Status */}
         <Card>
           <CardHeader>
-            <CardTitle>Estado de Visitas</CardTitle>
-            <CardDescription>Resumen mensual de visitas</CardDescription>
+            <CardTitle>{t("visits_status")}</CardTitle>
+            <CardDescription>{t("monthly_visits_summary")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -403,8 +403,8 @@ const Dashboard = () => {
         {/* Monthly Trend */}
         <Card>
           <CardHeader>
-            <CardTitle>Tendencia de Pacientes</CardTitle>
-            <CardDescription>Últimos 5 meses</CardDescription>
+            <CardTitle>{t("patients_trend")}</CardTitle>
+            <CardDescription>{t("last_5_months")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -430,12 +430,12 @@ const Dashboard = () => {
       <div className="grid gap-6 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Tiempo Promedio de Llamada</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("avg_call_time")}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{extraStats.duracionPromedio} min</div>
-            <p className="text-xs text-muted-foreground">Promedio últimos 30 días</p>
+            <p className="text-xs text-muted-foreground">{t("last_30_days_avg")}</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-primary" style={{ width: `${Math.min(extraStats.duracionPromedio * 10, 100)}%` }} />
             </div>
@@ -444,12 +444,12 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Visitas Completadas</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("completed_visits")}</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{extraStats.tasaCumplimiento}%</div>
-            <p className="text-xs text-muted-foreground">Tasa de cumplimiento</p>
+            <p className="text-xs text-muted-foreground">{t("compliance_rate")}</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-success" style={{ width: `${extraStats.tasaCumplimiento}%` }} />
             </div>
@@ -458,12 +458,12 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Pacientes de Alto Riesgo</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("high_risk_patients")}</CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{extraStats.pacientesAltoRiesgo}</div>
-            <p className="text-xs text-muted-foreground">Requieren atención urgente</p>
+            <p className="text-xs text-muted-foreground">{t("need_urgent_attention")}</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-destructive" style={{ width: `${extraStats.porcentajeAltoRiesgo}%` }} />
             </div>
