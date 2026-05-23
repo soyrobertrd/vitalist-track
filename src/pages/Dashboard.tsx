@@ -36,6 +36,7 @@ import {
 } from "recharts";
 
 const Dashboard = () => {
+  const { t } = useTranslation("dashboard");
   const navigate = useNavigate();
   const { timezone } = useLocale();
   const { currentWorkspace } = useWorkspace();
