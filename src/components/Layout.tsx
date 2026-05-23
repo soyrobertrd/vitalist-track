@@ -658,10 +658,11 @@ const Layout = ({ children }: LayoutProps) => {
             <OfflineIndicator />
             <SucursalSwitcher compact />
             <GlobalSearch />
+            <LanguageSwitcher />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-sidebar-foreground">
-                  <Menu className="h-6 w-6" />
+                <Button variant="ghost" size="icon" className="text-sidebar-foreground min-h-11 min-w-11" aria-label="Abrir menú">
+                  <Menu className="h-6 w-6" aria-hidden="true" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-64 p-0 bg-sidebar border-sidebar-border">
