@@ -657,7 +657,41 @@ export default function PsicologiaPro() {
         <TabsContent value="exportar">
           <ExportarHistoriaPsico pacientes={pacientes as any} />
         </TabsContent>
+
+        <TabsContent value="recordatorios">
+          {wsId && <RecordatoriosSesionesPsico workspaceId={wsId} />}
+        </TabsContent>
+
+        <TabsContent value="integraciones">
+          {wsId && <IntegracionesExternasPsico workspaceId={wsId} />}
+        </TabsContent>
+
+        <TabsContent value="portal" className="space-y-3">
+          <Label>Seleccione paciente</Label>
+          <Select onValueChange={(v) => (window as any).__portalPid = v}>
+            <SelectTrigger className="max-w-md"><SelectValue placeholder="Paciente"/></SelectTrigger>
+            <SelectContent>
+              {(pacientes as any[]).map(p => <SelectItem key={p.id} value={p.id}>{p.nombre} {p.apellido}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <PortalPacienteAdminWrapper pacientes={pacientes as any} />
+        </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+function PortalPacienteAdminWrapper({ pacientes }: { pacientes: any[] }) {
+  const [pid, setPid] = useState<string>("");
+  return (
+    <div className="space-y-3">
+      <Select value={pid} onValueChange={setPid}>
+        <SelectTrigger className="max-w-md"><SelectValue placeholder="Elegir paciente para generar enlace"/></SelectTrigger>
+        <SelectContent>
+          {pacientes.map(p => <SelectItem key={p.id} value={p.id}>{p.nombre} {p.apellido}</SelectItem>)}
+        </SelectContent>
+      </Select>
+      {pid && <PortalPacienteAdmin pacienteId={pid} />}
     </div>
   );
 }
