@@ -14,6 +14,7 @@ import { Trash2 } from "lucide-react";
 import { useVertical } from "@/contexts/VerticalContext";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 
+
 interface Marca {
   id: string;
   tipo: string;
@@ -38,7 +39,8 @@ const TIPOS_POR_VERTICAL: Record<string, { value: string; label: string; color: 
 
 export function MapaCorporal({ pacienteId }: { pacienteId: string }) {
   const { verticalActiva } = useVertical();
-  const { currentWorkspaceId } = useWorkspace();
+  const { currentWorkspace } = useWorkspace();
+  const currentWorkspaceId = currentWorkspace?.id ?? null;
   const [vista, setVista] = useState("frontal");
   const [marcas, setMarcas] = useState<Marca[]>([]);
   const [editando, setEditando] = useState<Partial<Marca> | null>(null);
