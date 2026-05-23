@@ -185,7 +185,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/clinico", icon: Stethoscope, label: "Clínico",
+      path: "/clinico", icon: Stethoscope, label: "Clínico", moduleKey: "clinico",
       verticales: ["clinica"] as VerticalTipo[],
       subItems: [
         { path: "/triaje", label: "Triaje" },
