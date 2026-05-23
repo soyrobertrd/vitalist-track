@@ -141,7 +141,41 @@ export default function FacturacionElectronicaRD() {
           </Table></CardContent></Card>
         </TabsContent>
 
-        <TabsContent value="cf">
+        <TabsContent value="cf" className="space-y-3">
+          <div className="flex justify-end">
+            <Dialog open={emitOpen} onOpenChange={setEmitOpen}>
+              <DialogTrigger asChild>
+                <Button><Receipt className="h-4 w-4 mr-1" aria-hidden="true" /> {t("emit_ncf")}</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader><DialogTitle>{t("emit_ncf_title")}</DialogTitle></DialogHeader>
+                <div className="space-y-3">
+                  <div>
+                    <Label>{t("tipo")}</Label>
+                    <Select value={emitForm.tipo_ncf} onValueChange={v => setEmitForm({ ...emitForm, tipo_ncf: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{TIPOS_NCF.map(t => <SelectItem key={t.v} value={t.v}>{t.l}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>{t("rnc")}</Label>
+                    <Input value={emitForm.rnc_cliente} onChange={e => setEmitForm({ ...emitForm, rnc_cliente: e.target.value })} />
+                  </div>
+                  <div>
+                    <Label>{t("subtotal")}</Label>
+                    <Input type="number" step="0.01" value={emitForm.subtotal} onChange={e => setEmitForm({ ...emitForm, subtotal: +e.target.value })} />
+                  </div>
+                  <div className="text-sm text-muted-foreground space-y-1 border-t pt-2">
+                    <div>{t("itbis_18")}: RD$ {(emitForm.subtotal * 0.18).toFixed(2)}</div>
+                    <div className="font-medium text-foreground">{t("total")}: RD$ {(emitForm.subtotal * 1.18).toFixed(2)}</div>
+                  </div>
+                  <Button onClick={emitir} disabled={emitting || !emitForm.subtotal} className="w-full">
+                    {emitting ? t("common:loading") : t("emit")}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
           <Card><CardContent className="pt-6"><Table>
             <TableHeader><TableRow><TableHead>NCF</TableHead><TableHead>Tipo</TableHead><TableHead>RNC</TableHead><TableHead>Total</TableHead><TableHead>ITBIS</TableHead><TableHead>Estado DGII</TableHead></TableRow></TableHeader>
             <TableBody>
