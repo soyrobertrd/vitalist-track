@@ -32,8 +32,17 @@ export function usePersonal(excludeAdmin = true) {
       query = query.eq("workspace_id", currentWorkspace.id);
     }
 
+    // Filtro hardcoded removido. Ahora `excludeAdmin` excluye únicamente
+    // las categorías administrativas configuradas en `especialidades_catalogo`.
     if (excludeAdmin) {
-      query = query.in("especialidad", ["Médico", "Enfermera", "Medico Internista"]);
+      const { data: admins } = await supabase
+        .from("especialidades_catalogo")
+        .select("nombre")
+        .eq("categoria", "administrativa");
+      const adminNames = (admins || []).map((a: any) => a.nombre);
+      if (adminNames.length) {
+        query = query.not("especialidad", "in", `(${adminNames.map((n) => `"${n}"`).join(",")})`);
+      }
     }
 
     const { data, error } = await query;

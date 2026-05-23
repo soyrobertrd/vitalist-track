@@ -51,6 +51,14 @@ const Personal = lazy(() => import("./pages/Personal"));
 const Llamadas = lazy(() => import("./pages/Llamadas"));
 const Configuracion = lazy(() => import("./pages/Configuracion"));
 const ConfiguracionAdmin = lazy(() => import("./pages/ConfiguracionAdmin"));
+const CatalogoEspecialidades = lazy(() => import("./pages/CatalogoEspecialidades"));
+const ServiciosProfesionales = lazy(() => import("./pages/ServiciosProfesionales"));
+const CredencialesProfesionales = lazy(() => import("./pages/CredencialesProfesionales"));
+const TarifariosProfesional = lazy(() => import("./pages/TarifariosProfesional"));
+const FacturacionElectronicaRD = lazy(() => import("./pages/FacturacionElectronicaRD"));
+const ModulosClinicos = lazy(() => import("./pages/ModulosClinicos"));
+const IAClinicaModulo = lazy(() => import("./pages/IAClinicaModulo"));
+const ReportesRegulatorios = lazy(() => import("./pages/ReportesRegulatorios"));
 const Plantillas = lazy(() => import("./pages/Plantillas"));
 const Automatizaciones = lazy(() => import("./pages/Automatizaciones"));
 const Encuestas = lazy(() => import("./pages/Encuestas"));
@@ -234,6 +242,14 @@ const App = () => {
                   path="/calendario"
                   element={session ? <Layout><Calendario /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route path="/catalogo-especialidades" element={session ? <Layout><CatalogoEspecialidades /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/servicios-profesionales" element={session ? <Layout><ServiciosProfesionales /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/credenciales-profesionales" element={session ? <Layout><CredencialesProfesionales /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/tarifarios-profesional" element={session ? <Layout><TarifariosProfesional /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/facturacion-electronica-rd" element={session ? <Layout><FacturacionElectronicaRD /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/modulos-clinicos" element={session ? <Layout><ModulosClinicos /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/ia-clinica" element={session ? <Layout><IAClinicaModulo /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reportes-regulatorios" element={session ? <Layout><ReportesRegulatorios /></Layout> : <Navigate to="/auth" />} />
                 <Route
                   path="/configuracion"
                   element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}
