@@ -253,7 +253,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/financiero", icon: DollarSign, label: "Financiero", adminOnly: true,
+      path: "/financiero", icon: DollarSign, label: "Financiero", adminOnly: true, moduleKey: "financiero",
       subItems: [
         { path: "/finanzas?tab=caja", label: "Caja", icon: DollarSign },
         { path: "/finanzas?tab=devoluciones", label: "Notas de crédito" },
