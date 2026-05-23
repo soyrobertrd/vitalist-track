@@ -194,6 +194,7 @@ const App = () => {
                 <Route path="/ticket/:token" element={<TicketPublico />} />
                 <Route path="/sala/:token" element={<SalaVirtual />} />
                 <Route path="/portal-citas" element={<PortalPublicoDisponibilidad />} />
+                <Route path="/cuestionario/:token" element={<CuestionarioPublico />} />
                 <Route
                   path="/recepcion"
                   element={session ? <Layout><Recepcion /></Layout> : <Navigate to="/auth" />}
