@@ -115,6 +115,7 @@ const Layout = ({ children }: LayoutProps) => {
     aesthetic: "Aesthetic Pro",
     recovery: "Recovery Care",
     vision: "VisionCare Pro",
+    psicologia: "Psicología / Psiquiatría",
   };
   const verticalIcon: Record<VTipo, any> = {
     clinica: Activity,
@@ -122,6 +123,7 @@ const Layout = ({ children }: LayoutProps) => {
     aesthetic: Sparkles,
     recovery: BedDouble,
     vision: Eye,
+    psicologia: Activity,
   };
   const verticalRoot: Record<VTipo, string> = {
     clinica: "/dashboard",
@@ -129,6 +131,7 @@ const Layout = ({ children }: LayoutProps) => {
     aesthetic: "/aesthetic-pro",
     recovery: "/recovery-care",
     vision: "/vision-care",
+    psicologia: "/psicologia-pro",
   };
 
   // El "Resumen [Vertical]" se fusiona con el Dashboard; no se muestra
