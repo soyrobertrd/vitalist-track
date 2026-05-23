@@ -330,10 +330,10 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     // Telemedicina común
-    { path: "/telemedicina", icon: Activity, label: "Telemedicina" },
+    { path: "/telemedicina", icon: Activity, label: "Telemedicina", moduleKey: "telemedicina" },
 
     {
-      path: "/config-grupo", icon: Settings, label: "Configuración", adminOnly: true,
+      path: "/config-grupo", icon: Settings, label: "Configuración", adminOnly: true, moduleKey: "config",
       subItems: [
         { path: "/configuracion-admin", label: "Sistema", icon: Cog },
         { path: "/verticales", label: "Verticales del centro", icon: Building2 },
