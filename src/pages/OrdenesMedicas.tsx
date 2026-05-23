@@ -51,7 +51,11 @@ export default function OrdenesMedicas() {
         <p className="text-muted-foreground">
           Motor centralizado de órdenes que fluye a Lab, Imagen, Farmacia, Banco de Sangre, Nutrición y Enfermería.
         </p>
+        {!canActHere && verticalProfesional && (
+          <p className="text-xs text-amber-600 mt-1">Modo solo lectura: tu vertical asignada es <b>{verticalProfesional}</b>.</p>
+        )}
       </div>
+
 
       <Tabs value={filtro} onValueChange={setFiltro}>
         <TabsList>
