@@ -131,6 +131,10 @@ const VisionCarePro = lazy(() => import("./pages/VisionCarePro"));
 const PsicologiaPro = lazy(() => import("./pages/PsicologiaPro"));
 const LandingPsicologia = lazy(() => import("./pages/landing/LandingPsicologia"));
 const ReportesPsicologia = lazy(() => import("./pages/psicologia/ReportesPsicologia"));
+const ReportesDental = lazy(() => import("./pages/reportes/ReportesDental"));
+const ReportesVision = lazy(() => import("./pages/reportes/ReportesVision"));
+const ReportesAesthetic = lazy(() => import("./pages/reportes/ReportesAesthetic"));
+const ReportesRecovery = lazy(() => import("./pages/reportes/ReportesRecovery"));
 const SalaTeleconsulta = lazy(() => import("./pages/psicologia/SalaTeleconsulta"));
 const AuditoriaNotasPsico = lazy(() => import("./pages/psicologia/AuditoriaNotasPsico"));
 const QuirofanoAvanzado = lazy(() => import("./pages/QuirofanoAvanzado"));
@@ -283,6 +287,10 @@ const App = () => {
                   path="/reportes"
                   element={session ? <Layout><Reportes /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route path="/reportes/dental" element={session ? <Layout><ReportesDental /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reportes/vision" element={session ? <Layout><ReportesVision /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reportes/aesthetic" element={session ? <Layout><ReportesAesthetic /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reportes/recovery" element={session ? <Layout><ReportesRecovery /></Layout> : <Navigate to="/auth" />} />
                 <Route
                   path="/soporte"
                   element={session ? <Layout><Soporte /></Layout> : <Navigate to="/auth" />}

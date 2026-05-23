@@ -100,4 +100,7 @@
 - [i18n y PWA shell móvil](mem://features/i18n-pwa-a11y) — i18next es/en con LanguageSwitcher, SW guard en iframe/preview y tap targets WCAG 44px
 - [Fase 11 Teleconsulta y NCF](mem://features/fase-11-teleconsulta-ncf-cron) — WebRTC P2P con signaling realtime, RPC `generar_ncf` para DGII y cron hourly de recordatorios psico
 - [2FA admin + Exportación GDPR paciente](mem://features/2fa-admin-gdpr-export) — TOTP MFA en Configuración → Seguridad y export JSON completo del paciente (HIPAA/GDPR) con auditoría
+- [Reportes por vertical](mem://features/reportes-por-vertical) — Páginas /reportes/{dental,vision,aesthetic,recovery} con KPIs+gráficas+XLSX y grupo "Reportes & BI" en sidebar
+- [Permisos por vertical profesional](mem://features/professional-vertical-permissions) — Hook useProfessionalVertical lee personal_salud.vertical para gatear acciones clínicas
+
 

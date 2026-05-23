@@ -334,6 +334,21 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/telemedicina", icon: Activity, label: "Telemedicina", moduleKey: "telemedicina" },
 
     {
+      path: "/reportes-bi", icon: BarChart3, label: "Reportes & BI",
+      subItems: [
+        { path: "/reportes", label: "Reportes generales", icon: BarChart3 },
+        { path: "/reportes-programados", label: "Reportes programados" },
+        { path: "/reportes-regulatorios", label: "Reportes regulatorios" },
+        { path: "/dashboard-bi", label: "Dashboard BI" },
+        { path: "/reportes/dental", label: "Reportes Dental", verticales: ["dental"] as VerticalTipo[] },
+        { path: "/reportes/vision", label: "Reportes Vision", verticales: ["vision"] as VerticalTipo[] },
+        { path: "/reportes/aesthetic", label: "Reportes Estética", verticales: ["aesthetic"] as VerticalTipo[] },
+        { path: "/reportes/recovery", label: "Reportes Recovery", verticales: ["recovery"] as VerticalTipo[] },
+        { path: "/psicologia/reportes", label: "Reportes Psicología", verticales: ["psicologia"] as VerticalTipo[] },
+      ],
+    },
+
+    {
       path: "/config-grupo", icon: Settings, label: "Configuración", adminOnly: true, moduleKey: "config",
       subItems: [
         { path: "/configuracion-admin", label: "Sistema", icon: Cog },
