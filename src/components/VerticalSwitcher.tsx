@@ -1,4 +1,4 @@
-import { Building2, Eye, SmilePlus, Sparkles, BedDouble, Stethoscope, Layers, Settings2 } from "lucide-react";
+import { Building2, Eye, SmilePlus, Sparkles, BedDouble, Stethoscope, Layers, Settings2, Brain } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,11 +10,12 @@ import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
 import { useUserRole } from "@/hooks/useUserRole";
 
 const META: Record<VerticalTipo, { label: string; icon: any; color: string }> = {
-  clinica:   { label: "Clínica / Hospital", icon: Stethoscope, color: "text-blue-600" },
-  dental:    { label: "Odontología",        icon: SmilePlus,   color: "text-cyan-600" },
-  aesthetic: { label: "Estética",           icon: Sparkles,    color: "text-pink-600" },
-  recovery:  { label: "Recovery Care",      icon: BedDouble,   color: "text-purple-600" },
-  vision:    { label: "Visión / Óptica",    icon: Eye,         color: "text-emerald-600" },
+  clinica:    { label: "Clínica / Hospital", icon: Stethoscope, color: "text-blue-600" },
+  dental:     { label: "Odontología",        icon: SmilePlus,   color: "text-cyan-600" },
+  aesthetic:  { label: "Estética",           icon: Sparkles,    color: "text-pink-600" },
+  recovery:   { label: "Recovery Care",      icon: BedDouble,   color: "text-purple-600" },
+  vision:     { label: "Visión / Óptica",    icon: Eye,         color: "text-emerald-600" },
+  psicologia: { label: "Psicología / Psiquiatría", icon: Brain, color: "text-indigo-600" },
 };
 
 interface Props { collapsed?: boolean; }
@@ -33,7 +34,7 @@ export function VerticalSwitcher({ collapsed = false }: Props) {
   const Icon = actual.icon;
 
   // Verticales no activadas (sólo admin)
-  const todas: VerticalTipo[] = ["clinica", "dental", "aesthetic", "recovery", "vision"];
+  const todas: VerticalTipo[] = ["clinica", "dental", "aesthetic", "recovery", "vision", "psicologia"];
   const inactivas = todas.filter((v) => !verticalesActivas.includes(v));
 
   return (

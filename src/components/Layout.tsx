@@ -115,6 +115,7 @@ const Layout = ({ children }: LayoutProps) => {
     aesthetic: "Aesthetic Pro",
     recovery: "Recovery Care",
     vision: "VisionCare Pro",
+    psicologia: "Psicología / Psiquiatría",
   };
   const verticalIcon: Record<VTipo, any> = {
     clinica: Activity,
@@ -122,6 +123,7 @@ const Layout = ({ children }: LayoutProps) => {
     aesthetic: Sparkles,
     recovery: BedDouble,
     vision: Eye,
+    psicologia: Activity,
   };
   const verticalRoot: Record<VTipo, string> = {
     clinica: "/dashboard",
@@ -129,6 +131,7 @@ const Layout = ({ children }: LayoutProps) => {
     aesthetic: "/aesthetic-pro",
     recovery: "/recovery-care",
     vision: "/vision-care",
+    psicologia: "/psicologia-pro",
   };
 
   // El "Resumen [Vertical]" se fusiona con el Dashboard; no se muestra
@@ -168,6 +171,14 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/recovery-care?tab=seguimiento", label: "Seguimiento clínico", verticales: ["recovery"] },
         { path: "/recovery-care?tab=concierge", label: "Concierge médico", verticales: ["recovery"] },
         { path: "/recovery-care?tab=alertas", label: "Alertas Recovery", verticales: ["recovery"] },
+        { path: "/psicologia-pro?tab=fichas", label: "Fichas psico", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=sesiones", label: "Sesiones", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=notas", label: "Notas clínicas", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=evaluaciones", label: "Tests/Escalas", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=seguimiento", label: "Seguimiento emocional", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=psiquiatria", label: "Psiquiatría", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=tareas", label: "Tareas terapéuticas", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=paquetes", label: "Paquetes/Bonos", verticales: ["psicologia"] },
       ]
     },
 
