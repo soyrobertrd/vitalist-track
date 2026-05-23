@@ -81,6 +81,7 @@ const FirmasDigitales = lazy(() => import("./pages/FirmasDigitales"));
 const Triaje = lazy(() => import("./pages/Triaje"));
 const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
 const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
+const CuestionarioPublico = lazy(() => import("./pages/CuestionarioPublico"));
 const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesional"));
 const UciManagement = lazy(() => import("./pages/UciManagement"));
 const RondasMedicas = lazy(() => import("./pages/RondasMedicas"));
