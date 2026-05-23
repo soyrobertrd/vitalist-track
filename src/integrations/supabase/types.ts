@@ -5458,6 +5458,107 @@ export type Database = {
           },
         ]
       }
+      cuestionarios_envios: {
+        Row: {
+          alerta_clinica: boolean | null
+          created_at: string
+          enviado_at: string | null
+          expira_at: string
+          id: string
+          paciente_id: string
+          plantilla_id: string
+          puntaje_total: number | null
+          respondido_at: string | null
+          respuestas: Json | null
+          sesion_id: string | null
+          token: string
+          workspace_id: string
+        }
+        Insert: {
+          alerta_clinica?: boolean | null
+          created_at?: string
+          enviado_at?: string | null
+          expira_at?: string
+          id?: string
+          paciente_id: string
+          plantilla_id: string
+          puntaje_total?: number | null
+          respondido_at?: string | null
+          respuestas?: Json | null
+          sesion_id?: string | null
+          token?: string
+          workspace_id: string
+        }
+        Update: {
+          alerta_clinica?: boolean | null
+          created_at?: string
+          enviado_at?: string | null
+          expira_at?: string
+          id?: string
+          paciente_id?: string
+          plantilla_id?: string
+          puntaje_total?: number | null
+          respondido_at?: string | null
+          respuestas?: Json | null
+          sesion_id?: string | null
+          token?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cuestionarios_envios_plantilla_id_fkey"
+            columns: ["plantilla_id"]
+            isOneToOne: false
+            referencedRelation: "cuestionarios_plantillas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cuestionarios_plantillas: {
+        Row: {
+          activo: boolean | null
+          created_at: string
+          created_by: string | null
+          descripcion: string | null
+          enviar_automatico: boolean | null
+          horas_antes: number | null
+          id: string
+          nombre: string
+          preguntas: Json
+          tipo: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean | null
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          enviar_automatico?: boolean | null
+          horas_antes?: number | null
+          id?: string
+          nombre: string
+          preguntas?: Json
+          tipo?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean | null
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          enviar_automatico?: boolean | null
+          horas_antes?: number | null
+          id?: string
+          nombre?: string
+          preguntas?: Json
+          tipo?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       delegaciones_acceso_vertical: {
         Row: {
           activo: boolean
@@ -11859,6 +11960,74 @@ export type Database = {
             columns: ["nota_id"]
             isOneToOne: false
             referencedRelation: "notas_psicologia"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notas_ultra_privadas: {
+        Row: {
+          contenido: string
+          created_at: string
+          id: string
+          paciente_id: string | null
+          sesion_id: string | null
+          terapeuta_id: string
+          titulo: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          contenido: string
+          created_at?: string
+          id?: string
+          paciente_id?: string | null
+          sesion_id?: string | null
+          terapeuta_id: string
+          titulo?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          contenido?: string
+          created_at?: string
+          id?: string
+          paciente_id?: string | null
+          sesion_id?: string | null
+          terapeuta_id?: string
+          titulo?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      notas_ultra_privadas_accesos: {
+        Row: {
+          accion: string
+          created_at: string
+          id: string
+          nota_id: string
+          user_id: string
+        }
+        Insert: {
+          accion?: string
+          created_at?: string
+          id?: string
+          nota_id: string
+          user_id: string
+        }
+        Update: {
+          accion?: string
+          created_at?: string
+          id?: string
+          nota_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notas_ultra_privadas_accesos_nota_id_fkey"
+            columns: ["nota_id"]
+            isOneToOne: false
+            referencedRelation: "notas_ultra_privadas"
             referencedColumns: ["id"]
           },
         ]
@@ -22486,6 +22655,7 @@ export type Database = {
         Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
       }
+      leer_cuestionario_por_token: { Args: { _token: string }; Returns: Json }
       leer_nota_psicologia: {
         Args: { _nota_id: string }
         Returns: {
@@ -22507,6 +22677,26 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "notas_psicologia"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      leer_nota_ultra_privada: {
+        Args: { _nota_id: string }
+        Returns: {
+          contenido: string
+          created_at: string
+          id: string
+          paciente_id: string | null
+          sesion_id: string | null
+          terapeuta_id: string
+          titulo: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "notas_ultra_privadas"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -22625,6 +22815,15 @@ export type Database = {
           cohorte_mes: string
           total_nuevos: number
         }[]
+      }
+      responder_cuestionario_publico: {
+        Args: {
+          _alerta?: boolean
+          _puntaje?: number
+          _respuestas: Json
+          _token: string
+        }
+        Returns: string
       }
       set_motivo_cambio: { Args: { _motivo: string }; Returns: undefined }
       workflow_ejecutar_plantilla: {
