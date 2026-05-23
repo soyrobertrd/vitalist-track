@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertTriangle, ShieldAlert, BellRing } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
+import { useProfessionalVertical } from "@/hooks/useProfessionalVertical";
 
 const SEV_COLOR: Record<string, string> = {
   baja: "bg-blue-100 text-blue-700",
