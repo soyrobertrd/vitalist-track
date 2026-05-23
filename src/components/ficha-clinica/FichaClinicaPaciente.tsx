@@ -19,6 +19,7 @@ import { DocumentosClinicos } from "@/components/ficha-clinica/DocumentosClinico
 import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
 import { HistorialVideoConsultas } from "@/components/HistorialVideoConsultas";
 import { EscalasClinicasPaciente } from "@/components/ficha-clinica/EscalasClinicas";
+import { MapaCorporal } from "@/components/clinico/MapaCorporal";
 import EscalasEnfermeriaManager from "@/components/EscalasEnfermeriaManager";
 import { Cie10Workbench } from "@/components/ficha-clinica/Cie10Workbench";
 import { useAuditAccess } from "@/hooks/useAuditAccess";
@@ -273,7 +274,16 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
               <LayoutTemplate className="h-4 w-4" />
               Consultas Esp.
             </TabsTrigger>
+            <TabsTrigger value="mapa_corporal" className="flex items-center gap-1.5">
+              <Stethoscope className="h-4 w-4" />
+              Mapa corporal
+            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="mapa_corporal" className="mt-4">
+            <MapaCorporal pacienteId={pacienteId} />
+          </TabsContent>
+
 
           <TabsContent value="recetas" className="mt-4">
             <RecetasPaciente pacienteId={pacienteId} />
