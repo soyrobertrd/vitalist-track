@@ -80,6 +80,7 @@ import { SucursalSwitcher } from "@/components/SucursalSwitcher";
 import { VerticalSwitcher } from "@/components/VerticalSwitcher";
 import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
 import { useFreePlan } from "@/hooks/useFreePlan";
+import { useEffectiveModules } from "@/hooks/useEffectiveModules";
 
 interface LayoutProps {
   children: ReactNode;
