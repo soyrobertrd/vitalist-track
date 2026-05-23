@@ -3201,6 +3201,44 @@ export type Database = {
           },
         ]
       }
+      chat_teleconsulta: {
+        Row: {
+          autor_tipo: string
+          autor_user_id: string | null
+          created_at: string
+          id: string
+          leido_at: string | null
+          mensaje: string
+          teleconsulta_id: string
+        }
+        Insert: {
+          autor_tipo: string
+          autor_user_id?: string | null
+          created_at?: string
+          id?: string
+          leido_at?: string | null
+          mensaje: string
+          teleconsulta_id: string
+        }
+        Update: {
+          autor_tipo?: string
+          autor_user_id?: string | null
+          created_at?: string
+          id?: string
+          leido_at?: string | null
+          mensaje?: string
+          teleconsulta_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_teleconsulta_teleconsulta_id_fkey"
+            columns: ["teleconsulta_id"]
+            isOneToOne: false
+            referencedRelation: "teleconsultas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checklist_oms: {
         Row: {
           completado: boolean | null
@@ -4259,6 +4297,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      consentimientos_teleconsulta: {
+        Row: {
+          created_at: string
+          firma_data: string | null
+          firmado_at: string
+          id: string
+          ip: string | null
+          paciente_id: string
+          texto_version: string
+          user_agent: string | null
+          valido_hasta: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          firma_data?: string | null
+          firmado_at?: string
+          id?: string
+          ip?: string | null
+          paciente_id: string
+          texto_version?: string
+          user_agent?: string | null
+          valido_hasta?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          firma_data?: string | null
+          firmado_at?: string
+          id?: string
+          ip?: string | null
+          paciente_id?: string
+          texto_version?: string
+          user_agent?: string | null
+          valido_hasta?: string
+          workspace_id?: string
+        }
+        Relationships: []
       }
       consultas_especialidad: {
         Row: {
@@ -6027,6 +6104,62 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentos_compartidos_psico: {
+        Row: {
+          created_at: string
+          expira_at: string | null
+          id: string
+          mime_type: string | null
+          nombre: string
+          paciente_id: string
+          permiso: string
+          storage_path: string
+          subido_por: string | null
+          tamano_bytes: number | null
+          teleconsulta_id: string | null
+          visible_paciente: boolean | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          expira_at?: string | null
+          id?: string
+          mime_type?: string | null
+          nombre: string
+          paciente_id: string
+          permiso?: string
+          storage_path: string
+          subido_por?: string | null
+          tamano_bytes?: number | null
+          teleconsulta_id?: string | null
+          visible_paciente?: boolean | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          expira_at?: string | null
+          id?: string
+          mime_type?: string | null
+          nombre?: string
+          paciente_id?: string
+          permiso?: string
+          storage_path?: string
+          subido_por?: string | null
+          tamano_bytes?: number | null
+          teleconsulta_id?: string | null
+          visible_paciente?: boolean | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_compartidos_psico_teleconsulta_id_fkey"
+            columns: ["teleconsulta_id"]
+            isOneToOne: false
+            referencedRelation: "teleconsultas"
             referencedColumns: ["id"]
           },
         ]
@@ -19603,6 +19736,75 @@ export type Database = {
           },
         ]
       }
+      teleconsultas: {
+        Row: {
+          consentimiento_id: string | null
+          created_at: string
+          duracion_min: number | null
+          estado: string
+          fin_at: string | null
+          id: string
+          inicio_at: string | null
+          notas_post: string | null
+          paciente_id: string
+          pin_paciente: string
+          sala_codigo: string
+          sesion_id: string | null
+          terapeuta_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          consentimiento_id?: string | null
+          created_at?: string
+          duracion_min?: number | null
+          estado?: string
+          fin_at?: string | null
+          id?: string
+          inicio_at?: string | null
+          notas_post?: string | null
+          paciente_id: string
+          pin_paciente?: string
+          sala_codigo?: string
+          sesion_id?: string | null
+          terapeuta_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          consentimiento_id?: string | null
+          created_at?: string
+          duracion_min?: number | null
+          estado?: string
+          fin_at?: string | null
+          id?: string
+          inicio_at?: string | null
+          notas_post?: string | null
+          paciente_id?: string
+          pin_paciente?: string
+          sala_codigo?: string
+          sesion_id?: string | null
+          terapeuta_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teleconsultas_consentimiento_id_fkey"
+            columns: ["consentimiento_id"]
+            isOneToOne: false
+            referencedRelation: "consentimientos_teleconsulta"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teleconsultas_sesion_id_fkey"
+            columns: ["sesion_id"]
+            isOneToOne: false
+            referencedRelation: "sesiones_psicologia"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teleconsultas_vertical: {
         Row: {
           consentimiento_grabacion: boolean | null
@@ -21822,6 +22024,31 @@ export type Database = {
         Args: { _user_id: string; _workspace_id: string }
         Returns: boolean
       }
+      leer_nota_psicologia: {
+        Args: { _nota_id: string }
+        Returns: {
+          bloqueada_supervisor: boolean | null
+          contenido: string | null
+          contenido_compartible: string | null
+          created_at: string
+          created_by: string | null
+          es_privada: boolean | null
+          id: string
+          paciente_id: string
+          sesion_id: string | null
+          supervisor_id: string | null
+          terapeuta_id: string | null
+          tipo_nota: string
+          updated_at: string
+          workspace_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "notas_psicologia"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       limite_centros_profesional: {
         Args: { _user_id: string }
         Returns: number
@@ -21889,6 +22116,53 @@ export type Database = {
           _resultado?: Json
         }
         Returns: string
+      }
+      reporte_asistencia_psicologia: {
+        Args: { _desde?: string; _hasta?: string; _workspace_id: string }
+        Returns: {
+          asistidas: number
+          canceladas: number
+          no_show: number
+          paciente_id: string
+          paciente_nombre: string
+          pct_asistencia: number
+          total: number
+        }[]
+      }
+      reporte_cancelaciones_psico: {
+        Args: { _desde?: string; _hasta?: string; _workspace_id: string }
+        Returns: {
+          cantidad: number
+          estado: string
+        }[]
+      }
+      reporte_evolucion_escalas: {
+        Args: { _paciente_id: string }
+        Returns: {
+          escala: string
+          fecha: string
+          puntaje: number
+          severidad: string
+        }[]
+      }
+      reporte_pacientes_inactivos_psico: {
+        Args: { _meses?: number; _workspace_id: string }
+        Returns: {
+          dias_sin_sesion: number
+          paciente_id: string
+          paciente_nombre: string
+          ultima_sesion: string
+        }[]
+      }
+      reporte_retencion_terapeutica: {
+        Args: { _desde?: string; _workspace_id: string }
+        Returns: {
+          activos_180d: number
+          activos_30d: number
+          activos_90d: number
+          cohorte_mes: string
+          total_nuevos: number
+        }[]
       }
       set_motivo_cambio: { Args: { _motivo: string }; Returns: undefined }
       workflow_ejecutar_plantilla: {
