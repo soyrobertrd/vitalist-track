@@ -378,6 +378,7 @@ const Layout = ({ children }: LayoutProps) => {
     "/dashboard",
     "/agenda", // grupo padre
     "/calendario",
+    "/agenda-universal", // agenda personal de cada profesional
     "/recepcion",
     "/pacientes", // grupo padre + lista
     "/atencion-paciente",
