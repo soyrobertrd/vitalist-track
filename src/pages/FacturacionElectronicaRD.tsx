@@ -27,12 +27,16 @@ const TIPOS_NCF = [
 ];
 
 export default function FacturacionElectronicaRD() {
+  const { t } = useTranslation(["facturacion_rd", "common"]);
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
   const [secuencias, setSecuencias] = useState<any[]>([]);
   const [comprobantes, setComprobantes] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
+  const [emitOpen, setEmitOpen] = useState(false);
+  const [emitting, setEmitting] = useState(false);
   const [form, setForm] = useState({ tipo_ncf: "B02", serie: "B", inicio: 1, fin: 10000, actual: 1, fecha_vencimiento: "" });
+  const [emitForm, setEmitForm] = useState({ tipo_ncf: "B02", rnc_cliente: "", subtotal: 0 });
 
   const load = async () => {
     if (!wsId) return;
