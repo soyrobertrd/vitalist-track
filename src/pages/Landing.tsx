@@ -377,6 +377,41 @@ export default function Landing() {
             <p className="text-muted-foreground mt-3">
               Empieza gratis, escala cuando necesites. Sin contratos, cancela cuando quieras.
             </p>
+
+            {/* Toggle mensual / anual */}
+            <div className="mt-6 inline-flex items-center gap-1 rounded-full border bg-card p-1">
+              <button
+                type="button"
+                onClick={() => setBillingCycle("mensual")}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  billingCycle === "mensual"
+                    ? "bg-primary text-primary-foreground shadow"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Mensual
+              </button>
+              <button
+                type="button"
+                onClick={() => setBillingCycle("anual")}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors inline-flex items-center gap-2 ${
+                  billingCycle === "anual"
+                    ? "bg-primary text-primary-foreground shadow"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Anual
+                <span
+                  className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                    billingCycle === "anual"
+                      ? "bg-primary-foreground/20 text-primary-foreground"
+                      : "bg-primary/10 text-primary"
+                  }`}
+                >
+                  -15%
+                </span>
+              </button>
+            </div>
           </div>
 
           {loadingPlanes ? (
@@ -388,6 +423,10 @@ export default function Landing() {
               {planes.map((plan) => {
                 const isPro = plan.codigo === "pro";
                 const features = PLAN_FEATURES[plan.codigo] || [];
+                const mensual = Number(plan.precio_mensual_usd) || 0;
+                const anualTotal = Math.round(mensual * 12 * (1 - ANNUAL_DISCOUNT));
+                const anualMensualizado = mensual > 0 ? Math.round(anualTotal / 12) : 0;
+                const isAnual = billingCycle === "anual" && mensual > 0;
                 return (
                   <div
                     key={plan.codigo}
@@ -403,8 +442,18 @@ export default function Landing() {
                     <h3 className="text-lg font-semibold">{plan.nombre}</h3>
                     <p className="text-sm text-muted-foreground mt-1 min-h-[40px]">{plan.descripcion}</p>
                     <div className="mt-4">
-                      <span className="text-4xl font-bold">${plan.precio_mensual_usd}</span>
+                      <span className="text-4xl font-bold">
+                        ${isAnual ? anualMensualizado : mensual}
+                      </span>
                       <span className="text-muted-foreground"> /mes</span>
+                      {isAnual && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          ${anualTotal} facturados anualmente · ahorras ${mensual * 12 - anualTotal}
+                        </p>
+                      )}
+                      {!isAnual && mensual === 0 && (
+                        <p className="text-xs text-muted-foreground mt-1">Gratis para siempre</p>
+                      )}
                     </div>
                     <ul className="mt-6 space-y-2 text-sm flex-1">
                       <li className="flex items-start gap-2">
