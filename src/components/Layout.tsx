@@ -155,7 +155,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/pacientes", icon: Users, label: va === "aesthetic" ? "Clientes" : "Pacientes",
+      path: "/pacientes", icon: Users, label: va === "aesthetic" ? "Clientes" : "Pacientes", moduleKey: "pacientes",
       subItems: [
         { path: "/pacientes", label: va === "aesthetic" ? "Lista de Clientes" : "Lista de Pacientes" },
         { path: "/sospechosos", label: "Sospechosos", verticales: ["clinica"] },
