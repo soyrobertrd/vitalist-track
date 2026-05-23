@@ -11,6 +11,7 @@ interface UserProfile {
   telefono: string | null;
   especialidad: string | null;
   rol: string;
+  vertical_profesional: string | null;
 }
 
 export function useUserProfile() {
