@@ -12,6 +12,7 @@
 - Security: RLS by ownership — médico/enfermera only access patients/visits/calls where they are the assigned `personal_salud.user_id`. Admin/coordinador see all. Helpers: `is_admin_or_coordinador`, `is_staff_clinico_de_paciente`, `is_staff_clinico_de_profesional`.
 - Audit: Critical tables auto-log INSERT/UPDATE/DELETE via trigger `registrar_cambio_auditoria` into `auditoria_cambios`. Only admins can view.
 - Verticals (VisionCare, DentalCare, AestheticPro, RecoveryCare) are standalone products with full clinic ops (pacientes, citas, personal, facturación, nómina).
+- i18n: every new page/component MUST use `useTranslation` and add keys to es+en in `src/i18n/index.ts` from day one.
 
 ## Memories
 - [Fase DD - Verticales por centro](mem://features/fase-dd-verticales-y-alta) — Workspace verticales (clinica/dental/aesthetic/recovery/vision), filtrado del menú por vertical activa, conmutador admin y módulo de alta hospitalaria

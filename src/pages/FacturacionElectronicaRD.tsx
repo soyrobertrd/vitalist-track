@@ -11,7 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, FileText } from "lucide-react";
+import { Plus, FileText, Receipt } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const TIPOS_NCF = [
   { v: "B01", l: "B01 - Crédito Fiscal" },
@@ -26,12 +27,16 @@ const TIPOS_NCF = [
 ];
 
 export default function FacturacionElectronicaRD() {
+  const { t } = useTranslation(["facturacion_rd", "common"]);
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
   const [secuencias, setSecuencias] = useState<any[]>([]);
   const [comprobantes, setComprobantes] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
+  const [emitOpen, setEmitOpen] = useState(false);
+  const [emitting, setEmitting] = useState(false);
   const [form, setForm] = useState({ tipo_ncf: "B02", serie: "B", inicio: 1, fin: 10000, actual: 1, fecha_vencimiento: "" });
+  const [emitForm, setEmitForm] = useState({ tipo_ncf: "B02", rnc_cliente: "", subtotal: 0 });
 
   const load = async () => {
     if (!wsId) return;
@@ -50,6 +55,38 @@ export default function FacturacionElectronicaRD() {
     const { error } = await supabase.from("ncf_secuencias").insert(payload);
     if (error) return toast.error(error.message);
     toast.success("Secuencia registrada"); setOpen(false); load();
+  };
+
+  const emitir = async () => {
+    if (!wsId) return;
+    setEmitting(true);
+    try {
+      const { data: ncf, error: rpcErr } = await (supabase.rpc as any)("generar_ncf", {
+        _workspace_id: wsId,
+        _tipo: emitForm.tipo_ncf,
+      });
+      if (rpcErr) throw rpcErr;
+      const itbis = +(emitForm.subtotal * 0.18).toFixed(2);
+      const total = +(emitForm.subtotal + itbis).toFixed(2);
+      const { error } = await supabase.from("comprobantes_fiscales").insert({
+        workspace_id: wsId,
+        ncf: ncf as string,
+        tipo_ncf: emitForm.tipo_ncf,
+        rnc_cliente: emitForm.rnc_cliente || null,
+        total,
+        itbis,
+        estado_dgii: "pendiente",
+      });
+      if (error) throw error;
+      toast.success(t("emitted_ok", { ncf }));
+      setEmitOpen(false);
+      setEmitForm({ tipo_ncf: "B02", rnc_cliente: "", subtotal: 0 });
+      load();
+    } catch (e: any) {
+      toast.error(e.message || t("emit_failed"));
+    } finally {
+      setEmitting(false);
+    }
   };
 
   return (
@@ -104,7 +141,41 @@ export default function FacturacionElectronicaRD() {
           </Table></CardContent></Card>
         </TabsContent>
 
-        <TabsContent value="cf">
+        <TabsContent value="cf" className="space-y-3">
+          <div className="flex justify-end">
+            <Dialog open={emitOpen} onOpenChange={setEmitOpen}>
+              <DialogTrigger asChild>
+                <Button><Receipt className="h-4 w-4 mr-1" aria-hidden="true" /> {t("emit_ncf")}</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader><DialogTitle>{t("emit_ncf_title")}</DialogTitle></DialogHeader>
+                <div className="space-y-3">
+                  <div>
+                    <Label>{t("tipo")}</Label>
+                    <Select value={emitForm.tipo_ncf} onValueChange={v => setEmitForm({ ...emitForm, tipo_ncf: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{TIPOS_NCF.map(t => <SelectItem key={t.v} value={t.v}>{t.l}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>{t("rnc")}</Label>
+                    <Input value={emitForm.rnc_cliente} onChange={e => setEmitForm({ ...emitForm, rnc_cliente: e.target.value })} />
+                  </div>
+                  <div>
+                    <Label>{t("subtotal")}</Label>
+                    <Input type="number" step="0.01" value={emitForm.subtotal} onChange={e => setEmitForm({ ...emitForm, subtotal: +e.target.value })} />
+                  </div>
+                  <div className="text-sm text-muted-foreground space-y-1 border-t pt-2">
+                    <div>{t("itbis_18")}: RD$ {(emitForm.subtotal * 0.18).toFixed(2)}</div>
+                    <div className="font-medium text-foreground">{t("total")}: RD$ {(emitForm.subtotal * 1.18).toFixed(2)}</div>
+                  </div>
+                  <Button onClick={emitir} disabled={emitting || !emitForm.subtotal} className="w-full">
+                    {emitting ? t("common:loading") : t("emit")}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
           <Card><CardContent className="pt-6"><Table>
             <TableHeader><TableRow><TableHead>NCF</TableHead><TableHead>Tipo</TableHead><TableHead>RNC</TableHead><TableHead>Total</TableHead><TableHead>ITBIS</TableHead><TableHead>Estado DGII</TableHead></TableRow></TableHeader>
             <TableBody>

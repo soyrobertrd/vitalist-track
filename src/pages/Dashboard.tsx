@@ -16,6 +16,7 @@ import { useLocale } from "@/hooks/useLocale";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { useVerticalFilter } from "@/hooks/useVerticalFilter";
+import { useTranslation } from "react-i18next";
 import {
   LineChart,
   Line,
@@ -35,6 +36,7 @@ import {
 } from "recharts";
 
 const Dashboard = () => {
+  const { t } = useTranslation("dashboard");
   const navigate = useNavigate();
   const { timezone } = useLocale();
   const { currentWorkspace } = useWorkspace();
@@ -292,36 +294,36 @@ const Dashboard = () => {
       {/* Stats Grid with Interactive KPIs */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <InteractiveKPI
-          title="Total Pacientes"
+          title={t("total_patients")}
           value={stats.totalPacientes}
-          subtitle={`${stats.pacientesActivos} activos`}
+          subtitle={t("patients_active_count", { count: stats.pacientesActivos })}
           icon={Users}
           trend={{ value: 12, isPositive: true }}
           onClick={() => navigate('/pacientes')}
           color="primary"
         />
         <InteractiveKPI
-          title="Llamadas Pendientes"
+          title={t("pending_calls")}
           value={stats.llamadasPendientes}
-          subtitle="Por realizar"
+          subtitle={t("to_do")}
           icon={Phone}
           trend={{ value: 5, isPositive: false }}
           onClick={() => navigate('/llamadas')}
           color="warning"
         />
         <InteractiveKPI
-          title="Visitas Hoy"
+          title={t("visits_today")}
           value={stats.visitasHoy}
-          subtitle="Programadas"
+          subtitle={t("scheduled")}
           icon={Calendar}
           trend={{ value: 8, isPositive: true }}
           onClick={() => navigate('/visitas')}
           color="success"
         />
         <InteractiveKPI
-          title="Ver Calendario"
-          value="Agenda"
-          subtitle="Citas y visitas"
+          title={t("view_calendar")}
+          value={t("agenda")}
+          subtitle={t("appointments_visits")}
           icon={CalendarDays}
           onClick={() => navigate('/calendario')}
           color="secondary"
@@ -333,8 +335,8 @@ const Dashboard = () => {
         {/* Weekly Activity */}
         <Card>
           <CardHeader>
-            <CardTitle>Actividad Semanal</CardTitle>
-            <CardDescription>Llamadas y visitas por día</CardDescription>
+            <CardTitle>{t("weekly_activity")}</CardTitle>
+            <CardDescription>{t("calls_visits_by_day")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -354,8 +356,8 @@ const Dashboard = () => {
         {/* Calls Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle>Distribución de Llamadas</CardTitle>
-            <CardDescription>Estado de las llamadas del mes</CardDescription>
+            <CardTitle>{t("calls_distribution")}</CardTitle>
+            <CardDescription>{t("monthly_calls_status")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -382,8 +384,8 @@ const Dashboard = () => {
         {/* Visits Status */}
         <Card>
           <CardHeader>
-            <CardTitle>Estado de Visitas</CardTitle>
-            <CardDescription>Resumen mensual de visitas</CardDescription>
+            <CardTitle>{t("visits_status")}</CardTitle>
+            <CardDescription>{t("monthly_visits_summary")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -401,8 +403,8 @@ const Dashboard = () => {
         {/* Monthly Trend */}
         <Card>
           <CardHeader>
-            <CardTitle>Tendencia de Pacientes</CardTitle>
-            <CardDescription>Últimos 5 meses</CardDescription>
+            <CardTitle>{t("patients_trend")}</CardTitle>
+            <CardDescription>{t("last_5_months")}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -428,12 +430,12 @@ const Dashboard = () => {
       <div className="grid gap-6 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Tiempo Promedio de Llamada</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("avg_call_time")}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{extraStats.duracionPromedio} min</div>
-            <p className="text-xs text-muted-foreground">Promedio últimos 30 días</p>
+            <p className="text-xs text-muted-foreground">{t("last_30_days_avg")}</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-primary" style={{ width: `${Math.min(extraStats.duracionPromedio * 10, 100)}%` }} />
             </div>
@@ -442,12 +444,12 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Visitas Completadas</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("completed_visits")}</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{extraStats.tasaCumplimiento}%</div>
-            <p className="text-xs text-muted-foreground">Tasa de cumplimiento</p>
+            <p className="text-xs text-muted-foreground">{t("compliance_rate")}</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-success" style={{ width: `${extraStats.tasaCumplimiento}%` }} />
             </div>
@@ -456,12 +458,12 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Pacientes de Alto Riesgo</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("high_risk_patients")}</CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{extraStats.pacientesAltoRiesgo}</div>
-            <p className="text-xs text-muted-foreground">Requieren atención urgente</p>
+            <p className="text-xs text-muted-foreground">{t("need_urgent_attention")}</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-destructive" style={{ width: `${extraStats.porcentajeAltoRiesgo}%` }} />
             </div>
