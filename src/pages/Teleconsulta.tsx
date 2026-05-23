@@ -23,7 +23,7 @@ type Sesion = {
 const ICE_SERVERS = { iceServers: [{ urls: ["stun:stun.l.google.com:19302"] }] };
 
 export default function Teleconsulta() {
-  const { t } = useTranslation(["teleconsulta", "common"]);
+  const { t: tr } = useTranslation(["teleconsulta", "common"]);
   const qc = useQueryClient();
   const { currentWorkspace } = useWorkspace();
   const [activeSala, setActiveSala] = useState<Sesion | null>(null);
