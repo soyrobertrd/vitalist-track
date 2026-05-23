@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClipboardList, Zap } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
+import { useProfessionalVertical } from "@/hooks/useProfessionalVertical";
 
 const PRIORIDAD_COLOR: Record<string, string> = {
   rutina: "bg-slate-100 text-slate-700",
@@ -17,6 +18,7 @@ const PRIORIDAD_COLOR: Record<string, string> = {
 export default function OrdenesMedicas() {
   const [ordenes, setOrdenes] = useState<any[]>([]);
   const [filtro, setFiltro] = useState<string>("pendiente");
+  const { canActHere, verticalProfesional } = useProfessionalVertical();
 
   const cargar = async () => {
     const { data } = await supabase
