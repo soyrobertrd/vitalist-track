@@ -195,6 +195,19 @@ const resources = {
       room_created: "Room created",
       room_not_found: "Room not found",
     },
+    facturacion_rd: {
+      emit_ncf: "Issue NCF",
+      emit_ncf_title: "Issue tax receipt",
+      tipo: "NCF type",
+      rnc: "Customer RNC",
+      subtotal: "Subtotal",
+      itbis_18: "ITBIS (18%)",
+      total: "Total",
+      emit: "Issue",
+      emitted_ok: "Receipt issued: {{ncf}}",
+      emit_failed: "Failed to issue receipt",
+      no_sequence: "No active sequence for this type",
+    },
   },
 };
 
@@ -206,7 +219,7 @@ i18n
     fallbackLng: "es",
     supportedLngs: ["es", "en"],
     defaultNS: "common",
-    ns: ["common", "nav", "dashboard", "teleconsulta"],
+    ns: ["common", "nav", "dashboard", "teleconsulta", "facturacion_rd"],
     interpolation: { escapeValue: false },
     detection: {
       order: ["localStorage", "navigator"],
