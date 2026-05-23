@@ -9,6 +9,8 @@ import {
   FlaskConical, Image as ImageIcon, ShieldAlert, Workflow,
 } from "lucide-react";
 import { format } from "date-fns";
+import { ExportarDatosGDPR } from "@/components/pacientes/ExportarDatosGDPR";
+
 
 const iconMap: Record<string, any> = {
   visita: Calendar,
@@ -82,8 +84,10 @@ export default function HubPaciente360() {
           <Button asChild variant="outline" size="sm">
             <Link to="/workflows-clinicos"><Workflow className="h-4 w-4 mr-1" /> Workflow</Link>
           </Button>
+          <ExportarDatosGDPR pacienteId={paciente.id} pacienteNombre={`${paciente.nombre}_${paciente.apellido ?? ""}`} />
         </div>
       </div>
+
 
       {/* Resumen por módulo */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">

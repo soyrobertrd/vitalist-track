@@ -54,3 +54,7 @@ verify_jwt = false
 [functions.exportar-auditoria-avanzada]
 verify_jwt = true
 
+[functions.exportar-datos-paciente-gdpr]
+verify_jwt = true
+
+

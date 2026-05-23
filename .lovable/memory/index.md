@@ -99,3 +99,5 @@
 - [Permisos plan+categoría profesional](mem://features/permisos-plan-categoria-profesional) — RPC `get_modulos_efectivos` filtra menú top-level por plan_codigo y categoría de especialidad; admin/owner del workspace bypassea categoría
 - [i18n y PWA shell móvil](mem://features/i18n-pwa-a11y) — i18next es/en con LanguageSwitcher, SW guard en iframe/preview y tap targets WCAG 44px
 - [Fase 11 Teleconsulta y NCF](mem://features/fase-11-teleconsulta-ncf-cron) — WebRTC P2P con signaling realtime, RPC `generar_ncf` para DGII y cron hourly de recordatorios psico
+- [2FA admin + Exportación GDPR paciente](mem://features/2fa-admin-gdpr-export) — TOTP MFA en Configuración → Seguridad y export JSON completo del paciente (HIPAA/GDPR) con auditoría
+
