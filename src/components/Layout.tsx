@@ -345,7 +345,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/checklist-rls", label: "Checklist RLS", icon: Shield },
       ]
     },
-    { path: "/soporte", icon: HelpCircle, label: "Soporte" },
+    { path: "/soporte", icon: HelpCircle, label: "Soporte", moduleKey: "soporte" },
   ];
 
   // Helpers de filtrado por vertical sobre subItems
