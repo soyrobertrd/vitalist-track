@@ -7701,6 +7701,29 @@ export type Database = {
           },
         ]
       }
+      especialidad_categoria_module_access: {
+        Row: {
+          categoria: string
+          modulo_key: string
+        }
+        Insert: {
+          categoria: string
+          modulo_key: string
+        }
+        Update: {
+          categoria?: string
+          modulo_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "especialidad_categoria_module_access_modulo_key_fkey"
+            columns: ["modulo_key"]
+            isOneToOne: false
+            referencedRelation: "modulos_catalogo"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
       especialidades_catalogo: {
         Row: {
           activo: boolean
@@ -12299,6 +12322,30 @@ export type Database = {
         }
         Relationships: []
       }
+      modulos_catalogo: {
+        Row: {
+          created_at: string
+          descripcion: string | null
+          key: string
+          label: string
+          orden: number
+        }
+        Insert: {
+          created_at?: string
+          descripcion?: string | null
+          key: string
+          label: string
+          orden?: number
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string | null
+          key?: string
+          label?: string
+          orden?: number
+        }
+        Relationships: []
+      }
       movimientos_inventario_vertical: {
         Row: {
           cantidad: number
@@ -15067,6 +15114,32 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "pacientes"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      plan_module_access: {
+        Row: {
+          allowed: boolean
+          modulo_key: string
+          plan_codigo: string
+        }
+        Insert: {
+          allowed?: boolean
+          modulo_key: string
+          plan_codigo: string
+        }
+        Update: {
+          allowed?: boolean
+          modulo_key?: string
+          plan_codigo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_module_access_modulo_key_fkey"
+            columns: ["modulo_key"]
+            isOneToOne: false
+            referencedRelation: "modulos_catalogo"
+            referencedColumns: ["key"]
           },
         ]
       }
@@ -23929,6 +24002,12 @@ export type Database = {
         Returns: string
       }
       get_invitation_details: { Args: { _token: string }; Returns: Json }
+      get_modulos_efectivos: {
+        Args: { _user_id: string; _workspace_id: string }
+        Returns: {
+          modulo_key: string
+        }[]
+      }
       get_user_module_permissions: {
         Args: { _user_id: string }
         Returns: {

@@ -80,6 +80,7 @@ import { SucursalSwitcher } from "@/components/SucursalSwitcher";
 import { VerticalSwitcher } from "@/components/VerticalSwitcher";
 import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
 import { useFreePlan } from "@/hooks/useFreePlan";
+import { useEffectiveModules } from "@/hooks/useEffectiveModules";
 
 interface LayoutProps {
   children: ReactNode;
@@ -93,6 +94,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { isAdmin } = useUserRole();
   const { verticalActiva } = useVertical();
   const { isFree } = useFreePlan();
+  const { canAccess: canAccessModule, loading: loadingModules } = useEffectiveModules();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
@@ -138,10 +140,10 @@ const Layout = ({ children }: LayoutProps) => {
   // como item separado en el menú lateral.
 
   const menuItems: any[] = [
-    { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard", moduleKey: "dashboard" },
 
     {
-      path: "/agenda", icon: CalendarDays, label: "Agenda",
+      path: "/agenda", icon: CalendarDays, label: "Agenda", moduleKey: "agenda",
       subItems: [
         { path: "/calendario", label: "Calendario", icon: CalendarDays },
         { path: "/llamadas", label: "Llamadas", icon: Phone, verticales: ["clinica"] },
@@ -153,7 +155,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/pacientes", icon: Users, label: va === "aesthetic" ? "Clientes" : "Pacientes",
+      path: "/pacientes", icon: Users, label: va === "aesthetic" ? "Clientes" : "Pacientes", moduleKey: "pacientes",
       subItems: [
         { path: "/pacientes", label: va === "aesthetic" ? "Lista de Clientes" : "Lista de Pacientes" },
         { path: "/sospechosos", label: "Sospechosos", verticales: ["clinica"] },
@@ -183,7 +185,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/clinico", icon: Stethoscope, label: "Clínico",
+      path: "/clinico", icon: Stethoscope, label: "Clínico", moduleKey: "clinico",
       verticales: ["clinica"] as VerticalTipo[],
       subItems: [
         { path: "/triaje", label: "Triaje" },
@@ -208,7 +210,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/diagnostico", icon: Microscope, label: "Diagnóstico",
+      path: "/diagnostico", icon: Microscope, label: "Diagnóstico", moduleKey: "diagnostico",
       verticales: ["clinica"] as VerticalTipo[],
       subItems: [
         { path: "/laboratorio", label: "Laboratorio" },
@@ -221,7 +223,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/recursos", icon: Building2, label: "Recursos",
+      path: "/recursos", icon: Building2, label: "Recursos", moduleKey: "recursos",
       subItems: [
         { path: "/consultorios", label: "Consultorios", icon: Building2, verticales: ["clinica"] },
         { path: "/farmacia", label: "Farmacia", icon: Pill, verticales: ["clinica"] },
@@ -251,7 +253,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/financiero", icon: DollarSign, label: "Financiero", adminOnly: true,
+      path: "/financiero", icon: DollarSign, label: "Financiero", adminOnly: true, moduleKey: "financiero",
       subItems: [
         { path: "/finanzas?tab=caja", label: "Caja", icon: DollarSign },
         { path: "/finanzas?tab=devoluciones", label: "Notas de crédito" },
@@ -271,7 +273,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/equipo", icon: UserCog, label: "Equipo & RRHH", adminOnly: true,
+      path: "/equipo", icon: UserCog, label: "Equipo & RRHH", adminOnly: true, moduleKey: "equipo",
       subItems: [
         { path: "/personal", label: "Personal de salud" },
         { path: "/rrhh", label: "Recursos Humanos" },
@@ -299,7 +301,7 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/inventario", icon: Boxes, label: "Inventario" },
 
     {
-      path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true,
+      path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true, moduleKey: "crm",
       subItems: [
         { path: "/crm", label: "CRM principal" },
         { path: "/segmentacion", label: "Segmentación", icon: Target },
@@ -312,11 +314,11 @@ const Layout = ({ children }: LayoutProps) => {
       ]
     },
 
-    { path: "/turnos", icon: Monitor, label: "Turnos y Colas", verticales: ["clinica"] as VerticalTipo[] },
+    { path: "/turnos", icon: Monitor, label: "Turnos y Colas", moduleKey: "turnos", verticales: ["clinica"] as VerticalTipo[] },
 
     // Interoperabilidad / clínica avanzada (sólo hospital)
     {
-      path: "/avanzado", icon: Shield, label: "Avanzado",
+      path: "/avanzado", icon: Shield, label: "Avanzado", moduleKey: "avanzado",
       verticales: ["clinica"] as VerticalTipo[],
       subItems: [
         { path: "/quirofano-avanzado", label: "Quirófano (avanzado)" },
@@ -328,10 +330,10 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     // Telemedicina común
-    { path: "/telemedicina", icon: Activity, label: "Telemedicina" },
+    { path: "/telemedicina", icon: Activity, label: "Telemedicina", moduleKey: "telemedicina" },
 
     {
-      path: "/config-grupo", icon: Settings, label: "Configuración", adminOnly: true,
+      path: "/config-grupo", icon: Settings, label: "Configuración", adminOnly: true, moduleKey: "config",
       subItems: [
         { path: "/configuracion-admin", label: "Sistema", icon: Cog },
         { path: "/verticales", label: "Verticales del centro", icon: Building2 },
@@ -343,7 +345,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/checklist-rls", label: "Checklist RLS", icon: Shield },
       ]
     },
-    { path: "/soporte", icon: HelpCircle, label: "Soporte" },
+    { path: "/soporte", icon: HelpCircle, label: "Soporte", moduleKey: "soporte" },
   ];
 
   // Helpers de filtrado por vertical sobre subItems
@@ -379,6 +381,8 @@ const Layout = ({ children }: LayoutProps) => {
       if (va === "todas") return true;
       return item.verticales.includes(va);
     })
+    // Filtro por plan + categoría profesional (módulos efectivos)
+    .filter((item) => loadingModules || canAccessModule(item.moduleKey))
     .map((item) => {
       if (!item.subItems) return item;
       let filtered = item.subItems.filter(subItemAplica);
