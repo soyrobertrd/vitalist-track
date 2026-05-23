@@ -29,9 +29,9 @@ export default function RecordatoriosSesionesPsico({ workspaceId }: Props) {
     setLoading(true);
     const { data: sesiones } = await supabase
       .from("sesiones_psicologia")
-      .select("id, paciente_id, fecha, hora")
+      .select("id, paciente_id, fecha_hora")
       .eq("workspace_id", workspaceId)
-      .gte("fecha", new Date().toISOString().slice(0, 10))
+      .gte("fecha_hora", new Date().toISOString())
       .limit(100);
     if (!sesiones?.length) { toast.info("Sin sesiones futuras"); setLoading(false); return; }
     const inserts = sesiones.map(s => ({
@@ -39,7 +39,7 @@ export default function RecordatoriosSesionesPsico({ workspaceId }: Props) {
       sesion_id: s.id,
       paciente_id: s.paciente_id,
       canal: "email",
-      programado_para: new Date(`${s.fecha}T${s.hora || "09:00"}:00`).toISOString(),
+      programado_para: new Date(new Date(s.fecha_hora).getTime() - 24 * 60 * 60 * 1000).toISOString(),
     }));
     const { error } = await supabase.from("recordatorios_sesiones_psico").insert(inserts);
     if (error) toast.error(error.message); else { toast.success(`${inserts.length} recordatorios programados`); fetch(); }
