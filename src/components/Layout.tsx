@@ -273,7 +273,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/equipo", icon: UserCog, label: "Equipo & RRHH", adminOnly: true,
+      path: "/equipo", icon: UserCog, label: "Equipo & RRHH", adminOnly: true, moduleKey: "equipo",
       subItems: [
         { path: "/personal", label: "Personal de salud" },
         { path: "/rrhh", label: "Recursos Humanos" },
