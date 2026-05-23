@@ -223,7 +223,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/recursos", icon: Building2, label: "Recursos",
+      path: "/recursos", icon: Building2, label: "Recursos", moduleKey: "recursos",
       subItems: [
         { path: "/consultorios", label: "Consultorios", icon: Building2, verticales: ["clinica"] },
         { path: "/farmacia", label: "Farmacia", icon: Pill, verticales: ["clinica"] },
