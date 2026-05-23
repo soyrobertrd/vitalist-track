@@ -57,6 +57,38 @@ export default function FacturacionElectronicaRD() {
     toast.success("Secuencia registrada"); setOpen(false); load();
   };
 
+  const emitir = async () => {
+    if (!wsId) return;
+    setEmitting(true);
+    try {
+      const { data: ncf, error: rpcErr } = await (supabase.rpc as any)("generar_ncf", {
+        _workspace_id: wsId,
+        _tipo: emitForm.tipo_ncf,
+      });
+      if (rpcErr) throw rpcErr;
+      const itbis = +(emitForm.subtotal * 0.18).toFixed(2);
+      const total = +(emitForm.subtotal + itbis).toFixed(2);
+      const { error } = await supabase.from("comprobantes_fiscales").insert({
+        workspace_id: wsId,
+        ncf: ncf as string,
+        tipo_ncf: emitForm.tipo_ncf,
+        rnc_cliente: emitForm.rnc_cliente || null,
+        total,
+        itbis,
+        estado_dgii: "pendiente",
+      });
+      if (error) throw error;
+      toast.success(t("emitted_ok", { ncf }));
+      setEmitOpen(false);
+      setEmitForm({ tipo_ncf: "B02", rnc_cliente: "", subtotal: 0 });
+      load();
+    } catch (e: any) {
+      toast.error(e.message || t("emit_failed"));
+    } finally {
+      setEmitting(false);
+    }
+  };
+
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Facturación Electrónica RD (NCF / e-CF)</h1>
