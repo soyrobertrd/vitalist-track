@@ -7008,6 +7008,53 @@ export type Database = {
           },
         ]
       }
+      envios_externos_psico: {
+        Row: {
+          created_at: string
+          enviado_por: string | null
+          estado: string
+          id: string
+          integracion_id: string
+          payload: Json
+          referencia_id: string
+          respuesta: Json | null
+          tipo_referencia: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          enviado_por?: string | null
+          estado?: string
+          id?: string
+          integracion_id: string
+          payload: Json
+          referencia_id: string
+          respuesta?: Json | null
+          tipo_referencia: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          enviado_por?: string | null
+          estado?: string
+          id?: string
+          integracion_id?: string
+          payload?: Json
+          referencia_id?: string
+          respuesta?: Json | null
+          tipo_referencia?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "envios_externos_psico_integracion_id_fkey"
+            columns: ["integracion_id"]
+            isOneToOne: false
+            referencedRelation: "integraciones_externas_psico"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       equipo_quirurgico: {
         Row: {
           cirugia_id: string
@@ -9711,6 +9758,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      integraciones_externas_psico: {
+        Row: {
+          activo: boolean
+          api_key_cifrada: string | null
+          created_at: string
+          endpoint: string | null
+          id: string
+          metadata: Json | null
+          nombre: string
+          tipo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          activo?: boolean
+          api_key_cifrada?: string | null
+          created_at?: string
+          endpoint?: string | null
+          id?: string
+          metadata?: Json | null
+          nombre: string
+          tipo: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          activo?: boolean
+          api_key_cifrada?: string | null
+          created_at?: string
+          endpoint?: string | null
+          id?: string
+          metadata?: Json | null
+          nombre?: string
+          tipo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
       }
       integraciones_externas_vertical: {
         Row: {
@@ -15100,6 +15186,42 @@ export type Database = {
           },
         ]
       }
+      portal_psico_accesos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          expira_at: string
+          id: string
+          paciente_id: string
+          revocado: boolean
+          token: string
+          ultimo_acceso_at: string | null
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          expira_at: string
+          id?: string
+          paciente_id: string
+          revocado?: boolean
+          token: string
+          ultimo_acceso_at?: string | null
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          expira_at?: string
+          id?: string
+          paciente_id?: string
+          revocado?: boolean
+          token?: string
+          ultimo_acceso_at?: string | null
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       portal_solicitudes: {
         Row: {
           atendida_at: string | null
@@ -17526,6 +17648,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      recordatorios_sesiones_psico: {
+        Row: {
+          canal: string
+          created_at: string
+          enviado_at: string | null
+          error_msg: string | null
+          estado: string
+          id: string
+          paciente_id: string
+          programado_para: string
+          sesion_id: string
+          workspace_id: string
+        }
+        Insert: {
+          canal: string
+          created_at?: string
+          enviado_at?: string | null
+          error_msg?: string | null
+          estado?: string
+          id?: string
+          paciente_id: string
+          programado_para: string
+          sesion_id: string
+          workspace_id: string
+        }
+        Update: {
+          canal?: string
+          created_at?: string
+          enviado_at?: string | null
+          error_msg?: string | null
+          estado?: string
+          id?: string
+          paciente_id?: string
+          programado_para?: string
+          sesion_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
       }
       recuperacion_post_anestesica: {
         Row: {
@@ -22766,6 +22927,10 @@ export type Database = {
         Args: { _periodo?: string; _workspace_id?: string }
         Returns: string
       }
+      generar_token_portal_paciente: {
+        Args: { _dias_validez?: number; _paciente_id: string }
+        Returns: string
+      }
       get_invitation_details: { Args: { _token: string }; Returns: Json }
       get_user_module_permissions: {
         Args: { _user_id: string }
@@ -22857,6 +23022,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      leer_portal_paciente_por_token: {
+        Args: { _token: string }
+        Returns: Json
       }
       limite_centros_profesional: {
         Args: { _user_id: string }
