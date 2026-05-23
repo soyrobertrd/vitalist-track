@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Video, VideoOff, Mic, MicOff, PhoneOff, Plus, Copy } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { useTranslation } from "react-i18next";
 
 type Sesion = {
   id: string;
