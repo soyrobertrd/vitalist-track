@@ -19,6 +19,7 @@ const SEV_COLOR: Record<string, string> = {
 export default function AlertasClinicas() {
   const [alertas, setAlertas] = useState<any[]>([]);
   const [filtro, setFiltro] = useState("activa");
+  const { canActHere, verticalProfesional } = useProfessionalVertical();
 
   const cargar = async () => {
     const { data } = await supabase
