@@ -381,6 +381,8 @@ const Layout = ({ children }: LayoutProps) => {
       if (va === "todas") return true;
       return item.verticales.includes(va);
     })
+    // Filtro por plan + categoría profesional (módulos efectivos)
+    .filter((item) => loadingModules || canAccessModule(item.moduleKey))
     .map((item) => {
       if (!item.subItems) return item;
       let filtered = item.subItems.filter(subItemAplica);
