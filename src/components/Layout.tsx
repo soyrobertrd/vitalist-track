@@ -314,7 +314,7 @@ const Layout = ({ children }: LayoutProps) => {
       ]
     },
 
-    { path: "/turnos", icon: Monitor, label: "Turnos y Colas", verticales: ["clinica"] as VerticalTipo[] },
+    { path: "/turnos", icon: Monitor, label: "Turnos y Colas", moduleKey: "turnos", verticales: ["clinica"] as VerticalTipo[] },
 
     // Interoperabilidad / clínica avanzada (sólo hospital)
     {
