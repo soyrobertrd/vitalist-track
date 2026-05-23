@@ -685,6 +685,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <OfflineIndicator />
                 <SucursalSwitcher />
                 <GlobalSearch />
+                <LanguageSwitcher />
               </div>
             </div>
           </div>
