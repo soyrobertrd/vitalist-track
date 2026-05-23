@@ -119,6 +119,9 @@ const DentalCarePro = lazy(() => import("./pages/DentalCarePro"));
 const VisionCarePro = lazy(() => import("./pages/VisionCarePro"));
 const PsicologiaPro = lazy(() => import("./pages/PsicologiaPro"));
 const LandingPsicologia = lazy(() => import("./pages/landing/LandingPsicologia"));
+const ReportesPsicologia = lazy(() => import("./pages/psicologia/ReportesPsicologia"));
+const SalaTeleconsulta = lazy(() => import("./pages/psicologia/SalaTeleconsulta"));
+const AuditoriaNotasPsico = lazy(() => import("./pages/psicologia/AuditoriaNotasPsico"));
 const QuirofanoAvanzado = lazy(() => import("./pages/QuirofanoAvanzado"));
 const UrgenciasTriage = lazy(() => import("./pages/UrgenciasTriage"));
 const BancoSangreAvanzado = lazy(() => import("./pages/BancoSangreAvanzado"));
@@ -537,6 +540,9 @@ const App = () => {
                   element={session ? <Layout><PsicologiaPro /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="/landing/psicologia" element={<LandingPsicologia />} />
+                <Route path="/psicologia/reportes" element={session ? <Layout><ReportesPsicologia /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/psicologia/teleconsulta/:id" element={session ? <Layout><SalaTeleconsulta /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/psicologia/auditoria-notas" element={session ? <Layout><AuditoriaNotasPsico /></Layout> : <Navigate to="/auth" />} />
 
                 {/* Landings públicos por vertical */}
                 <Route path="/clinica" element={<LandingClinica />} />
