@@ -30,18 +30,30 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Register Service Worker for PWA
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-              console.log('SW registered:', registration.scope);
-            })
-            .catch((error) => {
-              console.log('SW registration failed:', error);
+      // Register Service Worker for PWA — but NEVER in iframe/preview contexts
+      // to avoid stale caches in the Lovable editor.
+      (function () {
+        var inIframe = true;
+        try { inIframe = window.self !== window.top; } catch (_) { inIframe = true; }
+        var host = window.location.hostname;
+        var isPreview =
+          host.includes('id-preview--') ||
+          host.includes('lovableproject.com') ||
+          host.includes('lovable.app');
+
+        if ('serviceWorker' in navigator) {
+          if (inIframe || isPreview) {
+            // Clean up any previously registered SW in preview contexts.
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
+              regs.forEach(function (r) { r.unregister(); });
+            }).catch(function () {});
+          } else {
+            window.addEventListener('load', function () {
+              navigator.serviceWorker.register('/sw.js').catch(function () {});
             });
-        });
-      }
+          }
+        }
+      })();
     </script>
   </body>
 </html>
