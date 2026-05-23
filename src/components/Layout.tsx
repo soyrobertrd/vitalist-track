@@ -210,7 +210,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/diagnostico", icon: Microscope, label: "Diagnóstico",
+      path: "/diagnostico", icon: Microscope, label: "Diagnóstico", moduleKey: "diagnostico",
       verticales: ["clinica"] as VerticalTipo[],
       subItems: [
         { path: "/laboratorio", label: "Laboratorio" },
