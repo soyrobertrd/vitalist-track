@@ -94,6 +94,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { isAdmin } = useUserRole();
   const { verticalActiva } = useVertical();
   const { isFree } = useFreePlan();
+  const { canAccess: canAccessModule, loading: loadingModules } = useEffectiveModules();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
