@@ -135,6 +135,8 @@ export default function Landing() {
   const navigate = useNavigate();
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [loadingPlanes, setLoadingPlanes] = useState(true);
+  const [billingCycle, setBillingCycle] = useState<"mensual" | "anual">("mensual");
+  const ANNUAL_DISCOUNT = 0.15; // 15% de descuento por pago anual
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState<ContactValues>({
     nombre: "",
