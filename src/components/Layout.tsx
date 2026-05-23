@@ -171,6 +171,14 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/recovery-care?tab=seguimiento", label: "Seguimiento clínico", verticales: ["recovery"] },
         { path: "/recovery-care?tab=concierge", label: "Concierge médico", verticales: ["recovery"] },
         { path: "/recovery-care?tab=alertas", label: "Alertas Recovery", verticales: ["recovery"] },
+        { path: "/psicologia-pro?tab=fichas", label: "Fichas psico", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=sesiones", label: "Sesiones", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=notas", label: "Notas clínicas", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=evaluaciones", label: "Tests/Escalas", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=seguimiento", label: "Seguimiento emocional", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=psiquiatria", label: "Psiquiatría", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=tareas", label: "Tareas terapéuticas", verticales: ["psicologia"] },
+        { path: "/psicologia-pro?tab=paquetes", label: "Paquetes/Bonos", verticales: ["psicologia"] },
       ]
     },
 

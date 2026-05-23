@@ -117,6 +117,8 @@ const RecoveryCare = lazy(() => import("./pages/RecoveryCare"));
 const AestheticPro = lazy(() => import("./pages/AestheticPro"));
 const DentalCarePro = lazy(() => import("./pages/DentalCarePro"));
 const VisionCarePro = lazy(() => import("./pages/VisionCarePro"));
+const PsicologiaPro = lazy(() => import("./pages/PsicologiaPro"));
+const LandingPsicologia = lazy(() => import("./pages/landing/LandingPsicologia"));
 const QuirofanoAvanzado = lazy(() => import("./pages/QuirofanoAvanzado"));
 const UrgenciasTriage = lazy(() => import("./pages/UrgenciasTriage"));
 const BancoSangreAvanzado = lazy(() => import("./pages/BancoSangreAvanzado"));
@@ -530,6 +532,11 @@ const App = () => {
                   path="/vision-care"
                   element={session ? <Layout><VisionCarePro /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route
+                  path="/psicologia-pro"
+                  element={session ? <Layout><PsicologiaPro /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route path="/landing/psicologia" element={<LandingPsicologia />} />
 
                 {/* Landings públicos por vertical */}
                 <Route path="/clinica" element={<LandingClinica />} />
