@@ -95,3 +95,4 @@
 - [Plan Free Limited Modules](mem://features/plan-free-limited-modules) — Plan gratuito (independientes): solo Dashboard, Calendario, Pacientes, Recepción, Atención, Soporte y Configuración
 - [Plan Free Write Access](mem://features/plan-free-write-access) — Plan free: write only en Dashboard/Agenda/Pacientes/Ficha. Límite 100 pacientes con `<PlanLimitAlert>` en Dashboard y Pacientes
 - [Psicología Fase 6 – Cron y envíos externos](mem://features/psicologia-fase6-cron-integraciones) — Cron de recordatorios psico y edge function de envío a farmacia/lab con logging
+- [Permisos plan+categoría profesional](mem://features/permisos-plan-categoria-profesional) — RPC `get_modulos_efectivos` filtra menú top-level por plan_codigo y categoría de especialidad; admin/owner del workspace bypassea categoría
