@@ -59,6 +59,7 @@ const FacturacionElectronicaRD = lazy(() => import("./pages/FacturacionElectroni
 const ModulosClinicos = lazy(() => import("./pages/ModulosClinicos"));
 const IAClinicaModulo = lazy(() => import("./pages/IAClinicaModulo"));
 const ReportesRegulatorios = lazy(() => import("./pages/ReportesRegulatorios"));
+const Teleconsulta = lazy(() => import("./pages/Teleconsulta"));
 const Plantillas = lazy(() => import("./pages/Plantillas"));
 const Automatizaciones = lazy(() => import("./pages/Automatizaciones"));
 const Encuestas = lazy(() => import("./pages/Encuestas"));
@@ -250,6 +251,7 @@ const App = () => {
                 <Route path="/modulos-clinicos" element={session ? <Layout><ModulosClinicos /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/ia-clinica" element={session ? <Layout><IAClinicaModulo /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/reportes-regulatorios" element={session ? <Layout><ReportesRegulatorios /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/teleconsulta" element={session ? <Layout><Teleconsulta /></Layout> : <Navigate to="/auth" />} />
                 <Route
                   path="/configuracion"
                   element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}

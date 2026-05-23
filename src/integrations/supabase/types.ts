@@ -21636,6 +21636,89 @@ export type Database = {
           },
         ]
       }
+      teleconsulta_sesiones: {
+        Row: {
+          cita_id: string | null
+          created_at: string
+          duracion_segundos: number | null
+          estado: string
+          finalizada_at: string | null
+          id: string
+          iniciada_at: string | null
+          notas: string | null
+          paciente_id: string | null
+          profesional_id: string
+          sala_codigo: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          cita_id?: string | null
+          created_at?: string
+          duracion_segundos?: number | null
+          estado?: string
+          finalizada_at?: string | null
+          id?: string
+          iniciada_at?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          profesional_id: string
+          sala_codigo?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          cita_id?: string | null
+          created_at?: string
+          duracion_segundos?: number | null
+          estado?: string
+          finalizada_at?: string | null
+          id?: string
+          iniciada_at?: string | null
+          notas?: string | null
+          paciente_id?: string | null
+          profesional_id?: string
+          sala_codigo?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      teleconsulta_signaling: {
+        Row: {
+          created_at: string
+          emisor_user_id: string
+          id: string
+          payload: Json
+          sesion_id: string
+          tipo: string
+        }
+        Insert: {
+          created_at?: string
+          emisor_user_id: string
+          id?: string
+          payload: Json
+          sesion_id: string
+          tipo: string
+        }
+        Update: {
+          created_at?: string
+          emisor_user_id?: string
+          id?: string
+          payload?: Json
+          sesion_id?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teleconsulta_signaling_sesion_id_fkey"
+            columns: ["sesion_id"]
+            isOneToOne: false
+            referencedRelation: "teleconsulta_sesiones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teleconsultas: {
         Row: {
           consentimiento_id: string | null
@@ -23993,6 +24076,10 @@ export type Database = {
         Returns: string
       }
       generar_codigo_ticket: { Args: never; Returns: string }
+      generar_ncf: {
+        Args: { _tipo: string; _workspace_id: string }
+        Returns: string
+      }
       generar_resumen_auditoria: {
         Args: { _periodo?: string; _workspace_id?: string }
         Returns: string
