@@ -7320,6 +7320,56 @@ export type Database = {
           },
         ]
       }
+      especialidades_catalogo: {
+        Row: {
+          activo: boolean
+          categoria: string
+          created_at: string
+          descripcion: string | null
+          global: boolean
+          id: string
+          nombre: string
+          requiere_colegiatura: boolean
+          requiere_exequatur: boolean
+          updated_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          activo?: boolean
+          categoria?: string
+          created_at?: string
+          descripcion?: string | null
+          global?: boolean
+          id?: string
+          nombre: string
+          requiere_colegiatura?: boolean
+          requiere_exequatur?: boolean
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          activo?: boolean
+          categoria?: string
+          created_at?: string
+          descripcion?: string | null
+          global?: boolean
+          id?: string
+          nombre?: string
+          requiere_colegiatura?: boolean
+          requiere_exequatur?: boolean
+          updated_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "especialidades_catalogo_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       especialidades_medicas: {
         Row: {
           activo: boolean
