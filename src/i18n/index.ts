@@ -92,6 +92,18 @@ const resources = {
       room_created: "Sala creada",
       room_not_found: "Sala no encontrada",
     },
+    facturacion_rd: {
+      emit_ncf: "Emitir NCF",
+      emit_ncf_title: "Emitir comprobante fiscal",
+      tipo: "Tipo NCF",
+      rnc: "RNC del cliente",
+      subtotal: "Subtotal",
+      itbis_18: "ITBIS (18%)",
+      total: "Total",
+      emit: "Emitir",
+      emitted_ok: "Comprobante emitido: {{ncf}}",
+      emit_failed: "No se pudo emitir el comprobante",
+      no_sequence: "Sin secuencia activa para este tipo",
   },
   en: {
     common: {
