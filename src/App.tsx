@@ -287,6 +287,10 @@ const App = () => {
                   path="/reportes"
                   element={session ? <Layout><Reportes /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route path="/reportes/dental" element={session ? <Layout><ReportesDental /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reportes/vision" element={session ? <Layout><ReportesVision /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reportes/aesthetic" element={session ? <Layout><ReportesAesthetic /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reportes/recovery" element={session ? <Layout><ReportesRecovery /></Layout> : <Navigate to="/auth" />} />
                 <Route
                   path="/soporte"
                   element={session ? <Layout><Soporte /></Layout> : <Navigate to="/auth" />}
