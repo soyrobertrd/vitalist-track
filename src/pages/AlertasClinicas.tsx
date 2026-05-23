@@ -53,7 +53,11 @@ export default function AlertasClinicas() {
         <p className="text-muted-foreground">
           Sepsis, deterioro, valores pánico, alergias, vencimientos críticos y triage rojo.
         </p>
+        {!canActHere && verticalProfesional && (
+          <p className="text-xs text-amber-600 mt-1">Modo solo lectura: vertical asignada <b>{verticalProfesional}</b>.</p>
+        )}
       </div>
+
 
       <Tabs value={filtro} onValueChange={setFiltro}>
         <TabsList>
@@ -87,13 +91,14 @@ export default function AlertasClinicas() {
                   <div className="flex gap-2">
                     {a.estado === "activa" && (
                       <>
-                        <Button size="sm" variant="outline" onClick={() => actualizar(a.id, "reconocida")}>Reconocer</Button>
-                        <Button size="sm" variant="ghost" onClick={() => actualizar(a.id, "descartada")}>Descartar</Button>
+                        <Button size="sm" variant="outline" disabled={!canActHere} onClick={() => actualizar(a.id, "reconocida")}>Reconocer</Button>
+                        <Button size="sm" variant="ghost" disabled={!canActHere} onClick={() => actualizar(a.id, "descartada")}>Descartar</Button>
                       </>
                     )}
                     {a.estado === "reconocida" && (
-                      <Button size="sm" onClick={() => actualizar(a.id, "atendida")}>Marcar atendida</Button>
+                      <Button size="sm" disabled={!canActHere} onClick={() => actualizar(a.id, "atendida")}>Marcar atendida</Button>
                     )}
+
                   </div>
                 </div>
               </CardContent>
