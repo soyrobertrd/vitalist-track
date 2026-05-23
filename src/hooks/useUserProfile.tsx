@@ -53,12 +53,20 @@ export function useUserProfile() {
           .from("user_roles")
           .select("role")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
+
+        // Get professional vertical (if user is a healthcare professional)
+        const { data: personalData } = await supabase
+          .from("personal_salud")
+          .select("vertical")
+          .eq("user_id", user.id)
+          .maybeSingle();
 
       if (profile) {
         setProfile({
           ...profile,
-          rol: roleData?.role || "medico"
+          rol: roleData?.role || "medico",
+          vertical_profesional: (personalData as any)?.vertical ?? null,
         });
       }
       } catch (error) {
