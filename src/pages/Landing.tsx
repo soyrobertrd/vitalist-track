@@ -295,33 +295,33 @@ export default function Landing() {
         <section id="plataforma" className="mt-32 grid md:grid-cols-3 gap-6">
           <FeatureCard
             icon={<Calendar className="h-5 w-5" />}
-            title="Agenda inteligente"
-            description="Llamadas y visitas con detección de conflictos, ausencias del profesional y días no laborables por país."
+            title="Agenda universal e inteligente"
+            description="Llamadas, visitas y consultas con detección de conflictos, ausencias, días no laborables y agenda compartida multi-profesional."
           />
           <FeatureCard
             icon={<MessageCircle className="h-5 w-5" />}
-            title="Recordatorios automáticos"
-            description="WhatsApp y email multicanal con plantillas personalizables y tracking de entregas."
+            title="Recordatorios y portal del paciente"
+            description="WhatsApp, email y portal público con confirmación, reagendado y encuestas tokenizadas."
           />
           <FeatureCard
             icon={<Users className="h-5 w-5" />}
-            title="Multi-clínica real"
-            description="Workspaces aislados con roles, permisos por módulo y datos completamente segregados."
+            title="Multi-clínica y multi-vertical"
+            description="Workspaces aislados, roles, permisos por categoría profesional y verticales: Dental, Estética, Visión, Recovery, Psicología."
           />
           <FeatureCard
             icon={<Activity className="h-5 w-5" />}
-            title="Ficha clínica completa"
-            description="Alergias, antecedentes, seguros, medicamentos y consentimientos informados auditados."
+            title="Ficha clínica 360"
+            description="Alergias, antecedentes, seguros, recetas, órdenes, escalas validadas y mapa corporal anatómico."
           />
           <FeatureCard
             icon={<Zap className="h-5 w-5" />}
-            title="Automatizaciones"
-            description="Disparadores por evento: post-visita, cumpleaños, encuestas de satisfacción, planes de acción."
+            title="Automatizaciones y BI"
+            description="Workflows clínicos, encuestas, planes de acción, reportes por vertical y dashboards en tiempo real."
           />
           <FeatureCard
             icon={<Shield className="h-5 w-5" />}
-            title="Seguridad clínica"
-            description="RLS por ownership, auditoría inmutable de cambios, encriptación en reposo y en tránsito."
+            title="Seguridad y compliance"
+            description="2FA para admins, exportación GDPR del paciente, RLS por ownership y auditoría inmutable. HIPAA-ready."
           />
         </section>
 
