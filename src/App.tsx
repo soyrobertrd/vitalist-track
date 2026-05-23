@@ -82,6 +82,7 @@ const Triaje = lazy(() => import("./pages/Triaje"));
 const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
 const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
 const CuestionarioPublico = lazy(() => import("./pages/CuestionarioPublico"));
+const PortalPacientePsico = lazy(() => import("./pages/PortalPacientePsico"));
 const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesional"));
 const UciManagement = lazy(() => import("./pages/UciManagement"));
 const RondasMedicas = lazy(() => import("./pages/RondasMedicas"));
@@ -196,6 +197,7 @@ const App = () => {
                 <Route path="/sala/:token" element={<SalaVirtual />} />
                 <Route path="/portal-citas" element={<PortalPublicoDisponibilidad />} />
                 <Route path="/cuestionario/:token" element={<CuestionarioPublico />} />
+                <Route path="/portal-psico/:token" element={<PortalPacientePsico />} />
                 <Route
                   path="/recepcion"
                   element={session ? <Layout><Recepcion /></Layout> : <Navigate to="/auth" />}
