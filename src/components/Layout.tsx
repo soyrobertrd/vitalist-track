@@ -143,7 +143,7 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard", moduleKey: "dashboard" },
 
     {
-      path: "/agenda", icon: CalendarDays, label: "Agenda",
+      path: "/agenda", icon: CalendarDays, label: "Agenda", moduleKey: "agenda",
       subItems: [
         { path: "/calendario", label: "Calendario", icon: CalendarDays },
         { path: "/llamadas", label: "Llamadas", icon: Phone, verticales: ["clinica"] },
