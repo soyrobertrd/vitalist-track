@@ -12,6 +12,7 @@ import { Plus, Pencil, Trash2, Pill, Printer, X } from "lucide-react";
 import { toast } from "sonner";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
+import { useProfessionalVertical } from "@/hooks/useProfessionalVertical";
 
 interface RecetaItem {
   id?: string;
@@ -229,11 +230,8 @@ export function RecetasPaciente({ pacienteId }: Props) {
 
   return (
     <div className="space-y-3">
-      <div className="flex justify-end">
-        <Button size="sm" onClick={openNew}>
-          <Plus className="h-4 w-4 mr-1" /> Nueva receta
-        </Button>
-      </div>
+      <RecetasNewButton onClick={openNew} />
+
 
       {recetas.length === 0 ? (
         <p className="text-center text-sm text-muted-foreground py-4">No hay recetas registradas</p>
