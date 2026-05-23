@@ -318,7 +318,7 @@ const Layout = ({ children }: LayoutProps) => {
 
     // Interoperabilidad / clínica avanzada (sólo hospital)
     {
-      path: "/avanzado", icon: Shield, label: "Avanzado",
+      path: "/avanzado", icon: Shield, label: "Avanzado", moduleKey: "avanzado",
       verticales: ["clinica"] as VerticalTipo[],
       subItems: [
         { path: "/quirofano-avanzado", label: "Quirófano (avanzado)" },
