@@ -74,9 +74,14 @@ export default function Planes() {
         plan_codigo: codigo,
         proveedor: "manual",
         estado: "activo",
-      });
+        ciclo_facturacion: billingCycle,
+      } as any);
 
-      toast.success("Plan actualizado correctamente");
+      toast.success(
+        billingCycle === "anual"
+          ? "Plan actualizado · facturación anual (15% descuento)"
+          : "Plan actualizado correctamente"
+      );
       await refresh();
     } catch (e: any) {
       toast.error(e?.message || "Error actualizando plan");
