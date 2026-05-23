@@ -21119,6 +21119,7 @@ export type Database = {
       }
       subscripciones: {
         Row: {
+          ciclo_facturacion: string
           created_at: string
           estado: string
           fecha_fin: string | null
@@ -21134,6 +21135,7 @@ export type Database = {
           workspace_id: string
         }
         Insert: {
+          ciclo_facturacion?: string
           created_at?: string
           estado?: string
           fecha_fin?: string | null
@@ -21149,6 +21151,7 @@ export type Database = {
           workspace_id: string
         }
         Update: {
+          ciclo_facturacion?: string
           created_at?: string
           estado?: string
           fecha_fin?: string | null
