@@ -167,23 +167,28 @@ export default function Teleconsulta() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Teleconsulta</h1>
-        <p className="text-muted-foreground">Videoconsultas WebRTC entre profesional y paciente.</p>
+        <h1 className="text-3xl font-bold">{tr("title")}</h1>
+        <p className="text-muted-foreground">{tr("subtitle")}</p>
       </div>
 
       {!activeSala && (
         <div className="grid md:grid-cols-2 gap-4">
           <Card>
-            <CardHeader><CardTitle>Crear sala</CardTitle></CardHeader>
+            <CardHeader><CardTitle>{tr("create_room")}</CardTitle></CardHeader>
             <CardContent>
-              <Button onClick={crearSesion}><Plus className="h-4 w-4 mr-2" />Nueva sala</Button>
+              <Button onClick={crearSesion}><Plus className="h-4 w-4 mr-2" aria-hidden="true" />{tr("new_room")}</Button>
             </CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle>Unirse por código</CardTitle></CardHeader>
+            <CardHeader><CardTitle>{tr("join_by_code")}</CardTitle></CardHeader>
             <CardContent className="flex gap-2">
-              <Input placeholder="Código de sala" value={joinCode} onChange={(e) => setJoinCode(e.target.value)} />
-              <Button onClick={unirsePorCodigo}>Unirme</Button>
+              <Input
+                placeholder={tr("room_code_placeholder")}
+                aria-label={tr("room_code_placeholder")}
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value)}
+              />
+              <Button onClick={unirsePorCodigo}>{tr("join")}</Button>
             </CardContent>
           </Card>
         </div>
@@ -193,30 +198,35 @@ export default function Teleconsulta() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Sala: <code className="text-sm">{activeSala.sala_codigo}</code></span>
-              <Button size="sm" variant="ghost" onClick={() => { navigator.clipboard.writeText(activeSala.sala_codigo); toast.success("Copiado"); }}>
-                <Copy className="h-4 w-4" />
+              <span>{tr("room")}: <code className="text-sm">{activeSala.sala_codigo}</code></span>
+              <Button
+                size="sm"
+                variant="ghost"
+                aria-label={tr("common:copy")}
+                onClick={() => { navigator.clipboard.writeText(activeSala.sala_codigo); toast.success(tr("common:copied")); }}
+              >
+                <Copy className="h-4 w-4" aria-hidden="true" />
               </Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-2 bg-black rounded-lg overflow-hidden">
-              <video ref={localVideo} autoPlay playsInline muted className="w-full aspect-video bg-muted" />
-              <video ref={remoteVideo} autoPlay playsInline className="w-full aspect-video bg-muted" />
+              <video ref={localVideo} autoPlay playsInline muted className="w-full aspect-video bg-muted" aria-label="local video" />
+              <video ref={remoteVideo} autoPlay playsInline className="w-full aspect-video bg-muted" aria-label="remote video" />
             </div>
             <div className="flex gap-2 justify-center">
               {!connected ? (
-                <Button onClick={iniciarLlamada}><Video className="h-4 w-4 mr-2" />Iniciar</Button>
+                <Button onClick={iniciarLlamada} className="min-h-11"><Video className="h-4 w-4 mr-2" aria-hidden="true" />{tr("start")}</Button>
               ) : (
                 <>
-                  <Button variant={micOn ? "default" : "secondary"} onClick={toggleMic}>
-                    {micOn ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+                  <Button variant={micOn ? "default" : "secondary"} size="icon" className="min-h-11 min-w-11" aria-label={micOn ? "Mute" : "Unmute"} onClick={toggleMic}>
+                    {micOn ? <Mic className="h-4 w-4" aria-hidden="true" /> : <MicOff className="h-4 w-4" aria-hidden="true" />}
                   </Button>
-                  <Button variant={camOn ? "default" : "secondary"} onClick={toggleCam}>
-                    {camOn ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
+                  <Button variant={camOn ? "default" : "secondary"} size="icon" className="min-h-11 min-w-11" aria-label={camOn ? "Camera off" : "Camera on"} onClick={toggleCam}>
+                    {camOn ? <Video className="h-4 w-4" aria-hidden="true" /> : <VideoOff className="h-4 w-4" aria-hidden="true" />}
                   </Button>
-                  <Button variant="destructive" onClick={colgar}>
-                    <PhoneOff className="h-4 w-4 mr-2" />Colgar
+                  <Button variant="destructive" className="min-h-11" onClick={colgar}>
+                    <PhoneOff className="h-4 w-4 mr-2" aria-hidden="true" />{tr("hang_up")}
                   </Button>
                 </>
               )}
@@ -226,24 +236,24 @@ export default function Teleconsulta() {
       )}
 
       <Card>
-        <CardHeader><CardTitle>Sesiones recientes</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{tr("recent_sessions")}</CardTitle></CardHeader>
         <CardContent>
           <div className="space-y-2">
             {sesiones?.map((s) => (
               <div key={s.id} className="flex items-center justify-between border rounded-lg p-3">
                 <div>
                   <code className="text-sm">{s.sala_codigo}</code>
-                  <div className="text-xs text-muted-foreground">{s.iniciada_at ? new Date(s.iniciada_at).toLocaleString() : "Sin iniciar"}</div>
+                  <div className="text-xs text-muted-foreground">{s.iniciada_at ? new Date(s.iniciada_at).toLocaleString() : tr("not_started")}</div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant={s.estado === "finalizada" ? "secondary" : "default"}>{s.estado}</Badge>
                   {s.estado !== "finalizada" && (
-                    <Button size="sm" onClick={() => setActiveSala(s)}>Entrar</Button>
+                    <Button size="sm" onClick={() => setActiveSala(s)}>{tr("common:enter")}</Button>
                   )}
                 </div>
               </div>
             ))}
-            {!sesiones?.length && <p className="text-sm text-muted-foreground">Sin sesiones aún.</p>}
+            {!sesiones?.length && <p className="text-sm text-muted-foreground">{tr("no_sessions")}</p>}
           </div>
         </CardContent>
       </Card>
