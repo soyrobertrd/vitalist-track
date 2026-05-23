@@ -570,10 +570,11 @@ export default function PsicologiaPro() {
                 <p className="font-medium">{p.medicamento} {p.dosis} · {p.frecuencia}</p>
                 <p className="text-sm text-muted-foreground">{p.pacientes?.nombre} {p.pacientes?.apellido} · adherencia {p.adherencia ?? "-"}%</p>
               </div>
-              <div className="text-right">
+              <div className="flex items-center gap-2">
                 <Badge>{p.estado}</Badge>
-                {p.refill_pendiente && <Badge variant="destructive" className="ml-1">Refill</Badge>}
-                {p.alerta_suspension_abrupta && <Badge variant="destructive" className="ml-1">Suspensión</Badge>}
+                {p.refill_pendiente && <Badge variant="destructive">Refill</Badge>}
+                {p.alerta_suspension_abrupta && <Badge variant="destructive">Suspensión</Badge>}
+                <FirmaPrescripcion prescripcion={p} onSigned={refPres} />
               </div>
             </CardContent></Card>
           ))}
