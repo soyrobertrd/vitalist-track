@@ -59,6 +59,7 @@ const FacturacionElectronicaRD = lazy(() => import("./pages/FacturacionElectroni
 const ModulosClinicos = lazy(() => import("./pages/ModulosClinicos"));
 const IAClinicaModulo = lazy(() => import("./pages/IAClinicaModulo"));
 const ReportesRegulatorios = lazy(() => import("./pages/ReportesRegulatorios"));
+const Teleconsulta = lazy(() => import("./pages/Teleconsulta"));
 const Plantillas = lazy(() => import("./pages/Plantillas"));
 const Automatizaciones = lazy(() => import("./pages/Automatizaciones"));
 const Encuestas = lazy(() => import("./pages/Encuestas"));
