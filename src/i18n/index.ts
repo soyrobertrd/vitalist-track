@@ -104,6 +104,7 @@ const resources = {
       emitted_ok: "Comprobante emitido: {{ncf}}",
       emit_failed: "No se pudo emitir el comprobante",
       no_sequence: "Sin secuencia activa para este tipo",
+    },
   },
   en: {
     common: {
