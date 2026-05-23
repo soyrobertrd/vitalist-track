@@ -29,6 +29,8 @@ const SUPPORT_LABELS: Record<string, string> = {
 export default function Planes() {
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [billingCycle, setBillingCycle] = useState<"mensual" | "anual">("mensual");
+  const ANNUAL_DISCOUNT = 0.15;
   const { currentWorkspace, currentPlan, refresh } = useWorkspace();
   const [changing, setChanging] = useState<string | null>(null);
 
