@@ -23053,6 +23053,25 @@ export type Database = {
           workspace_id: string
         }[]
       }
+      listar_recordatorios_psico_pendientes: {
+        Args: { _ventana_min?: number }
+        Returns: {
+          canal: string
+          id: string
+          paciente_email: string
+          paciente_id: string
+          paciente_nombre: string
+          paciente_telefono: string
+          programado_para: string
+          sesion_fecha_hora: string
+          sesion_id: string
+          workspace_id: string
+        }[]
+      }
+      marcar_recordatorio_psico: {
+        Args: { _error?: string; _estado: string; _id: string }
+        Returns: undefined
+      }
       paciente_timeline_360: {
         Args: { _limite?: number; _paciente_id: string }
         Returns: {
