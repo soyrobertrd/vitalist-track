@@ -27,6 +27,8 @@ import { PlanLimitsPanel } from "@/components/PlanLimitsPanel";
 import { useLocale } from "@/hooks/useLocale";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { TwoFactorSetup } from "@/components/security/TwoFactorSetup";
+
 
 interface ProximaCita {
   id: string;

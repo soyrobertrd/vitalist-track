@@ -9,6 +9,8 @@ import {
   FlaskConical, Image as ImageIcon, ShieldAlert, Workflow,
 } from "lucide-react";
 import { format } from "date-fns";
+import { ExportarDatosGDPR } from "@/components/pacientes/ExportarDatosGDPR";
+
 
 const iconMap: Record<string, any> = {
   visita: Calendar,
