@@ -2776,6 +2776,30 @@ export type Database = {
         }
         Relationships: []
       }
+      casos_psico_infantil: {
+        Row: {
+          created_at: string
+          id: string
+          notas: string | null
+          paciente_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notas?: string | null
+          paciente_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notas?: string | null
+          paciente_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       casos_trabajo_social: {
         Row: {
           composicion_familiar: Json | null
