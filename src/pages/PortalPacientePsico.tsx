@@ -43,8 +43,8 @@ export default function PortalPacientePsico() {
               <ul className="space-y-2">
                 {sesiones.map((s: any, i: number) => (
                   <li key={i} className="flex justify-between border-b pb-2">
-                    <span>{s.fecha} · {s.hora}</span>
-                    <Badge variant="outline">{s.modalidad}</Badge>
+                    <span>{new Date(s.fecha_hora).toLocaleString()}</span>
+                    <Badge variant="outline">{s.modalidad || s.estado}</Badge>
                   </li>
                 ))}
               </ul>}
