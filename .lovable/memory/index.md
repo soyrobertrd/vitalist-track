@@ -96,4 +96,5 @@
 - [Plan Free Write Access](mem://features/plan-free-write-access) — Plan free: write only en Dashboard/Agenda/Pacientes/Ficha. Límite 100 pacientes con `<PlanLimitAlert>` en Dashboard y Pacientes
 - [Psicología Fase 6 – Cron y envíos externos](mem://features/psicologia-fase6-cron-integraciones) — Cron de recordatorios psico y edge function de envío a farmacia/lab con logging
 - [Permisos plan+categoría profesional](mem://features/permisos-plan-categoria-profesional) — RPC `get_modulos_efectivos` filtra menú top-level por plan_codigo y categoría de especialidad; admin/owner del workspace bypassea categoría
+- [i18n y PWA shell móvil](mem://features/i18n-pwa-a11y) — i18next es/en con LanguageSwitcher, SW guard en iframe/preview y tap targets WCAG 44px
 - [Fase 11 Teleconsulta y NCF](mem://features/fase-11-teleconsulta-ncf-cron) — WebRTC P2P con signaling realtime, RPC `generar_ncf` para DGII y cron hourly de recordatorios psico
