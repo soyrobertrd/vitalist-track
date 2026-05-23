@@ -59,35 +59,47 @@ type ContactValues = z.infer<typeof contactSchema>;
 
 const PLAN_FEATURES: Record<string, string[]> = {
   free: [
-    "Agenda y calendario básico",
-    "Recordatorios por email",
-    "Ficha clínica básica",
+    "Dashboard, agenda y calendario",
+    "Agenda universal multi-profesional",
+    "Ficha clínica del paciente",
+    "Recordatorios por email + WhatsApp básico",
+    "Consentimiento informado",
     "Soporte por comunidad",
   ],
   solo: [
     "Todo lo de Free",
-    "WhatsApp de recordatorios",
-    "Ficha clínica completa",
+    "WhatsApp con plantillas personalizables",
+    "Ficha clínica completa + mapa corporal",
+    "Escalas y cuestionarios clínicos",
     "Importación masiva desde Excel",
-    "Reportes operativos",
+    "Reportes operativos + exportables",
+    "Recetas y órdenes médicas",
     "Soporte por email",
   ],
   pro: [
     "Todo lo de Solo Doctor",
-    "Multi-clínica (workspaces)",
-    "Automatizaciones por evento",
-    "Encuestas de satisfacción",
-    "Geolocalización y mapas de rutas",
+    "Multi-clínica (workspaces) + multi-sucursal",
+    "Verticales: Dental, Estética, Visión, Recovery, Psicología",
+    "Reportes & BI por vertical",
+    "Automatizaciones, encuestas y workflows clínicos",
+    "Portal del paciente + confirmación pública",
+    "Geolocalización, rutas y mapa operativo",
+    "ARS avanzado: planes, tarifarios, autorizaciones",
+    "Permisos por categoría profesional y vertical",
+    "2FA para administradores + exportación GDPR",
     "Auditoría completa de cambios",
     "Soporte prioritario",
   ],
   business: [
     "Todo lo de Pro",
     "SSO / SAML empresarial",
-    "Acceso a API",
-    "Auditoría avanzada exportable",
+    "Acceso a API pública",
+    "Telemedicina + firmas digitales",
+    "Interoperabilidad FHIR / DICOM",
+    "Auditoría avanzada exportable (PDF/Excel)",
+    "Centros, camas y hospitalización ilimitados",
     "SLA 99.9% y onboarding dedicado",
-    "Integraciones a medida",
+    "Integraciones a medida (farmacia, laboratorio)",
     "Account manager dedicado",
   ],
 };
@@ -123,6 +135,8 @@ export default function Landing() {
   const navigate = useNavigate();
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [loadingPlanes, setLoadingPlanes] = useState(true);
+  const [billingCycle, setBillingCycle] = useState<"mensual" | "anual">("mensual");
+  const ANNUAL_DISCOUNT = 0.15; // 15% de descuento por pago anual
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState<ContactValues>({
     nombre: "",
@@ -281,33 +295,33 @@ export default function Landing() {
         <section id="plataforma" className="mt-32 grid md:grid-cols-3 gap-6">
           <FeatureCard
             icon={<Calendar className="h-5 w-5" />}
-            title="Agenda inteligente"
-            description="Llamadas y visitas con detección de conflictos, ausencias del profesional y días no laborables por país."
+            title="Agenda universal e inteligente"
+            description="Llamadas, visitas y consultas con detección de conflictos, ausencias, días no laborables y agenda compartida multi-profesional."
           />
           <FeatureCard
             icon={<MessageCircle className="h-5 w-5" />}
-            title="Recordatorios automáticos"
-            description="WhatsApp y email multicanal con plantillas personalizables y tracking de entregas."
+            title="Recordatorios y portal del paciente"
+            description="WhatsApp, email y portal público con confirmación, reagendado y encuestas tokenizadas."
           />
           <FeatureCard
             icon={<Users className="h-5 w-5" />}
-            title="Multi-clínica real"
-            description="Workspaces aislados con roles, permisos por módulo y datos completamente segregados."
+            title="Multi-clínica y multi-vertical"
+            description="Workspaces aislados, roles, permisos por categoría profesional y verticales: Dental, Estética, Visión, Recovery, Psicología."
           />
           <FeatureCard
             icon={<Activity className="h-5 w-5" />}
-            title="Ficha clínica completa"
-            description="Alergias, antecedentes, seguros, medicamentos y consentimientos informados auditados."
+            title="Ficha clínica 360"
+            description="Alergias, antecedentes, seguros, recetas, órdenes, escalas validadas y mapa corporal anatómico."
           />
           <FeatureCard
             icon={<Zap className="h-5 w-5" />}
-            title="Automatizaciones"
-            description="Disparadores por evento: post-visita, cumpleaños, encuestas de satisfacción, planes de acción."
+            title="Automatizaciones y BI"
+            description="Workflows clínicos, encuestas, planes de acción, reportes por vertical y dashboards en tiempo real."
           />
           <FeatureCard
             icon={<Shield className="h-5 w-5" />}
-            title="Seguridad clínica"
-            description="RLS por ownership, auditoría inmutable de cambios, encriptación en reposo y en tránsito."
+            title="Seguridad y compliance"
+            description="2FA para admins, exportación GDPR del paciente, RLS por ownership y auditoría inmutable. HIPAA-ready."
           />
         </section>
 
@@ -363,6 +377,41 @@ export default function Landing() {
             <p className="text-muted-foreground mt-3">
               Empieza gratis, escala cuando necesites. Sin contratos, cancela cuando quieras.
             </p>
+
+            {/* Toggle mensual / anual */}
+            <div className="mt-6 inline-flex items-center gap-1 rounded-full border bg-card p-1">
+              <button
+                type="button"
+                onClick={() => setBillingCycle("mensual")}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  billingCycle === "mensual"
+                    ? "bg-primary text-primary-foreground shadow"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Mensual
+              </button>
+              <button
+                type="button"
+                onClick={() => setBillingCycle("anual")}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors inline-flex items-center gap-2 ${
+                  billingCycle === "anual"
+                    ? "bg-primary text-primary-foreground shadow"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Anual
+                <span
+                  className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                    billingCycle === "anual"
+                      ? "bg-primary-foreground/20 text-primary-foreground"
+                      : "bg-primary/10 text-primary"
+                  }`}
+                >
+                  -15%
+                </span>
+              </button>
+            </div>
           </div>
 
           {loadingPlanes ? (
@@ -374,6 +423,10 @@ export default function Landing() {
               {planes.map((plan) => {
                 const isPro = plan.codigo === "pro";
                 const features = PLAN_FEATURES[plan.codigo] || [];
+                const mensual = Number(plan.precio_mensual_usd) || 0;
+                const anualTotal = Math.round(mensual * 12 * (1 - ANNUAL_DISCOUNT));
+                const anualMensualizado = mensual > 0 ? Math.round(anualTotal / 12) : 0;
+                const isAnual = billingCycle === "anual" && mensual > 0;
                 return (
                   <div
                     key={plan.codigo}
@@ -389,8 +442,18 @@ export default function Landing() {
                     <h3 className="text-lg font-semibold">{plan.nombre}</h3>
                     <p className="text-sm text-muted-foreground mt-1 min-h-[40px]">{plan.descripcion}</p>
                     <div className="mt-4">
-                      <span className="text-4xl font-bold">${plan.precio_mensual_usd}</span>
+                      <span className="text-4xl font-bold">
+                        ${isAnual ? anualMensualizado : mensual}
+                      </span>
                       <span className="text-muted-foreground"> /mes</span>
+                      {isAnual && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          ${anualTotal} facturados anualmente · ahorras ${mensual * 12 - anualTotal}
+                        </p>
+                      )}
+                      {!isAnual && mensual === 0 && (
+                        <p className="text-xs text-muted-foreground mt-1">Gratis para siempre</p>
+                      )}
                     </div>
                     <ul className="mt-6 space-y-2 text-sm flex-1">
                       <li className="flex items-start gap-2">

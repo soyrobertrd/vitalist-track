@@ -29,6 +29,8 @@ const SUPPORT_LABELS: Record<string, string> = {
 export default function Planes() {
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [billingCycle, setBillingCycle] = useState<"mensual" | "anual">("mensual");
+  const ANNUAL_DISCOUNT = 0.15;
   const { currentWorkspace, currentPlan, refresh } = useWorkspace();
   const [changing, setChanging] = useState<string | null>(null);
 
@@ -72,9 +74,14 @@ export default function Planes() {
         plan_codigo: codigo,
         proveedor: "manual",
         estado: "activo",
-      });
+        ciclo_facturacion: billingCycle,
+      } as any);
 
-      toast.success("Plan actualizado correctamente");
+      toast.success(
+        billingCycle === "anual"
+          ? "Plan actualizado · facturación anual (15% descuento)"
+          : "Plan actualizado correctamente"
+      );
       await refresh();
     } catch (e: any) {
       toast.error(e?.message || "Error actualizando plan");
@@ -106,10 +113,53 @@ export default function Planes() {
         )}
       </div>
 
+      {/* Toggle mensual / anual */}
+      <div className="flex justify-center">
+        <div className="inline-flex items-center gap-1 rounded-full border bg-card p-1">
+          <button
+            type="button"
+            onClick={() => setBillingCycle("mensual")}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              billingCycle === "mensual"
+                ? "bg-primary text-primary-foreground shadow"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Mensual
+          </button>
+          <button
+            type="button"
+            onClick={() => setBillingCycle("anual")}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors inline-flex items-center gap-2 ${
+              billingCycle === "anual"
+                ? "bg-primary text-primary-foreground shadow"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Anual
+            <span
+              className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                billingCycle === "anual"
+                  ? "bg-primary-foreground/20 text-primary-foreground"
+                  : "bg-primary/10 text-primary"
+              }`}
+            >
+              Ahorra 15%
+            </span>
+          </button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {planes.map((plan) => {
           const isCurrent = currentWorkspace?.plan_codigo === plan.codigo;
           const isPro = plan.codigo === "pro";
+          const mensualUsd = Number(plan.precio_mensual_usd) || 0;
+          const mensualDop = Number(plan.precio_mensual_dop) || 0;
+          const anualUsd = Math.round(mensualUsd * 12 * (1 - ANNUAL_DISCOUNT));
+          const anualDop = Math.round(mensualDop * 12 * (1 - ANNUAL_DISCOUNT));
+          const anualMensualizadoUsd = mensualUsd > 0 ? Math.round(anualUsd / 12) : 0;
+          const isAnual = billingCycle === "anual" && mensualUsd > 0;
           return (
             <Card
               key={plan.codigo}
@@ -125,15 +175,26 @@ export default function Planes() {
                 </CardTitle>
                 <CardDescription>{plan.descripcion}</CardDescription>
                 <div className="pt-2">
-                  <span className="text-3xl font-bold">${plan.precio_mensual_usd}</span>
+                  <span className="text-3xl font-bold">
+                    ${isAnual ? anualMensualizadoUsd : mensualUsd}
+                  </span>
                   <span className="text-muted-foreground"> /mes</span>
-                  {plan.precio_mensual_dop > 0 && (
+                  {isAnual ? (
                     <p className="text-xs text-muted-foreground mt-1">
-                      ó RD${plan.precio_mensual_dop.toLocaleString()} DOP/mes
+                      ${anualUsd} USD/año {anualDop > 0 && `· RD$${anualDop.toLocaleString()}/año`}
+                      <br />
+                      Ahorras ${mensualUsd * 12 - anualUsd} al año
                     </p>
+                  ) : (
+                    mensualDop > 0 && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        ó RD${mensualDop.toLocaleString()} DOP/mes
+                      </p>
+                    )
                   )}
                 </div>
               </CardHeader>
+
 
               <CardContent className="flex-1 space-y-3">
                 <ul className="space-y-2 text-sm">
