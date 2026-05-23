@@ -301,7 +301,7 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/inventario", icon: Boxes, label: "Inventario" },
 
     {
-      path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true,
+      path: "/crm", icon: Target, label: "CRM & Marketing", adminOnly: true, moduleKey: "crm",
       subItems: [
         { path: "/crm", label: "CRM principal" },
         { path: "/segmentacion", label: "Segmentación", icon: Target },
