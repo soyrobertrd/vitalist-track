@@ -294,36 +294,36 @@ const Dashboard = () => {
       {/* Stats Grid with Interactive KPIs */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <InteractiveKPI
-          title="Total Pacientes"
+          title={t("total_patients")}
           value={stats.totalPacientes}
-          subtitle={`${stats.pacientesActivos} activos`}
+          subtitle={t("patients_active_count", { count: stats.pacientesActivos })}
           icon={Users}
           trend={{ value: 12, isPositive: true }}
           onClick={() => navigate('/pacientes')}
           color="primary"
         />
         <InteractiveKPI
-          title="Llamadas Pendientes"
+          title={t("pending_calls")}
           value={stats.llamadasPendientes}
-          subtitle="Por realizar"
+          subtitle={t("to_do")}
           icon={Phone}
           trend={{ value: 5, isPositive: false }}
           onClick={() => navigate('/llamadas')}
           color="warning"
         />
         <InteractiveKPI
-          title="Visitas Hoy"
+          title={t("visits_today")}
           value={stats.visitasHoy}
-          subtitle="Programadas"
+          subtitle={t("scheduled")}
           icon={Calendar}
           trend={{ value: 8, isPositive: true }}
           onClick={() => navigate('/visitas')}
           color="success"
         />
         <InteractiveKPI
-          title="Ver Calendario"
-          value="Agenda"
-          subtitle="Citas y visitas"
+          title={t("view_calendar")}
+          value={t("agenda")}
+          subtitle={t("appointments_visits")}
           icon={CalendarDays}
           onClick={() => navigate('/calendario')}
           color="secondary"
