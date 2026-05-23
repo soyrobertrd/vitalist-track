@@ -7563,6 +7563,7 @@ export type Database = {
           profesional_id: string | null
           puntaje: number
           tipo: string
+          vertical: string | null
           visita_id: string | null
         }
         Insert: {
@@ -7578,6 +7579,7 @@ export type Database = {
           profesional_id?: string | null
           puntaje: number
           tipo: string
+          vertical?: string | null
           visita_id?: string | null
         }
         Update: {
@@ -7593,6 +7595,7 @@ export type Database = {
           profesional_id?: string | null
           puntaje?: number
           tipo?: string
+          vertical?: string | null
           visita_id?: string | null
         }
         Relationships: []
@@ -11703,6 +11706,77 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mapa_corporal_marcas: {
+        Row: {
+          color: string | null
+          created_at: string
+          created_by: string | null
+          etiqueta: string | null
+          fecha: string
+          id: string
+          lado: string | null
+          notas: string | null
+          paciente_id: string
+          pos_x: number
+          pos_y: number
+          profesional_id: string | null
+          severidad: number | null
+          tipo: string
+          updated_at: string
+          vertical: string | null
+          vista: string
+          workspace_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          etiqueta?: string | null
+          fecha?: string
+          id?: string
+          lado?: string | null
+          notas?: string | null
+          paciente_id: string
+          pos_x: number
+          pos_y: number
+          profesional_id?: string | null
+          severidad?: number | null
+          tipo?: string
+          updated_at?: string
+          vertical?: string | null
+          vista?: string
+          workspace_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          etiqueta?: string | null
+          fecha?: string
+          id?: string
+          lado?: string | null
+          notas?: string | null
+          paciente_id?: string
+          pos_x?: number
+          pos_y?: number
+          profesional_id?: string | null
+          severidad?: number | null
+          tipo?: string
+          updated_at?: string
+          vertical?: string | null
+          vista?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mapa_corporal_marcas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
             referencedColumns: ["id"]
           },
         ]
@@ -23542,6 +23616,7 @@ export type Database = {
           id: string
           nombre: string
           updated_at: string
+          vertical: string | null
           workspace_id: string | null
         }
         Insert: {
@@ -23557,6 +23632,7 @@ export type Database = {
           id?: string
           nombre: string
           updated_at?: string
+          vertical?: string | null
           workspace_id?: string | null
         }
         Update: {
@@ -23572,6 +23648,7 @@ export type Database = {
           id?: string
           nombre?: string
           updated_at?: string
+          vertical?: string | null
           workspace_id?: string | null
         }
         Relationships: [
