@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useUserRole } from "@/hooks/useUserRole";
 
-export type VerticalTipo = "clinica" | "dental" | "aesthetic" | "recovery" | "vision";
+export type VerticalTipo = "clinica" | "dental" | "aesthetic" | "recovery" | "vision" | "psicologia";
 
 interface VerticalContextValue {
   verticalesActivas: VerticalTipo[];
