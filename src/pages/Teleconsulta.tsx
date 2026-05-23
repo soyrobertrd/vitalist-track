@@ -57,13 +57,13 @@ export default function Teleconsulta() {
     if (!currentWorkspace?.id) return;
     const { data: pers } = await supabase
       .from("personal_salud").select("id").eq("user_id", (await supabase.auth.getUser()).data.user?.id).maybeSingle();
-    if (!pers) { toast.error("Solo profesionales pueden crear sesiones"); return; }
+    if (!pers) { toast.error(t("only_professionals")); return; }
     const { data, error } = await supabase
       .from("teleconsulta_sesiones")
       .insert({ workspace_id: currentWorkspace.id, profesional_id: pers.id })
       .select().single();
     if (error) { toast.error(error.message); return; }
-    toast.success("Sala creada");
+    toast.success(t("room_created"));
     qc.invalidateQueries({ queryKey: ["teleconsulta-sesiones"] });
     setActiveSala(data as Sesion);
   }
@@ -72,7 +72,7 @@ export default function Teleconsulta() {
     if (!joinCode.trim()) return;
     const { data, error } = await supabase
       .from("teleconsulta_sesiones").select("*").eq("sala_codigo", joinCode.trim()).maybeSingle();
-    if (error || !data) { toast.error("Sala no encontrada"); return; }
+    if (error || !data) { toast.error(t("room_not_found")); return; }
     setActiveSala(data as Sesion);
   }
 
