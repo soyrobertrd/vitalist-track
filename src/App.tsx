@@ -251,6 +251,7 @@ const App = () => {
                 <Route path="/modulos-clinicos" element={session ? <Layout><ModulosClinicos /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/ia-clinica" element={session ? <Layout><IAClinicaModulo /></Layout> : <Navigate to="/auth" />} />
                 <Route path="/reportes-regulatorios" element={session ? <Layout><ReportesRegulatorios /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/teleconsulta" element={session ? <Layout><Teleconsulta /></Layout> : <Navigate to="/auth" />} />
                 <Route
                   path="/configuracion"
                   element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}
