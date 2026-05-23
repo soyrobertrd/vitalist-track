@@ -242,6 +242,14 @@ const App = () => {
                   path="/calendario"
                   element={session ? <Layout><Calendario /></Layout> : <Navigate to="/auth" />}
                 />
+                <Route path="/catalogo-especialidades" element={session ? <Layout><CatalogoEspecialidades /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/servicios-profesionales" element={session ? <Layout><ServiciosProfesionales /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/credenciales-profesionales" element={session ? <Layout><CredencialesProfesionales /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/tarifarios-profesional" element={session ? <Layout><TarifariosProfesional /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/facturacion-electronica-rd" element={session ? <Layout><FacturacionElectronicaRD /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/modulos-clinicos" element={session ? <Layout><ModulosClinicos /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/ia-clinica" element={session ? <Layout><IAClinicaModulo /></Layout> : <Navigate to="/auth" />} />
+                <Route path="/reportes-regulatorios" element={session ? <Layout><ReportesRegulatorios /></Layout> : <Navigate to="/auth" />} />
                 <Route
                   path="/configuracion"
                   element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}
