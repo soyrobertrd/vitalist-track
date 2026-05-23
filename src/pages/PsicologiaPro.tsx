@@ -666,14 +666,7 @@ export default function PsicologiaPro() {
           {wsId && <IntegracionesExternasPsico workspaceId={wsId} />}
         </TabsContent>
 
-        <TabsContent value="portal" className="space-y-3">
-          <Label>Seleccione paciente</Label>
-          <Select onValueChange={(v) => (window as any).__portalPid = v}>
-            <SelectTrigger className="max-w-md"><SelectValue placeholder="Paciente"/></SelectTrigger>
-            <SelectContent>
-              {(pacientes as any[]).map(p => <SelectItem key={p.id} value={p.id}>{p.nombre} {p.apellido}</SelectItem>)}
-            </SelectContent>
-          </Select>
+        <TabsContent value="portal">
           <PortalPacienteAdminWrapper pacientes={pacientes as any} />
         </TabsContent>
       </Tabs>
