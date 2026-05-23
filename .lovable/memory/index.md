@@ -82,6 +82,7 @@
 - [ARS Avanzado Fase C](mem://features/ars-avanzado-fase-c) — Aseguradoras, planes, tarifarios, autorizaciones y reclamaciones ARS
 - [Portal Paciente + Dashboard BI Fase D](mem://features/portal-paciente-dashboard-bi-fase-d) — Public patient portal with tokens + BI analytics dashboard
 - [Vertical Independence](mem://features/vertical-independence-full-clinic) — VisionCare, DentalCare, AestheticPro, RecoveryCare as standalone products with full clinic ops
+- [Tier 3 Polyfills Cruzadas](mem://features/tier3-polyfills-cruzadas) — Mapa corporal, vertical en escalas/workflows, gating clínico por vertical, agenda universal cross-plan
 - [Fase V - Camas, Regulatorio, CRM, API Gateway](mem://features/fase-v-camas-regulatorio-crm-apigateway) — Control de camas/ocupación, reportes regulatorios, fidelización/NPS, API keys + webhooks
 - [Fase W - Internamientos, Enfermería, Lab, Agenda Universal](mem://features/fase-w-internamientos-enfermeria-lab-agenda) — Rondas médicas, valoración/plan/signos/admin meds enfermería, trazabilidad muestras + QC + alertas lab, agenda multi-área
 - [Fase Z - Hub 360, CPOE y Alertas Clínicas](mem://features/fase-z-hub360-cpoe-alertas) — Hub Clínico 360° del paciente con timeline, motor de Órdenes Médicas (CPOE) y alertas inter-módulos
