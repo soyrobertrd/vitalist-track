@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Pill, Package, ClipboardList, TrendingDown, AlertTriangle, Search } from "lucide-react";
+import { useProfessionalVertical } from "@/hooks/useProfessionalVertical";
 
 const estadoBadge: Record<string, string> = {
   pendiente: "bg-yellow-100 text-yellow-800",
@@ -21,6 +22,7 @@ const estadoBadge: Record<string, string> = {
 };
 
 const Farmacia = () => {
+  const { canActHere, verticalProfesional } = useProfessionalVertical();
   const [recetas, setRecetas] = useState<any[]>([]);
   const [stock, setStock] = useState<any[]>([]);
   const [movimientos, setMovimientos] = useState<any[]>([]);
@@ -164,7 +166,7 @@ const Farmacia = () => {
             </div>
             <Dialog open={newStockOpen} onOpenChange={setNewStockOpen}>
               <DialogTrigger asChild>
-                <Button><Plus className="h-4 w-4 mr-1" /> Agregar</Button>
+                <Button disabled={!canActHere} title={!canActHere ? `Tu vertical: ${verticalProfesional}` : ""}><Plus className="h-4 w-4 mr-1" /> Agregar</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader><DialogTitle>Agregar Stock</DialogTitle></DialogHeader>

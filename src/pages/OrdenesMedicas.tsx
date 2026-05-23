@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ClipboardList, Zap } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
+import { useProfessionalVertical } from "@/hooks/useProfessionalVertical";
 
 const PRIORIDAD_COLOR: Record<string, string> = {
   rutina: "bg-slate-100 text-slate-700",
@@ -17,6 +18,7 @@ const PRIORIDAD_COLOR: Record<string, string> = {
 export default function OrdenesMedicas() {
   const [ordenes, setOrdenes] = useState<any[]>([]);
   const [filtro, setFiltro] = useState<string>("pendiente");
+  const { canActHere, verticalProfesional } = useProfessionalVertical();
 
   const cargar = async () => {
     const { data } = await supabase
@@ -49,7 +51,11 @@ export default function OrdenesMedicas() {
         <p className="text-muted-foreground">
           Motor centralizado de órdenes que fluye a Lab, Imagen, Farmacia, Banco de Sangre, Nutrición y Enfermería.
         </p>
+        {!canActHere && verticalProfesional && (
+          <p className="text-xs text-amber-600 mt-1">Modo solo lectura: tu vertical asignada es <b>{verticalProfesional}</b>.</p>
+        )}
       </div>
+
 
       <Tabs value={filtro} onValueChange={setFiltro}>
         <TabsList>
@@ -84,18 +90,19 @@ export default function OrdenesMedicas() {
                 </div>
                 <div className="flex gap-2">
                   {o.estado === "pendiente" && (
-                    <Button size="sm" variant="outline" onClick={() => cambiarEstado(o.id, "aceptada")}>Aceptar</Button>
+                    <Button size="sm" variant="outline" disabled={!canActHere} onClick={() => cambiarEstado(o.id, "aceptada")}>Aceptar</Button>
                   )}
                   {o.estado === "aceptada" && (
-                    <Button size="sm" variant="outline" onClick={() => cambiarEstado(o.id, "en_proceso")}>Iniciar</Button>
+                    <Button size="sm" variant="outline" disabled={!canActHere} onClick={() => cambiarEstado(o.id, "en_proceso")}>Iniciar</Button>
                   )}
                   {o.estado === "en_proceso" && (
-                    <Button size="sm" onClick={() => cambiarEstado(o.id, "completada")}>Completar</Button>
+                    <Button size="sm" disabled={!canActHere} onClick={() => cambiarEstado(o.id, "completada")}>Completar</Button>
                   )}
                   {["pendiente","aceptada"].includes(o.estado) && (
-                    <Button size="sm" variant="ghost" onClick={() => cambiarEstado(o.id, "cancelada")}>Cancelar</Button>
+                    <Button size="sm" variant="ghost" disabled={!canActHere} onClick={() => cambiarEstado(o.id, "cancelada")}>Cancelar</Button>
                   )}
                 </div>
+
               </CardContent>
             </Card>
           ))}

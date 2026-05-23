@@ -16,6 +16,7 @@ import { useFreePlan } from "@/hooks/useFreePlan";
 const FREE_WRITE_PATHS = [
   /^\/dashboard$/,
   /^\/agenda(\/.*)?$/,
+  /^\/agenda-universal(\/.*)?$/,
   /^\/calendario(\/.*)?$/,
   /^\/recepcion(\/.*)?$/,
   /^\/pacientes(\/.*)?$/,

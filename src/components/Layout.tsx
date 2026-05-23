@@ -151,7 +151,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/visitas", label: "Visitas", icon: Calendar, verticales: ["clinica", "recovery"] },
         { path: "/rutas", label: "Rutas Optimizadas", icon: Route, verticales: ["clinica", "recovery"] },
         { path: "/recepcion", label: "Recepción", icon: ScanLine },
-        { path: "/agenda-universal", label: "Agenda universal", verticales: ["clinica"] },
+        { path: "/agenda-universal", label: "Agenda universal" },
       ]
     },
 
@@ -378,6 +378,7 @@ const Layout = ({ children }: LayoutProps) => {
     "/dashboard",
     "/agenda", // grupo padre
     "/calendario",
+    "/agenda-universal", // agenda personal de cada profesional
     "/recepcion",
     "/pacientes", // grupo padre + lista
     "/atencion-paciente",
