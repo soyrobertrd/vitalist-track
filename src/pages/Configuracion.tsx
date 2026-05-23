@@ -1115,6 +1115,11 @@ const Configuracion = () => {
 
               <Separator />
 
+              <TwoFactorSetup />
+
+              <Separator />
+
+
               <div>
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
                   <Clock className="h-4 w-4" />
