@@ -90,18 +90,19 @@ export default function OrdenesMedicas() {
                 </div>
                 <div className="flex gap-2">
                   {o.estado === "pendiente" && (
-                    <Button size="sm" variant="outline" onClick={() => cambiarEstado(o.id, "aceptada")}>Aceptar</Button>
+                    <Button size="sm" variant="outline" disabled={!canActHere} onClick={() => cambiarEstado(o.id, "aceptada")}>Aceptar</Button>
                   )}
                   {o.estado === "aceptada" && (
-                    <Button size="sm" variant="outline" onClick={() => cambiarEstado(o.id, "en_proceso")}>Iniciar</Button>
+                    <Button size="sm" variant="outline" disabled={!canActHere} onClick={() => cambiarEstado(o.id, "en_proceso")}>Iniciar</Button>
                   )}
                   {o.estado === "en_proceso" && (
-                    <Button size="sm" onClick={() => cambiarEstado(o.id, "completada")}>Completar</Button>
+                    <Button size="sm" disabled={!canActHere} onClick={() => cambiarEstado(o.id, "completada")}>Completar</Button>
                   )}
                   {["pendiente","aceptada"].includes(o.estado) && (
-                    <Button size="sm" variant="ghost" onClick={() => cambiarEstado(o.id, "cancelada")}>Cancelar</Button>
+                    <Button size="sm" variant="ghost" disabled={!canActHere} onClick={() => cambiarEstado(o.id, "cancelada")}>Cancelar</Button>
                   )}
                 </div>
+
               </CardContent>
             </Card>
           ))}
