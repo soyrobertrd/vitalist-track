@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
-import { useAuth } from "@/contexts/AuthContext";
+// auth user fetched directly from supabase below
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,8 @@ export default function SalaTeleconsulta() {
   const { id } = useParams<{ id: string }>();
   const nav = useNavigate();
   const { currentWorkspace } = useWorkspace();
-  const { user } = useAuth() as any;
+  const [user, setUser] = useState<any>(null);
+  useEffect(() => { supabase.auth.getUser().then(({ data }) => setUser(data.user)); }, []);
   const [tc, setTc] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [consentOpen, setConsentOpen] = useState(false);
