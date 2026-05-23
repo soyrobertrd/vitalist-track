@@ -14,8 +14,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock, Layers } from "lucide-react";
+import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock, Layers, LineChart, ClipboardList } from "lucide-react";
 import SubmodulosNicho from "@/components/psicologia/SubmodulosNicho";
+import GraficasProgresoEmocional from "@/components/psicologia/GraficasProgresoEmocional";
+import CuestionariosPreSesion from "@/components/psicologia/CuestionariosPreSesion";
+import NotasUltraPrivadas from "@/components/psicologia/NotasUltraPrivadas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -247,6 +250,9 @@ export default function PsicologiaPro() {
           <TabsTrigger value="psiquiatria">Psiquiatría</TabsTrigger>
           <TabsTrigger value="paquetes">Paquetes</TabsTrigger>
           <TabsTrigger value="nichos"><Layers className="h-4 w-4 mr-1" />Sub-módulos</TabsTrigger>
+          <TabsTrigger value="cuestionarios"><ClipboardList className="h-4 w-4 mr-1" />Cuestionarios</TabsTrigger>
+          <TabsTrigger value="graficas"><LineChart className="h-4 w-4 mr-1" />Progreso</TabsTrigger>
+          <TabsTrigger value="ultra-privadas"><Lock className="h-4 w-4 mr-1" />Ultra privadas</TabsTrigger>
         </TabsList>
 
         {/* FICHAS */}
@@ -618,6 +624,18 @@ export default function PsicologiaPro() {
         {/* SUB-MÓDULOS DE NICHO */}
         <TabsContent value="nichos">
           <SubmodulosNicho pacientes={pacientes as any} />
+        </TabsContent>
+
+        <TabsContent value="cuestionarios">
+          <CuestionariosPreSesion pacientes={pacientes as any} />
+        </TabsContent>
+
+        <TabsContent value="graficas">
+          <GraficasProgresoEmocional pacientes={pacientes as any} />
+        </TabsContent>
+
+        <TabsContent value="ultra-privadas">
+          <NotasUltraPrivadas pacientes={pacientes as any} />
         </TabsContent>
       </Tabs>
     </div>
