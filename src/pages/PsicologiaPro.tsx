@@ -14,13 +14,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock, Layers, LineChart, ClipboardList, Receipt, FileDown } from "lucide-react";
+import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock, Layers, LineChart, ClipboardList, Receipt, FileDown, Bell, Plug, Link2 } from "lucide-react";
 import SubmodulosNicho from "@/components/psicologia/SubmodulosNicho";
 import GraficasProgresoEmocional from "@/components/psicologia/GraficasProgresoEmocional";
 import CuestionariosPreSesion from "@/components/psicologia/CuestionariosPreSesion";
 import NotasUltraPrivadas from "@/components/psicologia/NotasUltraPrivadas";
 import FacturacionPsico from "@/components/psicologia/FacturacionPsico";
 import ExportarHistoriaPsico from "@/components/psicologia/ExportarHistoriaPsico";
+import RecordatoriosSesionesPsico from "@/components/psicologia/RecordatoriosSesionesPsico";
+import IntegracionesExternasPsico from "@/components/psicologia/IntegracionesExternasPsico";
+import PortalPacienteAdmin from "@/components/psicologia/PortalPacienteAdmin";
 import FirmaPrescripcion from "@/components/psicologia/FirmaPrescripcion";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -258,6 +261,9 @@ export default function PsicologiaPro() {
           <TabsTrigger value="ultra-privadas"><Lock className="h-4 w-4 mr-1" />Ultra privadas</TabsTrigger>
           <TabsTrigger value="facturacion"><Receipt className="h-4 w-4 mr-1" />Facturación</TabsTrigger>
           <TabsTrigger value="exportar"><FileDown className="h-4 w-4 mr-1" />Exportar HC</TabsTrigger>
+          <TabsTrigger value="recordatorios"><Bell className="h-4 w-4 mr-1" />Recordatorios</TabsTrigger>
+          <TabsTrigger value="integraciones"><Plug className="h-4 w-4 mr-1" />Integraciones</TabsTrigger>
+          <TabsTrigger value="portal"><Link2 className="h-4 w-4 mr-1" />Portal paciente</TabsTrigger>
         </TabsList>
 
         {/* FICHAS */}
