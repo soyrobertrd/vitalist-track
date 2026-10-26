@@ -1,3 +1,4 @@
+import { requireCronSecret } from "../_shared/cron-auth.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.75.0'
 import { Resend } from 'https://esm.sh/resend@2.0.0'
 import { resolveWorkspaceLocale, formatDateInTz, formatTimeInTz } from '../_shared/locale.ts'
@@ -13,6 +14,8 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
+  const denied = requireCronSecret(req);
+  if (denied) return denied;
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!

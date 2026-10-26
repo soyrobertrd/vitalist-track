@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -720,7 +721,7 @@ const Plantillas = () => {
                   <Label>Contenido</Label>
                   <div
                     className="p-4 border rounded-lg bg-background prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ __html: previewEmail?.contenido_html || "" }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(previewEmail?.contenido_html) }}
                   />
                 </div>
               </div>

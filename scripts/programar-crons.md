@@ -2,11 +2,16 @@
 
 > ⚠️ **Estos comandos NO se ejecutan automáticamente.** Cuando estés listo, copia y pega el SQL en el editor SQL del backend (Lovable Cloud → SQL Editor). El proyecto ya tiene `pg_cron` y `pg_net` disponibles en Supabase.
 
+> 🔒 **Obligatorio:** todas las funciones cron validan el header `x-cron-secret` (ver `_shared/cron-auth.ts`).
+> La anon key es pública, así que NO basta para autorizar. Sin `CRON_SECRET` configurado las funciones responden 500 (fallan cerradas).
+> Genera el secreto con: `openssl rand -hex 32`.
+
 ## Variables a reemplazar
 
 ```
 PROJECT_REF = qkjjyiymzaouqslzbxrp
 ANON_KEY    = <tomar de .env: VITE_SUPABASE_PUBLISHABLE_KEY>
+CRON_SECRET = <valor aleatorio de 32+ caracteres; el mismo que en `supabase secrets set CRON_SECRET=...`>
 ```
 
 ## 1. Detección de accesos sospechosos — cada hora
@@ -18,7 +23,7 @@ select cron.schedule(
   $$
   select net.http_post(
     url:='https://qkjjyiymzaouqslzbxrp.supabase.co/functions/v1/auditoria-deteccion-cron',
-    headers:='{"Content-Type":"application/json","apikey":"ANON_KEY","Authorization":"Bearer ANON_KEY"}'::jsonb,
+    headers:='{"Content-Type":"application/json","apikey":"ANON_KEY","Authorization":"Bearer ANON_KEY","x-cron-secret":"CRON_SECRET"}'::jsonb,
     body:='{}'::jsonb
   );
   $$
@@ -34,7 +39,7 @@ select cron.schedule(
   $$
   select net.http_post(
     url:='https://qkjjyiymzaouqslzbxrp.supabase.co/functions/v1/recordatorios-automaticos-cron?horas=24',
-    headers:='{"Content-Type":"application/json","apikey":"ANON_KEY","Authorization":"Bearer ANON_KEY"}'::jsonb,
+    headers:='{"Content-Type":"application/json","apikey":"ANON_KEY","Authorization":"Bearer ANON_KEY","x-cron-secret":"CRON_SECRET"}'::jsonb,
     body:='{}'::jsonb
   );
   $$
@@ -50,7 +55,7 @@ select cron.schedule(
   $$
   select net.http_post(
     url:='https://qkjjyiymzaouqslzbxrp.supabase.co/functions/v1/aplicar-retencion-cron',
-    headers:='{"Content-Type":"application/json","apikey":"ANON_KEY","Authorization":"Bearer ANON_KEY"}'::jsonb,
+    headers:='{"Content-Type":"application/json","apikey":"ANON_KEY","Authorization":"Bearer ANON_KEY","x-cron-secret":"CRON_SECRET"}'::jsonb,
     body:='{}'::jsonb
   );
   $$

@@ -74,6 +74,15 @@ export function VerticalProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => { cargar(); /* eslint-disable-next-line */ }, [currentWorkspace?.id, isAdmin]);
 
+  // Sincronizar dataset.vertical en <html> para activar los tokens de diseño (Fase 1)
+  useEffect(() => {
+    if (verticalActiva && verticalActiva !== "todas") {
+      document.documentElement.dataset.vertical = verticalActiva;
+    } else {
+      delete document.documentElement.dataset.vertical;
+    }
+  }, [verticalActiva]);
+
   return (
     <VerticalContext.Provider value={{ verticalesActivas, verticalActiva, setVerticalActiva, loading, refresh: cargar }}>
       {children}

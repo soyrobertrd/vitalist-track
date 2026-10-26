@@ -21,6 +21,7 @@ export interface Plan {
   limite_pacientes: number | null;
   limite_usuarios: number | null;
   limite_profesionales: number | null;
+  limite_dispositivos?: number | null;
   caracteristicas: Record<string, any>;
   orden: number;
 }

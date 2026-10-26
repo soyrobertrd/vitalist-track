@@ -79,14 +79,23 @@ const estadoPresupColor: Record<string, string> = {
   completado: "bg-primary/10 text-primary",
 };
 
+/**
+ * Guarda de ruta: se resuelve ANTES de montar el componente real para no
+ * llamar hooks de forma condicional (rules-of-hooks).
+ */
 export default function DentalCarePro() {
+  const [tab] = useTabParam("");
+  if (!tab) return <Navigate to="/dashboard" replace />;
+  return <DentalCareProContent />;
+}
+
+function DentalCareProContent() {
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
   const [tab, setTab] = useTabParam("");
   const isResumen = !tab;
-  if (isResumen) return <Navigate to="/dashboard" replace />;
 
   const { data: planes = [] } = useQuery({
     queryKey: ["planes_tratamiento_dental", wsId],

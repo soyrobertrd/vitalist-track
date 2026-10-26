@@ -39,12 +39,21 @@ const ESCALAS_INFO: Record<string, { label: string; max: number; cortes: { label
   otro: { label: "Otra escala", max: 100, cortes: [{label:"n/a",min:0}] },
 };
 
+/**
+ * Guarda de ruta: se resuelve ANTES de montar el componente real para no
+ * llamar hooks de forma condicional (rules-of-hooks).
+ */
 export default function PsicologiaPro() {
+  const [tab] = useTabParam("");
+  if (!tab) return <Navigate to="/dashboard" replace />;
+  return <PsicologiaProContent />;
+}
+
+function PsicologiaProContent() {
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
   const [tab, setTab] = useTabParam("");
   const isResumen = !tab;
-  if (isResumen) return <Navigate to="/dashboard" replace />;
 
   const { data: pacientes = [] } = useQuery({
     queryKey: ["pacientes_psico_combo", wsId],

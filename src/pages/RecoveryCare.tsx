@@ -77,14 +77,23 @@ const estadoReservaColor: Record<string, string> = {
   no_show: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
 };
 
+/**
+ * Guarda de ruta: se resuelve ANTES de montar el componente real para no
+ * llamar hooks de forma condicional (rules-of-hooks).
+ */
 export default function RecoveryCare() {
+  const [tab] = useTabParam("");
+  if (!tab) return <Navigate to="/dashboard" replace />;
+  return <RecoveryCareContent />;
+}
+
+function RecoveryCareContent() {
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
   const [tab, setTab] = useTabParam("");
   const isResumen = !tab;
-  if (isResumen) return <Navigate to="/dashboard" replace />;
 
   const { data: pacientesRec = [] } = useQuery({
     queryKey: ["pacientes_recovery", wsId], enabled: !!wsId,

@@ -73,7 +73,17 @@ const cabinaEstadoColor: Record<string, string> = {
   reservada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
 };
 
+/**
+ * Guarda de ruta: se resuelve ANTES de montar el componente real para no
+ * llamar hooks de forma condicional (rules-of-hooks).
+ */
 export default function AestheticPro() {
+  const [tab] = useTabParam("");
+  if (!tab) return <Navigate to="/dashboard" replace />;
+  return <AestheticProContent />;
+}
+
+function AestheticProContent() {
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
@@ -81,7 +91,6 @@ export default function AestheticPro() {
   const [tab, setTab] = useTabParam("");
   const isResumen = !tab;
   // El "Resumen" se fusiona con el Dashboard adaptativo por vertical.
-  if (isResumen) return <Navigate to="/dashboard" replace />;
 
   // Existing queries
   const { data: leads = [] } = useQuery({

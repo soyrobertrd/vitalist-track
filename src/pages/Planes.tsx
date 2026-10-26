@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Check, Crown, Loader2 } from "lucide-react";
+import { Check, Crown, Loader2, Sparkles, Globe } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace, type Plan } from "@/contexts/WorkspaceContext";
+import { CANONICAL_PLANES, TRIAL_DAYS } from "@/config/planes";
+import { ClinicDomainManager } from "@/components/workspace/ClinicDomainManager";
 import { toast } from "sonner";
 
 const FEATURE_LABELS: Record<string, string> = {
@@ -15,8 +17,11 @@ const FEATURE_LABELS: Record<string, string> = {
   auditoria: "Auditoría completa de cambios",
   portal_paciente: "Portal del paciente",
   mapa: "Mapa operativo y rutas",
+  subdominio: "Subdominio propio (tumarca.vitalisttrack.com)",
+  custom_domain: "Dominio personalizado (citas.tuclinica.com)",
+  telemedicina: "Teleconsulta y videollamada WebRTC",
   sso: "SSO / SAML empresarial",
-  api: "Acceso a API",
+  api: "Acceso a API pública",
 };
 
 const SUPPORT_LABELS: Record<string, string> = {
@@ -27,24 +32,17 @@ const SUPPORT_LABELS: Record<string, string> = {
 };
 
 export default function Planes() {
-  const [planes, setPlanes] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [planes, setPlanes] = useState<Plan[]>(CANONICAL_PLANES);
+  const [loading, setLoading] = useState(false);
   const [billingCycle, setBillingCycle] = useState<"mensual" | "anual">("mensual");
   const ANNUAL_DISCOUNT = 0.15;
   const { currentWorkspace, currentPlan, refresh } = useWorkspace();
   const [changing, setChanging] = useState<string | null>(null);
 
   useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase
-        .from("planes")
-        .select("*")
-        .eq("activo", true)
-        .order("orden", { ascending: true });
-      if (error) toast.error("No se pudo cargar el catálogo de planes");
-      setPlanes((data || []) as Plan[]);
-      setLoading(false);
-    })();
+    // Se utiliza el catálogo canónico actualizado (sin mostrar el plan gratis)
+    setPlanes(CANONICAL_PLANES);
+    setLoading(false);
   }, []);
 
   const handleSelectPlan = async (codigo: string) => {
@@ -113,6 +111,17 @@ export default function Planes() {
         )}
       </div>
 
+      {/* Banner 30 días de prueba y degradación automática */}
+      <div className="max-w-4xl mx-auto rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-start gap-3 text-left">
+        <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+        <div className="text-sm">
+          <p className="font-semibold text-foreground">30 días de prueba gratuita en todos los planes</p>
+          <p className="text-muted-foreground mt-0.5">
+            Explora todas las funcionalidades sin compromiso. Si pasados los 30 días decides no activar tu suscripción, tu clínica pasará automáticamente al plan gratuito de contingencia para que nunca pierdas el acceso a tus historiales ni a tus pacientes.
+          </p>
+        </div>
+      </div>
+
       {/* Toggle mensual / anual */}
       <div className="flex justify-center">
         <div className="inline-flex items-center gap-1 rounded-full border bg-card p-1">
@@ -154,6 +163,7 @@ export default function Planes() {
         {planes.map((plan) => {
           const isCurrent = currentWorkspace?.plan_codigo === plan.codigo;
           const isPro = plan.codigo === "pro";
+          const isPlus = plan.codigo === "plus";
           const mensualUsd = Number(plan.precio_mensual_usd) || 0;
           const mensualDop = Number(plan.precio_mensual_dop) || 0;
           const anualUsd = Math.round(mensualUsd * 12 * (1 - ANNUAL_DISCOUNT));
@@ -163,10 +173,21 @@ export default function Planes() {
           return (
             <Card
               key={plan.codigo}
-              className={`flex flex-col ${isPro ? "border-primary shadow-lg shadow-primary/10 relative" : ""}`}
+              className={`flex flex-col ${
+                isPro
+                  ? "border-primary shadow-lg shadow-primary/10 relative"
+                  : isPlus
+                  ? "border-purple-500/60 shadow-lg shadow-purple-500/10 relative"
+                  : ""
+              }`}
             >
               {isPro && (
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Más popular</Badge>
+              )}
+              {isPlus && (
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white">
+                  Recomendado clínicas
+                </Badge>
               )}
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -179,6 +200,11 @@ export default function Planes() {
                     ${isAnual ? anualMensualizadoUsd : mensualUsd}
                   </span>
                   <span className="text-muted-foreground"> /mes</span>
+                  <div className="mt-1.5">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 px-2 py-0.5 rounded-full">
+                      ✓ 30 días gratis incluidos
+                    </span>
+                  </div>
                   {isAnual ? (
                     <p className="text-xs text-muted-foreground mt-1">
                       ${anualUsd} USD/año {anualDop > 0 && `· RD$${anualDop.toLocaleString()}/año`}
@@ -216,6 +242,12 @@ export default function Planes() {
                       {plan.limite_profesionales ? `${plan.limite_profesionales} profesionales` : "Profesionales ilimitados"}
                     </span>
                   </li>
+                  {plan.limite_dispositivos && (
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                      <span>Hasta {plan.limite_dispositivos} dispositivos simultáneos</span>
+                    </li>
+                  )}
                   {Object.entries(plan.caracteristicas || {})
                     .filter(([k, v]) => v && k !== "soporte" && FEATURE_LABELS[k])
                     .map(([key]) => (
@@ -236,7 +268,7 @@ export default function Planes() {
               <CardFooter>
                 <Button
                   className="w-full"
-                  variant={isPro ? "default" : "outline"}
+                  variant={isPro || isPlus ? "default" : "outline"}
                   disabled={isCurrent || changing !== null}
                   onClick={() => handleSelectPlan(plan.codigo)}
                 >
@@ -245,7 +277,7 @@ export default function Planes() {
                   ) : isCurrent ? (
                     "Plan actual"
                   ) : (
-                    "Seleccionar"
+                    `Activar ${plan.nombre} (30 días)`
                   )}
                 </Button>
               </CardFooter>
@@ -254,14 +286,19 @@ export default function Planes() {
         })}
       </div>
 
+      {/* Gestor de Subdominio y Dominio Web Personalizado */}
+      <div className="pt-6">
+        <ClinicDomainManager />
+      </div>
+
       <div className="text-center text-sm text-muted-foreground max-w-2xl mx-auto pt-4 border-t">
         <p>
           Próximamente: pago automático con <strong>Stripe</strong> (internacional),{" "}
-          <strong>Azul / CardNet</strong> (RD), o <strong>transferencia / factura mensual</strong> para venta asistida.
+          <strong>Azul / CardNet</strong> (RD), o <strong>transferencia / factura mensual con NCF</strong>.
         </p>
         <p className="mt-2">
-          ¿Necesitas un plan empresarial on-premise o personalizado?{" "}
-          <a href="mailto:ventas@health-app.com" className="text-primary underline">
+          ¿Necesitas un plan empresarial para múltiples sedes hospitalarias?{" "}
+          <a href="mailto:ventas@vitalisttrack.com" className="text-primary underline">
             Contáctanos
           </a>
         </p>

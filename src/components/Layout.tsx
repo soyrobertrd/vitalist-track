@@ -80,8 +80,10 @@ import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
 import { SucursalSwitcher } from "@/components/SucursalSwitcher";
 import { VerticalSwitcher } from "@/components/VerticalSwitcher";
 import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useFreePlan } from "@/hooks/useFreePlan";
 import { useEffectiveModules } from "@/hooks/useEffectiveModules";
+import { isSidebarItemVisible } from "@/config/sidebar-permissions";
 
 interface LayoutProps {
   children: ReactNode;
@@ -94,11 +96,15 @@ const Layout = ({ children }: LayoutProps) => {
   const { profile } = useUserProfile();
   const { isAdmin } = useUserRole();
   const { verticalActiva } = useVertical();
+  const { currentWorkspace } = useWorkspace();
   const { isFree } = useFreePlan();
   const { canAccess: canAccessModule, loading: loadingModules } = useEffectiveModules();
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
+
+  // Código de plan del workspace activo
+  const planCodigo = currentWorkspace?.plan_codigo || "solo";
 
   // Enable automatic notifications for suspect patients
   useNotificacionesSospechosos();
@@ -129,7 +135,7 @@ const Layout = ({ children }: LayoutProps) => {
     psicologia: Activity,
   };
   const verticalRoot: Record<VTipo, string> = {
-    clinica: "/dashboard",
+    clinica: "/app",
     dental: "/dental-care",
     aesthetic: "/aesthetic-pro",
     recovery: "/recovery-care",
@@ -141,7 +147,7 @@ const Layout = ({ children }: LayoutProps) => {
   // como item separado en el menú lateral.
 
   const menuItems: any[] = [
-    { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard", moduleKey: "dashboard" },
+    { path: "/app", icon: LayoutDashboard, label: "Dashboard", moduleKey: "dashboard" },
 
     {
       path: "/agenda", icon: CalendarDays, label: "Agenda", moduleKey: "agenda",
@@ -390,19 +396,38 @@ const Layout = ({ children }: LayoutProps) => {
     return FREE_ALLOWED_PATHS.has(base);
   };
 
-  // Filtrado por vertical activa: oculta items específicos no aplicables
-  // y filtra subItems individualmente. Si un grupo queda vacío, se oculta.
+  // Filtrado exhaustivo por vertical activa y nivel de plan:
+  // evalúa permisos dinámicos con isSidebarItemVisible.
   const visibleMenuItems = menuItems
     .filter((item) => {
-      if (!item.verticales) return true;
-      if (va === "todas") return true;
-      return item.verticales.includes(va);
+      // 1. Visibilidad del módulo padre según plan, vertical y rol admin
+      return isSidebarItemVisible({
+        moduleKey: item.moduleKey,
+        path: item.path,
+        verticales: item.verticales,
+        adminOnly: item.adminOnly,
+        currentPlanCodigo: planCodigo,
+        activeVertical: va,
+        isAdmin,
+      });
     })
-    // Filtro por plan + categoría profesional (módulos efectivos)
+    // 2. Filtro por permisos de módulos efectivos en base de datos si aplica
     .filter((item) => loadingModules || canAccessModule(item.moduleKey))
     .map((item) => {
       if (!item.subItems) return item;
-      let filtered = item.subItems.filter(subItemAplica);
+      let filtered = item.subItems
+        .filter(subItemAplica)
+        .filter((sub: any) =>
+          isSidebarItemVisible({
+            moduleKey: sub.moduleKey,
+            path: sub.path,
+            verticales: sub.verticales,
+            adminOnly: sub.adminOnly,
+            currentPlanCodigo: planCodigo,
+            activeVertical: va,
+            isAdmin,
+          })
+        );
       if (isFree) filtered = filtered.filter((s: any) => isFreeAllowed(s.path));
       return { ...item, subItems: filtered };
     })

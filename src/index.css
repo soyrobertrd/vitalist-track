@@ -64,6 +64,10 @@ All colors MUST be HSL.
     --chart-3: 199 89% 48%;
     --chart-4: 38 92% 50%;
     --chart-5: 340 82% 52%;
+
+    /* Admin alias variables (resuelve D3) */
+    --admin-primary: var(--primary);
+    --admin-secondary: var(--accent);
   }
 
   .dark {
@@ -115,6 +119,10 @@ All colors MUST be HSL.
     --chart-3: 199 89% 48%;
     --chart-4: 38 92% 50%;
     --chart-5: 340 82% 52%;
+
+    /* Admin alias variables (resuelve D3) */
+    --admin-primary: var(--primary);
+    --admin-secondary: var(--accent);
   }
 
   /* Standard mode: sidebar dark, content light */
@@ -128,6 +136,97 @@ All colors MUST be HSL.
     --sidebar-border: 215 28% 17%;
     --sidebar-ring: 217 91% 60%;
   }
+
+  /* ===== TOKENS DE COLOR POR VERTICAL CLÍNICA (Fase 1) ===== */
+  /* 1. Odontología (Dental) */
+  [data-vertical="dental"] {
+    --primary: 188 86% 36%;
+    --ring: 188 86% 36%;
+    --sidebar-primary: 188 86% 36%;
+    --sidebar-ring: 188 86% 36%;
+    --accent: 172 66% 40%;
+    --chart-1: 188 86% 36%;
+  }
+  .dark [data-vertical="dental"] {
+    --primary: 188 80% 50%;
+    --ring: 188 80% 50%;
+    --sidebar-primary: 188 80% 50%;
+    --sidebar-ring: 188 80% 50%;
+    --accent: 172 66% 40%;
+    --chart-1: 188 80% 50%;
+  }
+
+  /* 2. Aesthetic Pro (Medicina Estética & Cirugía Plástica) */
+  [data-vertical="aesthetic"] {
+    --primary: 330 65% 50%;
+    --ring: 330 65% 50%;
+    --sidebar-primary: 330 65% 50%;
+    --sidebar-ring: 330 65% 50%;
+    --accent: 275 60% 60%;
+    --chart-1: 330 65% 50%;
+  }
+  .dark [data-vertical="aesthetic"] {
+    --primary: 330 75% 65%;
+    --ring: 330 75% 65%;
+    --sidebar-primary: 330 75% 65%;
+    --sidebar-ring: 330 75% 65%;
+    --accent: 275 60% 60%;
+    --chart-1: 330 75% 65%;
+  }
+
+  /* 3. Recovery Care (Recuperación & Post-Quirúrgico) */
+  [data-vertical="recovery"] {
+    --primary: 158 64% 34%;
+    --ring: 158 64% 34%;
+    --sidebar-primary: 158 64% 34%;
+    --sidebar-ring: 158 64% 34%;
+    --accent: 142 50% 45%;
+    --chart-1: 158 64% 34%;
+  }
+  .dark [data-vertical="recovery"] {
+    --primary: 158 55% 48%;
+    --ring: 158 55% 48%;
+    --sidebar-primary: 158 55% 48%;
+    --sidebar-ring: 158 55% 48%;
+    --accent: 142 50% 45%;
+    --chart-1: 158 55% 48%;
+  }
+
+  /* 4. VisionCare Pro (Ópticas & Oftalmología) */
+  [data-vertical="vision"] {
+    --primary: 245 58% 55%;
+    --ring: 245 58% 55%;
+    --sidebar-primary: 245 58% 55%;
+    --sidebar-ring: 245 58% 55%;
+    --accent: 217 80% 60%;
+    --chart-1: 245 58% 55%;
+  }
+  .dark [data-vertical="vision"] {
+    --primary: 245 70% 70%;
+    --ring: 245 70% 70%;
+    --sidebar-primary: 245 70% 70%;
+    --sidebar-ring: 245 70% 70%;
+    --accent: 217 80% 60%;
+    --chart-1: 245 70% 70%;
+  }
+
+  /* 5. Psicología & Psiquiatría */
+  [data-vertical="psicologia"] {
+    --primary: 265 45% 52%;
+    --ring: 265 45% 52%;
+    --sidebar-primary: 265 45% 52%;
+    --sidebar-ring: 265 45% 52%;
+    --accent: 199 50% 55%;
+    --chart-1: 265 45% 52%;
+  }
+  .dark [data-vertical="psicologia"] {
+    --primary: 265 60% 70%;
+    --ring: 265 60% 70%;
+    --sidebar-primary: 265 60% 70%;
+    --sidebar-ring: 265 60% 70%;
+    --accent: 199 50% 55%;
+    --chart-1: 265 60% 70%;
+  }
 }
 
 @layer base {
@@ -136,7 +235,7 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-200;
   }
 }
 

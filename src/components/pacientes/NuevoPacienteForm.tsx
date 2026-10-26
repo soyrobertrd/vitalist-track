@@ -27,6 +27,7 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 import { useSucursales } from "@/hooks/useSucursales";
 import { SucursalSelect } from "@/components/SucursalSelect";
+import { ClinicaOrigenSelect } from "@/components/pacientes/ClinicaOrigenSelect";
 import { ConsentimientoInformado, TERMS_VERSION_CURRENT, type ConsentimientoData } from "@/components/ConsentimientoInformado";
 
 // Validation schema (country-aware factory)
@@ -98,6 +99,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
   const [selectedSexo, setSelectedSexo] = useState<string>("");
   const [diasNoVisita, setDiasNoVisita] = useState<number[]>([]);
   const [sucursalId, setSucursalId] = useState<string | null>(null);
+  const [clinicaOrigen, setClinicaOrigen] = useState<string>("");
   const { sucursales } = useSucursales();
   const [medicamentos, setMedicamentos] = useState<{nombre: string, dosis: string, frecuencia: string}[]>([{nombre: "", dosis: "", frecuencia: ""}]);
   const [notificacionesActivas, setNotificacionesActivas] = useState(true);
@@ -217,7 +219,9 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       barrio: selectedBarrio || null,
       latitud: latitudNum,
       longitud: longitudNum,
-      historia_medica_basica: (formDataObj.get("historia_medica_basica") as string || "").trim() || null,
+      historia_medica_basica: clinicaOrigen
+        ? `[Clínica de Origen: ${clinicaOrigen}]\n${(formDataObj.get("historia_medica_basica") as string || "").trim()}`.trim()
+        : ((formDataObj.get("historia_medica_basica") as string || "").trim() || null),
       grado_dificultad: gradoDificultad as "bajo" | "medio" | "alto",
       tipo_atencion: formDataObj.get("tipo_atencion") as string || "domiciliario",
       profesional_asignado_id: formDataObj.get("profesional_asignado_id") as string || null,
@@ -682,6 +686,9 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
               </Select>
             </div>
             <SucursalSelect value={sucursalId} onChange={setSucursalId} />
+            <div className="md:col-span-2">
+              <ClinicaOrigenSelect value={clinicaOrigen} onChange={setClinicaOrigen} />
+            </div>
             <div className="flex items-end pb-1">
               <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer text-xs">
                 <Input id="es_sospechoso" name="es_sospechoso" type="checkbox" className="w-4 h-4" />

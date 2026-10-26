@@ -1,3 +1,4 @@
+import { requireCronSecret } from "../_shared/cron-auth.ts";
 // Edge function: procesa reportes programados pendientes y los envía por email
 // usando la función generar-reporte.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -9,6 +10,8 @@ const corsHeaders = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const denied = requireCronSecret(req);
+  if (denied) return denied;
 
   try {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;

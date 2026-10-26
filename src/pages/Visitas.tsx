@@ -37,6 +37,8 @@ import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { useSucursales } from "@/hooks/useSucursales";
 import { SucursalSelect } from "@/components/SucursalSelect";
 import { VideoConsultaFields } from "@/components/VideoConsultaFields";
+import { ProgramarVisitaDialog } from "@/components/visitas/ProgramarVisitaDialog";
+import { RegistrarVisitaNoAgendadaDialog } from "@/components/visitas/RegistrarVisitaNoAgendadaDialog";
 import type { VideoProveedor } from "@/lib/videoLinks";
 
 import type { Paciente, Personal } from "@/types/db";
@@ -475,253 +477,43 @@ const Visitas = () => {
 
       {/* Botones de acción principales */}
       <div className="flex flex-wrap gap-2">
-        <Dialog open={unscheduledOpen} onOpenChange={setUnscheduledOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <CheckSquare className="mr-2 h-4 w-4" />
-                Visita No Agendada
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Registrar Visita No Agendada</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleUnscheduledSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="paciente_unscheduled">Paciente *</Label>
-                  <Select name="paciente_id" required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar paciente" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {pacientes.map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.nombre} {p.apellido} - {p.cedula}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="profesional_unscheduled">Profesional *</Label>
-                  <Select name="profesional_id" required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar profesional" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {personal.map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.nombre} {p.apellido}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tipo_visita_unscheduled">Tipo de Visita *</Label>
-                  <Select name="tipo_visita" required>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ambulatorio">Ambulatorio (Consultorio)</SelectItem>
-                      <SelectItem value="domicilio">Domicilio</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="razon">Razón de visita no agendada</Label>
-                  <Textarea 
-                    id="razon" 
-                    name="razon" 
-                    placeholder="Ej: Paciente se confundió de fecha, estaba cerca y se llamó"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="motivo_visita_unscheduled">Motivo</Label>
-                  <Textarea 
-                    id="motivo_visita_unscheduled" 
-                    name="motivo_visita" 
-                    placeholder="Motivo de la visita" 
-                  />
-                </div>
-                <SucursalSelect value={sucursalIdUnscheduled} onChange={setSucursalIdUnscheduled} />
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Registrando..." : "Registrar Visita"}
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Programar Visita
-              </Button>
-            </DialogTrigger>
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Programar Nueva Visita</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="paciente_id">Paciente *</Label>
-                <PacienteCombobox
-                  pacientes={pacientes.map((p) => ({
-                    id: p.id,
-                    nombre: p.nombre,
-                    apellido: p.apellido,
-                    cedula: p.cedula
-                  }))}
-                  value={selectedPatientId || ''}
-                  onValueChange={handlePatientChange}
-                  required
-                  showCedula={false}
-                />
-              </div>
-              
-              {selectedPatientId && (!selectedPatientData?.zona && !selectedPatientData?.barrio) && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Este paciente no tiene zona ni barrio configurados. Por favor, actualiza sus datos para optimizar la planificación de rutas.
-                  </AlertDescription>
-              </Alert>
-              )}
-              
-              {/* Alerta de días de restricción del paciente */}
-              {diasNoVisitaPaciente.length > 0 && (
-                <Alert className="border-orange-500 bg-orange-50 dark:bg-orange-950/20">
-                  <CalendarOff className="h-4 w-4 text-orange-500" />
-                  <AlertDescription className="text-orange-700 dark:text-orange-300">
-                    Este paciente no tiene disponibilidad los: {diasNoVisitaPaciente.map(d => {
-                      const dias = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
-                      return dias[d];
-                    }).join(", ")}
-                  </AlertDescription>
-                </Alert>
-              )}
-              
-              {selectedPatientId && selectedPatientData?.zona && (
-                <NearbyPatientsRecommendation
-                  currentPatientId={selectedPatientId}
-                  barrio={selectedPatientData?.barrio}
-                  zona={selectedPatientData?.zona}
-                  onSelectPatient={(patientId) => {
-                    toast.info(`Paciente cercano recomendado. Considere planificar visita conjunta.`);
-                  }}
-                />
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="profesional_id">Profesional *</Label>
-                <div className="flex gap-2">
-                  <Select 
-                    name="profesional_id" 
-                    required 
-                    value={selectedProfesionalId}
-                    onValueChange={setSelectedProfesionalId}
-                  >
-                    <SelectTrigger className="flex-1">
-                      <SelectValue placeholder="Seleccionar profesional" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {personal.map((p) => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.nombre} {p.apellido}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setAutoAssignOpen(true)}
-                    disabled={!selectedPatientId || !selectedFechaHora}
-                    title="Asignación automática"
-                  >
-                    <Wand2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="fecha_hora_visita">Fecha y Hora *</Label>
-                <Input
-                  id="fecha_hora_visita"
-                  name="fecha_hora_visita"
-                  type="datetime-local"
-                  required
-                  value={selectedFechaHora}
-                  onChange={(e) => setSelectedFechaHora(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="tipo_visita">Tipo de Visita *</Label>
-                <Select name="tipo_visita" required>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ambulatorio">Ambulatorio (Consultorio)</SelectItem>
-                    <SelectItem value="domicilio">Domicilio</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Modalidad *</Label>
-                <Select value={modalidad} onValueChange={(v) => setModalidad(v as "presencial" | "virtual")}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="presencial">Presencial</SelectItem>
-                    <SelectItem value="virtual">Virtual (videoconsulta)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {modalidad === "virtual" && (
-                <VideoConsultaFields
-                  proveedor={videoCfg.proveedor}
-                  enlace={videoCfg.enlace}
-                  notas={videoCfg.notas}
-                  workspaceSlug={currentWorkspace?.slug ?? null}
-                  onChange={setVideoCfg}
-                />
-              )}
-              <div className="space-y-2">
-                <Label>Profesionales Adicionales (Opcional)</Label>
-                <div className="space-y-2 max-h-32 overflow-y-auto border rounded p-2">
-                  {personal.map((p) => (
-                    <div key={p.id} className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id={`prof-${p.id}`}
-                        checked={selectedProfessionals.includes(p.id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedProfessionals([...selectedProfessionals, p.id]);
-                          } else {
-                            setSelectedProfessionals(selectedProfessionals.filter(id => id !== p.id));
-                          }
-                        }}
-                        className="rounded"
-                      />
-                      <Label htmlFor={`prof-${p.id}`} className="cursor-pointer text-sm">
-                        {p.nombre} {p.apellido} - {p.especialidad}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="motivo_visita">Motivo</Label>
-                <Textarea id="motivo_visita" name="motivo_visita" placeholder="Motivo de la visita" />
-              </div>
-              <SucursalSelect value={sucursalId} onChange={setSucursalId} />
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Programando..." : "Programar Visita"}
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <RegistrarVisitaNoAgendadaDialog
+          open={unscheduledOpen}
+          onOpenChange={setUnscheduledOpen}
+          pacientes={pacientes}
+          personal={personal}
+          loading={loading}
+          sucursalId={sucursalIdUnscheduled}
+          onSucursalChange={setSucursalIdUnscheduled}
+          onSubmit={handleUnscheduledSubmit}
+        />
+
+        <ProgramarVisitaDialog
+          open={open}
+          onOpenChange={setOpen}
+          pacientes={pacientes}
+          personal={personal}
+          loading={loading}
+          selectedPatientId={selectedPatientId}
+          selectedPatientData={selectedPatientData}
+          onPatientChange={handlePatientChange}
+          diasNoVisitaPaciente={diasNoVisitaPaciente}
+          selectedProfesionalId={selectedProfesionalId}
+          setSelectedProfesionalId={setSelectedProfesionalId}
+          onAutoAssignClick={() => setAutoAssignOpen(true)}
+          selectedFechaHora={selectedFechaHora}
+          setSelectedFechaHora={setSelectedFechaHora}
+          modalidad={modalidad}
+          setModalidad={setModalidad}
+          videoCfg={videoCfg}
+          setVideoCfg={setVideoCfg}
+          workspaceSlug={currentWorkspace?.slug ?? null}
+          selectedProfessionals={selectedProfessionals}
+          setSelectedProfessionals={setSelectedProfessionals}
+          sucursalId={sucursalId}
+          setSucursalId={setSucursalId}
+          onSubmit={handleSubmit}
+        />
       </div>
 
       {/* Alerta de pacientes sin visitas */}

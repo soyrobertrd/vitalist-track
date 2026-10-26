@@ -58,14 +58,23 @@ const estadoOrdenColor: Record<string, string> = {
   devuelta: "bg-destructive/10 text-destructive",
 };
 
+/**
+ * Guarda de ruta: se resuelve ANTES de montar el componente real para no
+ * llamar hooks de forma condicional (rules-of-hooks).
+ */
 export default function VisionCarePro() {
+  const [tab] = useTabParam("");
+  if (!tab) return <Navigate to="/dashboard" replace />;
+  return <VisionCareProContent />;
+}
+
+function VisionCareProContent() {
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
   const [tab, setTab] = useTabParam("");
   const isResumen = !tab;
-  if (isResumen) return <Navigate to="/dashboard" replace />;
 
   const { data: recetas = [] } = useQuery({
     queryKey: ["recetas_oftalmicas", wsId], enabled: !!wsId,

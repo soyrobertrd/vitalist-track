@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Plan } from "@/contexts/WorkspaceContext";
+import { CANONICAL_PLANES, PLAN_FEATURES_MAP, TRIAL_DAYS } from "@/config/planes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,54 +58,13 @@ const contactSchema = z.object({
 
 type ContactValues = z.infer<typeof contactSchema>;
 
-const PLAN_FEATURES: Record<string, string[]> = {
-  free: [
-    "Dashboard, agenda y calendario",
-    "Agenda universal multi-profesional",
-    "Ficha clínica del paciente",
-    "Recordatorios por email + WhatsApp básico",
-    "Consentimiento informado",
-    "Soporte por comunidad",
-  ],
-  solo: [
-    "Todo lo de Free",
-    "WhatsApp con plantillas personalizables",
-    "Ficha clínica completa + mapa corporal",
-    "Escalas y cuestionarios clínicos",
-    "Importación masiva desde Excel",
-    "Reportes operativos + exportables",
-    "Recetas y órdenes médicas",
-    "Soporte por email",
-  ],
-  pro: [
-    "Todo lo de Solo Doctor",
-    "Multi-clínica (workspaces) + multi-sucursal",
-    "Verticales: Dental, Estética, Visión, Recovery, Psicología",
-    "Reportes & BI por vertical",
-    "Automatizaciones, encuestas y workflows clínicos",
-    "Portal del paciente + confirmación pública",
-    "Geolocalización, rutas y mapa operativo",
-    "ARS avanzado: planes, tarifarios, autorizaciones",
-    "Permisos por categoría profesional y vertical",
-    "2FA para administradores + exportación GDPR",
-    "Auditoría completa de cambios",
-    "Soporte prioritario",
-  ],
-  business: [
-    "Todo lo de Pro",
-    "SSO / SAML empresarial",
-    "Acceso a API pública",
-    "Telemedicina + firmas digitales",
-    "Interoperabilidad FHIR / DICOM",
-    "Auditoría avanzada exportable (PDF/Excel)",
-    "Centros, camas y hospitalización ilimitados",
-    "SLA 99.9% y onboarding dedicado",
-    "Integraciones a medida (farmacia, laboratorio)",
-    "Account manager dedicado",
-  ],
-};
+const PLAN_FEATURES: Record<string, string[]> = PLAN_FEATURES_MAP;
 
 const FAQS = [
+  {
+    q: "¿Cómo funciona la prueba gratuita de 30 días?",
+    a: "Todos los planes incluyen 30 días de prueba completa sin necesidad de ingresar tarjeta de crédito. Si transcurridos los 30 días decides no comprar la suscripción, tu cuenta pasa automáticamente al plan gratuito para que conserves el acceso a todos tus historiales clínicos.",
+  },
   {
     q: "¿Necesito instalar algo?",
     a: "No. Vitalist Track es 100% web y funciona en cualquier navegador moderno. También se instala como PWA en móvil con un toque.",
@@ -133,8 +93,8 @@ const FAQS = [
 
 export default function Landing() {
   const navigate = useNavigate();
-  const [planes, setPlanes] = useState<Plan[]>([]);
-  const [loadingPlanes, setLoadingPlanes] = useState(true);
+  const [planes, setPlanes] = useState<Plan[]>(CANONICAL_PLANES);
+  const [loadingPlanes, setLoadingPlanes] = useState(false);
   const [billingCycle, setBillingCycle] = useState<"mensual" | "anual">("mensual");
   const ANNUAL_DISCOUNT = 0.15; // 15% de descuento por pago anual
   const [submitting, setSubmitting] = useState(false);
@@ -150,10 +110,10 @@ export default function Landing() {
   });
 
   useEffect(() => {
-    document.title = "Vitalist Track — Plataforma clínica para atención domiciliaria";
+    document.title = "Vitalist Track — Plataforma clínica multi-especialidad";
     const meta = document.querySelector('meta[name="description"]');
     const desc =
-      "Gestiona pacientes, coordina visitas y automatiza tu clínica de atención domiciliaria. Multi-país, seguro y diseñado para LATAM.";
+      "Gestiona pacientes, coordina visitas y automatiza tu clínica o consultorio. Especialidades médicas, dental, estética, visión y psicología.";
     if (meta) meta.setAttribute("content", desc);
     else {
       const m = document.createElement("meta");
@@ -164,15 +124,9 @@ export default function Landing() {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("planes")
-        .select("*")
-        .eq("activo", true)
-        .order("orden", { ascending: true });
-      setPlanes((data || []) as Plan[]);
-      setLoadingPlanes(false);
-    })();
+    // Los planes públicos se toman de la configuración canónica actualizada
+    setPlanes(CANONICAL_PLANES);
+    setLoadingPlanes(false);
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -371,11 +325,11 @@ export default function Landing() {
         <section id="planes" className="mt-32">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-4">
-              <Sparkles className="h-4 w-4" /> Precios transparentes
+              <Sparkles className="h-4 w-4" /> 30 días de prueba gratis en todos los planes
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Planes para cada etapa</h2>
-            <p className="text-muted-foreground mt-3">
-              Empieza gratis, escala cuando necesites. Sin contratos, cancela cuando quieras.
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Planes diseñados para cada etapa</h2>
+            <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
+              Comienza con <strong>30 días de prueba gratuita</strong> sin tarjeta de crédito. Si pasados los 30 días decides no comprar la suscripción, tu cuenta pasa automáticamente al plan gratuito para no perder nunca tus fichas e historiales clínicos.
             </p>
 
             {/* Toggle mensual / anual */}
@@ -422,6 +376,7 @@ export default function Landing() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {planes.map((plan) => {
                 const isPro = plan.codigo === "pro";
+                const isPlus = plan.codigo === "plus";
                 const features = PLAN_FEATURES[plan.codigo] || [];
                 const mensual = Number(plan.precio_mensual_usd) || 0;
                 const anualTotal = Math.round(mensual * 12 * (1 - ANNUAL_DISCOUNT));
@@ -431,12 +386,21 @@ export default function Landing() {
                   <div
                     key={plan.codigo}
                     className={`relative flex flex-col rounded-2xl border bg-card p-6 ${
-                      isPro ? "border-primary shadow-lg shadow-primary/10" : "border-border"
+                      isPro
+                        ? "border-primary shadow-lg shadow-primary/10"
+                        : isPlus
+                        ? "border-purple-500/60 shadow-lg shadow-purple-500/10"
+                        : "border-border"
                     }`}
                   >
                     {isPro && (
                       <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">
                         <Crown className="h-3 w-3" /> Más popular
+                      </span>
+                    )}
+                    {isPlus && (
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-600 text-white text-xs font-semibold shadow">
+                        <Sparkles className="h-3 w-3" /> Recomendado clínicas
                       </span>
                     )}
                     <h3 className="text-lg font-semibold">{plan.nombre}</h3>
@@ -451,9 +415,11 @@ export default function Landing() {
                           ${anualTotal} facturados anualmente · ahorras ${mensual * 12 - anualTotal}
                         </p>
                       )}
-                      {!isAnual && mensual === 0 && (
-                        <p className="text-xs text-muted-foreground mt-1">Gratis para siempre</p>
-                      )}
+                      <div className="mt-2">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 px-2.5 py-0.5 rounded-full">
+                          ✓ 30 días gratis de prueba
+                        </span>
+                      </div>
                     </div>
                     <ul className="mt-6 space-y-2 text-sm flex-1">
                       <li className="flex items-start gap-2">
@@ -478,6 +444,12 @@ export default function Landing() {
                             : "Profesionales ilimitados"}
                         </span>
                       </li>
+                      {plan.limite_dispositivos && (
+                        <li className="flex items-start gap-2">
+                          <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                          <span>Hasta {plan.limite_dispositivos} dispositivos simultáneos</span>
+                        </li>
+                      )}
                       {features.map((f) => (
                         <li key={f} className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
@@ -487,7 +459,7 @@ export default function Landing() {
                     </ul>
                     <Button
                       className="mt-6 w-full"
-                      variant={isPro ? "default" : "outline"}
+                      variant={isPro || isPlus ? "default" : "outline"}
                       onClick={() => {
                         if (plan.codigo === "business" || plan.codigo === "enterprise") {
                           setForm((f) => ({ ...f, plan_interes: plan.nombre }));
@@ -501,7 +473,7 @@ export default function Landing() {
                     >
                       {plan.codigo === "business" || plan.codigo === "enterprise"
                         ? "Hablar con ventas"
-                        : `Empezar con ${plan.nombre}`}
+                        : `Probar ${plan.nombre} 30 días`}
                     </Button>
                   </div>
                 );

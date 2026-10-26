@@ -1,8 +1,11 @@
+import { requireCronSecret } from "../_shared/cron-auth.ts";
 import { corsHeaders } from "npm:@supabase/supabase-js/cors";
 import { createClient } from "npm:@supabase/supabase-js";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  const denied = requireCronSecret(req);
+  if (denied) return denied;
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,

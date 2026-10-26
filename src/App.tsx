@@ -202,8 +202,63 @@ const App = () => {
           <BrowserRouter>
             <Suspense fallback={<PageLoader />}>
               <Routes>
+                {/* Landing page comercial en la raíz */}
                 <Route path="/" element={<Landing />} />
-                <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/dashboard" />} />
+
+                {/* Enrutamiento SaaS: /app entra directamente al Dashboard del usuario logueado */}
+                <Route
+                  path="/app"
+                  element={session ? <Layout><Dashboard /></Layout> : <Navigate to="/auth" replace />}
+                />
+                <Route path="/auth" element={!session ? <Auth /> : <Navigate to="/app" replace />} />
+                <Route path="/dashboard" element={<Navigate to="/app" replace />} />
+                <Route path="/app/dashboard" element={<Navigate to="/app" replace />} />
+                <Route
+                  path="/app/pacientes"
+                  element={session ? <Layout><Pacientes /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/recepcion"
+                  element={session ? <Layout><Recepcion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/finanzas"
+                  element={session ? <Layout><Finanzas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/personal"
+                  element={session ? <Layout><Personal /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/llamadas"
+                  element={session ? <Layout><Llamadas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/visitas"
+                  element={session ? <Layout><Visitas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/calendario"
+                  element={session ? <Layout><Calendario /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/configuracion"
+                  element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/configuracion-admin"
+                  element={session ? <Layout><ConfiguracionAdmin /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/admin"
+                  element={session ? <Layout><ConfiguracionAdmin /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/planes"
+                  element={session ? <Layout><Planes /></Layout> : <Navigate to="/auth" />}
+                />
+
+                {/* Rutas de acceso público */}
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/confirmar-cita" element={<ConfirmarCita />} />
                 <Route path="/ticket/:token" element={<TicketPublico />} />
@@ -222,10 +277,6 @@ const App = () => {
                 <Route
                   path="/onboarding"
                   element={session ? <Onboarding /> : <Navigate to="/auth" />}
-                />
-                <Route
-                  path="/dashboard"
-                  element={session ? <Layout><Dashboard /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/pacientes"
