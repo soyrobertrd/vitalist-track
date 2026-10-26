@@ -27,6 +27,7 @@ export interface Paciente {
   tipo_atencion?: string | null;
   dias_no_visita?: number[];
   motivo_inactividad?: string | null;
+  clinica_origen?: string | null;
 }
 
 export interface PacienteFilters {
@@ -37,6 +38,7 @@ export interface PacienteFilters {
   barrio: string;
   tipo: string;
   motivo_inactividad: string;
+  clinica_origen: string;
 }
 
 const defaultFilters: PacienteFilters = {
@@ -46,7 +48,8 @@ const defaultFilters: PacienteFilters = {
   busqueda: "",
   barrio: "todos",
   tipo: "todos",
-  motivo_inactividad: "todos"
+  motivo_inactividad: "todos",
+  clinica_origen: "todos",
 };
 
 export function usePacientes(includeInactive: boolean = false) {
@@ -103,6 +106,7 @@ export function usePacientes(includeInactive: boolean = false) {
       if (filters.tipo === "sospechosos" && !p.es_sospechoso) return false;
       if (filters.tipo === "regulares" && p.es_sospechoso) return false;
       if (filters.motivo_inactividad !== "todos" && p.motivo_inactividad !== filters.motivo_inactividad) return false;
+      if (filters.clinica_origen !== "todos" && p.clinica_origen !== filters.clinica_origen) return false;
       if (filters.busqueda) {
         const busqueda = filters.busqueda.toLowerCase();
         const nombreCompleto = `${p.nombre} ${p.apellido}`.toLowerCase();

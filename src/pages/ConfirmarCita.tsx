@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CheckCircle2, XCircle, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
+import { hashToken } from "@/lib/cita-tokens";
 
 export default function ConfirmarCita() {
   const [searchParams] = useSearchParams();
@@ -28,6 +29,7 @@ export default function ConfirmarCita() {
   const [nuevaFecha, setNuevaFecha] = useState<Date>();
   const [nuevaHora, setNuevaHora] = useState("");
   const [motivo, setMotivo] = useState("");
+  const [tokenId, setTokenId] = useState<string | null>(null);
   const { esDiaLaborable } = useDiasLaborables();
 
   useEffect(() => {
@@ -41,8 +43,53 @@ export default function ConfirmarCita() {
 
   const fetchCita = async () => {
     try {
-      // El token podría ser el ID de la cita codificado
-      const citaId = atob(token || "");
+      let citaId: string | null = null;
+
+      // S11: Intentar buscar token hasheado en cita_tokens
+      try {
+        const tokenHash = await hashToken(token || "");
+        const { data: tokenRecord } = await (supabase as any)
+          .from("cita_tokens")
+          .select("*")
+          .eq("hash", tokenHash)
+          .maybeSingle();
+
+        if (tokenRecord) {
+          if (tokenRecord.usado_en) {
+            toast.error("Este enlace de confirmación ya ha sido utilizado.");
+            setLoading(false);
+            return;
+          }
+          if (new Date(tokenRecord.expira_en) < new Date()) {
+            toast.error("Este enlace de cita ha expirado.");
+            setLoading(false);
+            return;
+          }
+          citaId = tokenRecord.cita_id;
+          setTokenId(tokenRecord.id);
+        }
+      } catch (err) {
+        console.warn("Fallo comprobando cita_tokens:", err);
+      }
+
+      // Si no se encontró registro hasheado, verificar si es un token legado en base64
+      if (!citaId) {
+        try {
+          const decoded = atob(token || "");
+          // Validar que tenga formato plausible (evitar decode basura)
+          if (decoded && decoded.length > 5) {
+            citaId = decoded;
+          }
+        } catch {
+          // No es base64 válido
+        }
+      }
+
+      if (!citaId) {
+        toast.error("Enlace de cita inválido o no reconocido.");
+        setLoading(false);
+        return;
+      }
       
       if (tipo === "llamada") {
         const { data: llamadaData, error } = await supabase
@@ -92,6 +139,14 @@ export default function ConfirmarCita() {
 
       if (error) throw error;
 
+      // S11: Si fue invocado con cita_tokens, marcarlo como usado
+      if (tokenId) {
+        await (supabase as any)
+          .from("cita_tokens")
+          .update({ usado_en: new Date().toISOString() })
+          .eq("id", tokenId);
+      }
+
       toast.success("Cita confirmada exitosamente");
       setAccion("confirmar");
     } catch (error) {
@@ -139,6 +194,14 @@ export default function ConfirmarCita() {
           .eq("id", cita.id);
 
         if (error) throw error;
+      }
+
+      // S11: Si fue invocado con cita_tokens, marcarlo como usado
+      if (tokenId) {
+        await (supabase as any)
+          .from("cita_tokens")
+          .update({ usado_en: new Date().toISOString() })
+          .eq("id", tokenId);
       }
 
       toast.success("Cita reagendada exitosamente");

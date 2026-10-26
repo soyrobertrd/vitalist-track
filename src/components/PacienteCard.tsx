@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, MapPin, Calendar, PhoneCall, Pencil, Trash2, User } from "lucide-react";
+import { Phone, MapPin, Calendar, PhoneCall, Pencil, Trash2, User, Building2 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { SelectionCheckbox } from "@/components/SelectionCheckbox";
@@ -22,6 +22,7 @@ interface PacienteCardProps {
     direccion_domicilio?: string | null;
     historia_medica_basica?: string | null;
     profesional_asignado_id?: string | null;
+    clinica_origen?: string | null;
   };
   profesionalNombre?: string;
   onViewDetail: () => void;
@@ -117,7 +118,7 @@ export const PacienteCard = ({
   const enfermedades = getEnfermedades();
 
   return (
-    <Card className={`hover:shadow-lg transition-all hover:scale-[1.01] flex flex-col h-full group relative overflow-hidden ${
+    <Card className={`border bg-card text-card-foreground shadow-none hover:border-primary/40 transition-colors flex flex-col h-full group relative overflow-hidden ${
       isSelected ? 'ring-2 ring-primary bg-primary/5' : ''
     }`}>
       {/* Selection checkbox */}
@@ -216,10 +217,18 @@ export const PacienteCard = ({
           )}
         </div>
 
-        {/* Badge de dificultad */}
-        <Badge variant="outline" className={`${getDificultadColor(paciente.grado_dificultad)} w-fit`}>
-          Dificultad: {paciente.grado_dificultad}
-        </Badge>
+        {/* Badges de clasificación y clínica asociada */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <Badge variant="outline" className={`${getDificultadColor(paciente.grado_dificultad)} text-[11px]`}>
+            Dificultad: {paciente.grado_dificultad}
+          </Badge>
+          {paciente.clinica_origen && (
+            <Badge variant="secondary" className="gap-1 text-[11px] font-normal py-0.5">
+              <Building2 className="h-3 w-3 text-muted-foreground" />
+              {paciente.clinica_origen}
+            </Badge>
+          )}
+        </div>
 
         {/* Botones de acción */}
         <div className="flex items-center gap-1 pt-2 border-t">

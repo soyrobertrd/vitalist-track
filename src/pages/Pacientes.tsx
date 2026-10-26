@@ -86,9 +86,13 @@ const Pacientes = () => {
   const [selectedPaciente, setSelectedPaciente] = useState<any>(null);
   const [pacienteParaAgendar, setPacienteParaAgendar] = useState<string | null>(null);
 
-  // Get unique barrios for filter
+  // Get unique barrios and clinicas for filter
   const barriosActivos = useMemo(() => {
     return [...new Set(pacientesActivos.map(p => p.barrio).filter(Boolean))].sort() as string[];
+  }, [pacientesActivos]);
+
+  const clinicasActivas = useMemo(() => {
+    return [...new Set(pacientesActivos.map(p => p.clinica_origen).filter(Boolean))].sort() as string[];
   }, [pacientesActivos]);
 
   const handlePacienteCreated = () => {
@@ -235,6 +239,7 @@ const Pacientes = () => {
                   filters={filtersActivos}
                   onFilterChange={updateFilterActivos}
                   barrios={barriosActivos}
+                  clinicas={clinicasActivas}
                 />
               </div>
               <div className="lg:hidden">

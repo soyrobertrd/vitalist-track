@@ -49,6 +49,7 @@ async function runVerification() {
       emergency_contact_phone TEXT,
       blood_type TEXT,
       allergies TEXT,
+      associated_clinic TEXT,
       notes TEXT,
       status TEXT NOT NULL DEFAULT 'active',
       created_at TEXT NOT NULL,

@@ -271,6 +271,7 @@ async function seed() {
       emergency_contact_phone TEXT,
       blood_type TEXT,
       allergies TEXT,
+      associated_clinic TEXT,
       notes TEXT,
       status TEXT NOT NULL DEFAULT 'active',
       created_at TEXT NOT NULL,
@@ -279,6 +280,8 @@ async function seed() {
       deleted_by TEXT
     );
   `);
+
+  try { await tenantClient.execute("ALTER TABLE patients ADD COLUMN associated_clinic TEXT;"); } catch {}
 
   await tenantClient.execute(`
     CREATE TABLE IF NOT EXISTS appointments (

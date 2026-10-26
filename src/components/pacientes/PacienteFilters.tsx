@@ -9,13 +9,14 @@ interface PacienteFiltersProps {
   filters: FiltersType;
   onFilterChange: (key: keyof FiltersType, value: string) => void;
   barrios: string[];
+  clinicas?: string[];
 }
 
-export function PacienteFiltersCard({ filters, onFilterChange, barrios }: PacienteFiltersProps) {
+export function PacienteFiltersCard({ filters, onFilterChange, barrios, clinicas = [] }: PacienteFiltersProps) {
   const { zonas, loading: zonasLoading } = useOGTICZonas();
 
   return (
-    <Card>
+    <Card className="shadow-none border bg-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Filter className="h-5 w-5" />
@@ -106,6 +107,25 @@ export function PacienteFiltersCard({ filters, onFilterChange, barrios }: Pacien
               </SelectContent>
             </Select>
           </div>
+          {clinicas.length > 0 && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Clínica de Origen</label>
+              <Select
+                value={filters.clinica_origen || "todos"}
+                onValueChange={(v) => onFilterChange("clinica_origen", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todas las clínicas</SelectItem>
+                  {clinicas.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -11,6 +11,19 @@ export interface TenantContext {
  * Enforces strict multi-tenant boundary checks (Fail-Closed).
  */
 export async function resolveTenantContext(req: Request): Promise<TenantContext> {
+  const authHeader = req.headers.get('authorization');
+  const cookieHeader = req.headers.get('cookie');
+
+  // S1 (Fail-Closed): La API v1 rechaza toda petición sin credenciales/sesión válida con 401 Unauthorized
+  if (!authHeader && !cookieHeader) {
+    throw new AppError(
+      'Unauthorized',
+      'Se requiere una sesión autenticada válida para acceder a la API.',
+      401,
+      'https://vitalisttrack.com/errors/unauthorized'
+    );
+  }
+
   const clinicId = req.headers.get('x-clinic-id');
 
   if (!clinicId) {

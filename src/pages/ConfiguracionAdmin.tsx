@@ -50,6 +50,8 @@ import { AuditoriaCambiosViewer } from "@/components/AuditoriaCambiosViewer";
 import { WorkspaceLocaleEditor } from "@/components/WorkspaceLocaleEditor";
 import { PlantillasEspecialidadAdmin } from "@/components/ficha-clinica/PlantillasEspecialidad";
 import { ClinicDomainManager } from "@/components/workspace/ClinicDomainManager";
+import { AdminGeneralTab } from "@/components/admin/AdminGeneralTab";
+import { AdminUsuariosTab } from "@/components/admin/AdminUsuariosTab";
 
 interface SectionHeaderProps {
   title: string;
@@ -116,39 +118,6 @@ const ConfiguracionAdmin = () => {
   const { profile } = useUserProfile();
 
   const [usuarios, setUsuarios] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [createUserOpen, setCreateUserOpen] = useState(false);
-  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
-  const [selectedUserForPassword, setSelectedUserForPassword] = useState<any>(null);
-  const [newPassword, setNewPassword] = useState("");
-
-  // Estado para la configuración general (D6)
-  const [crmName, setCrmName] = useState(
-    currentWorkspace?.configuracion?.crm_name || currentWorkspace?.nombre || "Health CRM"
-  );
-  const [formatoFecha, setFormatoFecha] = useState(
-    currentWorkspace?.configuracion?.formato_fecha || "dd/mm/yyyy"
-  );
-  const [verticalPrincipal, setVerticalPrincipal] = useState(
-    currentWorkspace?.configuracion?.vertical_principal || "clinica"
-  );
-  const [savingGeneral, setSavingGeneral] = useState(false);
-
-  useEffect(() => {
-    if (currentWorkspace?.configuracion) {
-      if (currentWorkspace.configuracion.crm_name) {
-        setCrmName(currentWorkspace.configuracion.crm_name);
-      }
-      if (currentWorkspace.configuracion.formato_fecha) {
-        setFormatoFecha(currentWorkspace.configuracion.formato_fecha);
-      }
-      if (currentWorkspace.configuracion.vertical_principal) {
-        setVerticalPrincipal(currentWorkspace.configuracion.vertical_principal);
-      }
-    }
-  }, [currentWorkspace]);
-
   useEffect(() => {
     if (!roleLoading && !isAdmin) {
       toast.error("No tienes permisos para acceder a esta página");
@@ -210,118 +179,6 @@ const ConfiguracionAdmin = () => {
       toast.error("Error al cargar usuarios de esta organización");
     } finally {
       setLoadingUsers(false);
-    }
-  };
-
-  const handleRoleChange = async (userId: string, newRole: string) => {
-    setLoading(true);
-    try {
-      const { error } = await supabase
-        .from("user_roles")
-        .upsert({ user_id: userId, role: newRole });
-      if (error) throw error;
-      toast.success("Rol actualizado");
-      fetchUsuarios();
-    } catch (err: any) {
-      toast.error(err.message || "Error al actualizar rol");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleToggleUserStatus = async (userId: string, currentStatus: boolean) => {
-    setLoading(true);
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ activo: !currentStatus })
-        .eq("id", userId);
-      if (error) throw error;
-      toast.success(`Usuario ${!currentStatus ? "activado" : "suspendido"} exitosamente`);
-      fetchUsuarios();
-    } catch (err: any) {
-      toast.error(err.message || "Error al cambiar estado");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    const form = new FormData(e.currentTarget);
-    const email = form.get("email") as string;
-    const password = form.get("password") as string;
-    const nombre = form.get("nombre") as string;
-    const apellido = form.get("apellido") as string;
-    const cedula = form.get("cedula") as string;
-    const role = form.get("role") as string;
-
-    try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            nombre,
-            apellido,
-            cedula,
-            role,
-            created_by_admin: true,
-            created_by: profile?.id,
-          },
-        },
-      });
-
-      if (authError) throw authError;
-
-      if (authData.user && currentWorkspace?.id) {
-        await supabase.from("workspace_members").insert({
-          workspace_id: currentWorkspace.id,
-          user_id: authData.user.id,
-          role: role === "admin" ? "admin" : "member",
-        });
-      }
-
-      toast.success("Usuario creado e invitado a la organización");
-      setCreateUserOpen(false);
-      fetchUsuarios();
-      (e.target as HTMLFormElement).reset();
-    } catch (err: any) {
-      toast.error(err.message || "Error al crear usuario");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // D6: Guardar configuración general del Workspace
-  const handleSaveGeneralConfig = async () => {
-    if (!currentWorkspace?.id) return;
-    setSavingGeneral(true);
-    try {
-      const nuevaConfig = {
-        ...(currentWorkspace.configuracion || {}),
-        crm_name: crmName,
-        formato_fecha: formatoFecha,
-        vertical_principal: verticalPrincipal,
-      };
-
-      const { error } = await supabase
-        .from("workspaces")
-        .update({
-          nombre: crmName,
-          configuracion: nuevaConfig,
-        })
-        .eq("id", currentWorkspace.id);
-
-      if (error) throw error;
-
-      await refreshWorkspace();
-      toast.success("Configuración del centro guardada exitosamente");
-    } catch (err: any) {
-      toast.error(err.message || "Error al guardar configuración");
-    } finally {
-      setSavingGeneral(false);
     }
   };
 
@@ -421,110 +278,13 @@ const ConfiguracionAdmin = () => {
         <div className="min-w-0 space-y-6">
           {/* TAB 1: GENERAL */}
           <TabsContent value="general" className="space-y-6 mt-0">
-            {/* Tarjeta Plan y Uso (Fase 3) */}
-            <GlassCard className="p-6 space-y-4">
-              <SectionHeader
-                title="Capacidad y Cuota del Plan"
-                description={`Límites contratados para ${currentWorkspace?.nombre || "tu centro"}`}
-                actions={
-                  userUsagePercent >= 80 ? (
-                    <Button
-                      size="sm"
-                      onClick={() => navigate("/app/planes")}
-                      className="gap-1.5"
-                    >
-                      <Sparkles className="h-4 w-4" />
-                      Mejorar Plan
-                    </Button>
-                  ) : undefined
-                }
-              />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2 p-3 border rounded-lg bg-card/50">
-                  <div className="flex justify-between text-xs font-medium">
-                    <span>Usuarios del Equipo</span>
-                    <span>
-                      {usuarios.length} de {userLimit} ({userUsagePercent}%)
-                    </span>
-                  </div>
-                  <Progress value={userUsagePercent} className="h-2" />
-                </div>
-                <div className="space-y-2 p-3 border rounded-lg bg-card/50">
-                  <div className="flex justify-between text-xs font-medium">
-                    <span>Nivel de Suscripción</span>
-                    <Badge variant="outline" className="capitalize text-[11px]">
-                      {currentWorkspace?.plan_codigo || "solo"}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Tarifa: USD ${currentPlan?.precio_mensual_usd ?? 15} / mes
-                  </p>
-                </div>
-              </div>
-            </GlassCard>
-
-            {/* Ajustes Generales del Workspace con guardado real (D6) */}
-            <GlassCard className="p-6 space-y-6">
-              <SectionHeader
-                title="Configuración General del Centro"
-                description="Identidad institucional y formato regional"
-              />
-              <div className="grid gap-4 max-w-xl">
-                <div className="space-y-2">
-                  <Label htmlFor="crmName">Nombre de la Institución / CRM</Label>
-                  <Input
-                    id="crmName"
-                    value={crmName}
-                    onChange={(e) => setCrmName(e.target.value)}
-                    placeholder="Ej: Clínica Santa María"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="verticalPrincipal">Especialidad / Vertical Principal</Label>
-                  <Select
-                    value={verticalPrincipal}
-                    onValueChange={setVerticalPrincipal}
-                  >
-                    <SelectTrigger id="verticalPrincipal">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="clinica">Hospital / Clínica General</SelectItem>
-                      <SelectItem value="dental">Odontología</SelectItem>
-                      <SelectItem value="aesthetic">Medicina Estética & Cirugía</SelectItem>
-                      <SelectItem value="recovery">Recovery Care</SelectItem>
-                      <SelectItem value="vision">VisionCare Pro</SelectItem>
-                      <SelectItem value="psicologia">Psicología & Psiquiatría</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="formatoFecha">Formato de Fecha Predeterminado</Label>
-                  <Select value={formatoFecha} onValueChange={setFormatoFecha}>
-                    <SelectTrigger id="formatoFecha">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dd/mm/yyyy">DD/MM/YYYY (26/10/2026)</SelectItem>
-                      <SelectItem value="yyyy-mm-dd">YYYY-MM-DD (2026-10-26)</SelectItem>
-                      <SelectItem value="mm/dd/yyyy">MM/DD/YYYY (10/26/2026)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <WorkspaceLocaleEditor />
-
-                <Button
-                  onClick={handleSaveGeneralConfig}
-                  disabled={savingGeneral}
-                  className="w-full sm:w-auto"
-                >
-                  {savingGeneral ? "Guardando..." : "Guardar Cambios"}
-                </Button>
-              </div>
-            </GlassCard>
+            <AdminGeneralTab
+              currentWorkspace={currentWorkspace}
+              usuariosCount={usuarios.length}
+              userLimit={userLimit}
+              userUsagePercent={userUsagePercent}
+              onRefreshWorkspace={refreshWorkspace}
+            />
           </TabsContent>
 
           {/* TAB 2: APARIENCIA */}
@@ -579,140 +339,13 @@ const ConfiguracionAdmin = () => {
 
           {/* TAB 5: USUARIOS (D7 filtrado por centro) */}
           <TabsContent value="usuarios" className="space-y-6 mt-0">
-            <GlassCard className="p-6 space-y-6">
-              <SectionHeader
-                title="Equipo de la Organización"
-                description={`Usuarios vinculados a ${currentWorkspace?.nombre || "este centro"}`}
-                actions={
-                  <Button onClick={() => setCreateUserOpen(true)} size="sm">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Crear Usuario
-                  </Button>
-                }
-              />
-
-              {loadingUsers ? (
-                <div className="flex items-center justify-center py-8">
-                  <p className="text-muted-foreground animate-pulse">Cargando equipo...</p>
-                </div>
-              ) : usuarios.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <p>No hay otros usuarios registrados en este centro.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {usuarios.map((usuario) => (
-                    <div
-                      key={usuario.id}
-                      className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg bg-card/50 gap-4"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="font-medium truncate">
-                            {usuario.nombre} {usuario.apellido}
-                          </p>
-                          <Badge
-                            variant={usuario.activo ? "default" : "destructive"}
-                            className="text-[10px]"
-                          >
-                            {usuario.activo ? "Activo" : "Suspendido"}
-                          </Badge>
-                          <Badge variant="outline" className="text-[10px] capitalize">
-                            {usuario.workspace_role}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground truncate">{usuario.email}</p>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Select
-                          defaultValue={usuario.user_roles?.[0]?.role || "user"}
-                          onValueChange={(val) => handleRoleChange(usuario.id, val)}
-                          disabled={loading}
-                        >
-                          <SelectTrigger className="w-32 h-8 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="admin">Administrador</SelectItem>
-                            <SelectItem value="coordinador">Coordinador</SelectItem>
-                            <SelectItem value="medico">Médico</SelectItem>
-                            <SelectItem value="enfermera">Enfermera</SelectItem>
-                            <SelectItem value="recepcion">Recepción</SelectItem>
-                          </SelectContent>
-                        </Select>
-
-                        <Button
-                          variant={usuario.activo ? "outline" : "default"}
-                          size="sm"
-                          className="h-8 text-xs"
-                          onClick={() => handleToggleUserStatus(usuario.id, usuario.activo)}
-                          disabled={loading}
-                        >
-                          {usuario.activo ? "Suspender" : "Activar"}
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </GlassCard>
-
-            {/* Diálogo Crear Usuario */}
-            <Dialog open={createUserOpen} onOpenChange={setCreateUserOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Invitar / Crear Usuario al Centro</DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleCreateUser} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="nombre">Nombre *</Label>
-                      <Input id="nombre" name="nombre" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="apellido">Apellido *</Label>
-                      <Input id="apellido" name="apellido" required />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cedula">Cédula / Documento *</Label>
-                    <Input id="cedula" name="cedula" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Correo Electrónico *</Label>
-                    <Input id="email" name="email" type="email" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Contraseña Temporal *</Label>
-                    <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      required
-                      minLength={6}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Rol Institucional *</Label>
-                    <Select name="role" defaultValue="medico" required>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="admin">Administrador</SelectItem>
-                        <SelectItem value="medico">Médico</SelectItem>
-                        <SelectItem value="enfermera">Enfermera</SelectItem>
-                        <SelectItem value="recepcion">Recepción</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Creando..." : "Crear e Integrar"}
-                  </Button>
-                </form>
-              </DialogContent>
-            </Dialog>
+            <AdminUsuariosTab
+              currentWorkspace={currentWorkspace}
+              usuarios={usuarios}
+              loadingUsers={loadingUsers}
+              onRefreshUsuarios={fetchUsuarios}
+              profileId={profile?.id}
+            />
           </TabsContent>
 
           {/* TAB 6: ROLES */}

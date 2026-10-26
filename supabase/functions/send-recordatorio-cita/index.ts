@@ -157,15 +157,32 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("No se encontró una plantilla de correo activa");
     }
 
-    // Generar token para confirmación
-    const token = btoa(citaId);
-    const baseUrl = Deno.env.get("APP_URL") || "https://vitalist-track.vercel.app";
-    const urlConfirmar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}`;
-    const urlReagendar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}&reagendar=true`;
-
     // Extraer fecha y hora
     const fechaCita = tipo === "llamada" ? cita.fecha_agendada : cita.fecha_hora_visita;
     const fecha = fechaCita ? new Date(fechaCita) : new Date();
+
+    // S11: Generar token seguro de 32 bytes y registrar su hash
+    const rawBytes = new Uint8Array(32);
+    crypto.getRandomValues(rawBytes);
+    const token = Array.from(rawBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+
+    try {
+      const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(token));
+      const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+      const expiraFecha = fechaCita ? new Date(fechaCita).toISOString() : new Date(Date.now() + 86400000 * 3).toISOString();
+      await supabaseClient.from("cita_tokens").insert({
+        cita_id: citaId,
+        hash: hash,
+        tipo: tipo,
+        expira_en: expiraFecha,
+      });
+    } catch (tokenErr) {
+      console.warn("Advertencia: No se pudo registrar en cita_tokens:", tokenErr);
+    }
+
+    const baseUrl = Deno.env.get("APP_URL") || "https://vitalist-track.vercel.app";
+    const urlConfirmar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}`;
+    const urlReagendar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}&reagendar=true`;
     const { timezone, locale } = await resolveWorkspaceLocale(supabaseClient, cita.workspace_id);
     const citaFecha = formatDateInTz(fecha, timezone, locale);
     const citaHora = formatTimeInTz(fecha, timezone, locale);

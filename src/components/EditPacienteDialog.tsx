@@ -25,6 +25,8 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { MedicamentosPaciente } from "@/components/MedicamentosPaciente";
 import { DiasRestriccionPaciente } from "@/components/DiasRestriccionPaciente";
 import { SucursalSelect } from "@/components/SucursalSelect";
+import { ClinicaOrigenSelect } from "@/components/pacientes/ClinicaOrigenSelect";
+import { EditPacienteContactoSection } from "@/components/pacientes/EditPacienteContactoSection";
 
 const buildEditPacienteSchema = (country: CountryCode) => z.object({
   cedula: z.string()
@@ -113,6 +115,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   const [tipoDocumento, setTipoDocumento] = useState<string>("cedula");
   const [numeroDocumento, setNumeroDocumento] = useState<string>("");
   const [sucursalId, setSucursalId] = useState<string | null>(null);
+  const [clinicaOrigen, setClinicaOrigen] = useState<string>("");
   const isDominicano = nacionalidad === "Dominicana" && tipoDocumento === "cedula";
   
   // Auto-disable notifications if no email
@@ -157,6 +160,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       setTipoDocumento(paciente.tipo_documento || "cedula");
       setNumeroDocumento(paciente.numero_documento || "");
       setSucursalId(paciente.sucursal_id || null);
+      setClinicaOrigen(paciente.clinica_origen || "");
       const hasValidatedData = !!(paciente.nombre && paciente.apellido && paciente.fecha_nacimiento && paciente.sexo);
       setJceValidatedOnLoad(hasValidatedData);
       fetchPersonal();
@@ -314,6 +318,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       dias_no_visita: diasNoVisita,
       motivo_inactividad: statusPx === 'inactivo' ? motivoInactividad : null,
       sucursal_id: sucursalId,
+      clinica_origen: clinicaOrigen.trim() || null,
     };
 
     const { error } = await supabase
@@ -523,136 +528,27 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
             </div>
           </div>
 
-          {/* Sección: Contacto del Paciente */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Contacto del Paciente</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-1">
-                <Label htmlFor="contacto_px" className="text-xs">Teléfono</Label>
-                <Input 
-                  id="contacto_px" 
-                  name="contacto_px" 
-                  value={formData.contacto_px}
-                  type="tel"
-                  placeholder="829-123-1234"
-                  maxLength={12}
-                  onChange={(e) => {
-                    const formatted = handlePhoneInput(e.target.value);
-                    e.target.value = formatted;
-                    handleInputChange("contacto_px", formatted);
-                  }}
-                />
-              </div>
-              <div className="flex items-end pb-1">
-                <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer text-xs">
-                  <Checkbox 
-                    id="whatsapp_px" 
-                    checked={whatsappPx}
-                    onCheckedChange={(checked) => setWhatsappPx(checked as boolean)}
-                  />
-                  <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
-                  WhatsApp
-                </Label>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="numero_principal" className="text-xs">Número Principal</Label>
-                <Select name="numero_principal" defaultValue={paciente.numero_principal || 'paciente'}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="paciente">Paciente</SelectItem>
-                    <SelectItem value="cuidador">Cuidador</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label htmlFor="email_px" className="text-xs">Correo Electrónico del Paciente</Label>
-                <Input 
-                  id="email_px" 
-                  name="email_px" 
-                  type="email"
-                  value={emailPx}
-                  onChange={(e) => setEmailPx(e.target.value)}
-                  placeholder="paciente@ejemplo.com"
-                />
-              </div>
-            </div>
-          </div>
+          {/* Sección de Contacto del Paciente y Cuidador (Modular) */}
+          <EditPacienteContactoSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            whatsappPx={whatsappPx}
+            setWhatsappPx={setWhatsappPx}
+            emailPx={emailPx}
+            setEmailPx={setEmailPx}
+            paciente={paciente}
+            whatsappCuidador={whatsappCuidador}
+            setWhatsappCuidador={setWhatsappCuidador}
+            emailCuidador={emailCuidador}
+            setEmailCuidador={setEmailCuidador}
+          />
 
-          {/* Sección: Información del Cuidador */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Cuidador</h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="md:col-span-2 space-y-1">
-                <Label htmlFor="nombre_cuidador" className="text-xs">Nombre del Cuidador</Label>
-                <Input 
-                  id="nombre_cuidador" 
-                  name="nombre_cuidador"
-                  defaultValue={paciente.nombre_cuidador || ''}
-                  maxLength={200}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="parentesco_cuidador" className="text-xs">Parentesco</Label>
-                <Select name="parentesco_cuidador" defaultValue={paciente.parentesco_cuidador || ''}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Hijo/a">Hijo/a</SelectItem>
-                    <SelectItem value="Esposo/a">Esposo/a</SelectItem>
-                    <SelectItem value="Madre">Madre</SelectItem>
-                    <SelectItem value="Padre">Padre</SelectItem>
-                    <SelectItem value="Hermano/a">Hermano/a</SelectItem>
-                    <SelectItem value="Nieto/a">Nieto/a</SelectItem>
-                    <SelectItem value="Otro">Otro</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="contacto_cuidador" className="text-xs">Teléfono</Label>
-                <Input 
-                  id="contacto_cuidador" 
-                  name="contacto_cuidador" 
-                  value={formData.contacto_cuidador}
-                  type="tel"
-                  placeholder="829-123-1234"
-                  maxLength={12}
-                  onChange={(e) => {
-                    const formatted = handlePhoneInput(e.target.value);
-                    e.target.value = formatted;
-                    handleInputChange("contacto_cuidador", formatted);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center">
-                <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer text-xs">
-                  <Checkbox 
-                    id="whatsapp_cuidador" 
-                    checked={whatsappCuidador}
-                    onCheckedChange={(checked) => setWhatsappCuidador(checked as boolean)}
-                  />
-                  <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
-                  WhatsApp del Cuidador
-                </Label>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="email_cuidador" className="text-xs">Correo del Cuidador</Label>
-                <Input 
-                  id="email_cuidador" 
-                  name="email_cuidador" 
-                  type="email"
-                  value={emailCuidador}
-                  onChange={(e) => setEmailCuidador(e.target.value)}
-                  placeholder="cuidador@ejemplo.com"
-                />
-              </div>
-            </div>
+          {/* Clínica de Origen (Pro Consultorios) */}
+          <div className="space-y-2 pt-2 border-t">
+            <ClinicaOrigenSelect
+              value={clinicaOrigen}
+              onChange={setClinicaOrigen}
+            />
           </div>
 
           {/* Sección: Dirección */}
