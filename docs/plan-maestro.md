@@ -58,6 +58,9 @@
 | **S7** | 🟡 Media | Hay 5 usos de `dangerouslySetInnerHTML` y `src/lib/sanitize.ts` solo se usa en 3 archivos. Hay que confirmar que los 5 sanitizan. | `grep dangerouslySetInnerHTML src` |
 | **S9** | 🔴 Bloqueante | El despliegue en Vercel sale en blanco: `supabaseUrl is required`. El frontend aún depende de Supabase (619 llamadas), y las variables `VITE_SUPABASE_*` no están en Vercel. | `src/integrations/supabase/client.ts` |
 | **S10** | 🟠 Alta | El límite de pacientes, usuarios y dispositivos por plan parece aplicarse solo en la UI. Un cliente modificado podría superarlo. | `src/config/planes.ts` |
+| **S11** | 🔴 Alta | Los enlaces de confirmar o reagendar cita usan `token = btoa(cita.id)`: es reversible y se puede adivinar. Cualquiera podría confirmar o cancelar citas ajenas. | `supabase/functions/send-recordatorio-cita`, `daily-reminder-cron`, página `/confirmar-cita` |
+| **S12** | 🟡 Media | El `.env` local usa `VITE_SB_*`, pero el código lee `VITE_SUPABASE_*`. Además, `.env` y las bases locales quedaron en el historial de git (commits `2c23f5d`, `b731660`). | `src/integrations/supabase/client.ts`, `git log -- .env` |
+| **S13** | 🟡 Media | El OCR de cédula envía imágenes de documentos de identidad a un tercero (Anthropic). Hay que informarlo en la política de privacidad, no guardar la imagen, limitar el tamaño a 5 MB y exigir sesión. | `supabase/functions/ocr-cedula` |
 | **S8** | 🟡 Media | No hay rate limiting, ni cabeceras de seguridad (CSP, HSTS, X-Frame-Options), ni registro de auditoría en la API nueva. | `vercel.json` / `api/` |
 
 ---
@@ -79,6 +82,9 @@ Cada fase tiene un **"Hecho cuando"**. No pasar a la siguiente sin cumplirlo.
 3. **S4:** revisar la RLS de `profiles` en `supabase/migrations`. Si deja ver perfiles de otros workspaces: crear una migración que los limite a los miembros del mismo workspace, y filtrar `fetchUsuarios` por `workspace_members.workspace_id`.
 
 **Hecho cuando:** `git status` no muestra `.env` ni `.db`, una llamada a `/api/v1/patients` sin sesión devuelve 401 y un admin del centro A no ve usuarios del centro B.
+
+0b. **S11:** reemplazar `btoa(cita.id)` por un token aleatorio de 32 bytes (`crypto.getRandomValues`), guardado **hasheado** en una tabla `cita_tokens` (cita_id, hash, tipo, expira_en, usado_en). Debe ser de un solo uso y caducar al pasar la cita. `/confirmar-cita` valida el hash. Los enlaces ya enviados con el formato viejo dejan de funcionar; avisar al dueño.
+0c. **S12:** usar un solo nombre para las variables (`VITE_SUPABASE_*`) en `.env`, `.env.example` y Vercel. Rotar el token de Turso si estuvo en algún `.env` versionado.
 
 ### Fase 1 — Autenticación con Better Auth (núcleo del ADR)
 1. Instalar `better-auth` con el adaptador Drizzle sobre el control plane. Usar las tablas que ya existen en `control-plane-schema.ts` y ajustarlas si el adaptador lo pide.
@@ -230,6 +236,33 @@ Reglas:
 - cambian de color al cambiar de vertical;
 - funcionan en claro y oscuro, y a 375px se apilan en 1 columna;
 - `forecast.ts` tiene sus tests en verde.
+
+### Fase 8 — Mejoras de producto (función)
+Ordenadas por impacto/esfuerzo. Cada una es un PR independiente y **respeta el plan** (candado y upsell si no aplica).
+1. **Recordatorios por WhatsApp con confirmación de un toque** (Plus+). Hoy el recordatorio es por email. Usar WhatsApp Cloud API con plantillas aprobadas, y el mismo token seguro de S11. Es lo de mayor impacto en RD para bajar el no-show.
+2. **Paleta de comandos global (Ctrl/⌘+K).** Ya existen `cmdk` y `GlobalSearch.tsx`: ampliarlo para buscar pacientes por nombre o cédula, saltar a cualquier sección permitida por plan y vertical, y lanzar acciones rápidas ("Nueva cita", "Nuevo paciente").
+3. **Onboarding guiado por vertical:** una checklist en `/app` (crear profesional, configurar horario, primer paciente, primera cita, invitar al equipo) con progreso. Se oculta al completarla.
+4. **Centro de notificaciones en la app:** una campana en el header (citas próximas, pagos vencidos, prueba por vencer, alertas clínicas). Primero con polling de React Query; después de la Fase 3, con SSE.
+5. **Lista de espera inteligente:** cuando alguien cancela una cita, ofrecer el hueco a los pacientes en espera de ese profesional.
+6. **Exportar e imprimir:** PDF con la marca del centro (logo y color de la vertical) para recetas, presupuestos y fichas. Usar lo que ya exista para PDF antes de añadir otra librería.
+7. **Modo recepción:** una vista simplificada para recepcionistas (agenda del día, llegada del paciente, cobro) sin el menú clínico.
+8. **Uso real de la prueba:** en `/app/planes`, mostrar qué módulos de pago usó el centro durante la prueba, para ayudar a convertir.
+
+### Fase 9 — Mejoras de diseño adicionales
+1. **Tablas de datos consistentes:** un `DataTable` (sobre `ui/table`) con orden, filtros en chips, paginación desde el servidor, columnas configurables y acciones de fila en un menú `⋯`. Aplicarlo primero a pacientes, citas y usuarios del admin.
+2. **Formularios largos en pasos:** `NuevoPacienteForm` (772 líneas) y `EditPacienteDialog` (888) pasan a un formulario en pasos (datos personales → contacto → seguro/ARS → clínico), con el progreso visible y un borrador guardado en `localStorage`.
+3. **Ficha del paciente "360":** un header fijo con foto, edad, alergias (con badge rojo si las hay), ARS y próxima cita. Debajo, pestañas y una línea de tiempo unificada (citas, notas, recetas, pagos).
+4. **Feedback inmediato (< 150 ms):** actualizaciones optimistas en React Query para acciones frecuentes (confirmar cita, marcar llegada), y un toast con "Deshacer" en lugar de diálogos de confirmación para acciones reversibles.
+5. **Mobile-first en la agenda:** en < 640px, vista de lista por día en vez de la cuadrícula semanal, gestos para cambiar de día y botón flotante "Nueva cita".
+6. **Modo oscuro revisado:** comprobar el contraste de los 6 temas de vertical, y que los gráficos (Fase 7) y los badges de estado se lean bien.
+7. **Microcopy y vacíos:** cada lista vacía tiene una ilustración simple, una frase de qué es y un CTA ("Aún no hay pacientes. Agrega el primero").
+8. **Rendimiento percibido:** dividir el bundle por ruta (el build avisa de chunks de más de 500 kB), precargar la ruta siguiente al pasar el ratón por el sidebar y usar skeletons con la forma real del contenido.
+
+### Fase 10 — Calidad y operación
+1. **Tests:** `vitest` para la lógica (forecast, permisos de plan, tokens S11) y Playwright para 3 flujos críticos (login, crear paciente, agendar y confirmar cita). Correrlos en CI con GitHub Actions en cada PR.
+2. **Monitoreo de errores:** Sentry o equivalente en el frontend y la API, **sin enviar datos de pacientes** (activar el scrubbing de PII).
+3. **Previews por PR en Vercel** con las variables de un entorno de staging, nunca las de producción.
+4. **Backups:** export diario por clínica (Turso) con una prueba de restauración mensual documentada.
 
 ## 4. Verificación (en cada fase)
 - `npx tsc --noEmit -p tsconfig.app.json` sin errores nuevos. Los tests de la fase, en verde.
