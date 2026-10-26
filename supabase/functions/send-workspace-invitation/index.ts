@@ -117,7 +117,7 @@ serve(async (req) => {
       ? `${inviterProfile.nombre || ""} ${inviterProfile.apellido || ""}`.trim() || user.email
       : user.email;
 
-    const origin = req.headers.get("origin") || req.headers.get("referer")?.replace(/\/$/, "") || "https://vitalist-track.lovable.app";
+    const origin = req.headers.get("origin") || req.headers.get("referer")?.replace(/\/$/, "") || Deno.env.get("APP_URL") || "https://vitalist-track.vercel.app";
     const acceptUrl = `${origin}/aceptar-invitacion?token=${invitation.token}`;
 
     // Enviar email

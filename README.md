@@ -1,6 +1,6 @@
 # Health App — Sistema inteligente de gestión clínica y atención domiciliaria
 
-Plataforma integral para la gestión de pacientes, llamadas de seguimiento, visitas (domiciliarias y ambulatorias), cobros, encuestas y automatizaciones. Construida con React, TypeScript, Tailwind CSS y Lovable Cloud.
+Plataforma integral para la gestión de pacientes, llamadas de seguimiento, visitas (domiciliarias y ambulatorias), cobros, encuestas y automatizaciones. Construida con React, TypeScript, Tailwind CSS, Supabase y Vercel.
 
 ![Health App Logo](src/assets/logo-horizontal.png)
 

@@ -31,15 +31,12 @@
     <script type="module" src="/src/main.tsx"></script>
     <script>
       // Register Service Worker for PWA — but NEVER in iframe/preview contexts
-      // to avoid stale caches in the Lovable editor.
+      // to avoid stale caches in embedded previews.
       (function () {
         var inIframe = true;
         try { inIframe = window.self !== window.top; } catch (_) { inIframe = true; }
         var host = window.location.hostname;
-        var isPreview =
-          host.includes('id-preview--') ||
-          host.includes('lovableproject.com') ||
-          host.includes('lovable.app');
+        var isPreview = host.includes('-git-') || host === 'localhost';
 
         if ('serviceWorker' in navigator) {
           if (inIframe || isPreview) {

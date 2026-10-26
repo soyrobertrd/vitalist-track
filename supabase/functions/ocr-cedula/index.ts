@@ -1,4 +1,4 @@
-// OCR de cédula dominicana usando Lovable AI Gateway (Gemini 2.5 Flash)
+// OCR de cédula dominicana usando la API de Anthropic (Claude, visión)
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -18,37 +18,36 @@ Deno.serve(async (req) => {
       });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
+    const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY');
+    if (!ANTHROPIC_API_KEY) {
       return new Response(JSON.stringify({ error: 'AI no configurada' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const dataUrl = imageBase64.startsWith('data:')
-      ? imageBase64
-      : `data:image/jpeg;base64,${imageBase64}`;
+    const m = imageBase64.match(/^data:(image\/[a-z+]+);base64,(.*)$/s);
+    const mediaType = m ? m[1] : 'image/jpeg';
+    const data = m ? m[2] : imageBase64;
 
-    const aiRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: Deno.env.get('ANTHROPIC_MODEL') || 'claude-haiku-5-5',
+        max_tokens: 300,
+        system:
+          'Eres un OCR especializado en cédulas dominicanas. Extrae SOLO el número de cédula (11 dígitos, formato 000-0000000-0) y los nombres/apellidos visibles. Responde estrictamente JSON: {"cedula":"...","nombres":"...","apellidos":"..."} sin texto extra.',
         messages: [
-          {
-            role: 'system',
-            content:
-              'Eres un OCR especializado en cédulas dominicanas. Extrae SOLO el número de cédula (11 dígitos, formato 000-0000000-0) y los nombres/apellidos visibles. Responde estrictamente JSON: {"cedula":"...","nombres":"...","apellidos":"..."} sin texto extra.',
-          },
           {
             role: 'user',
             content: [
+              { type: 'image', source: { type: 'base64', media_type: mediaType, data } },
               { type: 'text', text: 'Extrae datos de esta cédula.' },
-              { type: 'image_url', image_url: { url: dataUrl } },
             ],
           },
         ],
@@ -61,23 +60,17 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    if (aiRes.status === 402) {
-      return new Response(JSON.stringify({ error: 'Créditos AI agotados.' }), {
-        status: 402,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
     if (!aiRes.ok) {
       const t = await aiRes.text();
       console.error('AI error', aiRes.status, t);
-      return new Response(JSON.stringify({ error: 'AI gateway error' }), {
+      return new Response(JSON.stringify({ error: 'Error del servicio de IA' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     const aiJson = await aiRes.json();
-    const raw = aiJson?.choices?.[0]?.message?.content || '';
+    const raw = aiJson?.content?.[0]?.text || '';
     let parsed: any = {};
     try {
       const match = raw.match(/\{[\s\S]*\}/);

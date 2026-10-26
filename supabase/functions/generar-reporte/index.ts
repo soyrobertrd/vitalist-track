@@ -146,21 +146,13 @@ async function enviarPorEmail(
   csv: string
 ) {
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
   if (!RESEND_API_KEY) return { ok: false, error: "RESEND_API_KEY no configurado" };
 
-  const url = LOVABLE_API_KEY
-    ? "https://connector-gateway.lovable.dev/resend/emails"
-    : "https://api.resend.com/emails";
+  const url = "https://api.resend.com/emails";
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${RESEND_API_KEY}`,
   };
-  if (LOVABLE_API_KEY) {
-    headers["Authorization"] = `Bearer ${LOVABLE_API_KEY}`;
-    headers["X-Connection-Api-Key"] = RESEND_API_KEY;
-  } else {
-    headers["Authorization"] = `Bearer ${RESEND_API_KEY}`;
-  }
 
   const attachment = {
     filename,

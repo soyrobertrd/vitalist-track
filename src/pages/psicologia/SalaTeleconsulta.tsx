@@ -36,7 +36,7 @@ export default function SalaTeleconsulta() {
   const jitsiUrl = useMemo(() => {
     if (!tc?.sala_codigo) return "";
     const name = (user?.email || "Usuario").split("@")[0];
-    return `https://meet.jit.si/lovable-psico-${tc.sala_codigo}#userInfo.displayName="${encodeURIComponent(name)}"&config.prejoinPageEnabled=false&config.disableDeepLinking=true`;
+    return `https://meet.jit.si/vitalist-psico-${tc.sala_codigo}#userInfo.displayName="${encodeURIComponent(name)}"&config.prejoinPageEnabled=false&config.disableDeepLinking=true`;
   }, [tc, user]);
 
   const iniciar = async () => {

@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Secretos y bases locales
+.env
+.env.*
+!.env.example
+*.db
+*.db-*

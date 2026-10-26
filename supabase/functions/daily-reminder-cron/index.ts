@@ -294,7 +294,7 @@ async function enviarRecordatorio(
   }
 
   const token = btoa(cita.id);
-  const baseUrl = Deno.env.get("SUPABASE_URL")?.replace("supabase.co", "lovable.app") || "";
+  const baseUrl = Deno.env.get("APP_URL") || "https://vitalist-track.vercel.app";
   const urlConfirmar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}`;
   const urlReagendar = `${baseUrl}/confirmar-cita?token=${token}&tipo=${tipo}&reagendar=true`;
 

@@ -1,6 +1,6 @@
 # Programación de crons (pg_cron) — Fase 4
 
-> ⚠️ **Estos comandos NO se ejecutan automáticamente.** Cuando estés listo, copia y pega el SQL en el editor SQL del backend (Lovable Cloud → SQL Editor). El proyecto ya tiene `pg_cron` y `pg_net` disponibles en Supabase.
+> ⚠️ **Estos comandos NO se ejecutan automáticamente.** Cuando estés listo, copia y pega el SQL en el editor SQL del backend (Supabase → SQL Editor). El proyecto ya tiene `pg_cron` y `pg_net` disponibles en Supabase.
 
 > 🔒 **Obligatorio:** todas las funciones cron validan el header `x-cron-secret` (ver `_shared/cron-auth.ts`).
 > La anon key es pública, así que NO basta para autorizar. Sin `CRON_SECRET` configurado las funciones responden 500 (fallan cerradas).
