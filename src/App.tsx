@@ -168,23 +168,46 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        if (!isMounted) return;
         setSession(session);
         setLoading(false);
       }
     );
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (!isMounted) return;
+        setSession(session);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn("Aviso: No se pudo verificar la sesión de Supabase:", err);
+        if (isMounted) setLoading(false);
+      });
 
-    return () => subscription.unsubscribe();
+    // Failsafe timeout: si la red o Supabase tardan más de 2s, desbloquear la interfaz para no dejar la pantalla en blanco
+    const failsafeTimer = setTimeout(() => {
+      if (isMounted) setLoading(false);
+    }, 2000);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(failsafeTimer);
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Cargando...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground gap-3">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        <p className="text-xs text-muted-foreground animate-pulse">Iniciando aplicación clínica...</p>
+      </div>
+    );
   }
 
   return (
@@ -234,8 +257,12 @@ const App = () => {
                   element={session ? <Layout><Llamadas /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
-                  path="/app/visitas"
+                  path="/app/citas"
                   element={session ? <Layout><Visitas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/app/visitas"
+                  element={<Navigate to="/app/citas" replace />}
                 />
                 <Route
                   path="/app/calendario"
@@ -291,8 +318,12 @@ const App = () => {
                   element={session ? <Layout><Llamadas /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
+                  path="/citas"
+                  element={<Navigate to="/app/citas" replace />}
+                />
+                <Route
                   path="/visitas"
-                  element={session ? <Layout><Visitas /></Layout> : <Navigate to="/auth" />}
+                  element={<Navigate to="/app/citas" replace />}
                 />
                 <Route
                   path="/calendario"

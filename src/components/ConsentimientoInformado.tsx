@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export interface ConsentimientoData {
   aceptado: boolean;
@@ -83,7 +84,7 @@ export function ConsentimientoInformado({ value, onChange, defaultFirmante }: Pr
                 </DialogHeader>
                 <div
                   className="prose prose-sm dark:prose-invert max-w-none mt-4"
-                  dangerouslySetInnerHTML={{ __html: TERMS_HTML }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(TERMS_HTML) }}
                 />
               </DialogContent>
             </Dialog>{" "}

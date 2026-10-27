@@ -15,16 +15,16 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 
 const PRIORIDAD_COLORS: Record<string, string> = {
-  normal: "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300",
-  alta: "bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300",
-  urgente: "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300",
+  normal: "bg-primary/10 text-primary border-primary/20",
+  alta: "bg-warning/15 text-warning border-warning/30",
+  urgente: "bg-destructive/15 text-destructive border-destructive/30",
 };
 
 const ESTADO_COLORS: Record<string, string> = {
-  esperando: "bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-300",
-  asignada: "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300",
-  cancelada: "bg-gray-100 text-gray-800 dark:bg-gray-950 dark:text-gray-300",
-  expirada: "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300",
+  esperando: "bg-warning/15 text-warning border-warning/30",
+  asignada: "bg-success/15 text-success border-success/30",
+  cancelada: "bg-muted text-muted-foreground",
+  expirada: "bg-destructive/15 text-destructive border-destructive/30",
 };
 
 interface ItemEspera {

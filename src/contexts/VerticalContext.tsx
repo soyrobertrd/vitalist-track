@@ -74,14 +74,19 @@ export function VerticalProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => { cargar(); /* eslint-disable-next-line */ }, [currentWorkspace?.id, isAdmin]);
 
-  // Sincronizar dataset.vertical en <html> para activar los tokens de diseño (Fase 1)
+  // Sincronizar dataset.vertical en <html> para activar los tokens de diseño (Fase 1 y 4)
   useEffect(() => {
     if (verticalActiva && verticalActiva !== "todas") {
       document.documentElement.dataset.vertical = verticalActiva;
     } else {
-      delete document.documentElement.dataset.vertical;
+      const vPrincipal = (currentWorkspace?.configuracion as any)?.vertical_principal;
+      if (vPrincipal && vPrincipal !== "todas") {
+        document.documentElement.dataset.vertical = vPrincipal;
+      } else {
+        delete document.documentElement.dataset.vertical;
+      }
     }
-  }, [verticalActiva]);
+  }, [verticalActiva, currentWorkspace?.configuracion]);
 
   return (
     <VerticalContext.Provider value={{ verticalesActivas, verticalActiva, setVerticalActiva, loading, refresh: cargar }}>

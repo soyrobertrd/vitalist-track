@@ -52,14 +52,14 @@ import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFideliz
 import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
 
 const estadoLeadColor: Record<string, string> = {
-  nuevo: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  contactado: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
-  cita_agendada: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  evaluado: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-  presupuestado: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  convertido: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  nuevo: "bg-primary/10 text-primary border-primary/20",
+  contactado: "bg-primary/15 text-primary border-primary/30",
+  cita_agendada: "bg-warning/15 text-warning border-warning/30",
+  evaluado: "bg-warning/20 text-warning border-warning/40",
+  presupuestado: "bg-primary/20 text-primary border-primary/40",
+  convertido: "bg-success/15 text-success border-success/30",
   perdido: "bg-muted text-muted-foreground",
-  reactivar: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200",
+  reactivar: "bg-primary/10 text-primary border-primary/20",
 };
 
 const origenIcon: Record<string, string> = {
@@ -67,10 +67,10 @@ const origenIcon: Record<string, string> = {
 };
 
 const cabinaEstadoColor: Record<string, string> = {
-  disponible: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  ocupada: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  mantenimiento: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  reservada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  disponible: "bg-success/15 text-success border-success/30",
+  ocupada: "bg-destructive/15 text-destructive border-destructive/30",
+  mantenimiento: "bg-warning/15 text-warning border-warning/30",
+  reservada: "bg-primary/10 text-primary border-primary/20",
 };
 
 /**
@@ -254,10 +254,10 @@ function AestheticProContent() {
         {/* LEADS CRM */}
         <TabsContent value="leads" className="space-y-4">
           <div className="grid grid-cols-4 gap-3">
-            <Card><CardContent className="pt-3 text-center"><p className="text-lg font-bold">{leadsIG}</p><p className="text-xs text-muted-foreground">📸 Instagram</p></CardContent></Card>
-            <Card><CardContent className="pt-3 text-center"><p className="text-lg font-bold">{leadsTT}</p><p className="text-xs text-muted-foreground">🎵 TikTok</p></CardContent></Card>
-            <Card><CardContent className="pt-3 text-center"><p className="text-lg font-bold">{leadsMeta}</p><p className="text-xs text-muted-foreground">📢 Meta Ads</p></CardContent></Card>
-            <Card><CardContent className="pt-3 text-center"><p className="text-lg font-bold">{leads.filter((l: any) => l.origen === "referido").length}</p><p className="text-xs text-muted-foreground">👥 Referidos</p></CardContent></Card>
+            <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><p className="text-lg font-bold tabular-nums">{leadsIG}</p><p className="text-xs text-muted-foreground">📸 Instagram</p></CardContent></Card>
+            <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><p className="text-lg font-bold tabular-nums">{leadsTT}</p><p className="text-xs text-muted-foreground">🎵 TikTok</p></CardContent></Card>
+            <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><p className="text-lg font-bold tabular-nums">{leadsMeta}</p><p className="text-xs text-muted-foreground">📢 Meta Ads</p></CardContent></Card>
+            <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><p className="text-lg font-bold tabular-nums">{leads.filter((l: any) => l.origen === "referido").length}</p><p className="text-xs text-muted-foreground">👥 Referidos</p></CardContent></Card>
           </div>
           {leads.length === 0 ? (
             <Card><CardContent className="py-8 text-center text-muted-foreground">No hay leads</CardContent></Card>

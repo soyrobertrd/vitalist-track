@@ -51,11 +51,11 @@ import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFideliz
 import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
 
 const estadoOrdenColor: Record<string, string> = {
-  solicitada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  en_laboratorio: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  lista: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  solicitada: "bg-primary/10 text-primary border-primary/20",
+  en_laboratorio: "bg-warning/15 text-warning border-warning/30",
+  lista: "bg-success/15 text-success border-success/30",
   entregada: "bg-muted text-muted-foreground",
-  devuelta: "bg-destructive/10 text-destructive",
+  devuelta: "bg-destructive/15 text-destructive border-destructive/30",
 };
 
 /**
@@ -129,13 +129,13 @@ function VisionCareProContent() {
 
       {isResumen && (
       <div className="grid grid-cols-2 md:grid-cols-7 gap-3">
-        <Card><CardContent className="pt-3 text-center"><FileText className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{recetas.length}</p><p className="text-[10px] text-muted-foreground">Recetas</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Glasses className="h-4 w-4 mx-auto mb-1 text-blue-500" /><p className="text-xl font-bold">{monturas}</p><p className="text-[10px] text-muted-foreground">Monturas</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Package className="h-4 w-4 mx-auto mb-1 text-green-500" /><p className="text-xl font-bold">{inventario.length}</p><p className="text-[10px] text-muted-foreground">Productos</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><AlertTriangle className="h-4 w-4 mx-auto mb-1 text-destructive" /><p className="text-xl font-bold">{stockBajo}</p><p className="text-[10px] text-muted-foreground">Stock bajo</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Gift className="h-4 w-4 mx-auto mb-1 text-purple-500" /><p className="text-xl font-bold">{combos.length}</p><p className="text-[10px] text-muted-foreground">Combos</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><ShieldCheck className="h-4 w-4 mx-auto mb-1 text-cyan-500" /><p className="text-xl font-bold">{garantiasVigentes}</p><p className="text-[10px] text-muted-foreground">Garantías</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Bell className="h-4 w-4 mx-auto mb-1 text-orange-500" /><p className="text-xl font-bold">{recordPendientes}</p><p className="text-[10px] text-muted-foreground">Recordatorios</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><FileText className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold tabular-nums">{recetas.length}</p><p className="text-[10px] text-muted-foreground">Recetas</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><Glasses className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold tabular-nums">{monturas}</p><p className="text-[10px] text-muted-foreground">Monturas</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><Package className="h-4 w-4 mx-auto mb-1 text-success" /><p className="text-xl font-bold tabular-nums">{inventario.length}</p><p className="text-[10px] text-muted-foreground">Productos</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><AlertTriangle className="h-4 w-4 mx-auto mb-1 text-destructive" /><p className="text-xl font-bold tabular-nums">{stockBajo}</p><p className="text-[10px] text-muted-foreground">Stock bajo</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><Gift className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold tabular-nums">{combos.length}</p><p className="text-[10px] text-muted-foreground">Combos</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><ShieldCheck className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold tabular-nums">{garantiasVigentes}</p><p className="text-[10px] text-muted-foreground">Garantías</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><Bell className="h-4 w-4 mx-auto mb-1 text-warning" /><p className="text-xl font-bold tabular-nums">{recordPendientes}</p><p className="text-[10px] text-muted-foreground">Recordatorios</p></CardContent></Card>
       </div>
       )}
 

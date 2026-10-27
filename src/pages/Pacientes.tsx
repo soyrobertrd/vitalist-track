@@ -5,8 +5,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Plus, Users, UserX, Search, RotateCcw, Pencil, CheckSquare } from "lucide-react";
+import { Plus, Users, UserX, Search, RotateCcw, Pencil, CheckSquare, LayoutGrid, List, Eye, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { DataTable, ColumnDef } from "@/components/common/DataTable";
 
 // Hooks
 import { usePacientes } from "@/hooks/usePacientes";
@@ -80,6 +81,7 @@ const Pacientes = () => {
   const [agendarLlamadaOpen, setAgendarLlamadaOpen] = useState(false);
   const [agendarVisitaOpen, setAgendarVisitaOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
 
   // Selected states
   const [selectedPacienteId, setSelectedPacienteId] = useState<string | null>(null);
@@ -219,17 +221,44 @@ const Pacientes = () => {
               showFilters={showFilters}
               hideTitle
             />
-            <Button
-              variant={selectionMode ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                setSelectionMode(!selectionMode);
-                if (selectionMode) bulkSelection.clearSelection();
-              }}
-            >
-              <CheckSquare className="h-4 w-4 mr-2" />
-              {selectionMode ? "Cancelar selección" : "Selección múltiple"}
-            </Button>
+            <div className="flex items-center gap-2">
+              {/* Selector de Vista (Tarjetas / Tabla) */}
+              <div className="flex items-center border rounded-lg p-0.5 bg-muted/40">
+                <Button
+                  variant={viewMode === "cards" ? "default" : "ghost"}
+                  size="sm"
+                  className="h-7 px-2.5 text-xs shadow-none gap-1"
+                  onClick={() => setViewMode("cards")}
+                  aria-label="Vista cuadrícula de tarjetas"
+                >
+                  <LayoutGrid className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Tarjetas</span>
+                </Button>
+                <Button
+                  variant={viewMode === "table" ? "default" : "ghost"}
+                  size="sm"
+                  className="h-7 px-2.5 text-xs shadow-none gap-1"
+                  onClick={() => setViewMode("table")}
+                  aria-label="Vista tabular"
+                >
+                  <List className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Tabla</span>
+                </Button>
+              </div>
+
+              <Button
+                variant={selectionMode ? "default" : "outline"}
+                size="sm"
+                className="h-8 text-xs shadow-none"
+                onClick={() => {
+                  setSelectionMode(!selectionMode);
+                  if (selectionMode) bulkSelection.clearSelection();
+                }}
+              >
+                <CheckSquare className="h-3.5 w-3.5 mr-1.5" />
+                {selectionMode ? "Cancelar selección" : "Selección múltiple"}
+              </Button>
+            </div>
           </div>
 
           {showFilters && (
@@ -252,34 +281,174 @@ const Pacientes = () => {
             </>
           )}
 
-          <PacientesGrid
-            pacientes={filteredPacientesActivos}
-            personal={personal}
-            isAdmin={isAdmin}
-            onViewDetail={(id) => {
-              setSelectedPacienteId(id);
-              setDetailOpen(true);
-            }}
-            onEdit={(paciente) => {
-              setSelectedPaciente(paciente);
-              setEditOpen(true);
-            }}
-            onAgendarLlamada={(id) => {
-              setPacienteParaAgendar(id);
-              setAgendarLlamadaOpen(true);
-            }}
-            onAgendarVisita={(id) => {
-              setPacienteParaAgendar(id);
-              setAgendarVisitaOpen(true);
-            }}
-            onDelete={isAdmin ? handleDelete : undefined}
-            selectionMode={selectionMode}
-            isSelected={bulkSelection.isSelected}
-            onToggleSelect={bulkSelection.toggleSelection}
-            onToggleSelectAll={bulkSelection.toggleSelectAll}
-            isAllSelected={bulkSelection.isAllSelected}
-            isSomeSelected={bulkSelection.isSomeSelected}
-          />
+          {viewMode === "cards" ? (
+            <PacientesGrid
+              pacientes={filteredPacientesActivos}
+              personal={personal}
+              isAdmin={isAdmin}
+              onViewDetail={(id) => {
+                setSelectedPacienteId(id);
+                setDetailOpen(true);
+              }}
+              onEdit={(paciente) => {
+                setSelectedPaciente(paciente);
+                setEditOpen(true);
+              }}
+              onAgendarLlamada={(id) => {
+                setPacienteParaAgendar(id);
+                setAgendarLlamadaOpen(true);
+              }}
+              onAgendarVisita={(id) => {
+                setPacienteParaAgendar(id);
+                setAgendarVisitaOpen(true);
+              }}
+              onDelete={isAdmin ? handleDelete : undefined}
+              selectionMode={selectionMode}
+              isSelected={bulkSelection.isSelected}
+              onToggleSelect={bulkSelection.toggleSelection}
+              onToggleSelectAll={bulkSelection.toggleSelectAll}
+              isAllSelected={bulkSelection.isAllSelected}
+              isSomeSelected={bulkSelection.isSomeSelected}
+            />
+          ) : (
+            <DataTable
+              data={filteredPacientesActivos}
+              columns={[
+                {
+                  key: "nombre",
+                  header: "Paciente",
+                  sortable: true,
+                  render: (p) => (
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-7 w-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold text-xs uppercase shrink-0">
+                        {(p.nombre?.[0] || "") + (p.apellido?.[0] || "")}
+                      </div>
+                      <div className="min-w-0">
+                        <button
+                          type="button"
+                          className="font-medium text-foreground truncate hover:text-primary hover:underline text-left"
+                          onClick={() => {
+                            setSelectedPacienteId(p.id);
+                            setDetailOpen(true);
+                          }}
+                        >
+                          {p.nombre} {p.apellido}
+                        </button>
+                        <p className="text-[11px] text-muted-foreground truncate">
+                          {p.cedula || "Sin doc."}
+                        </p>
+                      </div>
+                    </div>
+                  ),
+                },
+                {
+                  key: "contacto_px",
+                  header: "Contacto",
+                  render: (p) => (
+                    <span className="tabular-nums text-xs">
+                      {p.contacto_px || p.contacto_cuidador || "—"}
+                    </span>
+                  ),
+                },
+                {
+                  key: "zona",
+                  header: "Municipio / Sector",
+                  sortable: true,
+                  render: (p) => (
+                    <div className="truncate max-w-[150px]">
+                      <p className="truncate font-medium">{p.zona || "—"}</p>
+                      {p.barrio && <p className="text-[11px] text-muted-foreground truncate">{p.barrio}</p>}
+                    </div>
+                  ),
+                },
+                {
+                  key: "tipo_atencion",
+                  header: "Modalidad",
+                  sortable: true,
+                  render: (p) => (
+                    <Badge
+                      variant={p.tipo_atencion === "domiciliario" ? "outline" : "secondary"}
+                      className="text-[10px] capitalize font-medium"
+                    >
+                      {p.tipo_atencion || "ambulatorio"}
+                    </Badge>
+                  ),
+                },
+                {
+                  key: "clinica_origen",
+                  header: "Clínica Origen",
+                  sortable: true,
+                  render: (p) => p.clinica_origen ? (
+                    <Badge variant="outline" className="text-[10px] truncate max-w-[120px]">
+                      {p.clinica_origen}
+                    </Badge>
+                  ) : <span className="text-muted-foreground/60 text-xs">—</span>,
+                },
+                {
+                  key: "grado_dificultad",
+                  header: "Dificultad",
+                  sortable: true,
+                  render: (p) => {
+                    const dif = p.grado_dificultad || "medio";
+                    return (
+                      <Badge
+                        variant={dif === "alto" ? "destructive" : dif === "medio" ? "secondary" : "outline"}
+                        className="text-[10px] capitalize"
+                      >
+                        {dif}
+                      </Badge>
+                    );
+                  },
+                },
+              ]}
+              searchPlaceholder="Buscar por nombre, documento o zona..."
+              pageSize={10}
+              emptyMessage="No hay pacientes activos que coincidan con la búsqueda."
+              actions={(p) => (
+                <div className="flex items-center justify-end gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => {
+                      setSelectedPacienteId(p.id);
+                      setDetailOpen(true);
+                    }}
+                    title="Ver Ficha 360"
+                    aria-label="Ver Ficha 360"
+                  >
+                    <Eye className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => {
+                      setPacienteParaAgendar(p.id);
+                      setAgendarVisitaOpen(true);
+                    }}
+                    title="Agendar Cita"
+                    aria-label="Agendar Cita"
+                  >
+                    <Calendar className="h-3.5 w-3.5 text-primary" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => {
+                      setSelectedPaciente(p);
+                      setEditOpen(true);
+                    }}
+                    title="Editar"
+                    aria-label="Editar"
+                  >
+                    <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
+                  </Button>
+                </div>
+              )}
+            />
+          )}
 
           {/* Bulk Actions Toolbar */}
           <BulkActionsToolbar

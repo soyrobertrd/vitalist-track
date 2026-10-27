@@ -54,27 +54,27 @@ import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFideliz
 import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
 
 const estadoPacColor: Record<string, string> = {
-  reservado: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  ingresado: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  en_recuperacion: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  reservado: "bg-primary/10 text-primary border-primary/20",
+  ingresado: "bg-warning/15 text-warning border-warning/30",
+  en_recuperacion: "bg-success/15 text-success border-success/30",
   alta: "bg-muted text-muted-foreground",
-  cancelado: "bg-destructive/10 text-destructive",
+  cancelado: "bg-destructive/15 text-destructive border-destructive/30",
 };
 const estadoHabColor: Record<string, string> = {
-  disponible: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  ocupada: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  limpieza: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  mantenimiento: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-  reservada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  disponible: "bg-success/15 text-success border-success/30",
+  ocupada: "bg-destructive/15 text-destructive border-destructive/30",
+  limpieza: "bg-warning/15 text-warning border-warning/30",
+  mantenimiento: "bg-warning/20 text-warning border-warning/40",
+  reservada: "bg-primary/10 text-primary border-primary/20",
 };
 const estadoReservaColor: Record<string, string> = {
-  reservada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  confirmada: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
-  check_in: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  en_estadia: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+  reservada: "bg-primary/10 text-primary border-primary/20",
+  confirmada: "bg-primary/15 text-primary border-primary/30",
+  check_in: "bg-success/15 text-success border-success/30",
+  en_estadia: "bg-warning/15 text-warning border-warning/30",
   check_out: "bg-muted text-muted-foreground",
-  cancelada: "bg-destructive/10 text-destructive",
-  no_show: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+  cancelada: "bg-destructive/15 text-destructive border-destructive/30",
+  no_show: "bg-destructive/20 text-destructive border-destructive/40",
 };
 
 /**
@@ -138,12 +138,12 @@ function RecoveryCareContent() {
 
       {isResumen && (
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-        <Card><CardContent className="pt-3 text-center"><Activity className="h-4 w-4 mx-auto mb-1 text-green-500" /><p className="text-xl font-bold">{activos}</p><p className="text-[10px] text-muted-foreground">Activos</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><BedDouble className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{habDisponibles}/{habitaciones.length}</p><p className="text-[10px] text-muted-foreground">Hab. disp.</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><Plane className="h-4 w-4 mx-auto mb-1 text-blue-500" /><p className="text-xl font-bold">{turismoMedico}</p><p className="text-[10px] text-muted-foreground">Turismo méd.</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><p className="text-xl font-bold">{reservas.length}</p><p className="text-[10px] text-muted-foreground">Reservas</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><p className="text-xl font-bold">{conciergeServ.length}</p><p className="text-[10px] text-muted-foreground">Concierge</p></CardContent></Card>
-        <Card><CardContent className="pt-3 text-center"><ShieldAlert className="h-4 w-4 mx-auto mb-1 text-destructive" /><p className="text-xl font-bold">{alertasAbiertas}</p><p className="text-[10px] text-muted-foreground">Alertas</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><Activity className="h-4 w-4 mx-auto mb-1 text-success" /><p className="text-xl font-bold tabular-nums">{activos}</p><p className="text-[10px] text-muted-foreground">Activos</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><BedDouble className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold tabular-nums">{habDisponibles}/{habitaciones.length}</p><p className="text-[10px] text-muted-foreground">Hab. disp.</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><Plane className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold tabular-nums">{turismoMedico}</p><p className="text-[10px] text-muted-foreground">Turismo méd.</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><p className="text-xl font-bold tabular-nums">{reservas.length}</p><p className="text-[10px] text-muted-foreground">Reservas</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><p className="text-xl font-bold tabular-nums">{conciergeServ.length}</p><p className="text-[10px] text-muted-foreground">Concierge</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-3 text-center"><ShieldAlert className="h-4 w-4 mx-auto mb-1 text-destructive" /><p className="text-xl font-bold tabular-nums">{alertasAbiertas}</p><p className="text-[10px] text-muted-foreground">Alertas</p></CardContent></Card>
       </div>
       )}
 

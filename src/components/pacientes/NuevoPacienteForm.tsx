@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -109,6 +109,40 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
     parentesco_firmante: null,
     version_documento: TERMS_VERSION_CURRENT,
   });
+
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const DRAFT_KEY = `nuevo_paciente_draft_${currentWorkspace?.id || "default"}`;
+
+  // Cargar borrador guardado en localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(DRAFT_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.formData) setFormData(parsed.formData);
+        if (parsed.selectedZona) setSelectedZona(parsed.selectedZona);
+        if (parsed.selectedBarrio) setSelectedBarrio(parsed.selectedBarrio);
+        if (parsed.selectedSexo) setSelectedSexo(parsed.selectedSexo);
+        if (parsed.clinicaOrigen) setClinicaOrigen(parsed.clinicaOrigen);
+        toast.info("Borrador de paciente restaurado");
+      }
+    } catch {}
+  }, [DRAFT_KEY]);
+
+  // Persistir cambios en localStorage
+  useEffect(() => {
+    try {
+      if (formData.nombre || formData.apellido || formData.cedula || formData.contacto_px) {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          formData,
+          selectedZona,
+          selectedBarrio,
+          selectedSexo,
+          clinicaOrigen,
+        }));
+      }
+    } catch {}
+  }, [formData, selectedZona, selectedBarrio, selectedSexo, clinicaOrigen, DRAFT_KEY]);
   
   // Auto-disable notifications if no email
   const hasAnyEmail = !!(formData.email_px.trim() || formData.email_cuidador.trim());
@@ -298,6 +332,10 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       }]);
     }
 
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch {}
+
     setLoading(false);
     onSuccess();
   };
@@ -327,6 +365,30 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       />
       
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Navegación por pasos (Fase 9 - Punto 2) */}
+        <div className="flex items-center justify-between border-b pb-3 text-xs">
+          {[
+            { id: 1, title: "1. Identificación y Contacto" },
+            { id: 2, title: "2. Ubicación" },
+            { id: 3, title: "3. Atención y Consentimiento" },
+          ].map((step) => (
+            <button
+              key={step.id}
+              type="button"
+              onClick={() => setCurrentStep(step.id)}
+              className={`font-medium pb-1.5 transition-colors border-b-2 -mb-[13px] ${
+                currentStep === step.id
+                  ? "border-primary text-primary font-semibold"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {step.title}
+            </button>
+          ))}
+        </div>
+
+        {/* Paso 1: Identificación, Contacto y Cuidador */}
+        <div className={currentStep === 1 ? "space-y-6" : "hidden"}>
         {/* Identification Section */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Datos de Identificación</h3>
@@ -598,7 +660,10 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
             />
           </div>
         </div>
+        </div>
 
+        {/* Paso 2: Ubicación y Dirección */}
+        <div className={currentStep === 2 ? "space-y-6" : "hidden"}>
         {/* Address Section */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Dirección</h3>
@@ -646,7 +711,10 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
             </div>
           </div>
         </div>
+        </div>
 
+        {/* Paso 3: Información Médica, Medicamentos y Consentimiento */}
+        <div className={currentStep === 3 ? "space-y-6" : "hidden"}>
         {/* Medical Info Section */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Información Médica</h3>
@@ -664,7 +732,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
             </div>
             <div className="space-y-1">
               <Label htmlFor="tipo_atencion" className="text-xs">Tipo de Atención *</Label>
-              <Select name="tipo_atencion" defaultValue="domiciliario">
+              <Select name="tipo_atencion" defaultValue="ambulatorio">
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ambulatorio">Ambulatorio</SelectItem>
@@ -758,13 +826,30 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
             defaultFirmante={`${formData.nombre} ${formData.apellido}`.trim()}
           />
         </div>
+        </div>
 
-        <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
-          <Button type="submit" disabled={loading || !consent.aceptado}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Guardar Paciente
-          </Button>
+        {/* Botones de navegación y acción */}
+        <div className="flex justify-between items-center pt-4 border-t">
+          <div>
+            {currentStep > 1 && (
+              <Button type="button" variant="outline" size="sm" onClick={() => setCurrentStep(s => s - 1)}>
+                ← Anterior
+              </Button>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button type="button" variant="ghost" size="sm" onClick={onCancel}>Cancelar</Button>
+            {currentStep < 3 ? (
+              <Button type="button" size="sm" onClick={() => setCurrentStep(s => s + 1)}>
+                Siguiente →
+              </Button>
+            ) : (
+              <Button type="submit" size="sm" disabled={loading || !consent.aceptado}>
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Guardar Paciente
+              </Button>
+            )}
+          </div>
         </div>
       </form>
     </>

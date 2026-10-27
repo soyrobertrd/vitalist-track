@@ -13,7 +13,6 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CheckCircle2, XCircle, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
-import { hashToken } from "@/lib/cita-tokens";
 
 export default function ConfirmarCita() {
   const [searchParams] = useSearchParams();
@@ -29,7 +28,6 @@ export default function ConfirmarCita() {
   const [nuevaFecha, setNuevaFecha] = useState<Date>();
   const [nuevaHora, setNuevaHora] = useState("");
   const [motivo, setMotivo] = useState("");
-  const [tokenId, setTokenId] = useState<string | null>(null);
   const { esDiaLaborable } = useDiasLaborables();
 
   useEffect(() => {
@@ -41,84 +39,27 @@ export default function ConfirmarCita() {
     }
   }, [token, tipo]);
 
+  // S11: toda la lógica corre en la edge function confirmar-cita (service role); aquí solo se envía el token.
+  const llamar = async (accion: "ver" | "confirmar" | "reagendar", extra: Record<string, string> = {}) => {
+    const { data, error } = await supabase.functions.invoke("confirmar-cita", {
+      body: { token, tipo, accion, ...extra },
+    });
+    if (error || data?.error) {
+      let msg = data?.error;
+      try { msg = msg || (await (error as any)?.context?.json())?.error; } catch { /* sin cuerpo */ }
+      throw new Error(msg || "No se pudo procesar la solicitud");
+    }
+    return data;
+  };
+
   const fetchCita = async () => {
     try {
-      let citaId: string | null = null;
-
-      // S11: Intentar buscar token hasheado en cita_tokens
-      try {
-        const tokenHash = await hashToken(token || "");
-        const { data: tokenRecord } = await (supabase as any)
-          .from("cita_tokens")
-          .select("*")
-          .eq("hash", tokenHash)
-          .maybeSingle();
-
-        if (tokenRecord) {
-          if (tokenRecord.usado_en) {
-            toast.error("Este enlace de confirmación ya ha sido utilizado.");
-            setLoading(false);
-            return;
-          }
-          if (new Date(tokenRecord.expira_en) < new Date()) {
-            toast.error("Este enlace de cita ha expirado.");
-            setLoading(false);
-            return;
-          }
-          citaId = tokenRecord.cita_id;
-          setTokenId(tokenRecord.id);
-        }
-      } catch (err) {
-        console.warn("Fallo comprobando cita_tokens:", err);
-      }
-
-      // Si no se encontró registro hasheado, verificar si es un token legado en base64
-      if (!citaId) {
-        try {
-          const decoded = atob(token || "");
-          // Validar que tenga formato plausible (evitar decode basura)
-          if (decoded && decoded.length > 5) {
-            citaId = decoded;
-          }
-        } catch {
-          // No es base64 válido
-        }
-      }
-
-      if (!citaId) {
-        toast.error("Enlace de cita inválido o no reconocido.");
-        setLoading(false);
-        return;
-      }
-      
-      if (tipo === "llamada") {
-        const { data: llamadaData, error } = await supabase
-          .from("registro_llamadas")
-          .select("*, pacientes(*), personal_salud(*)")
-          .eq("id", citaId)
-          .single();
-
-        if (error) throw error;
-        
-        setCita(llamadaData);
-        setPaciente(llamadaData.pacientes);
-        setProfesional(llamadaData.personal_salud);
-      } else if (tipo === "visita") {
-        const { data: visitaData, error } = await supabase
-          .from("control_visitas")
-          .select("*, pacientes(*), personal_salud(*)")
-          .eq("id", citaId)
-          .single();
-
-        if (error) throw error;
-        
-        setCita(visitaData);
-        setPaciente(visitaData.pacientes);
-        setProfesional(visitaData.personal_salud);
-      }
-    } catch (error) {
-      console.error("Error al cargar cita:", error);
-      toast.error("No se pudo cargar la información de la cita");
+      const { cita } = await llamar("ver");
+      setCita(cita);
+      setPaciente(cita.pacientes);
+      setProfesional(cita.personal_salud);
+    } catch (error: any) {
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -127,31 +68,11 @@ export default function ConfirmarCita() {
   const handleConfirmar = async () => {
     setLoading(true);
     try {
-      const table = tipo === "llamada" ? "registro_llamadas" : "control_visitas";
-      const { error } = await supabase
-        .from(table)
-        .update({ 
-          estado: tipo === "llamada" ? "agendada" : "pendiente",
-          notas_adicionales: tipo === "llamada" ? "Confirmada por paciente" : undefined,
-          notas_visita: tipo === "visita" ? "Confirmada por paciente" : undefined,
-        })
-        .eq("id", cita.id);
-
-      if (error) throw error;
-
-      // S11: Si fue invocado con cita_tokens, marcarlo como usado
-      if (tokenId) {
-        await (supabase as any)
-          .from("cita_tokens")
-          .update({ usado_en: new Date().toISOString() })
-          .eq("id", tokenId);
-      }
-
+      await llamar("confirmar");
       toast.success("Cita confirmada exitosamente");
       setAccion("confirmar");
-    } catch (error) {
-      console.error("Error al confirmar:", error);
-      toast.error("Error al confirmar la cita");
+    } catch (error: any) {
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -170,45 +91,14 @@ export default function ConfirmarCita() {
 
     setLoading(true);
     try {
-      const fechaHora = `${format(nuevaFecha, "yyyy-MM-dd")} ${nuevaHora}`;
-      
-      if (tipo === "llamada") {
-        const { error } = await supabase
-          .from("registro_llamadas")
-          .update({ 
-            fecha_agendada: fechaHora,
-            estado: "reagendada",
-            notas_adicionales: `Reagendada por paciente: ${motivo}`,
-          })
-          .eq("id", cita.id);
-
-        if (error) throw error;
-      } else if (tipo === "visita") {
-        const { error } = await supabase
-          .from("control_visitas")
-          .update({ 
-            fecha_hora_visita: fechaHora,
-            estado: "pendiente",
-            notas_visita: `Reagendada por paciente: ${motivo}`,
-          })
-          .eq("id", cita.id);
-
-        if (error) throw error;
-      }
-
-      // S11: Si fue invocado con cita_tokens, marcarlo como usado
-      if (tokenId) {
-        await (supabase as any)
-          .from("cita_tokens")
-          .update({ usado_en: new Date().toISOString() })
-          .eq("id", tokenId);
-      }
-
+      const [h, m] = nuevaHora.split(":").map(Number);
+      const fecha = new Date(nuevaFecha);
+      fecha.setHours(h || 0, m || 0, 0, 0);
+      await llamar("reagendar", { fechaHora: fecha.toISOString(), motivo });
       toast.success("Cita reagendada exitosamente");
       setAccion("reagendar");
-    } catch (error) {
-      console.error("Error al reagendar:", error);
-      toast.error("Error al reagendar la cita");
+    } catch (error: any) {
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }

@@ -7,10 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "node scripts/verify-local-user-auth.mjs",
     "seed:local": "node scripts/seed-local-environment.mjs",
-    "verify:auth": "node scripts/verify-local-user-auth.mjs"
+    "verify:auth": "node scripts/verify-local-user-auth.mjs",
+    "ci": "tsc --noEmit && vite build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",

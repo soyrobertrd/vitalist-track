@@ -11,3 +11,14 @@ export function sanitizeHtml(dirty: string | null | undefined): string {
     FORBID_ATTR: ["style", "onerror", "onload"],
   });
 }
+
+/**
+ * Sanitiza SVG para códigos QR y gráficos vectoriales inyectados
+ */
+export function sanitizeSvg(dirty: string | null | undefined): string {
+  return DOMPurify.sanitize(dirty ?? "", {
+    USE_PROFILES: { svg: true, svgFilters: true },
+    FORBID_TAGS: ["script", "iframe", "object", "embed"],
+    FORBID_ATTR: ["onerror", "onload", "onclick"],
+  });
+}

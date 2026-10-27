@@ -4,6 +4,7 @@ import * as controlPlaneSchema from './control-plane-schema';
 import * as tenantSchema from './tenant-schema';
 import { eq } from 'drizzle-orm';
 import { AppError } from '../errors/problem-details';
+import { decryptTenantToken } from '../lib/crypto';
 
 /**
  * TURSO CONNECTION MANAGER & LRU CLIENT POOL
@@ -140,10 +141,11 @@ export async function getTenantDb(clinicId: string): Promise<TenantDb> {
   // 3. Evict if pool is saturated
   evictOldConnections();
 
-  // 4. Create new client
+  // 4. Create new client with decrypted token (S2)
   const client = createClient({
     url: dbConfig.tursoDbUrl,
-    authToken: dbConfig.tursoAuthTokenEncrypted, // Will decrypt in production
+    // Un archivo local (file:) no lleva token; cualquier BD remota exige token cifrado.
+    authToken: dbConfig.tursoDbUrl.startsWith('file:') ? undefined : decryptTenantToken(dbConfig.tursoAuthTokenEncrypted),
   });
 
   const db = drizzle(client, { schema: tenantSchema });

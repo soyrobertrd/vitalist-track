@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { DEMO_MODE, DEMO_WORKSPACES, DEMO_PLANES } from "@/lib/mock-live-seed";
 
 export interface Workspace {
   id: string;
@@ -43,18 +44,27 @@ const WorkspaceContext = createContext<WorkspaceContextValue | undefined>(undefi
 const STORAGE_KEY = "currentWorkspaceId";
 
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
-  const [workspaces, setWorkspaces] = useState<Array<Workspace & { role: WorkspaceRole }>>([]);
-  const [currentWorkspace, setCurrentWorkspace] = useState<(Workspace & { role: WorkspaceRole }) | null>(null);
-  const [currentPlan, setCurrentPlan] = useState<Plan | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [workspaces, setWorkspaces] = useState<Array<Workspace & { role: WorkspaceRole }>>(DEMO_MODE ? (DEMO_WORKSPACES as any) : []);
+  const [currentWorkspace, setCurrentWorkspace] = useState<(Workspace & { role: WorkspaceRole }) | null>(DEMO_MODE ? (DEMO_WORKSPACES[0] as any) : null);
+  const [currentPlan, setCurrentPlan] = useState<Plan | null>(DEMO_MODE ? DEMO_PLANES.find(p => p.codigo === DEMO_WORKSPACES[0].plan_codigo) || null : null);
+  const [loading, setLoading] = useState(!DEMO_MODE);
 
   const loadWorkspaces = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setWorkspaces([]);
-        setCurrentWorkspace(null);
-        setLoading(false);
+        // En modo preview o sin sesión activa de Supabase, proveer los 6 centros de prueba con sus 4 planes
+        if (DEMO_MODE) {
+          setWorkspaces(DEMO_WORKSPACES as any);
+          const savedId = localStorage.getItem(STORAGE_KEY);
+          const selected = (DEMO_WORKSPACES as any[]).find((w) => w.id === savedId) || DEMO_WORKSPACES[0];
+          setCurrentWorkspace(selected);
+          setCurrentPlan(DEMO_PLANES.find((p) => p.codigo === selected.plan_codigo) || DEMO_PLANES[0]);
+        } else {
+          setWorkspaces([]);
+          setCurrentWorkspace(null);
+          setCurrentPlan(null);
+        }
         return;
       }
 
@@ -65,9 +75,18 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         .eq("user_id", user.id);
 
       if (!memberships || memberships.length === 0) {
-        setWorkspaces([]);
-        setCurrentWorkspace(null);
-        setLoading(false);
+        // Si no tiene aún workspaces en Supabase, proveer los 6 centros demo para pruebas completas
+        if (DEMO_MODE) {
+          setWorkspaces(DEMO_WORKSPACES as any);
+          const savedId = localStorage.getItem(STORAGE_KEY);
+          const selected = (DEMO_WORKSPACES as any[]).find((w) => w.id === savedId) || DEMO_WORKSPACES[0];
+          setCurrentWorkspace(selected);
+          setCurrentPlan(DEMO_PLANES.find((p) => p.codigo === selected.plan_codigo) || DEMO_PLANES[0]);
+        } else {
+          setWorkspaces([]);
+          setCurrentWorkspace(null);
+          setCurrentPlan(null);
+        }
         return;
       }
 
@@ -77,10 +96,17 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         .select("*")
         .in("id", ids);
 
-      const merged = (ws || []).map((w) => {
+      let merged = (ws || []).map((w) => {
         const role = (memberships.find((m) => m.workspace_id === w.id)?.role || "member") as WorkspaceRole;
         return { ...(w as Workspace), role };
       });
+
+      // Asegurar que los centros demo estén disponibles para pruebas multi-vertical
+      if (DEMO_MODE) for (const demoWs of DEMO_WORKSPACES) {
+        if (!merged.some(m => m.id === demoWs.id)) {
+          merged.push(demoWs as any);
+        }
+      }
 
       setWorkspaces(merged);
 
@@ -90,15 +116,28 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       setCurrentWorkspace(selected);
 
       if (selected) {
-        const { data: plan } = await supabase
-          .from("planes")
-          .select("*")
-          .eq("codigo", selected.plan_codigo)
-          .maybeSingle();
-        setCurrentPlan(plan as Plan | null);
+        const demoPlan = DEMO_MODE && DEMO_PLANES.find(p => p.codigo === selected.plan_codigo);
+        if (demoPlan) {
+          setCurrentPlan(demoPlan);
+        } else {
+          const { data: plan } = await supabase
+            .from("planes")
+            .select("*")
+            .eq("codigo", selected.plan_codigo)
+            .maybeSingle();
+          setCurrentPlan((plan as Plan) || null);
+        }
       }
     } catch (e) {
       console.error("Error loading workspaces:", e);
+      if (DEMO_MODE) {
+      setWorkspaces(DEMO_WORKSPACES as any);
+      const savedId = localStorage.getItem(STORAGE_KEY);
+      const selected = (DEMO_WORKSPACES as any[]).find((w) => w.id === savedId) || DEMO_WORKSPACES[0];
+      setCurrentWorkspace(selected);
+      const plan = DEMO_PLANES.find((p) => p.codigo === selected.plan_codigo) || DEMO_PLANES[0];
+      setCurrentPlan(plan);
+      }
     } finally {
       setLoading(false);
     }
@@ -117,6 +156,19 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     if (!ws) return;
     localStorage.setItem(STORAGE_KEY, workspaceId);
     setCurrentWorkspace(ws);
+
+    // Si tiene vertical en su configuración, actualizarla en el documento
+    if (ws.configuracion?.vertical) {
+      document.documentElement.dataset.vertical = ws.configuracion.vertical;
+      try { localStorage.setItem("vertical_activa", ws.configuracion.vertical); } catch {}
+    }
+
+    const demoPlan = DEMO_MODE && DEMO_PLANES.find((p) => p.codigo === ws.plan_codigo);
+    if (demoPlan) {
+      setCurrentPlan(demoPlan);
+      return;
+    }
+
     supabase.from("planes").select("*").eq("codigo", ws.plan_codigo).maybeSingle()
       .then(({ data }) => setCurrentPlan(data as Plan | null));
   }, [workspaces]);

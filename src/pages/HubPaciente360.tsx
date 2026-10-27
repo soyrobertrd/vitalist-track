@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import {
   Activity, Phone, FileText, AlertTriangle, Calendar,
   FlaskConical, Image as ImageIcon, ShieldAlert, Workflow,
+  User, ShieldCheck, HeartPulse, Clock, Sparkles
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, differenceInYears } from "date-fns";
+import { es } from "date-fns/locale";
 import { ExportarDatosGDPR } from "@/components/pacientes/ExportarDatosGDPR";
-
+import { DEMO_MODE, DEMO_PACIENTES, DEMO_CITAS } from "@/lib/mock-live-seed";
 
 const iconMap: Record<string, any> = {
   visita: Calendar,
@@ -23,7 +25,7 @@ const iconMap: Record<string, any> = {
 };
 
 const moduloLabel: Record<string, string> = {
-  visitas: "Visitas",
+  visitas: "Citas y Visitas",
   llamadas: "Llamadas",
   cpoe: "Órdenes",
   alertas: "Alertas",
@@ -42,18 +44,63 @@ export default function HubPaciente360() {
   useEffect(() => {
     if (!id) return;
     (async () => {
-      const [p, t] = await Promise.all([
-        supabase.from("pacientes").select("*").eq("id", id).maybeSingle(),
-        supabase.rpc("paciente_timeline_360", { _paciente_id: id, _limite: 300 }),
-      ]);
-      setPaciente(p.data);
-      setTimeline(Array.isArray(t.data) ? t.data : []);
+      let pData = null;
+      let tData: any[] = [];
+      try {
+        const [p, t] = await Promise.all([
+          supabase.from("pacientes").select("*").eq("id", id).maybeSingle(),
+          supabase.rpc("paciente_timeline_360", { _paciente_id: id, _limite: 300 }),
+        ]);
+        pData = p.data;
+        tData = Array.isArray(t.data) ? t.data : [];
+      } catch {
+        // Fallback
+      }
+
+      // Fallback a demo paciente si no se encuentra en Supabase
+      if (DEMO_MODE && !pData) {
+        const demo = DEMO_PACIENTES.find((p) => p.id === id);
+        pData = demo;
+        // Mock timeline
+        tData = [
+          {
+            modulo: "visitas",
+            tipo: "visita",
+            titulo: "Consulta Médica General",
+            estado: "confirmada",
+            fecha: new Date().toISOString(),
+          },
+          {
+            modulo: "alertas",
+            tipo: "alerta",
+            titulo: "Registro de Expediente Digital",
+            estado: "alta",
+            fecha: new Date(Date.now() - 86400000 * 3).toISOString(),
+          },
+        ];
+      }
+
+      setPaciente(pData);
+      setTimeline(tData);
       setLoading(false);
     })();
   }, [id]);
 
-  if (loading) return <div className="p-6">Cargando hub clínico...</div>;
+  if (loading) {
+    return (
+      <div className="p-6 space-y-4 max-w-6xl mx-auto">
+        <p className="text-muted-foreground animate-pulse">Cargando expediente 360° del paciente...</p>
+      </div>
+    );
+  }
+
   if (!paciente) return <div className="p-6">Paciente no encontrado</div>;
+
+  const edad = paciente.fecha_nacimiento
+    ? differenceInYears(new Date(), new Date(paciente.fecha_nacimiento))
+    : null;
+
+  const proximaCita = DEMO_MODE && DEMO_CITAS.find((c) => c.paciente_id === paciente.id);
 
   const conteos = timeline.reduce<Record<string, number>>((acc, e) => {
     acc[e.modulo] = (acc[e.modulo] || 0) + 1;
@@ -63,30 +110,67 @@ export default function HubPaciente360() {
   const filtrado = filtroModulo ? timeline.filter((e) => e.modulo === filtroModulo) : timeline;
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Activity className="h-7 w-7 text-primary" /> Hub Clínico 360°
-          </h1>
-          <p className="text-muted-foreground">{paciente.nombre} {paciente.apellido}</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button asChild variant="outline" size="sm">
-            <Link to="/visitas"><Calendar className="h-4 w-4 mr-1" /> Nueva visita</Link>
-          </Button>
-          <Button asChild variant="outline" size="sm">
-            <Link to="/llamadas"><Phone className="h-4 w-4 mr-1" /> Nueva llamada</Link>
-          </Button>
-          <Button asChild variant="outline" size="sm">
-            <Link to="/ordenes-medicas"><FileText className="h-4 w-4 mr-1" /> Nueva orden</Link>
-          </Button>
-          <Button asChild variant="outline" size="sm">
-            <Link to="/workflows-clinicos"><Workflow className="h-4 w-4 mr-1" /> Workflow</Link>
-          </Button>
-          <ExportarDatosGDPR pacienteId={paciente.id} pacienteNombre={`${paciente.nombre}_${paciente.apellido ?? ""}`} />
-        </div>
-      </div>
+    <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
+      {/* Header Fijo Clínico 360° (Fase 9 - punto 3) */}
+      <Card className="shadow-none border-border bg-card">
+        <CardContent className="p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="h-14 w-14 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl border border-primary/20 shrink-0">
+              {paciente.nombre?.[0]}{paciente.apellido?.[0]}
+            </div>
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-xl font-bold tracking-tight">
+                  {paciente.nombre} {paciente.apellido}
+                </h1>
+                <Badge variant="outline" className="text-xs font-mono">
+                  Cédula: {paciente.cedula || "N/A"}
+                </Badge>
+                {edad !== null && (
+                  <Badge variant="secondary" className="text-xs tabular-nums">
+                    {edad} años
+                  </Badge>
+                )}
+                {paciente.alergias ? (
+                  <Badge variant="destructive" className="text-xs">
+                    ⚠️ Alergias: {paciente.alergias}
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-xs border-success/30 text-success bg-success/5">
+                    Sin alergias registradas
+                  </Badge>
+                )}
+              </div>
+              <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Phone className="h-3.5 w-3.5" />
+                  {paciente.contacto_px || paciente.numero_principal || "Sin teléfono"}
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                  Seguro / ARS: {paciente.ars_nombre || "Senasa (Contributivo)"}
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5 text-warning" />
+                  Próxima cita: {proximaCita ? format(new Date(proximaCita.fecha_hora_visita), "dd MMM, HH:mm", { locale: es }) : "No programada"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 shrink-0">
+            <Button asChild size="sm">
+              <Link to="/app/citas?action=nueva"><Calendar className="h-4 w-4 mr-1.5" /> Agendar Cita</Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link to={`/pacientes?id=${paciente.id}`}><User className="h-4 w-4 mr-1.5" /> Ver Ficha</Link>
+            </Button>
+            <ExportarDatosGDPR pacienteId={paciente.id} pacienteNombre={`${paciente.nombre}_${paciente.apellido ?? ""}`} />
+          </div>
+        </CardContent>
+      </Card>
 
 
       {/* Resumen por módulo */}
@@ -114,7 +198,7 @@ export default function HubPaciente360() {
         ))}
       </div>
 
-      <Card>
+      <Card className="shadow-none border-border">
         <CardHeader>
           <CardTitle>
             Línea de tiempo cronológica

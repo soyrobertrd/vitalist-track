@@ -107,18 +107,30 @@ export function VisitaDetailDialog({
 
   const handleCancelar = async () => {
     setLoading(true);
-
+    const anteriorEstado = visita.estado || "pendiente";
     const { error } = await supabase
       .from("control_visitas")
       .update({ estado: "cancelada" })
       .eq("id", visita.id);
 
     if (error) {
-      toast.error("Error al cancelar la visita");
+      toast.error("Error al cancelar la cita");
     } else {
       // Crear llamada de seguimiento 2-3 días después
       await createFollowUpCall(2);
-      toast.success("Visita cancelada y llamada de seguimiento programada");
+      toast.success("Cita cancelada y seguimiento programado", {
+        action: {
+          label: "Deshacer",
+          onClick: async () => {
+            await supabase
+              .from("control_visitas")
+              .update({ estado: anteriorEstado })
+              .eq("id", visita.id);
+            toast.success("Cancelación revertida exitosamente");
+            onSuccess();
+          },
+        },
+      });
       onSuccess();
       onOpenChange(false);
     }

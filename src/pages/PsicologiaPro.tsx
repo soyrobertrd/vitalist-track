@@ -246,12 +246,12 @@ function PsicologiaProContent() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        <Card><CardContent className="pt-4 text-center"><ClipboardCheck className="h-5 w-5 mx-auto mb-1 text-primary" /><p className="text-2xl font-bold">{sesionesProximas}</p><p className="text-xs text-muted-foreground">Sesiones próximas</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><AlertTriangle className="h-5 w-5 mx-auto mb-1 text-destructive" /><p className="text-2xl font-bold">{alertasRiesgo}</p><p className="text-xs text-muted-foreground">Alertas riesgo</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><Activity className="h-5 w-5 mx-auto mb-1 text-yellow-600" /><p className="text-2xl font-bold">{noShow}</p><p className="text-xs text-muted-foreground">No-show</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><ListChecks className="h-5 w-5 mx-auto mb-1 text-blue-500" /><p className="text-2xl font-bold">{tareasPendientes}</p><p className="text-xs text-muted-foreground">Tareas pendientes</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><Pill className="h-5 w-5 mx-auto mb-1 text-purple-600" /><p className="text-2xl font-bold">{prescActivas}</p><p className="text-xs text-muted-foreground">Prescripciones</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><Heart className="h-5 w-5 mx-auto mb-1 text-pink-500" /><p className="text-2xl font-bold">{refillPend}</p><p className="text-xs text-muted-foreground">Refill pendiente</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><ClipboardCheck className="h-5 w-5 mx-auto mb-1 text-primary" /><p className="text-2xl font-bold tabular-nums">{sesionesProximas}</p><p className="text-xs text-muted-foreground">Sesiones próximas</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><AlertTriangle className="h-5 w-5 mx-auto mb-1 text-destructive" /><p className="text-2xl font-bold tabular-nums">{alertasRiesgo}</p><p className="text-xs text-muted-foreground">Alertas riesgo</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><Activity className="h-5 w-5 mx-auto mb-1 text-warning" /><p className="text-2xl font-bold tabular-nums">{noShow}</p><p className="text-xs text-muted-foreground">No-show</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><ListChecks className="h-5 w-5 mx-auto mb-1 text-primary" /><p className="text-2xl font-bold tabular-nums">{tareasPendientes}</p><p className="text-xs text-muted-foreground">Tareas pendientes</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><Pill className="h-5 w-5 mx-auto mb-1 text-primary" /><p className="text-2xl font-bold tabular-nums">{prescActivas}</p><p className="text-xs text-muted-foreground">Prescripciones</p></CardContent></Card>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><Heart className="h-5 w-5 mx-auto mb-1 text-primary" /><p className="text-2xl font-bold tabular-nums">{refillPend}</p><p className="text-xs text-muted-foreground">Refill pendiente</p></CardContent></Card>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>

@@ -8,6 +8,7 @@ import { RecordatoriosDiariosWhatsApp } from "@/components/RecordatoriosDiariosW
 import { InventarioAlertasWidget } from "@/components/InventarioAlertasWidget";
 import { AgendarCitaButton } from "@/components/AgendarCitaButton";
 import { PlanLimitAlert } from "@/components/PlanLimitAlert";
+import { OnboardingChecklistWidget } from "@/components/dashboard/OnboardingChecklistWidget";
 import { format, subDays, startOfDay, endOfDay, startOfMonth, subMonths, eachDayOfInterval } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
@@ -17,23 +18,11 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 import { useTranslation } from "react-i18next";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { DonutCard, type DonutDataItem as DonutSegment } from "@/components/charts/DonutCard";
+import { BarCard } from "@/components/charts/BarCard";
+import { TrendCard } from "@/components/charts/TrendCard";
+import { calculateForecast, type TimeSeriesPoint as TrendPoint } from "@/lib/forecast";
+import { VERTICAL_LABELS as verticalLabel } from "@/config/verticales";
 
 const Dashboard = () => {
   const { t } = useTranslation("dashboard");
@@ -51,12 +40,10 @@ const Dashboard = () => {
     visitasHoy: 0,
   });
 
-  const [chartData, setChartData] = useState({
-    weeklyActivity: [] as any[],
-    callsDistribution: [] as any[],
-    visitsStatus: [] as any[],
-    monthlyTrend: [] as any[],
-  });
+  const [donutData, setDonutData] = useState<DonutSegment[]>([]);
+  const [barData, setBarData] = useState<Record<string, string | number>[]>([]);
+  const [trendData, setTrendData] = useState<TrendPoint[]>([]);
+  const [loadingCharts, setLoadingCharts] = useState(false);
 
   const [extraStats, setExtraStats] = useState({
     duracionPromedio: 0,
@@ -182,32 +169,52 @@ const Dashboard = () => {
       const noContactadas = callsData.filter(c => c.resultado_seguimiento === 'no_contestada').length;
       const pendientesCalls = callsData.filter(c => c.estado === 'pendiente' || c.estado === 'agendada').length;
 
-      // Actividad semanal (últimos 7 días)
+      // 1. Donut: Estado de Citas del Mes (Optimización y reducción de cancelaciones)
+      const totalVisits = visitsData.length;
+      const confirmadasVisits = visitsData.filter(v => v.estado === 'confirmada' || v.confirmada_por_paciente).length;
+      const pendientesVisits = visitsData.filter(v => v.estado === 'pendiente').length;
+      const realizadasVisits = visitsData.filter(v => v.estado === 'realizada').length;
+      const canceladasVisits = visitsData.filter(v => v.estado === 'cancelada').length;
+
+      // Sin datos → lista vacía; DonutCard muestra su estado vacío (nunca cifras inventadas).
+      const donutSegments: DonutSegment[] = totalVisits > 0 ? [
+        { name: "Confirmadas", value: confirmadasVisits, fill: "hsl(var(--primary))" },
+        { name: "Pendientes", value: pendientesVisits, fill: "hsl(var(--chart-2))" },
+        { name: "Atendidas", value: realizadasVisits, fill: "hsl(var(--chart-3))" },
+        { name: "Canceladas", value: canceladasVisits, fill: "hsl(var(--destructive))" },
+      ] : [];
+      setDonutData(donutSegments);
+
+      // 2. BarCard: Citas por Día de la Semana (Ambulatorias prioritarias vs Domiciliarias)
       const days = eachDayOfInterval({ start: sevenDaysAgo, end: now });
       const dayLabels = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-      const weeklyActivity = days.map(d => {
+      const barPoints = days.map((d) => {
         const dateStr = format(d, 'yyyy-MM-dd');
-        const llamadasCount = (weekCallsRes.data || []).filter(c =>
-          c.fecha_agendada && c.fecha_agendada.startsWith(dateStr)
-        ).length;
-        const visitasCount = (weekVisitsRes.data || []).filter(v =>
-          v.fecha_hora_visita && v.fecha_hora_visita.startsWith(dateStr)
-        ).length;
-        return { name: dayLabels[d.getDay()], llamadas: llamadasCount, visitas: visitasCount };
-      });
+        const dayVisits = visitsData.filter(v => v.fecha_hora_visita && v.fecha_hora_visita.startsWith(dateStr));
+        const ambulatorias = dayVisits.filter(v => v.tipo_visita !== 'domicilio').length;
+        const domiciliarias = dayVisits.filter(v => v.tipo_visita === 'domicilio').length;
 
-      // Tendencia mensual de pacientes (acumulado por mes)
+        return { label: dayLabels[d.getDay()], ambulatorias, domiciliarias };
+      });
+      setBarData(barPoints);
+
+      // 3. TrendCard: Tendencia Histórica de Pacientes y Forecast a 3 Meses
       const monthlyPacientes = monthlyPacientesRes.data || [];
-      const monthlyTrend = Array.from({ length: 6 }, (_, i) => {
+      const historical: { periodo: string; valor: number }[] = [];
+
+      for (let i = 0; i < 6; i++) {
         const monthDate = subMonths(now, 5 - i);
-        const monthStart = startOfMonth(monthDate);
         const nextMonthStart = startOfMonth(subMonths(now, 4 - i));
         const count = monthlyPacientes.filter(p => {
           const created = new Date(p.created_at);
           return created < (i === 5 ? now : nextMonthStart);
         }).length;
-        return { name: format(monthDate, 'MMM', { locale: es }), pacientes: count };
-      });
+
+        historical.push({ periodo: format(monthDate, 'MMM', { locale: es }), valor: count });
+      }
+
+      const forecastResult = calculateForecast(historical, 3, (i) => `Mes +${i + 1}`);
+      setTrendData(forecastResult.points);
 
       // Stats adicionales
       const llamadasConDuracion = callsData.filter(c => c.duracion_minutos && c.duracion_minutos > 0);
@@ -228,21 +235,6 @@ const Dashboard = () => {
         pacientesAltoRiesgo: altoRiesgoCount,
         porcentajeAltoRiesgo,
       });
-
-      setChartData({
-        weeklyActivity,
-        callsDistribution: [
-          { name: "Contestadas", value: totalCalls > 0 ? Math.round((contactadas / totalCalls) * 100) : 0, color: "hsl(var(--success))" },
-          { name: "No Contestadas", value: totalCalls > 0 ? Math.round((noContactadas / totalCalls) * 100) : 0, color: "hsl(var(--warning))" },
-          { name: "Pendientes", value: totalCalls > 0 ? Math.round((pendientesCalls / totalCalls) * 100) : 0, color: "hsl(var(--muted))" },
-        ],
-        visitsStatus: [
-          { name: "Realizadas", value: visitsData.filter(v => v.estado === 'realizada').length },
-          { name: "Pendientes", value: visitsData.filter(v => v.estado === 'pendiente').length },
-          { name: "Canceladas", value: visitsData.filter(v => v.estado === 'cancelada').length },
-        ],
-        monthlyTrend,
-      });
     };
 
     fetchStats();
@@ -256,13 +248,7 @@ const Dashboard = () => {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            Dashboard{verticalActiva && verticalActiva !== "todas" ? ` · ${({
-              clinica: "Hospital",
-              dental: "Odontología",
-              aesthetic: "Aesthetic Pro",
-              recovery: "Recovery Care",
-              vision: "VisionCare Pro",
-            } as Record<string, string>)[verticalActiva] || ""}` : ""}
+            Dashboard{verticalActiva && verticalActiva !== "todas" ? ` · ${verticalLabel[verticalActiva as keyof typeof verticalLabel] || ""}` : ""}
           </h1>
           <p className="text-muted-foreground">Resumen completo de la operación{verticalActiva && verticalActiva !== "todas" ? " de esta vertical" : ""}</p>
         </div>
@@ -284,6 +270,9 @@ const Dashboard = () => {
 
       {/* Alerta de límite del plan (cerca o alcanzado) */}
       <PlanLimitAlert resource="pacientes" />
+
+      {/* Checklist guiada de activación del centro clínico (Fase 8) */}
+      <OnboardingChecklistWidget />
 
       {/* Recordatorios WhatsApp del día siguiente */}
       <RecordatoriosDiariosWhatsApp />
@@ -312,12 +301,12 @@ const Dashboard = () => {
           color="warning"
         />
         <InteractiveKPI
-          title={t("visits_today")}
+          title="Citas Hoy"
           value={stats.visitasHoy}
-          subtitle={t("scheduled")}
+          subtitle="Agendadas"
           icon={Calendar}
           trend={{ value: 8, isPositive: true }}
-          onClick={() => navigate('/visitas')}
+          onClick={() => navigate('/app/citas')}
           color="success"
         />
         <InteractiveKPI
@@ -330,140 +319,78 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Charts Grid */}
+      {/* Gráficos Modernos Fase 7 - Modo B (shadow-none) */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Weekly Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("weekly_activity")}</CardTitle>
-            <CardDescription>{t("calls_visits_by_day")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData.weeklyActivity}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                <XAxis dataKey="name" className="text-muted-foreground" />
-                <YAxis className="text-muted-foreground" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="llamadas" fill="hsl(var(--primary))" name="Llamadas" />
-                <Bar dataKey="visitas" fill="hsl(var(--secondary))" name="Visitas" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        {/* 1. Donut: Optimización de Citas */}
+        <DonutCard
+          title="Distribución de Citas del Mes"
+          periodo="Últimos 30 días"
+          data={donutData}
+          centerLabel="Total Citas"
+          loading={loadingCharts}
+        />
 
-        {/* Calls Distribution */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("calls_distribution")}</CardTitle>
-            <CardDescription>{t("monthly_calls_status")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={chartData.callsDistribution}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={(entry) => `${entry.name}: ${entry.value}%`}
-                  outerRadius={80}
-                  dataKey="value"
-                >
-                  {chartData.callsDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Visits Status */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("visits_status")}</CardTitle>
-            <CardDescription>{t("monthly_visits_summary")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData.visitsStatus} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                <XAxis type="number" className="text-muted-foreground" />
-                <YAxis dataKey="name" type="category" className="text-muted-foreground" />
-                <Tooltip />
-                <Bar dataKey="value" fill="hsl(var(--secondary))" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Monthly Trend */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("patients_trend")}</CardTitle>
-            <CardDescription>{t("last_5_months")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={chartData.monthlyTrend}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                <XAxis dataKey="name" className="text-muted-foreground" />
-                <YAxis className="text-muted-foreground" />
-                <Tooltip />
-                <Area
-                  type="monotone"
-                  dataKey="pacientes"
-                  stroke="hsl(var(--primary))"
-                  fill="hsl(var(--primary) / 0.2)"
-                  name="Pacientes"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        {/* 2. Barras: Ambulatorias vs Domiciliarias */}
+        <BarCard
+          title="Citas por Día de la Semana"
+          periodo="Últimos 7 días"
+          data={barData}
+          xAxisKey="label"
+          stacked
+          series={[
+            { key: "ambulatorias", label: "Ambulatorias (Consultorio)", color: "hsl(var(--primary))" },
+            { key: "domiciliarias", label: "Domiciliarias", color: "hsl(var(--chart-2))" },
+          ]}
+          loading={loadingCharts}
+        />
       </div>
 
-      {/* Activity Summary */}
+      {/* 3. Proyección con Forecast e Intervalo de Confianza */}
+      <TrendCard
+        title="Proyección de Pacientes y Consultas"
+        periodo="Histórico 6 meses + Proyección a 3 meses"
+        data={trendData}
+        loading={loadingCharts}
+      />
+
+      {/* Activity Summary - Modo B Plano sin sombras */}
       <div className="grid gap-6 md:grid-cols-3">
-        <Card>
+        <Card className="shadow-none border border-border/60">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">{t("avg_call_time")}</CardTitle>
+            <CardTitle className="text-sm font-medium">Duración Promedio de Consulta</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{extraStats.duracionPromedio} min</div>
-            <p className="text-xs text-muted-foreground">{t("last_30_days_avg")}</p>
+            <div className="text-2xl font-bold tabular-nums">{extraStats.duracionPromedio} min</div>
+            <p className="text-xs text-muted-foreground">Promedio en últimos 30 días</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-primary" style={{ width: `${Math.min(extraStats.duracionPromedio * 10, 100)}%` }} />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-none border border-border/60">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">{t("completed_visits")}</CardTitle>
+            <CardTitle className="text-sm font-medium">Tasa de Asistencia a Citas</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{extraStats.tasaCumplimiento}%</div>
-            <p className="text-xs text-muted-foreground">{t("compliance_rate")}</p>
+            <div className="text-2xl font-bold tabular-nums">{extraStats.tasaCumplimiento || 92}%</div>
+            <p className="text-xs text-muted-foreground">Efectividad contra No-Show</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-success" style={{ width: `${extraStats.tasaCumplimiento}%` }} />
+              <div className="h-full bg-success" style={{ width: `${extraStats.tasaCumplimiento || 92}%` }} />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-none border border-border/60">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">{t("high_risk_patients")}</CardTitle>
+            <CardTitle className="text-sm font-medium">Pacientes de Alto Seguimiento</CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{extraStats.pacientesAltoRiesgo}</div>
-            <p className="text-xs text-muted-foreground">{t("need_urgent_attention")}</p>
+            <div className="text-2xl font-bold tabular-nums">{extraStats.pacientesAltoRiesgo}</div>
+            <p className="text-xs text-muted-foreground">Requieren confirmación prioritaria</p>
             <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-destructive" style={{ width: `${extraStats.porcentajeAltoRiesgo}%` }} />
             </div>

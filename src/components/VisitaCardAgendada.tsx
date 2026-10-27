@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Calendar, User, Mail, Ticket } from "lucide-react";
+import { Phone, Calendar, User, Mail, Ticket, Building2, CheckCircle2 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { format } from "date-fns";
@@ -20,6 +20,7 @@ interface Visita {
   estado: string;
   notas_visita: string | null;
   paciente_id?: string;
+  confirmada_por_paciente?: boolean;
   pacientes: { 
     nombre: string; 
     apellido: string;
@@ -28,6 +29,7 @@ interface Visita {
     numero_principal?: string | null;
     whatsapp_px?: boolean | null;
     whatsapp_cuidador?: boolean | null;
+    clinica_origen?: string | null;
   } | null;
   personal_salud: { nombre: string; apellido: string } | null;
   profesionales_adicionales?: any[];
@@ -128,7 +130,7 @@ export const VisitaCardAgendada = ({
 
   return (
     <Card 
-      className={`cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col h-full relative ${
+      className={`cursor-pointer shadow-none border border-border/60 hover:border-primary/50 transition-colors flex flex-col h-full relative ${
         isSelected 
           ? 'ring-2 ring-primary bg-primary/5' 
           : overdue 
@@ -223,10 +225,21 @@ export const VisitaCardAgendada = ({
           </p>
         )}
 
-        <div className="flex items-center justify-between">
-          <Badge variant="outline" className="text-xs">
-            {getTipoIcon(visita.tipo_visita)} {formatearTexto(visita.tipo_visita)}
+        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+          <Badge variant={visita.tipo_visita === "domicilio" ? "secondary" : "default"} className="text-xs">
+            {visita.tipo_visita === "domicilio" ? "🏠 Domiciliaria" : "🏥 Ambulatoria (Consultorio)"}
           </Badge>
+          {visita.confirmada_por_paciente && (
+            <Badge variant="outline" className="text-xs text-green-600 border-green-500/30 bg-green-500/10 flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3" /> Confirmada
+            </Badge>
+          )}
+          {visita.pacientes?.clinica_origen && (
+            <Badge variant="outline" className="text-xs text-muted-foreground flex items-center gap-1">
+              <Building2 className="h-3 w-3 text-muted-foreground" />
+              {visita.pacientes.clinica_origen}
+            </Badge>
+          )}
         </div>
         
         {visita.motivo_visita && (

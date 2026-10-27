@@ -98,10 +98,10 @@ export default function Recepcion() {
 
   const estadoBadge = (estado: string) => {
     const cfg: Record<string, { label: string; cls: string }> = {
-      pendiente: { label: "Pendiente", cls: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30" },
-      llegado: { label: "✓ Llegó", cls: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30" },
-      atendido: { label: "✓✓ Atendido", cls: "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30" },
-      no_show: { label: "No Show", cls: "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/30" },
+      pendiente: { label: "Pendiente", cls: "bg-primary/10 text-primary border-primary/30" },
+      llegado: { label: "✓ Llegó", cls: "bg-warning/15 text-warning border-warning/30" },
+      atendido: { label: "✓✓ Atendido", cls: "bg-success/15 text-success border-success/30" },
+      no_show: { label: "No Show", cls: "bg-destructive/15 text-destructive border-destructive/30" },
       cancelado: { label: "Cancelado", cls: "bg-muted text-muted-foreground" },
     };
     const c = cfg[estado] || cfg.pendiente;
@@ -175,7 +175,7 @@ export default function Recepcion() {
           </Card>
 
           {ticket && (
-            <Card className="border-2 border-primary/40 shadow-lg">
+            <Card className="border border-primary/40 shadow-none">
               <CardHeader>
                 <div className="flex items-start justify-between gap-2">
                   <div>

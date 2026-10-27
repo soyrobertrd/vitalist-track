@@ -84,14 +84,14 @@ export function ProgramarVisitaDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="shadow-none">
           <Plus className="mr-2 h-4 w-4" />
-          Programar Visita
+          Nueva Cita
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Programar Nueva Visita</DialogTitle>
+          <DialogTitle>Programar Nueva Cita / Consulta</DialogTitle>
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -188,14 +188,14 @@ export function ProgramarVisitaDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tipo_visita">Tipo de Visita *</Label>
-            <Select name="tipo_visita" required>
+            <Label htmlFor="tipo_visita">Tipo de Cita *</Label>
+            <Select name="tipo_visita" defaultValue="ambulatorio" required>
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder="Seleccione tipo de cita" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ambulatorio">Ambulatorio (Consultorio)</SelectItem>
-                <SelectItem value="domicilio">Domicilio</SelectItem>
+                <SelectItem value="ambulatorio">Ambulatoria (Consultorio / Clínica)</SelectItem>
+                <SelectItem value="domicilio">Domiciliaria (Atención a Domicilio)</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -1,7 +1,5 @@
-import { resolveTenantContext } from '../src/server/middleware/tenant-context';
 import { GET as getPatients } from '../api/v1/patients/index';
 import { GET as getAppointments } from '../api/v1/appointments/index';
-import { AppError } from '../src/server/errors/problem-details';
 
 process.env.TURSO_CONTROL_PLANE_URL = 'file:local-control-plane.db';
 
@@ -42,40 +40,14 @@ async function testS1Security() {
   }
   console.log('  ✅ GET /api/v1/appointments rechazado correctamente con 401');
 
-  // 3. Probar resolveTenantContext sin x-clinic-id pero con auth
-  let errorCaught = false;
-  try {
-    const missingClinicReq = new Request('http://localhost:8080/api/v1/patients', {
-      method: 'GET',
-      headers: {
-        'authorization': 'Bearer dummy-token',
-      },
-    });
-    await resolveTenantContext(missingClinicReq);
-  } catch (err: any) {
-    errorCaught = true;
-    if (err instanceof AppError && err.status === 400) {
-      console.log('  ✅ Petición con auth pero sin x-clinic-id rechazada con 400 MissingTenantHeader');
-    } else {
-      throw new Error(`Se esperaba 400 MissingTenantHeader pero se obtuvo: ${err}`);
-    }
+  // 3. Una cabecera de auth cualquiera (sin sesión validada) también debe dar 401
+  const fakeAuth = await getPatients(new Request('http://localhost:8080/api/v1/patients', {
+    headers: { authorization: 'Bearer cualquier-cosa', cookie: 'x=1', 'x-clinic-id': 'c_vitalist_test' },
+  }));
+  if (fakeAuth.status !== 401) {
+    throw new Error(`Cabeceras falsas: se esperaba 401 pero se obtuvo ${fakeAuth.status}`);
   }
-  if (!errorCaught) {
-    throw new Error('Se esperaba error por falta de x-clinic-id');
-  }
-
-  // 4. Probar resolveTenantContext con auth y clinicId
-  const validReq = new Request('http://localhost:8080/api/v1/patients', {
-    method: 'GET',
-    headers: {
-      'authorization': 'Bearer test-token-ok',
-      'x-clinic-id': 'c_vitalist_test',
-    },
-  });
-  const ctx = await resolveTenantContext(validReq);
-  if (ctx.clinicId === 'c_vitalist_test' && ctx.db) {
-    console.log('  ✅ Petición con auth y x-clinic-id resuelve contexto y base de datos con éxito');
-  }
+  console.log('  ✅ Cabeceras de auth sin sesión válida rechazadas con 401');
 
   console.log('\n🛡️ ¡TEST S1 SEGURIDAD COMPLETADO CON ÉXITO! Fail-Closed 401 verificado.');
 }

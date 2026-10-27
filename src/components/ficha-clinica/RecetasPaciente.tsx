@@ -201,26 +201,94 @@ export function RecetasPaciente({ pacienteId }: Props) {
   const printReceta = (r: Receta) => {
     const w = window.open("", "_blank");
     if (!w) return;
-    const prof = r.personal_salud ? `Dr(a). ${r.personal_salud.nombre} ${r.personal_salud.apellido}` : "";
-    const fecha = new Date(r.fecha_emision).toLocaleDateString();
+    const centroNombre = currentWorkspace?.nombre || "Vitalist Track - Centro Clínico";
+    const prof = r.personal_salud ? `Dr(a). ${r.personal_salud.nombre} ${r.personal_salud.apellido}` : "Médico Tratante";
+    const fecha = new Date(r.fecha_emision).toLocaleDateString("es-DO", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
     const itemsHtml = (r.items || []).map((it, i) =>
-      `<tr><td>${i + 1}</td><td><strong>${it.medicamento}</strong>${it.presentacion ? ` (${it.presentacion})` : ""}</td><td>${it.dosis || ""}</td><td>${it.via_administracion}</td><td>${it.frecuencia || ""}</td><td>${it.duracion || ""}</td><td>${it.cantidad || ""}</td></tr>`
+      `<tr>
+        <td style="text-align:center;color:#666;">${i + 1}</td>
+        <td><strong style="color:#0f172a;">${it.medicamento}</strong>${it.presentacion ? ` <span style="color:#64748b;">(${it.presentacion})</span>` : ""}${it.indicaciones ? `<div style="font-size:11px;color:#475569;margin-top:2px;">ℹ ${it.indicaciones}</div>` : ""}</td>
+        <td>${it.dosis || "—"}</td>
+        <td style="text-transform:capitalize;">${it.via_administracion}</td>
+        <td>${it.frecuencia || "—"}</td>
+        <td>${it.duracion || "—"}</td>
+        <td style="text-align:center;font-weight:600;">${it.cantidad || "—"}</td>
+      </tr>`
     ).join("");
 
-    w.document.write(`<!DOCTYPE html><html><head><title>Receta</title><style>
-      body{font-family:Arial,sans-serif;max-width:700px;margin:40px auto;padding:20px}
-      h1{font-size:20px;text-align:center}table{width:100%;border-collapse:collapse;margin:16px 0}
-      th,td{border:1px solid #ccc;padding:6px 8px;text-align:left;font-size:13px}
-      th{background:#f5f5f5}.footer{margin-top:40px;text-align:center;font-size:12px;color:#666}
-      .sig{margin-top:60px;border-top:1px solid #333;width:200px;margin-left:auto;margin-right:auto;text-align:center;padding-top:8px}
+    w.document.write(`<!DOCTYPE html><html><head><title>Receta Médica - ${centroNombre}</title><style>
+      @page { size: letter; margin: 20mm; }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; max-width: 750px; margin: 0 auto; padding: 24px; color: #1e293b; }
+      .header-receta { border-bottom: 2px solid #0284c7; padding-bottom: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
+      .brand-title { margin: 0; color: #0284c7; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+      .brand-sub { margin: 4px 0 0 0; font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+      .meta-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 12px; }
+      th, td { border-bottom: 1px solid #e2e8f0; padding: 10px 8px; text-align: left; }
+      th { background: #f1f5f9; color: #475569; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+      .indicaciones-box { margin-top: 24px; padding: 12px; border: 1px dashed #cbd5e1; border-radius: 6px; font-size: 12px; }
+      .footer-firmas { margin-top: 60px; display: flex; justify-content: space-between; align-items: flex-end; }
+      .sig { border-top: 1px solid #475569; width: 220px; text-align: center; padding-top: 8px; font-size: 12px; font-weight: 600; }
+      .nota-legal { font-size: 10px; color: #94a3b8; text-align: center; margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 10px; }
     </style></head><body>
-      <h1>RECETA MÉDICA</h1>
-      <p><strong>Fecha:</strong> ${fecha} &nbsp; <strong>Médico:</strong> ${prof}</p>
-      ${r.diagnostico_texto ? `<p><strong>Diagnóstico:</strong> ${r.diagnostico_texto}</p>` : ""}
-      <table><thead><tr><th>#</th><th>Medicamento</th><th>Dosis</th><th>Vía</th><th>Frecuencia</th><th>Duración</th><th>Cant.</th></tr></thead><tbody>${itemsHtml}</tbody></table>
-      ${r.indicaciones_generales ? `<p><strong>Indicaciones:</strong> ${r.indicaciones_generales}</p>` : ""}
-      <div class="sig">${prof}</div>
-      <p class="footer">Vigencia: ${r.vigencia_dias} días</p>
+      <div class="header-receta">
+        <div>
+          <h1 class="brand-title">${centroNombre}</h1>
+          <p class="brand-sub">Prescripción y Orden Médica Oficial</p>
+        </div>
+        <div style="text-align: right; font-size: 12px; color: #475569;">
+          <p style="margin: 0;"><strong>Fecha:</strong> ${fecha}</p>
+          <p style="margin: 2px 0 0 0;"><strong>Vigencia:</strong> ${r.vigencia_dias} días</p>
+        </div>
+      </div>
+
+      <div class="meta-box">
+        <div><strong>Médico Prescriptor:</strong> ${prof}</div>
+        <div><strong>Folio Receta:</strong> #${r.id.slice(0, 8).toUpperCase()}</div>
+        ${r.diagnostico_texto ? `<div style="grid-column: span 2;"><strong>Diagnóstico Clínico:</strong> ${r.diagnostico_texto}</div>` : ""}
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30px;text-align:center;">#</th>
+            <th>Medicamento y Presentación</th>
+            <th>Dosis</th>
+            <th>Vía</th>
+            <th>Frecuencia</th>
+            <th>Duración</th>
+            <th style="text-align:center;">Cant.</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+      </table>
+
+      ${r.indicaciones_generales ? `
+        <div class="indicaciones-box">
+          <strong style="color:#0f172a;display:block;margin-bottom:4px;">Indicaciones y Recomendaciones Generales:</strong>
+          <span style="color:#334155;">${r.indicaciones_generales}</span>
+        </div>
+      ` : ""}
+
+      <div class="footer-firmas">
+        <div style="font-size:11px;color:#64748b;">
+          Documento expedido en cumplimiento normativo de salud.
+        </div>
+        <div class="sig">
+          ${prof}
+          <div style="font-size:10px;color:#64748b;font-weight:normal;margin-top:2px;">Firma y Sello Profesional</div>
+        </div>
+      </div>
+
+      <div class="nota-legal">
+        Este documento es intransferible y certifica la prescripción médica expedida en ${centroNombre}.
+      </div>
     </body></html>`);
     w.document.close();
     w.print();

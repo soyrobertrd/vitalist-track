@@ -11,11 +11,11 @@ export interface TenantContext {
  * Enforces strict multi-tenant boundary checks (Fail-Closed).
  */
 export async function resolveTenantContext(req: Request): Promise<TenantContext> {
-  const authHeader = req.headers.get('authorization');
-  const cookieHeader = req.headers.get('cookie');
-
-  // S1 (Fail-Closed): La API v1 rechaza toda petición sin credenciales/sesión válida con 401 Unauthorized
-  if (!authHeader && !cookieHeader) {
+  // S1 (Fail-Closed): aún no hay validación de sesión (Better Auth, Fase 1), así que la API rechaza todo.
+  // Solo en local se puede abrir con ALLOW_INSECURE_DEV_API=1; nunca en producción.
+  const devBypass =
+    process.env.ALLOW_INSECURE_DEV_API === '1' && process.env.NODE_ENV !== 'production' && !process.env.VERCEL;
+  if (!devBypass) {
     throw new AppError(
       'Unauthorized',
       'Se requiere una sesión autenticada válida para acceder a la API.',

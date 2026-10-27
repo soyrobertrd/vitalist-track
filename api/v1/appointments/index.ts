@@ -1,6 +1,7 @@
 import { resolveTenantContext } from '../../../src/server/middleware/tenant-context';
 import { AppointmentService } from '../../../src/server/services/appointment-service';
 import { createProblemResponse } from '../../../src/server/errors/problem-details';
+import { appointmentQuerySchema, createAppointmentSchema } from '../../../src/server/validators/schemas';
 
 export async function GET(req: Request) {
   try {
@@ -8,19 +9,10 @@ export async function GET(req: Request) {
     const service = new AppointmentService(db);
 
     const url = new URL(req.url);
-    const branchId = url.searchParams.get('branchId') || undefined;
-    const professionalId = url.searchParams.get('professionalId') || undefined;
-    const patientId = url.searchParams.get('patientId') || undefined;
-    const startDate = url.searchParams.get('startDate') || undefined;
-    const endDate = url.searchParams.get('endDate') || undefined;
+    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const validatedQuery = appointmentQuerySchema.parse(queryParams);
 
-    const appointments = await service.list({
-      branchId,
-      professionalId,
-      patientId,
-      startDate,
-      endDate,
-    });
+    const appointments = await service.list(validatedQuery);
 
     return Response.json(appointments, { status: 200 });
   } catch (error) {
@@ -34,8 +26,10 @@ export async function POST(req: Request) {
     const { db } = await resolveTenantContext(req);
     const service = new AppointmentService(db);
 
-    const body = await req.json();
-    const created = await service.create(body);
+    const rawBody = await req.json();
+    const validatedBody = createAppointmentSchema.parse(rawBody);
+
+    const created = await service.create(validatedBody as any);
 
     return Response.json(created, { status: 201 });
   } catch (error) {

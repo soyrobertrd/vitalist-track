@@ -310,7 +310,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       longitud: longitudNum,
       historia_medica_basica: formValues.historia_medica_basica,
       grado_dificultad: (formDataObj.get("grado_dificultad") as "alto" | "bajo" | "medio") || null,
-      tipo_atencion: formDataObj.get("tipo_atencion") as string || "domiciliario",
+      tipo_atencion: formDataObj.get("tipo_atencion") as string || "ambulatorio",
       profesional_asignado_id: profesionalId === 'sin-asignar' ? null : profesionalId || null,
       es_sospechoso: esSospechoso,
       notificaciones_activas: notificacionesActivas,
@@ -607,7 +607,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
               </div>
               <div className="space-y-1">
                 <Label htmlFor="tipo_atencion" className="text-xs">Tipo de Atención *</Label>
-                <Select name="tipo_atencion" defaultValue={paciente.tipo_atencion || 'domiciliario'}>
+                <Select name="tipo_atencion" defaultValue={paciente.tipo_atencion || 'ambulatorio'}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -658,6 +658,9 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
                 </Select>
               </div>
               <SucursalSelect value={sucursalId} onChange={setSucursalId} />
+              <div className="md:col-span-2">
+                <ClinicaOrigenSelect value={clinicaOrigen} onChange={setClinicaOrigen} />
+              </div>
             </div>
             
             {/* Motivo de inactividad - solo visible cuando status es inactivo */}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { Plus, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { DataTable, ColumnDef, FilterChipConfig } from "@/components/common/DataTable";
 
 interface AdminUsuariosTabProps {
   currentWorkspace: any;
@@ -31,9 +32,14 @@ export function AdminUsuariosTab({
   const handleRoleChange = async (userId: string, newRole: string) => {
     setLoading(true);
     try {
-      const { error } = await supabase
+      const { data: existing } = await supabase
         .from("user_roles")
-        .upsert({ user_id: userId, role: newRole });
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+      const { error } = existing
+        ? await supabase.from("user_roles").update({ role: newRole as any }).eq("user_id", userId)
+        : await supabase.from("user_roles").insert([{ user_id: userId, role: newRole as any }]);
       if (error) throw error;
       toast.success("Rol actualizado");
       onRefreshUsuarios();
@@ -129,42 +135,48 @@ export function AdminUsuariosTab({
           <div className="flex items-center justify-center py-8">
             <p className="text-muted-foreground animate-pulse">Cargando equipo...</p>
           </div>
-        ) : usuarios.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <p>No hay otros usuarios registrados en este centro.</p>
-          </div>
         ) : (
-          <div className="space-y-3">
-            {usuarios.map((usuario) => (
-              <div
-                key={usuario.id}
-                className="flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg bg-card/50 gap-4"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-medium truncate">
-                      {usuario.nombre} {usuario.apellido}
-                    </p>
-                    <Badge
-                      variant={usuario.activo ? "default" : "destructive"}
-                      className="text-[10px]"
-                    >
-                      {usuario.activo ? "Activo" : "Suspendido"}
-                    </Badge>
-                    <Badge variant="outline" className="text-[10px] capitalize">
-                      {usuario.workspace_role}
-                    </Badge>
+          <DataTable
+            data={usuarios}
+            columns={[
+              {
+                key: "nombre",
+                header: "Usuario",
+                sortable: true,
+                render: (u) => (
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-7 w-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold text-xs uppercase shrink-0">
+                      {(u.nombre?.[0] || "") + (u.apellido?.[0] || "")}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium text-foreground truncate">
+                        {u.nombre} {u.apellido}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground truncate">{u.email}</p>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground truncate">{usuario.email}</p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2">
+                ),
+              },
+              {
+                key: "workspace_role",
+                header: "Rol Organización",
+                sortable: true,
+                render: (u) => (
+                  <Badge variant="outline" className="text-[10px] capitalize">
+                    {u.workspace_role || "member"}
+                  </Badge>
+                ),
+              },
+              {
+                key: "rol_clinico",
+                header: "Rol Clínico",
+                render: (u) => (
                   <Select
-                    defaultValue={usuario.user_roles?.[0]?.role || "user"}
-                    onValueChange={(val) => handleRoleChange(usuario.id, val)}
+                    defaultValue={u.user_roles?.[0]?.role || "user"}
+                    onValueChange={(val) => handleRoleChange(u.id, val)}
                     disabled={loading}
                   >
-                    <SelectTrigger className="w-32 h-8 text-xs">
+                    <SelectTrigger className="w-32 h-7 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -175,20 +187,47 @@ export function AdminUsuariosTab({
                       <SelectItem value="recepcion">Recepción</SelectItem>
                     </SelectContent>
                   </Select>
-
-                  <Button
-                    variant={usuario.activo ? "outline" : "default"}
-                    size="sm"
-                    className="h-8 text-xs shadow-none"
-                    onClick={() => handleToggleUserStatus(usuario.id, usuario.activo)}
-                    disabled={loading}
+                ),
+              },
+              {
+                key: "activo",
+                header: "Estado",
+                sortable: true,
+                render: (u) => (
+                  <Badge
+                    variant={u.activo ? "default" : "destructive"}
+                    className="text-[10px]"
                   >
-                    {usuario.activo ? "Suspender" : "Activar"}
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+                    {u.activo ? "Activo" : "Suspendido"}
+                  </Badge>
+                ),
+              },
+            ]}
+            searchPlaceholder="Buscar por nombre o correo..."
+            filterChips={[
+              {
+                key: "activo",
+                label: "Estado",
+                options: [
+                  { label: "Activos", value: "true" },
+                  { label: "Suspendidos", value: "false" },
+                ],
+              },
+            ]}
+            pageSize={10}
+            emptyMessage="No se encontraron miembros de equipo en este centro."
+            actions={(u) => (
+              <Button
+                variant={u.activo ? "outline" : "default"}
+                size="sm"
+                className="h-7 text-xs shadow-none"
+                onClick={() => handleToggleUserStatus(u.id, u.activo)}
+                disabled={loading}
+              >
+                {u.activo ? "Suspender" : "Activar"}
+              </Button>
+            )}
+          />
         )}
       </GlassCard>
 

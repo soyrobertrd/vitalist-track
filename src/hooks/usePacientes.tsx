@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { useVerticalFilter } from "@/hooks/useVerticalFilter";
+import { DEMO_MODE, DEMO_PACIENTES } from "@/lib/mock-live-seed";
 
 export interface Paciente {
   id: string;
@@ -86,7 +87,16 @@ export function usePacientes(includeInactive: boolean = false) {
 
     const { data, error } = await query;
 
-    if (error) {
+    if (DEMO_MODE && (error || !data || data.length === 0)) {
+      // Fallback a los pacientes demo canónicos de la vertical / workspace
+      const currentWsId = currentWorkspace?.id;
+      const demoFiltrados = DEMO_PACIENTES.filter((p) => {
+        if (currentWsId && p.workspace_id === currentWsId) return true;
+        if (verticalActiva && verticalActiva !== "todas" && p.vertical === verticalActiva) return true;
+        return !currentWsId || currentWsId.startsWith("ws-");
+      });
+      setPacientes(demoFiltrados.length > 0 ? (demoFiltrados as any) : (DEMO_PACIENTES as any));
+    } else if (error) {
       toast.error("Error al cargar pacientes");
     } else {
       setPacientes(data || []);

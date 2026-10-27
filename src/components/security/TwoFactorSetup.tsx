@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ShieldCheck, ShieldOff, KeyRound } from "lucide-react";
+import { sanitizeSvg } from "@/lib/sanitize";
 
 interface Factor { id: string; status: string; friendly_name?: string | null; }
 
@@ -103,7 +104,7 @@ export function TwoFactorSetup() {
       {enrollment && (
         <div className="p-4 border rounded-lg space-y-3 bg-muted/30">
           <p className="text-sm">1. Escanea el código QR con tu app de autenticación:</p>
-          <div className="flex justify-center bg-white p-3 rounded-lg" dangerouslySetInnerHTML={{ __html: enrollment.qr }} />
+          <div className="flex justify-center bg-white p-3 rounded-lg" dangerouslySetInnerHTML={{ __html: sanitizeSvg(enrollment.qr) }} />
           <div className="text-xs text-muted-foreground">
             ¿No puedes escanear? Usa la clave: <code className="px-1 py-0.5 bg-background rounded">{enrollment.secret}</code>
           </div>

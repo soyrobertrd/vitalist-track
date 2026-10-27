@@ -73,8 +73,10 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { GlobalSearch } from "@/components/GlobalSearch";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ThemeCustomizer } from "@/components/ThemeCustomizer";
+import { VERTICAL_LABELS, VERTICAL_ICONS, VERTICAL_ROOTS } from "@/config/verticales";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
 import { SucursalSwitcher } from "@/components/SucursalSwitcher";
@@ -118,30 +120,9 @@ const Layout = ({ children }: LayoutProps) => {
   type VTipo = VerticalTipo;
   const va = verticalActiva as VTipo | "todas";
 
-  const verticalLabel: Record<VTipo, string> = {
-    clinica: "Hospital",
-    dental: "Odontología",
-    aesthetic: "Aesthetic Pro",
-    recovery: "Recovery Care",
-    vision: "VisionCare Pro",
-    psicologia: "Psicología / Psiquiatría",
-  };
-  const verticalIcon: Record<VTipo, any> = {
-    clinica: Activity,
-    dental: CircleDot,
-    aesthetic: Sparkles,
-    recovery: BedDouble,
-    vision: Eye,
-    psicologia: Activity,
-  };
-  const verticalRoot: Record<VTipo, string> = {
-    clinica: "/app",
-    dental: "/dental-care",
-    aesthetic: "/aesthetic-pro",
-    recovery: "/recovery-care",
-    vision: "/vision-care",
-    psicologia: "/psicologia-pro",
-  };
+  const verticalLabel = VERTICAL_LABELS;
+  const verticalIcon = VERTICAL_ICONS;
+  const verticalRoot = VERTICAL_ROOTS;
 
   // El "Resumen [Vertical]" se fusiona con el Dashboard; no se muestra
   // como item separado en el menú lateral.
@@ -150,13 +131,13 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/app", icon: LayoutDashboard, label: "Dashboard", moduleKey: "dashboard" },
 
     {
-      path: "/agenda", icon: CalendarDays, label: "Agenda", moduleKey: "agenda",
+      path: "/agenda", icon: CalendarDays, label: "Agenda & Citas", moduleKey: "agenda",
       subItems: [
+        { path: "/app/citas", label: "Citas & Consultas", icon: Calendar },
         { path: "/calendario", label: "Calendario", icon: CalendarDays },
-        { path: "/llamadas", label: "Llamadas", icon: Phone, verticales: ["clinica"] },
-        { path: "/visitas", label: "Visitas", icon: Calendar, verticales: ["clinica", "recovery"] },
-        { path: "/rutas", label: "Rutas Optimizadas", icon: Route, verticales: ["clinica", "recovery"] },
         { path: "/recepcion", label: "Recepción", icon: ScanLine },
+        { path: "/rutas", label: "Rutas Domiciliarias", icon: Route, verticales: ["clinica", "recovery"] },
+        { path: "/llamadas", label: "Llamadas de soporte", icon: Phone, verticales: ["clinica"] },
         { path: "/agenda-universal", label: "Agenda universal" },
       ]
     },
@@ -700,6 +681,7 @@ const Layout = ({ children }: LayoutProps) => {
             <OfflineIndicator />
             <SucursalSwitcher compact />
             <GlobalSearch />
+            <NotificationBell />
             <LanguageSwitcher />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -726,6 +708,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <OfflineIndicator />
                 <SucursalSwitcher />
                 <GlobalSearch />
+                <NotificationBell />
                 <LanguageSwitcher />
               </div>
             </div>

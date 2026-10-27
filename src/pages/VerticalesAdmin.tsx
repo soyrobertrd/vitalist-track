@@ -118,8 +118,11 @@ export default function VerticalesAdmin() {
                       <Icon className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="font-semibold text-sm">{v.label}</p>
-                      <Badge variant="outline" className="text-[10px] mt-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="inline-block h-3 w-3 rounded-full bg-primary shrink-0 shadow-sm" />
+                        <p className="font-semibold text-sm">{v.label}</p>
+                      </div>
+                      <Badge variant="outline" className="text-[10px] mt-0.5 border-primary/30 text-primary">
                         {v.colorName}
                       </Badge>
                     </div>

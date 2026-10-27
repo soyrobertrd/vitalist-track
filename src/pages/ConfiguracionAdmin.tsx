@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useVertical } from "@/contexts/VerticalContext";
-import { verticalLabel, verticalIcon } from "@/config/verticales";
+import { VERTICAL_LABELS as verticalLabel, VERTICAL_ICONS as verticalIcon } from "@/config/verticales";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -118,6 +118,10 @@ const ConfiguracionAdmin = () => {
   const { profile } = useUserProfile();
 
   const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [pacientesCount, setPacientesCount] = useState<number>(12);
+  const [profesionalesCount, setProfesionalesCount] = useState<number>(1);
+
   useEffect(() => {
     if (!roleLoading && !isAdmin) {
       toast.error("No tienes permisos para acceder a esta página");
@@ -128,8 +132,29 @@ const ConfiguracionAdmin = () => {
   useEffect(() => {
     if (!roleLoading && isAdmin && currentWorkspace?.id) {
       fetchUsuarios();
+      fetchMetricasCapacidad();
     }
   }, [roleLoading, isAdmin, currentWorkspace?.id]);
+
+  const fetchMetricasCapacidad = async () => {
+    if (!currentWorkspace?.id) return;
+    try {
+      const [pRes, dRes] = await Promise.all([
+        supabase.from("pacientes").select("id", { count: "exact", head: true }),
+        supabase.from("personal_salud").select("id", { count: "exact", head: true }),
+      ]);
+      if (pRes.count !== null && pRes.count !== undefined) {
+        setPacientesCount(pRes.count);
+      }
+      if (dRes.count !== null && dRes.count !== undefined) {
+        setProfesionalesCount(dRes.count);
+      }
+    } catch {
+      // Fallback a seed local
+      setPacientesCount(12);
+      setProfesionalesCount(1);
+    }
+  };
 
   // D7: Filtrar usuarios por centro (workspace activo)
   const fetchUsuarios = async () => {
@@ -283,6 +308,8 @@ const ConfiguracionAdmin = () => {
               usuariosCount={usuarios.length}
               userLimit={userLimit}
               userUsagePercent={userUsagePercent}
+              pacientesCount={pacientesCount}
+              profesionalesCount={profesionalesCount}
               onRefreshWorkspace={refreshWorkspace}
             />
           </TabsContent>

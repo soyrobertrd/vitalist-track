@@ -55,28 +55,28 @@ import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
 
 const estadoPlanColor: Record<string, string> = {
   borrador: "bg-muted text-muted-foreground",
-  presentado: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  aprobado: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  en_progreso: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  completado: "bg-primary/10 text-primary",
-  cancelado: "bg-destructive/10 text-destructive",
+  presentado: "bg-primary/10 text-primary border-primary/20",
+  aprobado: "bg-success/15 text-success border-success/30",
+  en_progreso: "bg-warning/15 text-warning border-warning/30",
+  completado: "bg-primary/15 text-primary border-primary/30",
+  cancelado: "bg-destructive/15 text-destructive border-destructive/30",
 };
 
 const estadoOrdenColor: Record<string, string> = {
-  solicitada: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  en_proceso: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  lista: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  solicitada: "bg-primary/10 text-primary border-primary/20",
+  en_proceso: "bg-warning/15 text-warning border-warning/30",
+  lista: "bg-success/15 text-success border-success/30",
   entregada: "bg-muted text-muted-foreground",
-  devuelta: "bg-destructive/10 text-destructive",
+  devuelta: "bg-destructive/15 text-destructive border-destructive/30",
 };
 
 const estadoPresupColor: Record<string, string> = {
   borrador: "bg-muted text-muted-foreground",
-  presentado: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  aprobado: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  rechazado: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  en_progreso: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  completado: "bg-primary/10 text-primary",
+  presentado: "bg-primary/10 text-primary border-primary/20",
+  aprobado: "bg-success/15 text-success border-success/30",
+  rechazado: "bg-destructive/15 text-destructive border-destructive/30",
+  en_progreso: "bg-warning/15 text-warning border-warning/30",
+  completado: "bg-primary/15 text-primary border-primary/30",
 };
 
 /**
@@ -218,39 +218,39 @@ function DentalCareProContent() {
 
       {isResumen && (
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        <Card><CardContent className="pt-4 text-center">
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center">
           <ClipboardList className="h-5 w-5 mx-auto mb-1 text-primary" />
-          <p className="text-2xl font-bold">{planesActivos}</p>
+          <p className="text-2xl font-bold tabular-nums">{planesActivos}</p>
           <p className="text-xs text-muted-foreground">Planes activos</p>
         </CardContent></Card>
-        <Card><CardContent className="pt-4 text-center">
-          <p className="text-2xl font-bold">{controles.length}</p>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center">
+          <p className="text-2xl font-bold tabular-nums">{controles.length}</p>
           <p className="text-xs text-muted-foreground">Controles ortodoncia</p>
         </CardContent></Card>
-        <Card><CardContent className="pt-4 text-center">
-          <FlaskConical className="h-5 w-5 mx-auto mb-1 text-purple-500" />
-          <p className="text-2xl font-bold">{ordenesPendientes}</p>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center">
+          <FlaskConical className="h-5 w-5 mx-auto mb-1 text-primary" />
+          <p className="text-2xl font-bold tabular-nums">{ordenesPendientes}</p>
           <p className="text-xs text-muted-foreground">Lab pendiente</p>
         </CardContent></Card>
-        <Card><CardContent className="pt-4 text-center">
-          <Armchair className="h-5 w-5 mx-auto mb-1 text-blue-500" />
-          <p className="text-2xl font-bold">{sillonActivos}</p>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center">
+          <Armchair className="h-5 w-5 mx-auto mb-1 text-primary" />
+          <p className="text-2xl font-bold tabular-nums">{sillonActivos}</p>
           <p className="text-xs text-muted-foreground">Sillones</p>
         </CardContent></Card>
-        <Card><CardContent className="pt-4 text-center">
-          <p className="text-2xl font-bold text-yellow-600">{fmt(cuotasPendientes)}</p>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center">
+          <p className="text-2xl font-bold text-warning tabular-nums">{fmt(cuotasPendientes)}</p>
           <p className="text-xs text-muted-foreground">Cuotas pendientes</p>
         </CardContent></Card>
-        <Card><CardContent className="pt-4 text-center">
-          <Bell className="h-5 w-5 mx-auto mb-1 text-orange-500" />
-          <p className="text-2xl font-bold">{recordPendientes}</p>
+        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center">
+          <Bell className="h-5 w-5 mx-auto mb-1 text-warning" />
+          <p className="text-2xl font-bold tabular-nums">{recordPendientes}</p>
           <p className="text-xs text-muted-foreground">Recordatorios</p>
         </CardContent></Card>
       </div>
       )}
 
       {isResumen && (
-        <Card><CardContent className="py-6 text-sm text-muted-foreground">
+        <Card className="shadow-none border-border"><CardContent className="py-6 text-sm text-muted-foreground">
           Selecciona una sección desde el menú lateral (<strong>Odontología</strong>): Planes, Ortodoncia, Laboratorio dental, Sillones, Presupuestos, Comisiones, Fidelización.
         </CardContent></Card>
       )}

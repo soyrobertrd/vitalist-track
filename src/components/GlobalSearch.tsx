@@ -1,5 +1,5 @@
-import { useEffect, useRef, useCallback } from "react";
-import { Search, X, Loader2, User, Calendar, Phone, Stethoscope, MapPin } from "lucide-react";
+import { useEffect, useCallback } from "react";
+import { Search, X, Loader2, User, Calendar, Phone, Stethoscope, MapPin, Zap, LayoutGrid } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,14 +39,18 @@ export function GlobalSearch() {
 
   const getIcon = (type: SearchResult["type"]) => {
     switch (type) {
+      case "accion":
+        return <Zap className="h-4 w-4 text-warning" />;
+      case "seccion":
+        return <LayoutGrid className="h-4 w-4 text-primary" />;
       case "paciente":
         return <User className="h-4 w-4 text-primary" />;
       case "profesional":
-        return <Stethoscope className="h-4 w-4 text-emerald-500" />;
+        return <Stethoscope className="h-4 w-4 text-success" />;
       case "visita":
-        return <Calendar className="h-4 w-4 text-blue-500" />;
+        return <Calendar className="h-4 w-4 text-primary" />;
       case "llamada":
-        return <Phone className="h-4 w-4 text-amber-500" />;
+        return <Phone className="h-4 w-4 text-warning" />;
       default:
         return <Search className="h-4 w-4" />;
     }
@@ -54,10 +58,12 @@ export function GlobalSearch() {
 
   const getTypeLabel = (type: SearchResult["type"]) => {
     switch (type) {
-      case "paciente": return "Paciente";
-      case "profesional": return "Profesional";
-      case "visita": return "Visita";
-      case "llamada": return "Llamada";
+      case "accion": return "Acciones Rápidas";
+      case "seccion": return "Módulos y Secciones";
+      case "paciente": return "Pacientes";
+      case "profesional": return "Profesionales Médicos";
+      case "visita": return "Citas y Consultas";
+      case "llamada": return "Llamadas";
       default: return type;
     }
   };
@@ -67,12 +73,13 @@ export function GlobalSearch() {
     
     if (type === 'visita' || type === 'llamada') {
       const colors: Record<string, string> = {
-        pendiente: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-        agendada: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-        realizada: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+        pendiente: "bg-warning/15 text-warning border-warning/30",
+        agendada: "bg-primary/10 text-primary border-primary/20",
+        realizada: "bg-success/15 text-success border-success/30",
+        confirmada: "bg-success/15 text-success border-success/30",
       };
       return (
-        <Badge variant="secondary" className={cn("text-xs capitalize", colors[metadata] || "")}>
+        <Badge variant="secondary" className={cn("text-xs capitalize font-normal border", colors[metadata] || "")}>
           {metadata}
         </Badge>
       );
@@ -96,7 +103,7 @@ export function GlobalSearch() {
     return acc;
   }, {} as Record<string, SearchResult[]>);
 
-  const typeOrder: SearchResult["type"][] = ['paciente', 'profesional', 'visita', 'llamada'];
+  const typeOrder: SearchResult["type"][] = ['accion', 'seccion', 'paciente', 'profesional', 'visita', 'llamada'];
 
   return (
     <>

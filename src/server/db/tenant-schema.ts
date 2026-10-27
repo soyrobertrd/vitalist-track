@@ -181,3 +181,15 @@ export const stockMovements = sqliteTable('stock_movements', {
   actorId: text('actor_id').notNull(),
   createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
 });
+
+// 12. Audit Logs (Trazabilidad de seguridad y accesos clínicos - HIPAA / Ley 172-13)
+export const auditLogs = sqliteTable('audit_logs', {
+  id: text('id').primaryKey(),
+  actorId: text('actor_id').notNull(),
+  action: text('action').notNull(), // 'create', 'update', 'delete', 'export', 'access'
+  resourceType: text('resource_type').notNull(), // 'patient', 'appointment', 'medical_record'
+  resourceId: text('resource_id').notNull(),
+  ipAddress: text('ip_address'),
+  payloadJson: text('payload_json'),
+  timestamp: text('timestamp').notNull().$defaultFn(() => new Date().toISOString()),
+});

@@ -7,17 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { WorkspaceLocaleEditor } from "@/components/configuracion/WorkspaceLocaleEditor";
+import { WorkspaceLocaleEditor } from "@/components/WorkspaceLocaleEditor";
 import { Sparkles, Building2, Plus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { PLANES_SISTEMA } from "@/config/planes";
+import { CANONICAL_PLANES } from "@/config/planes";
 
 interface AdminGeneralTabProps {
   currentWorkspace: any;
   usuariosCount: number;
   userLimit: number;
   userUsagePercent: number;
+  pacientesCount?: number;
+  profesionalesCount?: number;
   onRefreshWorkspace?: () => void;
 }
 
@@ -26,6 +28,8 @@ export function AdminGeneralTab({
   usuariosCount,
   userLimit,
   userUsagePercent,
+  pacientesCount = 12,
+  profesionalesCount = 1,
   onRefreshWorkspace,
 }: AdminGeneralTabProps) {
   const navigate = useNavigate();
@@ -114,51 +118,93 @@ export function AdminGeneralTab({
   };
 
   const currentPlan =
-    PLANES_SISTEMA[currentWorkspace?.plan_codigo as keyof typeof PLANES_SISTEMA] ||
-    PLANES_SISTEMA.solo;
+    CANONICAL_PLANES.find((p) => p.codigo === currentWorkspace?.plan_codigo) ?? CANONICAL_PLANES[0];
 
   const esProConsultorios =
     currentWorkspace?.plan_codigo === "pro" ||
     currentWorkspace?.plan_codigo === "clinica" ||
     currentWorkspace?.plan_codigo === "enterprise";
 
+  // Cuotas y porcentajes
+  // null = ilimitado
+  const pacienteLimit = currentPlan.limite_pacientes ?? 999999;
+  const isPacientesIlimitados = pacienteLimit >= 999999;
+  const pacientesPercent = isPacientesIlimitados
+    ? 0
+    : Math.min(100, Math.round((pacientesCount / pacienteLimit) * 100));
+
+  const profLimit = currentPlan.limite_profesionales ?? 999999;
+  const isProfIlimitados = profLimit >= 999999;
+  const profPercent = isProfIlimitados
+    ? 0
+    : Math.min(100, Math.round((profesionalesCount / profLimit) * 100));
+
+  const isAnyHighUsage = userUsagePercent >= 80 || pacientesPercent >= 80 || profPercent >= 80;
+
   return (
     <div className="space-y-6">
-      {/* Tarjeta Plan y Uso */}
-      <GlassCard className="p-6 space-y-4 shadow-none">
+      {/* Tarjeta Plan y Uso (Fase 5 - punto 4) */}
+      <GlassCard className="p-6 space-y-5 shadow-none border-border">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h3 className="text-lg font-semibold tracking-tight">Capacidad y Cuota del Plan</h3>
-            <p className="text-xs text-muted-foreground">
-              Límites contratados para {currentWorkspace?.nombre || "tu centro"}
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-semibold tracking-tight">Capacidad y Cuota del Plan</h3>
+              <Badge variant="outline" className="capitalize text-xs font-semibold border-primary/30 text-primary">
+                {currentPlan?.nombre || "Básico"}
+              </Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Límites contratados para {currentWorkspace?.nombre || "tu centro"} (USD ${currentPlan?.precio_mensual_usd ?? 15}/mes)
             </p>
           </div>
-          {userUsagePercent >= 80 && (
-            <Button size="sm" onClick={() => navigate("/app/planes")} className="gap-1.5">
+          {isAnyHighUsage && (
+            <Button size="sm" onClick={() => navigate("/app/planes")} className="gap-1.5 shadow-none">
               <Sparkles className="h-4 w-4" />
               Mejorar Plan
             </Button>
           )}
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2 p-3 border rounded-lg bg-card/50">
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          {/* 1. Pacientes Activos */}
+          <div className="space-y-2 p-3.5 border rounded-lg bg-card">
             <div className="flex justify-between text-xs font-medium">
-              <span>Usuarios del Equipo</span>
-              <span>
-                {usuariosCount} de {userLimit} ({userUsagePercent}%)
+              <span>Pacientes Activos</span>
+              <span className="tabular-nums font-mono">
+                {isPacientesIlimitados ? `${pacientesCount} (Ilimitados)` : `${pacientesCount} / ${pacienteLimit}`}
+              </span>
+            </div>
+            <Progress value={pacientesPercent} className="h-2" />
+            <p className="text-[11px] text-muted-foreground tabular-nums">
+              {isPacientesIlimitados ? "Capacidad ilimitada" : `${pacientesPercent}% de cuota mensual`}
+            </p>
+          </div>
+
+          {/* 2. Profesionales Médicos */}
+          <div className="space-y-2 p-3.5 border rounded-lg bg-card">
+            <div className="flex justify-between text-xs font-medium">
+              <span>Profesionales Médicos</span>
+              <span className="tabular-nums font-mono">
+                {isProfIlimitados ? `${profesionalesCount} (Ilimitados)` : `${profesionalesCount} / ${profLimit}`}
+              </span>
+            </div>
+            <Progress value={profPercent} className="h-2" />
+            <p className="text-[11px] text-muted-foreground tabular-nums">
+              {isProfIlimitados ? "Capacidad ilimitada" : `${profPercent}% de cuota de doctores`}
+            </p>
+          </div>
+
+          {/* 3. Usuarios de Equipo */}
+          <div className="space-y-2 p-3.5 border rounded-lg bg-card">
+            <div className="flex justify-between text-xs font-medium">
+              <span>Usuarios del Sistema</span>
+              <span className="tabular-nums font-mono">
+                {userLimit >= 999999 ? `${usuariosCount} (Ilimitados)` : `${usuariosCount} / ${userLimit}`}
               </span>
             </div>
             <Progress value={userUsagePercent} className="h-2" />
-          </div>
-          <div className="space-y-2 p-3 border rounded-lg bg-card/50">
-            <div className="flex justify-between text-xs font-medium">
-              <span>Nivel de Suscripción</span>
-              <Badge variant="outline" className="capitalize text-[11px]">
-                {currentWorkspace?.plan_codigo || "solo"}
-              </Badge>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Tarifa: USD ${currentPlan?.precio_mensual_usd ?? 15} / mes
+            <p className="text-[11px] text-muted-foreground tabular-nums">
+              {userLimit >= 999999 ? "Acceso multi-usuario ilimitado" : `${userUsagePercent}% de cuentas activas`}
             </p>
           </div>
         </div>

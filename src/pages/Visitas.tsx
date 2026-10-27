@@ -42,6 +42,7 @@ import { RegistrarVisitaNoAgendadaDialog } from "@/components/visitas/RegistrarV
 import type { VideoProveedor } from "@/lib/videoLinks";
 
 import type { Paciente, Personal } from "@/types/db";
+import { DEMO_MODE, DEMO_CITAS, DEMO_PACIENTES, DEMO_DOCTORES } from "@/lib/mock-live-seed";
 
 interface Visita {
   id: string;
@@ -142,9 +143,11 @@ const Visitas = () => {
       personalQuery,
     ]);
 
-    if (visitasRes.data) {
+    let citasFinales: any[] = [];
+
+    if (visitasRes.data && visitasRes.data.length > 0) {
       // Fetch additional professionals for each visit
-      const visitasConProfesionales = await Promise.all(
+      citasFinales = await Promise.all(
         visitasRes.data.map(async (visita: any) => {
           const { data: profesionales } = await supabase
             .from("visitas_profesionales")
@@ -157,47 +160,45 @@ const Visitas = () => {
           };
         })
       );
-      
-      setVisitas(visitasConProfesionales as any);
-      
-      // Calculate stats for last 30 days
-      const visitasUltimos30Dias = visitasConProfesionales.filter((v: any) => 
-        new Date(v.fecha_hora_visita) >= thirtyDaysAgo
-      );
-      
-      const total = visitasUltimos30Dias.length;
-      const pendientes = visitasUltimos30Dias.filter((v: any) => v.estado === "pendiente").length;
-      const realizadas = visitasUltimos30Dias.filter((v: any) => v.estado === "realizada").length;
-      const canceladas = visitasUltimos30Dias.filter((v: any) => v.estado === "cancelada").length;
-      
-      setStats({
-        totalVisitas: total,
-        pendientes,
-        realizadas,
-        canceladas,
+    } else if (DEMO_MODE) {
+      // Fallback para pruebas en vivo multi-vertical
+      const demoCitasFiltradas = DEMO_CITAS.filter((c) => {
+        if (wsId && c.workspace_id === wsId) return true;
+        return !wsId || wsId.startsWith("ws-");
       });
+      citasFinales = demoCitasFiltradas.length > 0 ? demoCitasFiltradas : DEMO_CITAS;
     }
-    if (pacientesRes.data) {
+
+    setVisitas(citasFinales as any);
+
+    // Calculate stats
+    const total = citasFinales.length;
+    const pendientes = citasFinales.filter((v: any) => v.estado === "pendiente").length;
+    const realizadas = citasFinales.filter((v: any) => v.estado === "realizada" || v.estado === "confirmada").length;
+    const canceladas = citasFinales.filter((v: any) => v.estado === "cancelada").length;
+
+    setStats({
+      totalVisitas: total,
+      pendientes,
+      realizadas,
+      canceladas,
+    });
+
+    if (pacientesRes.data && pacientesRes.data.length > 0) {
       setPacientes(pacientesRes.data);
-      
-      // Calcular pacientes sin visitas agendadas
-      if (visitasRes.data) {
-        const pacientesConVisita = new Set(
-          (visitasRes.data as any[])
-            .filter(v => v.estado === 'pendiente')
-            .map(v => v.paciente_id)
-        );
-        const sinVisita = pacientesRes.data.filter(p => !pacientesConVisita.has(p.id));
-        setPacientesSinVisita(sinVisita.length);
-        setListaPacientesSinVisita(sinVisita);
-      }
+    } else if (DEMO_MODE) {
+      const demoPxFiltrados = DEMO_PACIENTES.filter((p) => !wsId || p.workspace_id === wsId);
+      setPacientes((demoPxFiltrados.length > 0 ? demoPxFiltrados : DEMO_PACIENTES) as any);
     }
-    if (personalRes.data) {
-      // Filter out admins from personal list
+
+    if (personalRes.data && personalRes.data.length > 0) {
       const filteredPersonal = (personalRes.data || []).filter(
         (p: any) => p.especialidad && !p.especialidad.toLowerCase().includes('admin')
       );
       setPersonal(filteredPersonal);
+    } else if (DEMO_MODE) {
+      const demoDocFiltrados = DEMO_DOCTORES.filter((d) => !wsId || d.workspace_id === wsId);
+      setPersonal((demoDocFiltrados.length > 0 ? demoDocFiltrados : DEMO_DOCTORES) as any);
     }
   };
 
@@ -469,10 +470,12 @@ const Visitas = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header - Solo título y descripción */}
+      {/* Header - Citas y Consultas */}
       <div>
-        <h1 className="text-3xl font-bold">Control de Visitas</h1>
-        <p className="text-muted-foreground">Citas ambulatorias y domiciliarias</p>
+        <h1 className="text-3xl font-bold">Gestión de Citas y Consultas</h1>
+        <p className="text-muted-foreground">
+          Optimización de agenda, control de asistencia y reducción de inasistencias/cancelaciones (Ambulatorias por defecto y Domiciliarias).
+        </p>
       </div>
 
       {/* Botones de acción principales */}
@@ -537,18 +540,18 @@ const Visitas = () => {
         </Alert>
       )}
 
-      {/* Stats Cards - Hidden on mobile */}
+      {/* Stats Cards - Modo B Plano sin sombras */}
       <div className="hidden md:grid gap-4 grid-cols-1 md:grid-cols-4">
-        <GlassCard className="p-4">
+        <GlassCard className="p-4 shadow-none border border-border/60">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Visitas</p>
+              <p className="text-sm text-muted-foreground">Total Citas</p>
               <p className="text-2xl font-bold">{stats.totalVisitas}</p>
             </div>
             <Activity className="h-8 w-8 text-primary" />
           </div>
         </GlassCard>
-        <GlassCard className="p-4">
+        <GlassCard className="p-4 shadow-none border border-border/60">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Pendientes</p>
@@ -557,19 +560,19 @@ const Visitas = () => {
             <Clock className="h-8 w-8 text-orange-600" />
           </div>
         </GlassCard>
-        <GlassCard className="p-4">
+        <GlassCard className="p-4 shadow-none border border-border/60">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Realizadas</p>
+              <p className="text-sm text-muted-foreground">Confirmadas / Atendidas</p>
               <p className="text-2xl font-bold text-green-600">{stats.realizadas}</p>
             </div>
             <TrendingUp className="h-8 w-8 text-green-600" />
           </div>
         </GlassCard>
-        <GlassCard className="p-4">
+        <GlassCard className="p-4 shadow-none border border-border/60">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Canceladas</p>
+              <p className="text-sm text-muted-foreground">Canceladas (No-Show)</p>
               <p className="text-2xl font-bold text-red-600">{stats.canceladas}</p>
             </div>
             <Badge variant="destructive">{stats.canceladas}</Badge>
@@ -678,8 +681,17 @@ const Visitas = () => {
             ))}
           </div>
           {visitasAgendadas.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
-              No hay visitas agendadas
+            <div className="text-center py-12 px-4 border rounded-xl border-dashed bg-card/40 space-y-3">
+              <Calendar className="h-10 w-10 mx-auto text-muted-foreground/60" />
+              <div className="space-y-1">
+                <p className="font-semibold text-sm">No hay citas programadas en este momento</p>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                  Comienza agendando consultas ambulatorias o visitas domiciliarias para optimizar la agenda médica.
+                </p>
+              </div>
+              <Button size="sm" onClick={() => setOpen(true)} className="gap-1.5">
+                <Plus className="h-4 w-4" /> Programar Cita
+              </Button>
             </div>
           )}
         </TabsContent>
@@ -799,6 +811,15 @@ const Visitas = () => {
         fecha={selectedFechaHora ? new Date(selectedFechaHora) : new Date()}
         onSelect={(profId) => setSelectedProfesionalId(profId)}
       />
+
+      {/* Botón flotante móvil (FAB) para agendar cita rápida (Fase 9 - punto 5) */}
+      <Button
+        onClick={() => setOpen(true)}
+        className="sm:hidden fixed bottom-6 right-6 z-40 rounded-full h-14 w-14 p-0 shadow-lg bg-primary text-primary-foreground hover:bg-primary/90 flex items-center justify-center"
+        aria-label="Nueva cita médica"
+      >
+        <Plus className="h-6 w-6" />
+      </Button>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace, type Plan } from "@/contexts/WorkspaceContext";
 import { CANONICAL_PLANES, TRIAL_DAYS } from "@/config/planes";
 import { ClinicDomainManager } from "@/components/workspace/ClinicDomainManager";
+import { UsoPruebaWidget } from "@/components/planes/UsoPruebaWidget";
 import { toast } from "sonner";
 
 const FEATURE_LABELS: Record<string, string> = {
@@ -111,15 +112,9 @@ export default function Planes() {
         )}
       </div>
 
-      {/* Banner 30 días de prueba y degradación automática */}
-      <div className="max-w-4xl mx-auto rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-start gap-3 text-left">
-        <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-        <div className="text-sm">
-          <p className="font-semibold text-foreground">30 días de prueba gratuita en todos los planes</p>
-          <p className="text-muted-foreground mt-0.5">
-            Explora todas las funcionalidades sin compromiso. Si pasados los 30 días decides no activar tu suscripción, tu clínica pasará automáticamente al plan gratuito de contingencia para que nunca pierdas el acceso a tus historiales ni a tus pacientes.
-          </p>
-        </div>
+      {/* Resumen de uso durante la prueba y degradación automática (Fase 8.8) */}
+      <div className="max-w-4xl mx-auto">
+        <UsoPruebaWidget pacientesCount={7} citasCount={8} />
       </div>
 
       {/* Toggle mensual / anual */}
