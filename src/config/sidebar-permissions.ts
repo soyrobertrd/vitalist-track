@@ -66,6 +66,11 @@ export const SIDEBAR_RULES: Record<string, SidebarModulePermission> = {
     minPlan: "pro",
     allowedVerticales: ["psicologia"],
   },
+  veterinaria_fichas: {
+    moduleKey: "veterinaria_fichas",
+    minPlan: "free",
+    allowedVerticales: ["veterinaria"],
+  },
   recovery_planes: {
     moduleKey: "recovery_planes",
     minPlan: "pro",

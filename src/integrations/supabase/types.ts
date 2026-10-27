@@ -24602,6 +24602,7 @@ export type Database = {
         | "recovery"
         | "vision"
         | "psicologia"
+        | "veterinaria"
       wf_evento:
         | "cita_no_confirmada"
         | "cita_proxima_24h"
@@ -24950,6 +24951,7 @@ export const Constants = {
         "recovery",
         "vision",
         "psicologia",
+        "veterinaria",
       ],
       wf_evento: [
         "cita_no_confirmada",

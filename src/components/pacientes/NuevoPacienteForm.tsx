@@ -365,467 +365,491 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       />
       
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Navegación por pasos (Fase 9 - Punto 2) */}
-        <div className="flex items-center justify-between border-b pb-3 text-xs">
-          {[
-            { id: 1, title: "1. Identificación y Contacto" },
-            { id: 2, title: "2. Ubicación" },
-            { id: 3, title: "3. Atención y Consentimiento" },
-          ].map((step) => (
-            <button
-              key={step.id}
-              type="button"
-              onClick={() => setCurrentStep(step.id)}
-              className={`font-medium pb-1.5 transition-colors border-b-2 -mb-[13px] ${
-                currentStep === step.id
-                  ? "border-primary text-primary font-semibold"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {step.title}
-            </button>
-          ))}
+        {/* Navegación por pasos (5 Pasos Clínicos) */}
+        <div className="border-b pb-3">
+          <div className="flex items-center justify-between text-xs mb-2 text-muted-foreground font-medium">
+            <span>Registro de Paciente</span>
+            <span className="tabular-nums font-semibold text-foreground">Paso {currentStep} de 5</span>
+          </div>
+          <div className="grid grid-cols-5 gap-1 text-xs">
+            {[
+              { id: 1, title: "1. Identificación" },
+              { id: 2, title: "2. Contacto" },
+              { id: 3, title: "3. Ubicación" },
+              { id: 4, title: "4. Clínica" },
+              { id: 5, title: "5. Consentimiento" },
+            ].map((step) => (
+              <button
+                key={step.id}
+                type="button"
+                onClick={() => setCurrentStep(step.id)}
+                className={`text-center py-1.5 px-1 truncate rounded border transition-colors ${
+                  currentStep === step.id
+                    ? "border-primary bg-primary/10 text-primary font-semibold"
+                    : currentStep > step.id
+                    ? "border-border bg-muted/40 text-foreground"
+                    : "border-transparent text-muted-foreground hover:bg-muted/30 hover:text-foreground"
+                }`}
+                title={step.title}
+              >
+                {step.title}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Paso 1: Identificación, Contacto y Cuidador */}
+        {/* Paso 1: Identificación y Datos Personales */}
         <div className={currentStep === 1 ? "space-y-6" : "hidden"}>
-        {/* Identification Section */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Datos de Identificación</h3>
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Datos de Identificación</h3>
 
-          {/* Nationality + document type */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="nacionalidad" className="text-xs">Nacionalidad *</Label>
-              <Select
-                value={formData.nacionalidad}
-                onValueChange={(v) => {
-                  setFormData(prev => ({
-                    ...prev,
-                    nacionalidad: v,
-                    tipo_documento: v === "Dominicana" ? "cedula" : "pasaporte",
-                    cedula: v === "Dominicana" ? prev.cedula : "",
-                    numero_documento: v === "Dominicana" ? "" : prev.numero_documento,
-                  }));
-                }}
-              >
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Dominicana">Dominicana</SelectItem>
-                  <SelectItem value="Haitiana">Haitiana</SelectItem>
-                  <SelectItem value="Venezolana">Venezolana</SelectItem>
-                  <SelectItem value="Colombiana">Colombiana</SelectItem>
-                  <SelectItem value="Estadounidense">Estadounidense</SelectItem>
-                  <SelectItem value="Española">Española</SelectItem>
-                  <SelectItem value="Otra">Otra</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {!isDominicano && (
+            {/* Nationality + document type */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1">
-                <Label htmlFor="tipo_documento" className="text-xs">Tipo de documento *</Label>
+                <Label htmlFor="nacionalidad" className="text-xs">Nacionalidad *</Label>
                 <Select
-                  value={formData.tipo_documento}
-                  onValueChange={(v) => setFormData(prev => ({ ...prev, tipo_documento: v }))}
+                  value={formData.nacionalidad}
+                  onValueChange={(v) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      nacionalidad: v,
+                      tipo_documento: v === "Dominicana" ? "cedula" : "pasaporte",
+                      cedula: v === "Dominicana" ? prev.cedula : "",
+                      numero_documento: v === "Dominicana" ? "" : prev.numero_documento,
+                    }));
+                  }}
                 >
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pasaporte">Pasaporte</SelectItem>
-                    <SelectItem value="id_extranjero">ID extranjero</SelectItem>
-                    <SelectItem value="licencia">Licencia de conducir</SelectItem>
+                    <SelectItem value="Dominicana">Dominicana</SelectItem>
+                    <SelectItem value="Haitiana">Haitiana</SelectItem>
+                    <SelectItem value="Venezolana">Venezolana</SelectItem>
+                    <SelectItem value="Colombiana">Colombiana</SelectItem>
+                    <SelectItem value="Estadounidense">Estadounidense</SelectItem>
+                    <SelectItem value="Española">Española</SelectItem>
+                    <SelectItem value="Otra">Otra</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-            )}
-          </div>
+              {!isDominicano && (
+                <div className="space-y-1">
+                  <Label htmlFor="tipo_documento" className="text-xs">Tipo de documento *</Label>
+                  <Select
+                    value={formData.tipo_documento}
+                    onValueChange={(v) => setFormData(prev => ({ ...prev, tipo_documento: v }))}
+                  >
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pasaporte">Pasaporte</SelectItem>
+                      <SelectItem value="id_extranjero">ID extranjero</SelectItem>
+                      <SelectItem value="licencia">Licencia de conducir</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {isDominicano ? (
-              <div className="space-y-1">
-                <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
-                <div className="relative">
-                  <Input
-                    id="cedula"
-                    name="cedula"
-                    required
-                    maxLength={11}
-                    pattern="\d{11}"
-                    value={formData.cedula}
-                    onBlur={(e) => handleCedulaBlur(e.target.value)}
-                    disabled={loadingCedula}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, '');
-                      handleInputChange("cedula", value);
-                    }}
-                    className="pr-8"
-                  />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {isDominicano ? (
+                <div className="space-y-1">
+                  <Label htmlFor="cedula" className="text-xs">Cédula *</Label>
+                  <div className="relative">
+                    <Input
+                      id="cedula"
+                      name="cedula"
+                      required
+                      maxLength={11}
+                      pattern="\d{11}"
+                      value={formData.cedula}
+                      onBlur={(e) => handleCedulaBlur(e.target.value)}
+                      disabled={loadingCedula}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '');
+                        handleInputChange("cedula", value);
+                      }}
+                      className="pr-8"
+                    />
+                    {loadingCedula && (
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      </div>
+                    )}
+                    {!loadingCedula && cedulaData && (
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2" title="Validado con JCE">
+                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                      </div>
+                    )}
+                  </div>
                   {loadingCedula && (
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <div className="flex items-center gap-2 text-xs text-primary">
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Consultando datos de la JCE...
                     </div>
                   )}
-                  {!loadingCedula && cedulaData && (
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2" title="Validado con JCE">
-                      <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  {cedulaData && !loadingCedula && (
+                    <div className="flex items-center gap-2 text-xs text-green-600">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Datos cargados (puede editarlos manualmente)
                     </div>
                   )}
                 </div>
-                {loadingCedula && (
-                  <div className="flex items-center gap-2 text-xs text-primary">
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                    Consultando datos de la JCE...
-                  </div>
-                )}
-                {cedulaData && !loadingCedula && (
-                  <div className="flex items-center gap-2 text-xs text-green-600">
-                    <CheckCircle2 className="h-3 w-3" />
-                    Datos cargados (puede editarlos manualmente)
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-1">
-                <Label htmlFor="numero_documento" className="text-xs">Número de documento *</Label>
+              ) : (
+                <div className="space-y-1">
+                  <Label htmlFor="numero_documento" className="text-xs">Número de documento *</Label>
+                  <Input
+                    id="numero_documento"
+                    name="numero_documento"
+                    required
+                    maxLength={50}
+                    value={formData.numero_documento}
+                    onChange={(e) => handleInputChange("numero_documento", e.target.value)}
+                    placeholder={formData.tipo_documento === "pasaporte" ? "AB1234567" : "Número del documento"}
+                  />
+                </div>
+              )}
+              <div className="md:col-span-2 space-y-1">
+                <Label htmlFor="nombre" className="text-xs">Nombre *</Label>
                 <Input
-                  id="numero_documento"
-                  name="numero_documento"
+                  id="nombre"
+                  name="nombre"
                   required
-                  maxLength={50}
-                  value={formData.numero_documento}
-                  onChange={(e) => handleInputChange("numero_documento", e.target.value)}
-                  placeholder={formData.tipo_documento === "pasaporte" ? "AB1234567" : "Número del documento"}
+                  value={formData.nombre}
+                  onChange={(e) => handleInputChange("nombre", e.target.value)}
                 />
               </div>
-            )}
-            <div className="md:col-span-2 space-y-1">
-              <Label htmlFor="nombre" className="text-xs">Nombre *</Label>
-              <Input
-                id="nombre"
-                name="nombre"
-                required
-                value={formData.nombre}
-                onChange={(e) => handleInputChange("nombre", e.target.value)}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="apellido" className="text-xs">Apellido *</Label>
-              <Input
-                id="apellido"
-                name="apellido"
-                required
-                value={formData.apellido}
-                onChange={(e) => handleInputChange("apellido", e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="sexo" className="text-xs">Sexo</Label>
-              <Select name="sexo" value={selectedSexo} onValueChange={setSelectedSexo}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="M">Masculino</SelectItem>
-                  <SelectItem value="F">Femenino</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="fecha_nacimiento" className="text-xs">Fecha Nacimiento</Label>
-              <Input
-                id="fecha_nacimiento"
-                name="fecha_nacimiento"
-                type="date"
-                value={formData.fecha_nacimiento}
-                onChange={(e) => handleInputChange("fecha_nacimiento", e.target.value)}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs">Edad</Label>
-              <Input
-                readOnly
-                className="bg-muted"
-                value={formData.fecha_nacimiento ? `${differenceInYears(new Date(), new Date(formData.fecha_nacimiento + 'T12:00:00'))} años` : ''}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Contact Section */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Contacto del Paciente</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="contacto_px" className="text-xs">Teléfono</Label>
-              <Input 
-                id="contacto_px" 
-                name="contacto_px" 
-                type="tel"
-                placeholder="829-123-1234"
-                maxLength={12}
-                value={formData.contacto_px}
-                onChange={(e) => {
-                  const formatted = handlePhoneInput(e.target.value);
-                  handleInputChange("contacto_px", formatted);
-                }}
-              />
-            </div>
-            <div className="flex items-end pb-1">
-              <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer text-xs">
-                <Input id="whatsapp_px" name="whatsapp_px" type="checkbox" className="w-4 h-4" />
-                <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
-                WhatsApp
-              </Label>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="numero_principal" className="text-xs">Número Principal</Label>
-              <Select name="numero_principal" defaultValue="paciente">
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="paciente">Paciente</SelectItem>
-                  <SelectItem value="cuidador">Cuidador</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="email_px" className="text-xs">Correo Electrónico</Label>
-            <Input 
-              id="email_px" 
-              name="email_px" 
-              type="email" 
-              placeholder="paciente@ejemplo.com"
-              value={formData.email_px}
-              onChange={(e) => handleInputChange("email_px", e.target.value)}
-            />
-          </div>
-        </div>
-
-        {/* Caregiver Section */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Cuidador</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="md:col-span-2 space-y-1">
-              <Label htmlFor="nombre_cuidador" className="text-xs">Nombre del Cuidador</Label>
-              <Input id="nombre_cuidador" name="nombre_cuidador" maxLength={200} />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="parentesco_cuidador" className="text-xs">Parentesco</Label>
-              <Select name="parentesco_cuidador">
-                <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Hijo/a">Hijo/a</SelectItem>
-                  <SelectItem value="Esposo/a">Esposo/a</SelectItem>
-                  <SelectItem value="Madre">Madre</SelectItem>
-                  <SelectItem value="Padre">Padre</SelectItem>
-                  <SelectItem value="Hermano/a">Hermano/a</SelectItem>
-                  <SelectItem value="Nieto/a">Nieto/a</SelectItem>
-                  <SelectItem value="Otro">Otro</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="contacto_cuidador" className="text-xs">Teléfono</Label>
-              <Input 
-                id="contacto_cuidador" 
-                name="contacto_cuidador" 
-                type="tel"
-                placeholder="829-123-1234"
-                maxLength={12}
-                value={formData.contacto_cuidador}
-                onChange={(e) => {
-                  const formatted = handlePhoneInput(e.target.value);
-                  handleInputChange("contacto_cuidador", formatted);
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer text-xs">
-              <Input id="whatsapp_cuidador" name="whatsapp_cuidador" type="checkbox" className="w-4 h-4" />
-              <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
-              WhatsApp
-            </Label>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="email_cuidador" className="text-xs">Correo del Cuidador</Label>
-            <Input 
-              id="email_cuidador" 
-              name="email_cuidador" 
-              type="email" 
-              placeholder="cuidador@ejemplo.com"
-              value={formData.email_cuidador}
-              onChange={(e) => handleInputChange("email_cuidador", e.target.value)}
-            />
-          </div>
-        </div>
-        </div>
-
-        {/* Paso 2: Ubicación y Dirección */}
-        <div className={currentStep === 2 ? "space-y-6" : "hidden"}>
-        {/* Address Section */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Dirección</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="zona" className="text-xs">Municipio (zona)</Label>
-              <ZonaSelect
-                value={selectedZona}
-                onValueChange={(value) => {
-                  setSelectedZona(value);
-                  setSelectedBarrio("");
-                }}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="barrio" className="text-xs">Barrio</Label>
-              <BarrioCombobox zona={selectedZona} value={selectedBarrio} onChange={setSelectedBarrio} />
-              <input type="hidden" name="barrio" value={selectedBarrio} />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="direccion_domicilio" className="text-xs">Dirección Completa</Label>
-            <Textarea id="direccion_domicilio" name="direccion_domicilio" maxLength={500} className="min-h-[60px]" placeholder="Calle, número, sector, referencias..." />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="latitud" className="text-xs">Latitud (coordenada)</Label>
-              <Input 
-                id="latitud" 
-                name="latitud" 
-                type="number" 
-                step="0.00000001"
-                placeholder="ej: 18.4861"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="longitud" className="text-xs">Longitud (coordenada)</Label>
-              <Input 
-                id="longitud" 
-                name="longitud" 
-                type="number" 
-                step="0.00000001"
-                placeholder="ej: -69.9312"
-              />
-            </div>
-          </div>
-        </div>
-        </div>
-
-        {/* Paso 3: Información Médica, Medicamentos y Consentimiento */}
-        <div className={currentStep === 3 ? "space-y-6" : "hidden"}>
-        {/* Medical Info Section */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Información Médica</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="grado_dificultad" className="text-xs">Grado de Dificultad *</Label>
-              <Select name="grado_dificultad" defaultValue="medio">
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bajo">Bajo</SelectItem>
-                  <SelectItem value="medio">Medio</SelectItem>
-                  <SelectItem value="alto">Alto</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="tipo_atencion" className="text-xs">Tipo de Atención *</Label>
-              <Select name="tipo_atencion" defaultValue="ambulatorio">
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ambulatorio">Ambulatorio</SelectItem>
-                  <SelectItem value="domiciliario">Domiciliario</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="profesional_asignado_id" className="text-xs">Profesional Asignado</Label>
-              <Select name="profesional_asignado_id">
-                <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
-                <SelectContent>
-                  {personal.map((prof) => (
-                    <SelectItem key={prof.id} value={prof.id}>
-                      {prof.nombre} {prof.apellido}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <SucursalSelect value={sucursalId} onChange={setSucursalId} />
-            <div className="md:col-span-2">
-              <ClinicaOrigenSelect value={clinicaOrigen} onChange={setClinicaOrigen} />
-            </div>
-            <div className="flex items-end pb-1">
-              <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer text-xs">
-                <Input id="es_sospechoso" name="es_sospechoso" type="checkbox" className="w-4 h-4" />
-                Paciente Sospechoso
-              </Label>
-            </div>
-            <div className="flex items-end pb-1">
-              <Label htmlFor="notificaciones_activas" className={`flex items-center gap-2 text-xs ${hasAnyEmail ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}>
-                <Input 
-                  id="notificaciones_activas" 
-                  name="notificaciones_activas" 
-                  type="checkbox" 
-                  className="w-4 h-4" 
-                  checked={hasAnyEmail ? notificacionesActivas : false}
-                  onChange={(e) => hasAnyEmail && setNotificacionesActivas(e.target.checked)}
-                  disabled={!hasAnyEmail}
+              <div className="space-y-1">
+                <Label htmlFor="apellido" className="text-xs">Apellido *</Label>
+                <Input
+                  id="apellido"
+                  name="apellido"
+                  required
+                  value={formData.apellido}
+                  onChange={(e) => handleInputChange("apellido", e.target.value)}
                 />
-                Notificaciones
-                <span className="text-muted-foreground">
-                  {hasAnyEmail ? "" : "(Requiere email)"}
-                </span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="sexo" className="text-xs">Sexo</Label>
+                <Select name="sexo" value={selectedSexo} onValueChange={setSelectedSexo}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="M">Masculino</SelectItem>
+                    <SelectItem value="F">Femenino</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="fecha_nacimiento" className="text-xs">Fecha Nacimiento</Label>
+                <Input
+                  id="fecha_nacimiento"
+                  name="fecha_nacimiento"
+                  type="date"
+                  value={formData.fecha_nacimiento}
+                  onChange={(e) => handleInputChange("fecha_nacimiento", e.target.value)}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Edad</Label>
+                <Input
+                  readOnly
+                  className="bg-muted tabular-nums"
+                  value={formData.fecha_nacimiento ? `${differenceInYears(new Date(), new Date(formData.fecha_nacimiento + 'T12:00:00'))} años` : ''}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Paso 2: Contacto del Paciente y Cuidador */}
+        <div className={currentStep === 2 ? "space-y-6" : "hidden"}>
+          {/* Contact Section */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Contacto del Paciente</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="contacto_px" className="text-xs">Teléfono</Label>
+                <Input 
+                  id="contacto_px" 
+                  name="contacto_px" 
+                  type="tel"
+                  placeholder="829-123-1234"
+                  maxLength={12}
+                  value={formData.contacto_px}
+                  onChange={(e) => {
+                    const formatted = handlePhoneInput(e.target.value);
+                    handleInputChange("contacto_px", formatted);
+                  }}
+                />
+              </div>
+              <div className="flex items-end pb-1">
+                <Label htmlFor="whatsapp_px" className="flex items-center gap-2 cursor-pointer text-xs">
+                  <Input id="whatsapp_px" name="whatsapp_px" type="checkbox" className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
+                  WhatsApp
+                </Label>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="numero_principal" className="text-xs">Número Principal</Label>
+                <Select name="numero_principal" defaultValue="paciente">
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="paciente">Paciente</SelectItem>
+                    <SelectItem value="cuidador">Cuidador</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="email_px" className="text-xs">Correo Electrónico</Label>
+              <Input 
+                id="email_px" 
+                name="email_px" 
+                type="email" 
+                placeholder="paciente@ejemplo.com"
+                value={formData.email_px}
+                onChange={(e) => handleInputChange("email_px", e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Caregiver Section */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Cuidador / Acompañante</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="md:col-span-2 space-y-1">
+                <Label htmlFor="nombre_cuidador" className="text-xs">Nombre del Cuidador</Label>
+                <Input id="nombre_cuidador" name="nombre_cuidador" maxLength={200} />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="parentesco_cuidador" className="text-xs">Parentesco</Label>
+                <Select name="parentesco_cuidador">
+                  <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Hijo/a">Hijo/a</SelectItem>
+                    <SelectItem value="Esposo/a">Esposo/a</SelectItem>
+                    <SelectItem value="Madre">Madre</SelectItem>
+                    <SelectItem value="Padre">Padre</SelectItem>
+                    <SelectItem value="Hermano/a">Hermano/a</SelectItem>
+                    <SelectItem value="Nieto/a">Nieto/a</SelectItem>
+                    <SelectItem value="Otro">Otro</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="contacto_cuidador" className="text-xs">Teléfono</Label>
+                <Input 
+                  id="contacto_cuidador" 
+                  name="contacto_cuidador" 
+                  type="tel"
+                  placeholder="829-123-1234"
+                  maxLength={12}
+                  value={formData.contacto_cuidador}
+                  onChange={(e) => {
+                    const formatted = handlePhoneInput(e.target.value);
+                    handleInputChange("contacto_cuidador", formatted);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <Label htmlFor="whatsapp_cuidador" className="flex items-center gap-2 cursor-pointer text-xs">
+                <Input id="whatsapp_cuidador" name="whatsapp_cuidador" type="checkbox" className="w-4 h-4" />
+                <FontAwesomeIcon icon={faWhatsapp} className="h-5 w-5 text-green-500" />
+                WhatsApp Cuidador
               </Label>
             </div>
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="historia_medica_basica" className="text-xs">Historia Médica</Label>
-            <Textarea id="historia_medica_basica" name="historia_medica_basica" maxLength={2000} className="min-h-[80px]" placeholder="Diagnósticos, condiciones crónicas, alergias..." />
-          </div>
-        </div>
-
-        {/* Medications Section */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Medicamentos</h3>
-          {medicamentos.map((med, index) => (
-            <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
-              <Input placeholder="Medicamento" value={med.nombre} onChange={(e) => updateMedicamento(index, 'nombre', e.target.value)} />
-              <Input placeholder="Dosis" value={med.dosis} onChange={(e) => updateMedicamento(index, 'dosis', e.target.value)} />
-              <Input placeholder="Frecuencia" value={med.frecuencia} onChange={(e) => updateMedicamento(index, 'frecuencia', e.target.value)} />
-              <Button type="button" variant="outline" size="sm" onClick={() => removeMedicamento(index)} disabled={medicamentos.length === 1}>Quitar</Button>
-            </div>
-          ))}
-          <Button type="button" variant="outline" size="sm" onClick={addMedicamento}>+ Agregar Medicamento</Button>
-        </div>
-
-        {/* Follow-up Config Section */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Configuración de Seguimiento</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <Label htmlFor="periodo_llamada" className="text-xs">Período de Llamadas (días)</Label>
-              <Input id="periodo_llamada" name="periodo_llamada" type="number" defaultValue={30} min={1} max={365} />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="periodo_visita" className="text-xs">Período de Visitas (días)</Label>
-              <Input id="periodo_visita" name="periodo_visita" type="number" defaultValue={90} min={1} max={730} />
+              <Label htmlFor="email_cuidador" className="text-xs">Correo del Cuidador</Label>
+              <Input 
+                id="email_cuidador" 
+                name="email_cuidador" 
+                type="email" 
+                placeholder="cuidador@ejemplo.com"
+                value={formData.email_cuidador}
+                onChange={(e) => handleInputChange("email_cuidador", e.target.value)}
+              />
             </div>
           </div>
-          <DiasRestriccionPaciente diasNoVisita={diasNoVisita} onChange={setDiasNoVisita} />
         </div>
 
-        {/* Informed consent (mandatory) */}
-        <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Consentimiento informado</h3>
-          <ConsentimientoInformado
-            value={consent}
-            onChange={setConsent}
-            defaultFirmante={`${formData.nombre} ${formData.apellido}`.trim()}
-          />
+        {/* Paso 3: Ubicación y Dirección */}
+        <div className={currentStep === 3 ? "space-y-6" : "hidden"}>
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Ubicación y Domicilio</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="zona" className="text-xs">Municipio (zona)</Label>
+                <ZonaSelect
+                  value={selectedZona}
+                  onValueChange={(value) => {
+                    setSelectedZona(value);
+                    setSelectedBarrio("");
+                  }}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="barrio" className="text-xs">Barrio / Sector</Label>
+                <BarrioCombobox zona={selectedZona} value={selectedBarrio} onChange={setSelectedBarrio} />
+                <input type="hidden" name="barrio" value={selectedBarrio} />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="direccion_domicilio" className="text-xs">Dirección Completa</Label>
+              <Textarea id="direccion_domicilio" name="direccion_domicilio" maxLength={500} className="min-h-[60px]" placeholder="Calle, número, sector, referencias..." />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="latitud" className="text-xs">Latitud (coordenada GPS)</Label>
+                <Input 
+                  id="latitud" 
+                  name="latitud" 
+                  type="number" 
+                  step="0.00000001"
+                  placeholder="ej: 18.4861"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="longitud" className="text-xs">Longitud (coordenada GPS)</Label>
+                <Input 
+                  id="longitud" 
+                  name="longitud" 
+                  type="number" 
+                  step="0.00000001"
+                  placeholder="ej: -69.9312"
+                />
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Paso 4: Información Clínica, Atención y Medicamentos */}
+        <div className={currentStep === 4 ? "space-y-6" : "hidden"}>
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Información Clínica y Atención</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="grado_dificultad" className="text-xs">Grado de Dificultad *</Label>
+                <Select name="grado_dificultad" defaultValue="medio">
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="bajo">Bajo</SelectItem>
+                    <SelectItem value="medio">Medio</SelectItem>
+                    <SelectItem value="alto">Alto</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="tipo_atencion" className="text-xs">Tipo de Atención *</Label>
+                <Select name="tipo_atencion" defaultValue="ambulatorio">
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ambulatorio">Ambulatorio (Por defecto)</SelectItem>
+                    <SelectItem value="domiciliario">Domiciliario</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="profesional_asignado_id" className="text-xs">Profesional Asignado</Label>
+                <Select name="profesional_asignado_id">
+                  <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+                  <SelectContent>
+                    {personal.map((prof) => (
+                      <SelectItem key={prof.id} value={prof.id}>
+                        {prof.nombre} {prof.apellido}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <SucursalSelect value={sucursalId} onChange={setSucursalId} />
+              <div className="md:col-span-2">
+                <ClinicaOrigenSelect value={clinicaOrigen} onChange={setClinicaOrigen} />
+              </div>
+              <div className="flex items-end pb-1">
+                <Label htmlFor="es_sospechoso" className="flex items-center gap-2 cursor-pointer text-xs">
+                  <Input id="es_sospechoso" name="es_sospechoso" type="checkbox" className="w-4 h-4" />
+                  Paciente Sospechoso
+                </Label>
+              </div>
+              <div className="flex items-end pb-1">
+                <Label htmlFor="notificaciones_activas" className={`flex items-center gap-2 text-xs ${hasAnyEmail ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}>
+                  <Input 
+                    id="notificaciones_activas" 
+                    name="notificaciones_activas" 
+                    type="checkbox" 
+                    className="w-4 h-4" 
+                    checked={hasAnyEmail ? notificacionesActivas : false}
+                    onChange={(e) => hasAnyEmail && setNotificacionesActivas(e.target.checked)}
+                    disabled={!hasAnyEmail}
+                  />
+                  Notificaciones
+                  <span className="text-muted-foreground">
+                    {hasAnyEmail ? "" : "(Requiere email)"}
+                  </span>
+                </Label>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="historia_medica_basica" className="text-xs">Historia Médica Básica</Label>
+              <Textarea id="historia_medica_basica" name="historia_medica_basica" maxLength={2000} className="min-h-[80px]" placeholder="Diagnósticos, antecedentes, alergias..." />
+            </div>
+          </div>
+
+          {/* Medicamentos */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Medicamentos Actuales</h3>
+            {medicamentos.map((med, index) => (
+              <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
+                <Input placeholder="Medicamento" value={med.nombre} onChange={(e) => updateMedicamento(index, 'nombre', e.target.value)} />
+                <Input placeholder="Dosis" value={med.dosis} onChange={(e) => updateMedicamento(index, 'dosis', e.target.value)} />
+                <Input placeholder="Frecuencia" value={med.frecuencia} onChange={(e) => updateMedicamento(index, 'frecuencia', e.target.value)} />
+                <Button type="button" variant="outline" size="sm" onClick={() => removeMedicamento(index)} disabled={medicamentos.length === 1}>Quitar</Button>
+              </div>
+            ))}
+            <Button type="button" variant="outline" size="sm" onClick={addMedicamento}>+ Agregar Medicamento</Button>
+          </div>
+        </div>
+
+        {/* Paso 5: Seguimiento y Consentimiento Informado */}
+        <div className={currentStep === 5 ? "space-y-6" : "hidden"}>
+          {/* Follow-up Config Section */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Configuración de Seguimiento</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="periodo_llamada" className="text-xs">Período de Contacto / Llamada (días)</Label>
+                <Input id="periodo_llamada" name="periodo_llamada" type="number" defaultValue={30} min={1} max={365} />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="periodo_visita" className="text-xs">Período de Cita / Consulta (días)</Label>
+                <Input id="periodo_visita" name="periodo_visita" type="number" defaultValue={90} min={1} max={730} />
+              </div>
+            </div>
+            <DiasRestriccionPaciente diasNoVisita={diasNoVisita} onChange={setDiasNoVisita} />
+          </div>
+
+          {/* Informed consent (mandatory) */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">Consentimiento Informado (Obligatorio)</h3>
+            <ConsentimientoInformado
+              value={consent}
+              onChange={setConsent}
+              defaultFirmante={`${formData.nombre} ${formData.apellido}`.trim()}
+            />
+          </div>
+
+          {/* Resumen previo */}
+          <div className="p-3 bg-muted/40 rounded border border-border text-xs space-y-1">
+            <p className="font-semibold text-foreground">Resumen de Registro:</p>
+            <p className="text-muted-foreground">
+              Paciente: <span className="text-foreground font-medium">{formData.nombre || "—"} {formData.apellido || ""}</span> | 
+              Documento: <span className="text-foreground font-medium">{formData.cedula || formData.numero_documento || "—"}</span> | 
+              Clínica Origen: <span className="text-foreground font-medium">{clinicaOrigen || "Centro Actual"}</span>
+            </p>
+          </div>
         </div>
 
         {/* Botones de navegación y acción */}
@@ -839,7 +863,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
           </div>
           <div className="flex items-center gap-2">
             <Button type="button" variant="ghost" size="sm" onClick={onCancel}>Cancelar</Button>
-            {currentStep < 3 ? (
+            {currentStep < 5 ? (
               <Button type="button" size="sm" onClick={() => setCurrentStep(s => s + 1)}>
                 Siguiente →
               </Button>

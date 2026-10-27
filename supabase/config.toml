@@ -58,3 +58,9 @@ verify_jwt = true
 verify_jwt = true
 
 
+
+[functions.confirmar-cita]
+verify_jwt = false
+
+[functions.reservar-cita]
+verify_jwt = false

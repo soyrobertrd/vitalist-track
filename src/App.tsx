@@ -90,6 +90,8 @@ const FirmasDigitales = lazy(() => import("./pages/FirmasDigitales"));
 const Triaje = lazy(() => import("./pages/Triaje"));
 const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
 const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
+const ReservarCita = lazy(() => import("./pages/ReservarCita"));
+const VetCarePro = lazy(() => import("./pages/VetCarePro"));
 const CuestionarioPublico = lazy(() => import("./pages/CuestionarioPublico"));
 const PortalPacientePsico = lazy(() => import("./pages/PortalPacientePsico"));
 const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesional"));
@@ -291,6 +293,7 @@ const App = () => {
                 <Route path="/ticket/:token" element={<TicketPublico />} />
                 <Route path="/sala/:token" element={<SalaVirtual />} />
                 <Route path="/portal-citas" element={<PortalPublicoDisponibilidad />} />
+                <Route path="/reservar/:slug" element={<ReservarCita />} />
                 <Route path="/cuestionario/:token" element={<CuestionarioPublico />} />
                 <Route path="/portal-psico/:token" element={<PortalPacientePsico />} />
                 <Route
@@ -646,6 +649,10 @@ const App = () => {
                 <Route
                   path="/vision-care"
                   element={session ? <Layout><VisionCarePro /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/vet-care"
+                  element={session ? <Layout><VetCarePro /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/psicologia-pro"

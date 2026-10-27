@@ -2,7 +2,7 @@
  * Configuración Canónica de las 6 Verticales de Salud (Fase 4 Plan Maestro)
  * Centraliza nombres, iconos, rutas raíz y metadatos de vertical.
  */
-import { Activity, CircleDot, Sparkles, BedDouble, Eye, Brain, type LucideIcon } from "lucide-react";
+import { Activity, CircleDot, Sparkles, BedDouble, Eye, Brain, PawPrint, type LucideIcon } from "lucide-react";
 import type { VerticalTipo } from "@/contexts/VerticalContext";
 
 export interface VerticalMetadata {
@@ -70,6 +70,15 @@ export const VERTICALES_CONFIG: Record<VerticalTipo, VerticalMetadata> = {
     descripcion: "Expediente psicológico, escalas GAD/PHQ, teleconsulta y sesiones.",
     badgeColorClass: "bg-purple-500/10 text-purple-600 border-purple-500/20",
   },
+  veterinaria: {
+    id: "veterinaria",
+    label: "VetCare Pro",
+    nombreComercial: "Clínica Veterinaria",
+    icon: PawPrint,
+    rootPath: "/vet-care",
+    descripcion: "Fichas de mascotas con tutor, especie, raza y peso; calendario de vacunas.",
+    badgeColorClass: "bg-amber-500/10 text-amber-700 border-amber-500/20",
+  },
 };
 
 export const VERTICAL_LABELS: Record<VerticalTipo, string> = {
@@ -79,6 +88,7 @@ export const VERTICAL_LABELS: Record<VerticalTipo, string> = {
   recovery: VERTICALES_CONFIG.recovery.label,
   vision: VERTICALES_CONFIG.vision.label,
   psicologia: VERTICALES_CONFIG.psicologia.label,
+  veterinaria: VERTICALES_CONFIG.veterinaria.label,
 };
 
 export const VERTICAL_ICONS: Record<VerticalTipo, LucideIcon> = {
@@ -88,6 +98,7 @@ export const VERTICAL_ICONS: Record<VerticalTipo, LucideIcon> = {
   recovery: VERTICALES_CONFIG.recovery.icon,
   vision: VERTICALES_CONFIG.vision.icon,
   psicologia: VERTICALES_CONFIG.psicologia.icon,
+  veterinaria: VERTICALES_CONFIG.veterinaria.icon,
 };
 
 export const VERTICAL_ROOTS: Record<VerticalTipo, string> = {
@@ -97,6 +108,7 @@ export const VERTICAL_ROOTS: Record<VerticalTipo, string> = {
   recovery: VERTICALES_CONFIG.recovery.rootPath,
   vision: VERTICALES_CONFIG.vision.rootPath,
   psicologia: VERTICALES_CONFIG.psicologia.rootPath,
+  veterinaria: VERTICALES_CONFIG.veterinaria.rootPath,
 };
 
 export interface VerticalCatalogoItem {
@@ -149,5 +161,12 @@ export const VERTICALES_CATALOGO: Record<VerticalTipo, VerticalCatalogoItem> = {
     icon: Brain,
     colorName: "Lavanda Bienestar",
     descripcion: VERTICALES_CONFIG.psicologia.descripcion,
+  },
+  veterinaria: {
+    codigo: "veterinaria",
+    label: "Veterinaria",
+    icon: PawPrint,
+    colorName: "Ámbar Veterinario",
+    descripcion: VERTICALES_CONFIG.veterinaria.descripcion,
   },
 };

@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Phone, User, MapPin, Heart, Pill, Mail, History } from "lucide-react";
+import { Calendar, Phone, MapPin, Heart, Pill, Mail, History } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
@@ -11,6 +11,8 @@ import { NotificacionPlanAccion } from "@/components/NotificacionPlanAccion";
 import { PatientTimeline } from "@/components/PatientTimeline";
 import { FichaClinicaPaciente } from "@/components/ficha-clinica/FichaClinicaPaciente";
 import { GenerarTokenPortal } from "@/components/GenerarTokenPortal";
+
+const capital = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
 interface PacienteDetailDialogProps {
   pacienteId: string | null;
@@ -27,6 +29,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
 
   useEffect(() => {
     if (pacienteId && open) {
+      setPaciente(null);
       fetchPacienteDetails();
     }
   }, [pacienteId, open]);
@@ -61,343 +64,250 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
 
   if (!paciente) return null;
 
+  const nombreCompleto = `${paciente.nombre} ${paciente.apellido}`;
+  const iniciales = `${paciente.nombre?.[0] ?? ""}${paciente.apellido?.[0] ?? ""}`.toUpperCase();
+  const edad = paciente.fecha_nacimiento
+    ? Math.floor((Date.now() - new Date(paciente.fecha_nacimiento).getTime()) / 31_557_600_000)
+    : null;
+  const telefono = paciente.numero_principal || paciente.contacto_px || paciente.contacto_cuidador;
+  const waNumero = (n: string) => n.replace(/\D/g, "").replace(/^([89]\d{9})$/, "1$1");
+  const fechaHora = (iso: string | null) =>
+    iso ? new Date(iso).toLocaleString("es-DO", { dateStyle: "medium", timeStyle: "short" }) : "Sin fecha";
+  const fecha = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("es-DO", { dateStyle: "medium" }) : "—");
+
+  const proximaCita = visitas[0]?.fecha_hora_visita ?? null;
+  const proximaLlamada = llamadas[0]?.fecha_agendada ?? null;
+  const activo = paciente.status_px === "activo";
+
+  const Dato = ({ label, children, full }: { label: string; children: React.ReactNode; full?: boolean }) => (
+    <div className={full ? "sm:col-span-2" : undefined}>
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="mt-0.5 text-sm font-medium">{children || "—"}</dd>
+    </div>
+  );
+
+  const Vacio = ({ texto }: { texto: string }) => (
+    <p className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">{texto}</p>
+  );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl flex items-center gap-2">
-            <User className="h-6 w-6" />
-            {paciente.nombre} {paciente.apellido}
-          </DialogTitle>
-          <GenerarTokenPortal pacienteId={pacienteId!} pacienteNombre={`${paciente.nombre} ${paciente.apellido}`} />
+      <DialogContent className="flex max-h-[90dvh] max-w-4xl flex-col gap-0 overflow-hidden p-0">
+        {/* Encabezado fijo: identidad + acciones rápidas */}
+        <DialogHeader className="space-y-0 border-b p-6 pb-4 text-left">
+          <div className="flex flex-wrap items-start gap-4 pr-8">
+            <div
+              aria-hidden="true"
+              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg font-semibold text-primary"
+            >
+              {iniciales}
+            </div>
+            <div className="min-w-0 flex-1">
+              <DialogTitle className="text-xl font-semibold">{nombreCompleto}</DialogTitle>
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <span className={`h-2 w-2 rounded-full ${activo ? "bg-success" : "bg-muted-foreground"}`} aria-hidden="true" />
+                  {capital(paciente.status_px)}
+                </span>
+                {edad !== null && <span>{edad} años</span>}
+                {paciente.cedula && <span className="tabular-nums">Cédula {paciente.cedula}</span>}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {telefono && (
+              <Button asChild size="sm" variant="outline">
+                <a href={`tel:${telefono.replace(/\D/g, "")}`}>
+                  <Phone className="mr-1.5 h-4 w-4" aria-hidden="true" /> Llamar
+                </a>
+              </Button>
+            )}
+            {telefono && (paciente.whatsapp_px || paciente.whatsapp_cuidador) && (
+              <Button asChild size="sm" variant="outline">
+                <a href={`https://wa.me/${waNumero(telefono)}`} target="_blank" rel="noopener noreferrer">
+                  <FontAwesomeIcon icon={faWhatsapp} className="mr-1.5 h-4 w-4 text-success" /> WhatsApp
+                </a>
+              </Button>
+            )}
+            {paciente.email_px && (
+              <Button asChild size="sm" variant="outline">
+                <a href={`mailto:${paciente.email_px}`}>
+                  <Mail className="mr-1.5 h-4 w-4" aria-hidden="true" /> Email
+                </a>
+              </Button>
+            )}
+            <GenerarTokenPortal pacienteId={pacienteId!} pacienteNombre={nombreCompleto} />
+          </div>
         </DialogHeader>
 
-        <NotificacionPlanAccion pacienteId={pacienteId || ''} />
+        <div className="flex-1 space-y-5 overflow-y-auto p-6">
+          <NotificacionPlanAccion pacienteId={pacienteId || ""} />
 
-        <div className="space-y-4">
-          {/* Información General */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Información General</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Cédula</p>
-                <p className="font-medium">{paciente.cedula}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Fecha de Nacimiento</p>
-                <p className="font-medium">{paciente.fecha_nacimiento ? new Date(paciente.fecha_nacimiento).toLocaleDateString() : 'N/A'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Contacto</p>
-                {paciente.contacto_px ? (
-                  <div className="font-medium flex items-center gap-2">
-                    <a
-                      href={`tel:${(paciente.contacto_px || '').replace(/\D/g, '')}`}
-                      className="no-underline hover:text-primary"
-                      aria-label={`Llamar a ${paciente.nombre} ${paciente.apellido}`}
-                    >
-                      {paciente.contacto_px}
-                    </a>
-                    {paciente.whatsapp_px && (
-                      <a
-                        href={`https://wa.me/${(paciente.contacto_px || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center p-1 rounded hover:bg-accent"
-                        aria-label={`Enviar WhatsApp a ${paciente.nombre} ${paciente.apellido}`}
-                        title="Enviar mensaje por WhatsApp"
-                      >
-                        <FontAwesomeIcon icon={faWhatsapp} className="h-6 w-6 text-green-600" />
-                      </a>
-                    )}
-                  </div>
-                ) : (
-                  <p className="font-medium">N/A</p>
-                )}
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Correo del Paciente</p>
-                {paciente.email_px ? (
-                  <a 
-                    href={`mailto:${paciente.email_px}`}
-                    className="font-medium flex items-center gap-1 hover:text-primary"
-                  >
-                    <Mail className="h-4 w-4" />
-                    {paciente.email_px}
-                  </a>
-                ) : (
-                  <p className="font-medium">N/A</p>
-                )}
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Estado</p>
-                <Badge className={paciente.status_px === 'activo' ? 'bg-success' : 'bg-muted'}>
-                  {paciente.status_px}
-                </Badge>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Municipio (zona)</p>
-                <p className="font-medium">{paciente.zona || 'N/A'}</p>
-              </div>
-              {paciente.barrio && (
-                <div>
-                  <p className="text-sm text-muted-foreground">Barrio</p>
-                  <p className="font-medium">{paciente.barrio}</p>
-                </div>
-              )}
-              <div className="col-span-2">
-                <p className="text-sm text-muted-foreground">Dirección</p>
-                <p className="font-medium flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  {paciente.direccion_domicilio || 'N/A'}
+          {/* Resumen de un vistazo */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              { icon: Calendar, label: "Próxima cita", valor: proximaCita ? fechaHora(proximaCita) : "No programada" },
+              { icon: Phone, label: "Próxima llamada", valor: proximaLlamada ? fechaHora(proximaLlamada) : "No programada" },
+              { icon: Pill, label: "Medicamentos", valor: String(medicamentos.length) },
+              { icon: MapPin, label: "Zona", valor: paciente.zona ? capital(paciente.zona.replace(/_/g, " ")) : "—" },
+            ].map(({ icon: Icon, label, valor }) => (
+              <div key={label} className="rounded-lg border p-3">
+                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {label}
                 </p>
+                <p className="mt-1 text-sm font-semibold tabular-nums">{valor}</p>
               </div>
-            </CardContent>
-          </Card>
+            ))}
+          </div>
 
-          {/* Cuidador */}
-          {paciente.nombre_cuidador && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Cuidador</CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Nombre</p>
-                  <p className="font-medium">{paciente.nombre_cuidador}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Contacto</p>
-                  {paciente.contacto_cuidador ? (
-                    <div className="font-medium flex items-center gap-2">
-                      <a
-                        href={`tel:${(paciente.contacto_cuidador || '').replace(/\D/g, '')}`}
-                        className="no-underline hover:text-primary"
-                        aria-label={`Llamar a cuidador de ${paciente.nombre} ${paciente.apellido}`}
-                      >
-                        {paciente.contacto_cuidador}
-                      </a>
-                       {paciente.whatsapp_cuidador && (
-                        <a
-                          href={`https://wa.me/${(paciente.contacto_cuidador || '').replace(/\D/g, '').replace(/^([89]\d{9})$/, '1$1')}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center p-1 rounded hover:bg-accent"
-                          aria-label={`Enviar WhatsApp al cuidador de ${paciente.nombre} ${paciente.apellido}`}
-                          title="Enviar mensaje por WhatsApp"
-                        >
-                          <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-green-600" />
-                        </a>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="font-medium">N/A</p>
-                  )}
-                </div>
-                <div className="col-span-2">
-                  <p className="text-sm text-muted-foreground">Correo del Cuidador</p>
-                  {paciente.email_cuidador ? (
-                    <a 
-                      href={`mailto:${paciente.email_cuidador}`}
-                      className="font-medium flex items-center gap-1 hover:text-primary"
-                    >
-                      <Mail className="h-4 w-4" />
-                      {paciente.email_cuidador}
-                    </a>
-                  ) : (
-                    <p className="font-medium">N/A</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Historia Médica */}
-          {paciente.historia_medica_basica && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Heart className="h-5 w-5" />
-                  Historia Médica
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>{paciente.historia_medica_basica}</p>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Ficha clínica: alergias, antecedentes, seguros */}
-          {pacienteId && <FichaClinicaPaciente pacienteId={pacienteId} />}
-
-          {/* Tabs para Medicamentos, Llamadas, Visitas e Historial */}
-          <Tabs defaultValue="medicamentos" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+          <Tabs defaultValue="resumen">
+            <TabsList className="h-auto w-full justify-start overflow-x-auto">
+              <TabsTrigger value="resumen">Resumen</TabsTrigger>
+              <TabsTrigger value="ficha">Ficha clínica</TabsTrigger>
               <TabsTrigger value="medicamentos">Medicamentos ({medicamentos.length})</TabsTrigger>
-              <TabsTrigger value="llamadas">Llamadas ({llamadas.length})</TabsTrigger>
-              <TabsTrigger value="visitas">Visitas ({visitas.length})</TabsTrigger>
+              <TabsTrigger value="agenda">Agenda ({llamadas.length + visitas.length})</TabsTrigger>
               <TabsTrigger value="historial">
-                <History className="h-4 w-4 mr-1" />
-                Historial
+                <History className="mr-1 h-4 w-4" aria-hidden="true" /> Historial
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="medicamentos" className="space-y-2">
-              {medicamentos.map((med) => (
-                <Card key={med.id}>
-                  <CardContent className="pt-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
-                        <Pill className="h-5 w-5 text-primary mt-1" />
-                        <div>
-                          <p className="font-medium">{med.nombre_medicamento}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {med.dosis} - {med.frecuencia}
-                          </p>
-                          {med.notas && (
-                            <p className="text-sm text-muted-foreground mt-1">{med.notas}</p>
+            <TabsContent value="resumen" className="space-y-5 pt-2">
+              <section>
+                <h3 className="mb-3 text-sm font-semibold">Datos personales</h3>
+                <dl className="grid gap-4 sm:grid-cols-2">
+                  <Dato label="Fecha de nacimiento">{fecha(paciente.fecha_nacimiento)}</Dato>
+                  <Dato label="Teléfono">{paciente.contacto_px}</Dato>
+                  <Dato label="Correo">{paciente.email_px}</Dato>
+                  <Dato label="Barrio">{paciente.barrio}</Dato>
+                  <Dato label="Dirección" full>
+                    {paciente.direccion_domicilio && (
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(paciente.direccion_domicilio)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-primary hover:underline"
+                      >
+                        {paciente.direccion_domicilio}
+                      </a>
+                    )}
+                  </Dato>
+                </dl>
+              </section>
+
+              {paciente.nombre_cuidador && (
+                <section className="border-t pt-5">
+                  <h3 className="mb-3 text-sm font-semibold">Cuidador</h3>
+                  <dl className="grid gap-4 sm:grid-cols-2">
+                    <Dato label="Nombre">{paciente.nombre_cuidador}</Dato>
+                    <Dato label="Teléfono">
+                      {paciente.contacto_cuidador && (
+                        <span className="flex items-center gap-2">
+                          <a href={`tel:${paciente.contacto_cuidador.replace(/\D/g, "")}`} className="hover:text-primary">
+                            {paciente.contacto_cuidador}
+                          </a>
+                          {paciente.whatsapp_cuidador && (
+                            <a
+                              href={`https://wa.me/${waNumero(paciente.contacto_cuidador)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="WhatsApp del cuidador"
+                            >
+                              <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-success" />
+                            </a>
                           )}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        {med.muestra_medica && (
-                          <Badge variant="secondary" className="mb-1">Muestra</Badge>
-                        )}
-                        <p className="text-sm text-muted-foreground">Stock: {med.cantidad_disponible}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {medicamentos.length === 0 && (
-                <p className="text-center text-muted-foreground py-4">No hay medicamentos registrados</p>
+                        </span>
+                      )}
+                    </Dato>
+                    <Dato label="Correo" full>{paciente.email_cuidador}</Dato>
+                  </dl>
+                </section>
+              )}
+
+              {paciente.historia_medica_basica && (
+                <section className="border-t pt-5">
+                  <h3 className="mb-3 flex items-center gap-1.5 text-sm font-semibold">
+                    <Heart className="h-4 w-4 text-primary" aria-hidden="true" /> Historia médica
+                  </h3>
+                  <p className="whitespace-pre-line text-sm">{paciente.historia_medica_basica}</p>
+                </section>
+              )}
+
+              {parametros && (
+                <section className="border-t pt-5">
+                  <h3 className="mb-3 text-sm font-semibold">Parámetros de seguimiento</h3>
+                  <dl className="grid gap-4 sm:grid-cols-2">
+                    <Dato label="Próxima llamada programada">{fecha(parametros.fecha_proxima_llamada_prog)}</Dato>
+                    <Dato label="Próxima visita programada">{fecha(parametros.fecha_proxima_visita_prog)}</Dato>
+                    <Dato label="Ciclo de llamadas">{parametros.periodo_llamada_ciclico ? `Cada ${parametros.periodo_llamada_ciclico} días` : null}</Dato>
+                    <Dato label="Ciclo de visitas">{parametros.periodo_visita_ciclico ? `Cada ${parametros.periodo_visita_ciclico} días` : null}</Dato>
+                    <Dato label="Llamadas sin contestar">{String(parametros.contador_llamadas_no_contestadas ?? 0)}</Dato>
+                  </dl>
+                </section>
               )}
             </TabsContent>
 
-            <TabsContent value="llamadas" className="space-y-2">
-              {llamadas.map((llamada) => (
-                <Card key={llamada.id}>
-                  <CardContent className="pt-4">
-                    <div className="flex items-start gap-3">
-                      <Phone className="h-5 w-5 text-primary mt-1" />
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-medium">
-                              {llamada.fecha_agendada 
-                                ? new Date(llamada.fecha_agendada).toLocaleString('es-DO', {
-                                    dateStyle: 'medium',
-                                    timeStyle: 'short'
-                                  })
-                                : 'Fecha no especificada'}
-                            </p>
-                            <Badge className="mt-1" variant="outline">{llamada.estado}</Badge>
-                          </div>
-                        </div>
-                        {llamada.personal_salud && (
-                          <p className="text-sm text-muted-foreground mt-2">
-                            Profesional: {llamada.personal_salud.nombre} {llamada.personal_salud.apellido}
-                          </p>
-                        )}
-                        {llamada.motivo && (
-                          <p className="text-sm mt-1">
-                            <span className="text-muted-foreground">Motivo:</span> {llamada.motivo}
-                          </p>
-                        )}
-                        {llamada.notas_adicionales && (
-                          <p className="text-sm text-muted-foreground mt-1">{llamada.notas_adicionales}</p>
-                        )}
-                      </div>
+            <TabsContent value="ficha" className="pt-2">
+              {pacienteId && <FichaClinicaPaciente pacienteId={pacienteId} />}
+            </TabsContent>
+
+            <TabsContent value="medicamentos" className="space-y-2 pt-2">
+              {medicamentos.length === 0 ? (
+                <Vacio texto="No hay medicamentos registrados" />
+              ) : (
+                medicamentos.map((med) => (
+                  <div key={med.id} className="flex items-start gap-3 rounded-lg border p-3">
+                    <Pill className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium">{med.nombre_medicamento}</p>
+                      <p className="text-xs text-muted-foreground">{[med.dosis, med.frecuencia].filter(Boolean).join(" · ")}</p>
+                      {med.notas && <p className="mt-1 text-xs text-muted-foreground">{med.notas}</p>}
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {llamadas.length === 0 && (
-                <p className="text-center text-muted-foreground py-4">No hay llamadas agendadas</p>
+                    <div className="shrink-0 text-right text-xs text-muted-foreground">
+                      {med.muestra_medica && <Badge variant="secondary" className="mb-1 text-[10px]">Muestra</Badge>}
+                      <p className="tabular-nums">Stock: {med.cantidad_disponible ?? 0}</p>
+                    </div>
+                  </div>
+                ))
               )}
             </TabsContent>
 
-            <TabsContent value="visitas" className="space-y-2">
-              {visitas.map((visita) => (
-                <Card key={visita.id}>
-                  <CardContent className="pt-4">
-                    <div className="flex items-start gap-3">
-                      <Calendar className="h-5 w-5 text-primary mt-1" />
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-medium">
-                              {new Date(visita.fecha_hora_visita).toLocaleString('es-DO', {
-                                dateStyle: 'medium',
-                                timeStyle: 'short'
-                              })}
-                            </p>
-                            <Badge className="mt-1">{visita.estado}</Badge>
-                          </div>
-                        </div>
-                        <p className="text-sm text-muted-foreground capitalize mt-2">
-                          Tipo: {visita.tipo_visita?.replace('_', ' ')}
+            <TabsContent value="agenda" className="space-y-2 pt-2">
+              {visitas.length + llamadas.length === 0 ? (
+                <Vacio texto="No hay citas ni llamadas pendientes" />
+              ) : (
+                [
+                  ...visitas.map((v) => ({
+                    id: v.id, icon: Calendar, tipo: capital((v.tipo_visita ?? "visita").replace(/_/g, " ")),
+                    cuando: v.fecha_hora_visita, estado: v.estado, prof: v.personal_salud, motivo: v.motivo_visita,
+                  })),
+                  ...llamadas.map((l) => ({
+                    id: l.id, icon: Phone, tipo: "Llamada",
+                    cuando: l.fecha_agendada, estado: l.estado, prof: l.personal_salud, motivo: l.motivo,
+                  })),
+                ]
+                  .sort((a, b) => (a.cuando ?? "").localeCompare(b.cuando ?? ""))
+                  .map((e) => (
+                    <div key={e.id} className="flex items-start gap-3 rounded-lg border p-3">
+                      <e.icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium tabular-nums">{fechaHora(e.cuando)}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {e.tipo}
+                          {e.prof && ` · ${e.prof.nombre} ${e.prof.apellido}`}
                         </p>
-                        {visita.personal_salud && (
-                          <p className="text-sm text-muted-foreground">
-                            Profesional: {visita.personal_salud.nombre} {visita.personal_salud.apellido}
-                          </p>
-                        )}
-                        {visita.motivo_visita && (
-                          <p className="text-sm mt-1">
-                            <span className="text-muted-foreground">Motivo:</span> {visita.motivo_visita}
-                          </p>
-                        )}
-                        {visita.notas_visita && (
-                          <p className="text-sm text-muted-foreground mt-1">{visita.notas_visita}</p>
-                        )}
+                        {e.motivo && <p className="mt-1 text-xs">{e.motivo}</p>}
                       </div>
+                      <Badge variant="outline" className="shrink-0 text-[10px]">{capital(e.estado ?? "")}</Badge>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {visitas.length === 0 && (
-                <p className="text-center text-muted-foreground py-4">No hay visitas agendadas</p>
+                  ))
               )}
             </TabsContent>
 
-            <TabsContent value="historial" className="space-y-2">
-              <PatientTimeline pacienteId={pacienteId || ''} />
+            <TabsContent value="historial" className="pt-2">
+              <PatientTimeline pacienteId={pacienteId || ""} />
             </TabsContent>
           </Tabs>
-
-          {/* Parámetros de Seguimiento */}
-          {parametros && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Parámetros de Seguimiento</CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Próxima Llamada</p>
-                  <p className="font-medium">{parametros.fecha_proxima_llamada_prog ? new Date(parametros.fecha_proxima_llamada_prog).toLocaleDateString() : 'N/A'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Próxima Visita</p>
-                  <p className="font-medium">{parametros.fecha_proxima_visita_prog ? new Date(parametros.fecha_proxima_visita_prog).toLocaleDateString() : 'N/A'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Periodo Llamadas</p>
-                  <p className="font-medium">{parametros.periodo_llamada_ciclico} días</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Periodo Visitas</p>
-                  <p className="font-medium">{parametros.periodo_visita_ciclico} días</p>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-sm text-muted-foreground">Llamadas No Contestadas</p>
-                  <p className="font-medium">{parametros.contador_llamadas_no_contestadas}</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </DialogContent>
     </Dialog>

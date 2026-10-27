@@ -1,4 +1,4 @@
-import { Building2, Eye, SmilePlus, Sparkles, BedDouble, Stethoscope, Layers, Settings2, Brain } from "lucide-react";
+import { Eye, SmilePlus, Sparkles, BedDouble, Stethoscope, Layers, Settings2, Brain, PawPrint } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const META: Record<VerticalTipo, { label: string; icon: any; color: string }> = {
   clinica:    { label: "Clínica / Hospital", icon: Stethoscope, color: "text-blue-600" },
@@ -16,12 +19,14 @@ const META: Record<VerticalTipo, { label: string; icon: any; color: string }> = 
   recovery:   { label: "Recovery Care",      icon: BedDouble,   color: "text-purple-600" },
   vision:     { label: "Visión / Óptica",    icon: Eye,         color: "text-emerald-600" },
   psicologia: { label: "Psicología / Psiquiatría", icon: Brain, color: "text-indigo-600" },
+  veterinaria: { label: "Veterinaria", icon: PawPrint, color: "text-amber-600" },
 };
 
 interface Props { collapsed?: boolean; }
 
 export function VerticalSwitcher({ collapsed = false }: Props) {
-  const { verticalesActivas, verticalActiva, setVerticalActiva } = useVertical();
+  const { verticalesActivas, verticalActiva, setVerticalActiva, refresh } = useVertical();
+  const { currentWorkspace } = useWorkspace();
   const { isAdmin } = useUserRole();
   const navigate = useNavigate();
 
@@ -33,8 +38,24 @@ export function VerticalSwitcher({ collapsed = false }: Props) {
 
   const Icon = actual.icon;
 
+  // Activa la vertical en el centro con un clic (antes solo llevaba a /verticales).
+  const activar = async (v: VerticalTipo) => {
+    if (!currentWorkspace) return;
+    const { error } = await (supabase.from("workspace_verticales") as any).upsert(
+      { workspace_id: currentWorkspace.id, vertical: v, activa: true },
+      { onConflict: "workspace_id,vertical" }
+    );
+    if (error) {
+      toast.error(`No se pudo habilitar: ${error.message}`);
+      return;
+    }
+    await refresh();
+    setVerticalActiva(v);
+    toast.success(`${META[v].label} habilitada`);
+  };
+
   // Verticales no activadas (sólo admin)
-  const todas: VerticalTipo[] = ["clinica", "dental", "aesthetic", "recovery", "vision", "psicologia"];
+  const todas: VerticalTipo[] = ["clinica", "dental", "aesthetic", "recovery", "vision", "psicologia", "veterinaria"];
   const inactivas = todas.filter((v) => !verticalesActivas.includes(v));
 
   return (
@@ -73,10 +94,10 @@ export function VerticalSwitcher({ collapsed = false }: Props) {
             {inactivas.map((v) => {
               const m = META[v]; const I = m.icon;
               return (
-                <DropdownMenuItem key={v} onClick={() => navigate("/verticales")} className="opacity-60">
+                <DropdownMenuItem key={v} onClick={() => activar(v)} className="opacity-70">
                   <I className={`mr-2 h-4 w-4 ${m.color}`} />
                   <span className="flex-1">{m.label}</span>
-                  <span className="text-[10px] text-muted-foreground">activar →</span>
+                  <span className="text-[10px] text-primary">Habilitar</span>
                 </DropdownMenuItem>
               );
             })}

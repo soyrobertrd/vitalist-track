@@ -68,7 +68,7 @@ export default function VerticalesAdmin() {
   const asignarMiembro = async (userId: string, vertical: VerticalTipo | "ninguna") => {
     const { error } = await (supabase.from("profiles") as any)
       .update({ vertical_asignada: vertical === "ninguna" ? null : vertical })
-      .eq("user_id", userId);
+      .eq("id", userId);
     if (error) {
       toast.error(error.message);
       return;

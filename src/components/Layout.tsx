@@ -143,7 +143,7 @@ const Layout = ({ children }: LayoutProps) => {
     },
 
     {
-      path: "/pacientes", icon: Users, label: va === "aesthetic" ? "Clientes" : "Pacientes", moduleKey: "pacientes",
+      path: "/pacientes", icon: Users, label: va === "aesthetic" ? "Clientes" : va === "veterinaria" ? "Mascotas" : "Pacientes", moduleKey: "pacientes",
       subItems: [
         { path: "/pacientes", label: va === "aesthetic" ? "Lista de Clientes" : "Lista de Pacientes" },
         { path: "/sospechosos", label: "Sospechosos", verticales: ["clinica"] },
@@ -157,6 +157,8 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/aesthetic-pro?tab=fotos", label: "Fotos evolución", verticales: ["aesthetic"] },
         { path: "/aesthetic-pro?tab=membresias", label: "Membresías", icon: Heart, verticales: ["aesthetic"] },
         { path: "/vision-care?tab=recetas", label: "Recetas ópticas", verticales: ["vision"] },
+        { path: "/vet-care?tab=mascotas", label: "Fichas de mascotas", verticales: ["veterinaria"] },
+        { path: "/vet-care?tab=vacunas", label: "Calendario de vacunas", verticales: ["veterinaria"] },
         { path: "/recovery-care?tab=planes", label: "Planes de cuidado", verticales: ["recovery"] },
         { path: "/recovery-care?tab=seguimiento", label: "Seguimiento clínico", verticales: ["recovery"] },
         { path: "/recovery-care?tab=concierge", label: "Concierge médico", verticales: ["recovery"] },

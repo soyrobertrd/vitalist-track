@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { WorkspaceLocaleEditor } from "@/components/WorkspaceLocaleEditor";
-import { Sparkles, Building2, Plus, X } from "lucide-react";
+import { Sparkles, Building2, Plus, X, Copy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CANONICAL_PLANES } from "@/config/planes";
@@ -141,6 +141,8 @@ export function AdminGeneralTab({
 
   const isAnyHighUsage = userUsagePercent >= 80 || pacientesPercent >= 80 || profPercent >= 80;
 
+  const reservaUrl = `${window.location.origin}/reservar/${currentWorkspace?.slug}`;
+
   return (
     <div className="space-y-6">
       {/* Tarjeta Plan y Uso (Fase 5 - punto 4) */}
@@ -209,6 +211,38 @@ export function AdminGeneralTab({
           </div>
         </div>
       </GlassCard>
+
+      {/* Enlace público de citas (todos los planes, sin límite de reservas) */}
+      {currentWorkspace?.slug && (
+        <GlassCard className="p-6 space-y-3 shadow-none">
+          <div>
+            <h3 className="text-lg font-semibold tracking-tight">Enlace de citas en línea</h3>
+            <p className="text-sm text-muted-foreground">
+              {currentWorkspace.plan_codigo === "free"
+                ? "Tus pacientes reservan sin límite. Las citas llegan con sus datos de contacto, sin crear la ficha del paciente."
+                : currentWorkspace.plan_codigo === "solo"
+                  ? "Tus pacientes reservan sin límite. Las citas llegan marcadas como «Pendiente de registrar» para que agregues al paciente."
+                  : "Tus pacientes reservan sin límite y se registran automáticamente como pacientes del centro."}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Input readOnly value={reservaUrl} aria-label="Enlace de citas" className="font-mono text-xs" />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                navigator.clipboard.writeText(reservaUrl).then(
+                  () => toast.success("Enlace copiado"),
+                  () => toast.error("No se pudo copiar el enlace")
+                );
+              }}
+            >
+              <Copy className="mr-2 h-4 w-4" aria-hidden="true" />
+              Copiar
+            </Button>
+          </div>
+        </GlassCard>
+      )}
 
       {/* Ajustes Generales del Workspace */}
       <GlassCard className="p-6 space-y-6 shadow-none">

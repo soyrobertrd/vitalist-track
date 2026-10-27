@@ -21,6 +21,11 @@ interface Visita {
   notas_visita: string | null;
   paciente_id?: string;
   confirmada_por_paciente?: boolean;
+  // Reservas por enlace público (planes Gratis / Solo doctor): sin paciente, solo contacto
+  solicitante_nombre?: string | null;
+  solicitante_telefono?: string | null;
+  pendiente_registro?: boolean;
+  origen?: string;
   pacientes: { 
     nombre: string; 
     apellido: string;
@@ -89,7 +94,7 @@ export const VisitaCardAgendada = ({
   };
 
   const getMainPhone = () => {
-    if (!visita.pacientes) return null;
+    if (!visita.pacientes) return visita.solicitante_telefono ?? null;
     // Priority: numero_principal > contacto_px > contacto_cuidador
     if (visita.pacientes.numero_principal) {
       return visita.pacientes.numero_principal;
@@ -151,7 +156,14 @@ export const VisitaCardAgendada = ({
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-base line-clamp-2 flex-1">
-            {visita.pacientes?.nombre} {visita.pacientes?.apellido}
+            {visita.pacientes
+              ? `${visita.pacientes.nombre} ${visita.pacientes.apellido}`
+              : visita.solicitante_nombre ?? "Sin paciente"}
+            {visita.origen === "enlace_publico" && (
+              <Badge variant="outline" className="ml-2 align-middle text-[10px] font-normal">
+                {visita.pendiente_registro ? "Pendiente de registrar" : "Reserva en línea"}
+              </Badge>
+            )}
           </CardTitle>
           <div className="flex gap-1 flex-wrap justify-end items-center">
             {mainPhone && (
@@ -279,7 +291,7 @@ export const VisitaCardAgendada = ({
         onOpenChange={setRecordatorioOpen}
         tipo="visita"
         citaId={visita.id}
-        pacienteNombre={`${visita.pacientes?.nombre} ${visita.pacientes?.apellido}`}
+        pacienteNombre={visita.pacientes ? `${visita.pacientes.nombre} ${visita.pacientes.apellido}` : visita.solicitante_nombre ?? ""}
       />
 
       {visita.paciente_id && (

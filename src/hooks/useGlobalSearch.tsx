@@ -188,7 +188,7 @@ export function useGlobalSearch() {
           searchResults.push({
             id: v.id,
             type: 'visita',
-            title: `Cita: ${paciente.nombre} ${paciente.apellido}`,
+            title: `Cita: ${paciente ? `${paciente.nombre} ${paciente.apellido}` : v.solicitante_nombre ?? "Sin paciente"}`,
             subtitle: `${fecha} - ${v.tipo_visita === 'domicilio' ? 'Domicilio' : 'Ambulatoria'}`,
             url: `/app/citas?id=${v.id}`,
             metadata: v.estado,

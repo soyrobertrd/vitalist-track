@@ -227,6 +227,24 @@ All colors MUST be HSL.
     --accent: 199 50% 55%;
     --chart-1: 265 60% 70%;
   }
+
+  /* 6. Veterinaria (ámbar oscuro: texto blanco ≥ 4.5:1) */
+  [data-vertical="veterinaria"] {
+    --primary: 28 85% 38%;
+    --ring: 28 85% 38%;
+    --sidebar-primary: 28 85% 38%;
+    --sidebar-ring: 28 85% 38%;
+    --accent: 160 45% 40%;
+    --chart-1: 28 85% 38%;
+  }
+  .dark [data-vertical="veterinaria"] {
+    --primary: 32 90% 60%;
+    --ring: 32 90% 60%;
+    --sidebar-primary: 32 90% 60%;
+    --sidebar-ring: 32 90% 60%;
+    --accent: 160 45% 50%;
+    --chart-1: 32 90% 60%;
+  }
 }
 
 @layer base {
