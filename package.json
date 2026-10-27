@@ -13,6 +13,8 @@
     "test": "node scripts/seed-local-environment.mjs && node scripts/verify-local-user-auth.mjs",
     "seed:local": "node scripts/seed-local-environment.mjs",
     "verify:auth": "node scripts/verify-local-user-auth.mjs",
+    "export:turso": "node scripts/export-supabase-to-turso.mjs",
+    "export:turso:dry": "node scripts/export-supabase-to-turso.mjs --dry-run",
     "ci": "tsc --noEmit && vite build"
   },
   "dependencies": {

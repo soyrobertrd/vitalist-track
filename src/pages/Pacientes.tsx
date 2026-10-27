@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Plus, Users, UserX, Search, RotateCcw, Pencil, CheckSquare, LayoutGrid, List, Eye, Calendar } from "lucide-react";
+import { Plus, Users, UserX, Search, RotateCcw, Pencil, Eye, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { DataTable, ColumnDef } from "@/components/common/DataTable";
 
@@ -74,7 +74,8 @@ const Pacientes = () => {
   const [selectionMode, setSelectionMode] = useState(false);
 
   // Dialog states
-  const [open, setOpen] = useState(false);
+  // ?nuevo=1 (p. ej. desde el dashboard) abre directamente el formulario de nuevo paciente
+  const [open, setOpen] = useState(() => new URLSearchParams(window.location.search).get("nuevo") === "1");
   const [importOpen, setImportOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -187,9 +188,16 @@ const Pacientes = () => {
               <h1 className="text-2xl font-bold">Pacientes</h1>
               <p className="text-muted-foreground text-sm">Gestión de pacientes del programa</p>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <AgendarCitaButton size="sm" />
-              <TabsList className="grid grid-cols-2">
+            {/* Acciones principales agrupadas a la derecha del título */}
+            <div className="flex flex-wrap items-center gap-2">
+              <AgendarCitaButton size="sm" variant="outline" className="rounded-full" />
+              <Button size="sm" className="rounded-full" onClick={() => { if (canCreate("pacientes")) setOpen(true); }}>
+                <Plus className="mr-1.5 h-4 w-4" aria-hidden="true" /> Nuevo paciente
+              </Button>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+              <TabsList>
                 <TabsTrigger value="activos" className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
                   <span>Activos</span>
@@ -201,66 +209,27 @@ const Pacientes = () => {
                   <Badge variant="outline" className="ml-1">{pacientesInactivos.length}</Badge>
                 </TabsTrigger>
               </TabsList>
-            </div>
+              {activeTab === "activos" && (
+                <PacientesHeader
+                  isAdmin={isAdmin}
+                  filteredPacientes={filteredPacientesActivos}
+                  onImportClick={() => { if (canCreate("pacientes")) setImportOpen(true); }}
+                  onToggleFilters={() => setShowFilters(!showFilters)}
+                  showFilters={showFilters}
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                  selectionMode={selectionMode}
+                  onToggleSelection={() => {
+                    setSelectionMode(!selectionMode);
+                    if (selectionMode) bulkSelection.clearSelection();
+                  }}
+                />
+              )}
           </div>
         </div>
 
         <TabsContent value="activos" className="mt-6 space-y-6">
           <PlanLimitAlert resource="pacientes" />
-          <div className="flex items-center justify-between gap-2 flex-wrap">
-            <PacientesHeader
-              isAdmin={isAdmin}
-              filteredPacientes={filteredPacientesActivos}
-              onImportClick={() => {
-                if (canCreate("pacientes")) setImportOpen(true);
-              }}
-              onNewPacienteClick={() => {
-                if (canCreate("pacientes")) setOpen(true);
-              }}
-              onToggleFilters={() => setShowFilters(!showFilters)}
-              showFilters={showFilters}
-              hideTitle
-            />
-            <div className="flex items-center gap-2">
-              {/* Selector de Vista (Tarjetas / Tabla) */}
-              <div className="flex items-center border rounded-lg p-0.5 bg-muted/40">
-                <Button
-                  variant={viewMode === "cards" ? "default" : "ghost"}
-                  size="sm"
-                  className="h-7 px-2.5 text-xs shadow-none gap-1"
-                  onClick={() => setViewMode("cards")}
-                  aria-label="Vista cuadrícula de tarjetas"
-                >
-                  <LayoutGrid className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Tarjetas</span>
-                </Button>
-                <Button
-                  variant={viewMode === "table" ? "default" : "ghost"}
-                  size="sm"
-                  className="h-7 px-2.5 text-xs shadow-none gap-1"
-                  onClick={() => setViewMode("table")}
-                  aria-label="Vista tabular"
-                >
-                  <List className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Tabla</span>
-                </Button>
-              </div>
-
-              <Button
-                variant={selectionMode ? "default" : "outline"}
-                size="sm"
-                className="h-8 text-xs shadow-none"
-                onClick={() => {
-                  setSelectionMode(!selectionMode);
-                  if (selectionMode) bulkSelection.clearSelection();
-                }}
-              >
-                <CheckSquare className="h-3.5 w-3.5 mr-1.5" />
-                {selectionMode ? "Cancelar selección" : "Selección múltiple"}
-              </Button>
-            </div>
-          </div>
-
           {showFilters && (
             <>
               <div className="lg:block hidden">

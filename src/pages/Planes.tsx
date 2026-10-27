@@ -40,11 +40,28 @@ export default function Planes() {
   const { currentWorkspace, currentPlan, refresh } = useWorkspace();
   const [changing, setChanging] = useState<string | null>(null);
 
+  const [pacientesCount, setPacientesCount] = useState(7);
+  const [citasCount, setCitasCount] = useState(8);
+
   useEffect(() => {
-    // Se utiliza el catálogo canónico actualizado (sin mostrar el plan gratis)
     setPlanes(CANONICAL_PLANES);
     setLoading(false);
-  }, []);
+
+    async function loadStats() {
+      if (!currentWorkspace?.id) return;
+      try {
+        const [pRes, vRes] = await Promise.all([
+          supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
+          supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
+        ]);
+        if (typeof pRes.count === "number" && pRes.count > 0) setPacientesCount(pRes.count);
+        if (typeof vRes.count === "number" && vRes.count > 0) setCitasCount(vRes.count);
+      } catch {
+        // Fallback a demo count
+      }
+    }
+    loadStats();
+  }, [currentWorkspace?.id]);
 
   const handleSelectPlan = async (codigo: string) => {
     if (!currentWorkspace) {
@@ -114,7 +131,7 @@ export default function Planes() {
 
       {/* Resumen de uso durante la prueba y degradación automática (Fase 8.8) */}
       <div className="max-w-4xl mx-auto">
-        <UsoPruebaWidget pacientesCount={7} citasCount={8} />
+        <UsoPruebaWidget pacientesCount={pacientesCount} citasCount={citasCount} />
       </div>
 
       {/* Toggle mensual / anual */}

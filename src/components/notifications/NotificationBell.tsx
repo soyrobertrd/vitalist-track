@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,15 +7,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Bell, Calendar, AlertTriangle, Sparkles, Check, Clock } from "lucide-react";
+import { Bell, Calendar, AlertTriangle, Sparkles, Check, Clock, DollarSign } from "lucide-react";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { supabase } from "@/integrations/supabase/client";
+import { format, startOfDay, endOfDay } from "date-fns";
+import { es } from "date-fns/locale";
 
 interface NotificationItem {
   id: string;
   title: string;
   description: string;
   time: string;
-  type: "cita" | "alerta" | "sistema";
+  type: "cita" | "alerta" | "sistema" | "cobro";
   read: boolean;
   url: string;
 }
@@ -27,33 +30,78 @@ export function NotificationBell() {
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([
     {
-      id: "notif-1",
+      id: "notif-demo-1",
       title: "Cita médica confirmada",
-      description: "Ana Pérez ha confirmado su consulta ambulatoria para hoy a las 09:30 AM.",
-      time: "Hace 15 min",
+      description: "Ana Pérez ha confirmado su consulta ambulatoria para hoy.",
+      time: "Hoy",
       type: "cita",
       read: false,
       url: "/app/citas",
     },
-    {
-      id: "notif-2",
-      title: "Recordatorio por enviar",
-      description: "3 pacientes tienen citas programadas para mañana sin confirmación.",
-      time: "Hace 1 hora",
-      type: "alerta",
-      read: false,
-      url: "/app/citas",
-    },
-    {
-      id: "notif-3",
-      title: "Capacidad del centro",
-      description: `Operando en ${currentWorkspace?.nombre || "tu centro"} con cuota médica activa.`,
-      time: "Hoy",
-      type: "sistema",
-      read: true,
-      url: "/app/planes",
-    },
   ]);
+
+  // Cargar notificaciones dinámicas reales
+  useEffect(() => {
+    const fetchAlertas = async () => {
+      const hoy = new Date();
+      const desde = startOfDay(hoy).toISOString();
+      const hasta = endOfDay(hoy).toISOString();
+
+      try {
+        const [citasRes, facturasRes] = await Promise.all([
+          supabase
+            .from("control_visitas")
+            .select("id, fecha_hora_visita, estado, pacientes(nombre, apellido)")
+            .gte("fecha_hora_visita", desde)
+            .lte("fecha_hora_visita", hasta)
+            .eq("estado", "pendiente")
+            .limit(4),
+          supabase
+            .from("facturas")
+            .select("id, monto_total, descripcion, pacientes(nombre, apellido)")
+            .eq("estado", "pendiente")
+            .limit(3),
+        ]);
+
+        const items: NotificationItem[] = [];
+
+        // Alertas de citas próximas
+        (citasRes.data || []).forEach((c: any) => {
+          const hora = c.fecha_hora_visita ? format(new Date(c.fecha_hora_visita), "hh:mm a") : "Hoy";
+          items.push({
+            id: `cita-${c.id}`,
+            title: `Cita pendiente (${hora})`,
+            description: `${c.pacientes?.nombre || "Paciente"} ${c.pacientes?.apellido || ""} tiene cita programada.`,
+            time: hora,
+            type: "cita",
+            read: false,
+            url: "/recepcion",
+          });
+        });
+
+        // Alertas de cobros pendientes
+        (facturasRes.data || []).forEach((f: any) => {
+          items.push({
+            id: `fac-${f.id}`,
+            title: "Pago o Copago pendiente",
+            description: `${f.pacientes?.nombre || "Paciente"} ${f.pacientes?.apellido || ""}: RD$ ${Number(f.monto_total || 0).toLocaleString()}`,
+            time: "Pendiente",
+            type: "cobro",
+            read: false,
+            url: "/recepcion",
+          });
+        });
+
+        if (items.length > 0) {
+          setNotifications(items);
+        }
+      } catch {
+        // En caso de error de red, mantener notificaciones por defecto
+      }
+    };
+
+    fetchAlertas();
+  }, [currentWorkspace?.id]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -75,6 +123,8 @@ export function NotificationBell() {
         return <Calendar className="h-4 w-4 text-primary" />;
       case "alerta":
         return <AlertTriangle className="h-4 w-4 text-warning" />;
+      case "cobro":
+        return <DollarSign className="h-4 w-4 text-emerald-600" />;
       case "sistema":
         return <Sparkles className="h-4 w-4 text-primary" />;
     }

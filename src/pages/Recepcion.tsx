@@ -21,6 +21,7 @@ import { BuscarPacienteRecepcion } from "@/components/recepcion/BuscarPacienteRe
 import { DisponibilidadDiaTanda } from "@/components/recepcion/DisponibilidadDiaTanda";
 import { ListaEspera } from "@/components/ListaEspera";
 import { PortalSolicitudesInbox } from "@/components/portal/PortalSolicitudesInbox";
+import { ModoRecepcionAgil } from "@/components/recepcion/ModoRecepcionAgil";
 
 export default function Recepcion() {
   const { buscarPorCodigo, buscarPorToken, marcarLlegada, marcarAtendido, marcarNoShow } = useCitaTickets();
@@ -112,8 +113,9 @@ export default function Recepcion() {
     <div className="space-y-6 max-w-6xl mx-auto">
       <MobilePageHeader title="Recepción" description="Centro integrado para llegada de pacientes, validación de tickets y consultas." />
 
-      <Tabs defaultValue="ticket" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-6">
+      <Tabs defaultValue="llegadas" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-7">
+          <TabsTrigger value="llegadas"><UserCheck className="h-4 w-4 mr-2" />Llegadas & Cobro</TabsTrigger>
           <TabsTrigger value="ticket"><ScanLine className="h-4 w-4 mr-2" />Tickets</TabsTrigger>
           <TabsTrigger value="paciente"><User className="h-4 w-4 mr-2" />Paciente</TabsTrigger>
           <TabsTrigger value="cedula"><ScanText className="h-4 w-4 mr-2" />OCR cédula</TabsTrigger>
@@ -121,6 +123,11 @@ export default function Recepcion() {
           <TabsTrigger value="espera"><ClockIcon className="h-4 w-4 mr-2" />Lista Espera</TabsTrigger>
           <TabsTrigger value="portal"><FileText className="h-4 w-4 mr-2" />Portal</TabsTrigger>
         </TabsList>
+
+        {/* MODO RECEPCIÓN ÁGIL: LLEGADAS DEL DÍA, REGISTRO EXPRESS Y COBRO */}
+        <TabsContent value="llegadas" className="pt-4">
+          <ModoRecepcionAgil />
+        </TabsContent>
 
         {/* TICKETS */}
         <TabsContent value="ticket" className="space-y-4 pt-4">

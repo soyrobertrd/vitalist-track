@@ -8,7 +8,8 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* Fondo gris-azulado suave: las tarjetas blancas se separan sin sombras (estilo referencias) */
+    --background: 220 25% 97%;
     --foreground: 222.2 47% 11%;
 
     --card: 0 0% 100%;
@@ -42,7 +43,7 @@ All colors MUST be HSL.
     --input: 214 32% 91%;
     --ring: 217 91% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
     
     /* Glassmorphism effects */
     --glass-bg: rgba(255, 255, 255, 0.1);
@@ -253,7 +254,8 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground transition-colors duration-200;
+    @apply bg-background text-foreground antialiased transition-colors duration-200;
+    font-feature-settings: "cv11", "ss01"; /* Inter: dígitos y "a" más legibles en datos clínicos */
   }
 }
 

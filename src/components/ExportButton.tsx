@@ -5,6 +5,26 @@ import { toast } from "sonner";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
+/** Descarga filas como CSV (UTF-8 con BOM para que Excel respete tildes). Reutilizable fuera del botón. */
+export function descargarCSV(data: Record<string, unknown>[], columns: { key: string; label: string }[], filename: string) {
+  try {
+    const celda = (v: unknown) => {
+      const t = String(v ?? "");
+      return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+    };
+    const csv = [columns.map((c) => celda(c.label)).join(","), ...data.map((row) => columns.map((c) => celda(row[c.key])).join(","))].join("\n");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" }));
+    link.download = `${filename}_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    toast.success("CSV exportado exitosamente");
+  } catch (error) {
+    console.error("Error exporting CSV:", error);
+    toast.error("Error al exportar CSV");
+  }
+}
+
 interface ExportButtonProps {
   targetRef?: React.RefObject<HTMLElement>;
   filename?: string;
@@ -130,29 +150,7 @@ export function ExportButton({
       toast.error("No hay datos para exportar");
       return;
     }
-
-    try {
-      const headers = columns.map(c => c.label).join(',');
-      const rows = data.map(row => 
-        columns.map(col => {
-          const value = String(row[col.key] || '');
-          // Escape quotes and wrap in quotes if contains comma
-          return value.includes(',') ? `"${value.replace(/"/g, '""')}"` : value;
-        }).join(',')
-      );
-      
-      const csv = [headers, ...rows].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
-      link.click();
-      
-      toast.success("CSV exportado exitosamente");
-    } catch (error) {
-      console.error("Error exporting CSV:", error);
-      toast.error("Error al exportar CSV");
-    }
+    descargarCSV(data, columns, filename);
   };
 
   return (

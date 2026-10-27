@@ -26,9 +26,12 @@ import { useAuditAccess } from "@/hooks/useAuditAccess";
 import { RecetasPaciente } from "@/components/ficha-clinica/RecetasPaciente";
 import { ConsultasEspecialidad } from "@/components/ficha-clinica/PlantillasEspecialidad";
 import { AgendarCitaButton } from "@/components/AgendarCitaButton";
+import { HeaderPaciente360 } from "@/components/ficha-clinica/HeaderPaciente360";
 
 interface Props {
   pacienteId: string;
+  /** Solo cuando la ficha se muestra sola (p. ej. en recepción); la vista 360 y el modal ya tienen cabecera */
+  conCabecera?: boolean;
 }
 
 type Alergia = {
@@ -74,7 +77,7 @@ const SEVERIDAD_COLORS: Record<string, string> = {
   anafilaxia: "bg-red-200 text-red-900 border-red-400 dark:bg-red-900 dark:text-red-200",
 };
 
-export function FichaClinicaPaciente({ pacienteId }: Props) {
+export function FichaClinicaPaciente({ pacienteId, conCabecera = false }: Props) {
   // Auditoría HIPAA-like: registrar acceso de lectura a la ficha clínica
   useAuditAccess({ pacienteId, recurso: "ficha_clinica", accion: "view" });
 
@@ -207,15 +210,11 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between gap-4 flex-wrap">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <ClipboardList className="h-5 w-5" />
-          Ficha Clínica
-        </CardTitle>
-        <AgendarCitaButton size="sm" pacienteId={pacienteId} />
-      </CardHeader>
-      <CardContent>
+    <div className="space-y-4">
+      {conCabecera && <HeaderPaciente360 pacienteId={pacienteId} />}
+
+      <Card className="shadow-none border-border">
+        <CardContent className="pt-5">
         <Tabs defaultValue="timeline" className="w-full">
           <TabsList className="flex flex-wrap h-auto justify-start gap-1">
             <TabsTrigger value="timeline" className="flex items-center gap-1.5">
@@ -686,6 +685,7 @@ export function FichaClinicaPaciente({ pacienteId }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Card>
+      </Card>
+    </div>
   );
 }

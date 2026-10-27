@@ -39,6 +39,7 @@ import { SucursalSelect } from "@/components/SucursalSelect";
 import { VideoConsultaFields } from "@/components/VideoConsultaFields";
 import { ProgramarVisitaDialog } from "@/components/visitas/ProgramarVisitaDialog";
 import { RegistrarVisitaNoAgendadaDialog } from "@/components/visitas/RegistrarVisitaNoAgendadaDialog";
+import { AgendaMobileLista } from "@/components/visitas/AgendaMobileLista";
 import type { VideoProveedor } from "@/lib/videoLinks";
 
 import type { Paciente, Personal } from "@/types/db";
@@ -654,9 +655,21 @@ const Visitas = () => {
       )}
 
 
-      {/* Lista de Visitas con Tabs */}
-      <Tabs defaultValue="agendadas" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+      {/* Vista Mobile-First (<640px) */}
+      <AgendaMobileLista
+        visitas={visitas}
+        onSelectVisita={(v) => {
+          setSelectedVisita(v);
+          setDetailOpen(true);
+        }}
+        onOpenNuevaCita={() => setOpen(true)}
+        className="block sm:hidden"
+      />
+
+      {/* Vista Desktop (>=640px) con Tabs completos */}
+      <div className="hidden sm:block">
+        <Tabs defaultValue="agendadas" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="agendadas">
             Visitas Agendadas ({visitasAgendadas.length})
           </TabsTrigger>
@@ -777,6 +790,7 @@ const Visitas = () => {
           )}
         </TabsContent>
       </Tabs>
+      </div>
 
       <VisitaDetailDialog
         open={detailOpen}
@@ -811,15 +825,6 @@ const Visitas = () => {
         fecha={selectedFechaHora ? new Date(selectedFechaHora) : new Date()}
         onSelect={(profId) => setSelectedProfesionalId(profId)}
       />
-
-      {/* Botón flotante móvil (FAB) para agendar cita rápida (Fase 9 - punto 5) */}
-      <Button
-        onClick={() => setOpen(true)}
-        className="sm:hidden fixed bottom-6 right-6 z-40 rounded-full h-14 w-14 p-0 shadow-lg bg-primary text-primary-foreground hover:bg-primary/90 flex items-center justify-center"
-        aria-label="Nueva cita médica"
-      >
-        <Plus className="h-6 w-6" />
-      </Button>
     </div>
   );
 };

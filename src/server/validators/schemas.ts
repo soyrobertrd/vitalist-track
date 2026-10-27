@@ -55,3 +55,104 @@ export const createAppointmentSchema = z.object({
   notes: z.string().max(2000).optional().nullable(),
   cancellationReason: z.string().max(500).optional().nullable(),
 });
+
+// 5. Historias Clínicas / Medical Records - Query Schema
+export const medicalRecordQuerySchema = z.object({
+  patientId: z.string().optional(),
+  professionalId: z.string().optional(),
+  branchId: z.string().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+});
+
+// 6. Historias Clínicas / Medical Records - Create Schema
+export const createMedicalRecordSchema = z.object({
+  patientId: z.string().min(1, 'El paciente es obligatorio'),
+  branchId: z.string().min(1, 'La sucursal es obligatoria'),
+  professionalId: z.string().min(1, 'El profesional es obligatorio'),
+  consultationDate: z.string().min(1, 'La fecha de consulta es obligatoria'),
+  reason: z.string().min(1, 'El motivo de consulta es obligatorio').max(500),
+  vitalSigns: z.object({
+    bloodPressure: z.string().optional(),
+    heartRate: z.number().optional(),
+    respiratoryRate: z.number().optional(),
+    temperature: z.number().optional(),
+    weightKg: z.number().optional(),
+    heightCm: z.number().optional(),
+    bmi: z.number().optional(),
+  }).optional(),
+  physicalExam: z.string().max(3000).optional().nullable(),
+  diagnosisCie10: z.string().max(50).optional().nullable(),
+  diagnosisText: z.string().max(1000).optional().nullable(),
+  treatmentPlan: z.string().max(3000).optional().nullable(),
+  notes: z.string().max(2000).optional().nullable(),
+});
+
+// 7. Recetas / Prescriptions - Query Schema
+export const prescriptionQuerySchema = z.object({
+  patientId: z.string().optional(),
+  professionalId: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+});
+
+// 8. Recetas / Prescriptions - Create Schema
+export const createPrescriptionSchema = z.object({
+  patientId: z.string().min(1, 'El paciente es obligatorio'),
+  professionalId: z.string().min(1, 'El profesional es obligatorio'),
+  medicalRecordId: z.string().optional().nullable(),
+  medications: z.array(z.object({
+    name: z.string().min(1, 'El nombre del medicamento es obligatorio'),
+    dosage: z.string().min(1, 'La dosis es obligatoria'),
+    frequency: z.string().min(1, 'La frecuencia es obligatoria'),
+    duration: z.string().min(1, 'La duración es obligatoria'),
+    route: z.string().optional(),
+    instructions: z.string().optional(),
+  })).min(1, 'Debe incluir al menos un medicamento'),
+  instructions: z.string().max(2000).optional().nullable(),
+  validUntil: z.string().optional().nullable(),
+});
+
+// 9. Facturación / Invoices - Query Schema
+export const invoiceQuerySchema = z.object({
+  patientId: z.string().optional(),
+  branchId: z.string().optional(),
+  status: z.enum(['draft', 'pending', 'paid', 'cancelled']).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+});
+
+// 10. Facturación / Invoices - Create Schema
+export const createInvoiceSchema = z.object({
+  branchId: z.string().min(1, 'La sucursal es obligatoria'),
+  patientId: z.string().min(1, 'El paciente es obligatorio'),
+  invoiceNumber: z.string().min(1, 'El número de factura es obligatorio'),
+  issueDate: z.string().min(1, 'La fecha de emisión es obligatoria'),
+  dueDate: z.string().optional().nullable(),
+  paymentMethod: z.enum(['cash', 'card', 'transfer', 'insurance', 'other']).optional().nullable(),
+  notes: z.string().max(1000).optional().nullable(),
+  items: z.array(z.object({
+    description: z.string().min(1, 'La descripción es obligatoria'),
+    quantity: z.number().positive('La cantidad debe ser mayor a 0'),
+    unitPrice: z.number().nonnegative('El precio unitario no puede ser negativo'),
+    discount: z.number().nonnegative().default(0),
+  })).min(1, 'Debe incluir al menos un item'),
+});
+
+// 11. Sucursales / Branches - Create Schema
+export const createBranchSchema = z.object({
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres').max(100),
+  address: z.string().max(255).optional().nullable(),
+  phone: z.string().max(30).optional().nullable(),
+  email: z.string().email('Email inválido').optional().nullable().or(z.literal('')),
+  isMain: z.boolean().default(false),
+  isActive: z.boolean().default(true),
+});
+
+// 12. Exportación a Turso - Request Schema
+export const exportToTursoSchema = z.object({
+  workspaceId: z.string().min(1, 'El workspaceId es obligatorio'),
+  clinicId: z.string().optional(),
+  dryRun: z.boolean().default(false),
+});
+

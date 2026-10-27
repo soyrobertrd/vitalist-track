@@ -18,7 +18,9 @@ export default function ConfirmarCita() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token");
-  const tipo = searchParams.get("tipo") as "llamada" | "visita" | null;
+  const citaId = searchParams.get("cita");
+  const tipo = (searchParams.get("tipo") as "llamada" | "visita") || "visita";
+  const auto = searchParams.get("auto") === "1";
   
   const [loading, setLoading] = useState(true);
   const [cita, setCita] = useState<any>(null);
@@ -31,25 +33,63 @@ export default function ConfirmarCita() {
   const { esDiaLaborable } = useDiasLaborables();
 
   useEffect(() => {
-    if (token && tipo) {
+    if (token || citaId) {
       fetchCita();
     } else {
-      toast.error("Enlace inválido");
+      toast.error("Enlace inválido o incompleto");
       setLoading(false);
     }
-  }, [token, tipo]);
+  }, [token, citaId, tipo]);
 
-  // S11: toda la lógica corre en la edge function confirmar-cita (service role); aquí solo se envía el token.
+  // S11: si hay token se usa edge function, si hay citaId directo se usa supabase client
   const llamar = async (accion: "ver" | "confirmar" | "reagendar", extra: Record<string, string> = {}) => {
-    const { data, error } = await supabase.functions.invoke("confirmar-cita", {
-      body: { token, tipo, accion, ...extra },
-    });
-    if (error || data?.error) {
-      let msg = data?.error;
-      try { msg = msg || (await (error as any)?.context?.json())?.error; } catch { /* sin cuerpo */ }
-      throw new Error(msg || "No se pudo procesar la solicitud");
+    if (token) {
+      const { data, error } = await supabase.functions.invoke("confirmar-cita", {
+        body: { token, tipo, accion, ...extra },
+      });
+      if (error || data?.error) {
+        let msg = data?.error;
+        try { msg = msg || (await (error as any)?.context?.json())?.error; } catch { /* sin cuerpo */ }
+        throw new Error(msg || "No se pudo procesar la solicitud");
+      }
+      return data;
     }
-    return data;
+
+    // Flujo directo por ID de cita
+    const tabla = tipo === "llamada" ? "registro_llamadas" : "control_visitas";
+    const fechaCol = tipo === "llamada" ? "fecha_agendada" : "fecha_hora_visita";
+
+    if (accion === "ver") {
+      const { data, error } = await supabase
+        .from(tabla)
+        .select(`id, ${fechaCol}, estado, ${tipo === "llamada" ? "motivo, " : ""}pacientes(nombre, apellido), personal_salud(nombre, apellido)`)
+        .eq("id", citaId!)
+        .maybeSingle();
+      if (error || !data) throw new Error("Cita no encontrada");
+      return { cita: data };
+    }
+
+    if (accion === "confirmar") {
+      const updateData = tipo === "llamada"
+        ? { estado: "agendada", notas_adicionales: "Confirmada por paciente vía WhatsApp (1 toque)" }
+        : { estado: "confirmada", notas_visita: "Confirmada por paciente vía WhatsApp (1 toque)" };
+
+      const { error } = await supabase.from(tabla).update(updateData as any).eq("id", citaId!);
+      if (error) throw new Error("No se pudo confirmar la cita");
+      return { ok: true };
+    }
+
+    if (accion === "reagendar") {
+      const { fechaHora, motivo: mot } = extra;
+      const nota = `Reagendada por paciente vía WhatsApp: ${String(mot || "").slice(0, 500)}`;
+      const updateData = tipo === "llamada"
+        ? { fecha_agendada: fechaHora, estado: "reagendada", notas_adicionales: nota }
+        : { fecha_hora_visita: fechaHora, estado: "pendiente", notas_visita: nota };
+
+      const { error } = await supabase.from(tabla).update(updateData as any).eq("id", citaId!);
+      if (error) throw new Error("No se pudo reagendar la cita");
+      return { ok: true };
+    }
   };
 
   const fetchCita = async () => {
@@ -58,6 +98,11 @@ export default function ConfirmarCita() {
       setCita(cita);
       setPaciente(cita.pacientes);
       setProfesional(cita.personal_salud);
+      if (auto) {
+        await llamar("confirmar");
+        setAccion("confirmar");
+        toast.success("¡Cita confirmada con 1 toque!");
+      }
     } catch (error: any) {
       toast.error(error.message);
     } finally {

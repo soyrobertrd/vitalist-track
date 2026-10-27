@@ -17,6 +17,10 @@ interface InteractiveKPIProps {
   color?: "primary" | "secondary" | "success" | "warning" | "destructive";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
+  /** Tarjeta destacada en color de la vertical (una por fila, como KPI principal) */
+  highlight?: boolean;
+  /** Barra de progreso 0-100 bajo el valor (ocupación, cumplimiento…) */
+  progress?: number;
 }
 
 export function InteractiveKPI({
@@ -31,6 +35,8 @@ export function InteractiveKPI({
   color = "primary",
   size = "md",
   loading = false,
+  highlight = false,
+  progress,
 }: InteractiveKPIProps) {
   const colorClasses = {
     primary: "bg-primary/10 text-primary border-primary/20",
@@ -50,7 +56,7 @@ export function InteractiveKPI({
 
   const sizeClasses = {
     sm: "p-4",
-    md: "p-6",
+    md: "p-5",
     lg: "p-8",
   };
 
@@ -65,79 +71,81 @@ export function InteractiveKPI({
     ? ((value - previousValue) / previousValue * 100).toFixed(1)
     : null;
 
+  const positivo = trend?.isPositive ?? Number(percentChange) > 0;
+  const mostrarTendencia = trend || percentChange;
+
   return (
     <GlassCard
       onClick={onClick}
       className={cn(
         sizeClasses[size],
-        "group relative overflow-hidden transition-all duration-300",
-        "hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1",
+        "group relative flex flex-col overflow-hidden transition-colors",
+        highlight ? "border-primary bg-primary text-primary-foreground" : "hover:border-primary/40",
         onClick && "cursor-pointer"
       )}
     >
-      {/* Background decoration */}
-      <div className={cn(
-        "absolute top-0 right-0 w-32 h-32 rounded-full opacity-5 -mr-10 -mt-10 transition-all group-hover:opacity-10 group-hover:scale-110",
-        colorClasses[color]
-      )} />
-
-      <div className="relative">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className={cn(
-            "p-2.5 rounded-xl transition-all group-hover:scale-110",
-            colorClasses[color]
-          )}>
-            <Icon className={cn("h-5 w-5", iconColors[color])} />
+      <div
+        role={onClick ? "button" : undefined}
+        tabIndex={onClick ? 0 : undefined}
+        aria-label={onClick ? `${title}: ${value}` : undefined}
+        onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } } : undefined}
+        className="flex flex-1 flex-col rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2">
+            <div className={cn("rounded-lg p-1.5", highlight ? "bg-primary-foreground/15" : colorClasses[color])}>
+              <Icon className={cn("h-4 w-4", highlight ? "text-primary-foreground" : iconColors[color])} aria-hidden="true" />
+            </div>
+            <p className={cn("truncate text-sm font-medium", highlight ? "text-primary-foreground" : "text-foreground")}>{title}</p>
           </div>
-          
           {onClick && (
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-              <ArrowRight className="h-5 w-5 text-muted-foreground" />
-            </div>
+            <ArrowRight
+              className={cn("h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5", highlight ? "text-primary-foreground/80" : "text-muted-foreground")}
+              aria-hidden="true"
+            />
           )}
         </div>
 
-        {/* Value */}
-        <div className="space-y-1">
+        <div className="mt-4 flex items-end gap-2">
           {loading ? (
-            <div className={cn("animate-pulse bg-muted rounded h-9 w-24", valueSizes[size])} />
+            <div className="h-9 w-24 animate-pulse rounded bg-muted" />
           ) : (
-            <div className={cn("font-bold text-foreground tracking-tight", valueSizes[size])}>
-              {value}
-            </div>
+            <span className={cn("font-bold leading-none tracking-tight tabular-nums", valueSizes[size])}>{value}</span>
           )}
-          
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-        </div>
-
-        {/* Footer with trend and description */}
-        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
-          <p className="text-xs text-muted-foreground">{subtitle || description}</p>
-          
-          {(trend || percentChange) && (
-            <div className={cn(
-              "flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full",
-              (trend?.isPositive ?? Number(percentChange) > 0) 
-                ? "bg-success/10 text-success" 
-                : "bg-destructive/10 text-destructive"
-            )}>
-              {(trend?.isPositive ?? Number(percentChange) > 0) ? (
-                <TrendingUp className="h-3 w-3" />
-              ) : (
-                <TrendingDown className="h-3 w-3" />
+          {mostrarTendencia && (
+            <span
+              className={cn(
+                "mb-0.5 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[11px] font-semibold",
+                highlight
+                  ? "bg-primary-foreground/15 text-primary-foreground"
+                  : positivo ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
               )}
+            >
+              {positivo ? <TrendingUp className="h-3 w-3" aria-hidden="true" /> : <TrendingDown className="h-3 w-3" aria-hidden="true" />}
               {trend?.value ?? percentChange}%
-            </div>
+            </span>
           )}
         </div>
-      </div>
 
-      {/* Animated border effect on hover */}
-      <div className={cn(
-        "absolute inset-0 rounded-lg border-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none",
-        `border-${color}/30`
-      )} />
+        {progress !== undefined && (
+          <div
+            role="progressbar"
+            aria-valuenow={Math.round(progress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            className={cn("mt-3 h-1.5 w-full overflow-hidden rounded-full", highlight ? "bg-primary-foreground/20" : "bg-muted")}
+          >
+            <div
+              className={cn("h-full rounded-full", highlight ? "bg-primary-foreground" : "bg-primary")}
+              style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
+            />
+          </div>
+        )}
+
+        {(subtitle || description) && (
+          <p className={cn("mt-2 text-xs", highlight ? "text-primary-foreground/80" : "text-muted-foreground")}>{subtitle || description}</p>
+        )}
+      </div>
     </GlassCard>
   );
 }

@@ -46,7 +46,11 @@ export function VerticalSwitcher({ collapsed = false }: Props) {
       { onConflict: "workspace_id,vertical" }
     );
     if (error) {
-      toast.error(`No se pudo habilitar: ${error.message}`);
+      toast.error(
+        error.message.includes("invalid input value for enum")
+          ? `${META[v].label} aún no existe en la base de datos: falta aplicar la última migración.`
+          : `No se pudo habilitar: ${error.message}`
+      );
       return;
     }
     await refresh();

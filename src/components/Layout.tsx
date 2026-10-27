@@ -51,6 +51,10 @@ import {
   ListTodo,
   MessageCircle,
   FileSignature,
+  Plus,
+  UserPlus,
+  CalendarPlus,
+  Menu as MenuIcon,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -515,17 +519,26 @@ const Layout = ({ children }: LayoutProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
-        {visibleMenuItems.filter(item => !item.adminOnly || (item.adminOnly && isAdmin)).map((item) => (
+        {visibleMenuItems.filter(item => !item.adminOnly || (item.adminOnly && isAdmin)).map((item, idx, lista) => (
           <div key={item.path}>
+            {/* Etiquetas de sección (MENÚ / CLÍNICA / GESTIÓN / OTROS), como en las referencias */}
+            {!sidebarCollapsed && SECCION[item.moduleKey] && SECCION[item.moduleKey] !== SECCION[lista[idx - 1]?.moduleKey] && (
+              <p className={cn("px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-sidebar-foreground/50", idx > 0 && "pt-4")}>
+                {SECCION[item.moduleKey]}
+              </p>
+            )}
             {'subItems' in item && item.subItems ? (
               <Collapsible open={openSubmenu === item.path} onOpenChange={() => toggleSubmenu(item.path)}>
                 <CollapsibleTrigger asChild>
                   <button
                     className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
                       "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                      "focus:outline-none focus:ring-2 focus:ring-primary/20",
-                      "text-sidebar-foreground"
+                      "focus:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+                      // El grupo se marca cuando alguna de sus páginas está abierta
+                      item.subItems.some((si: any) => isSubItemActive(si.path))
+                        ? "text-sidebar-primary"
+                        : "text-sidebar-foreground"
                     )}
                   >
                     <item.icon className="h-4 w-4 shrink-0" />
@@ -542,17 +555,17 @@ const Layout = ({ children }: LayoutProps) => {
                     )}
                   </button>
                 </CollapsibleTrigger>
-                <CollapsibleContent className="space-y-1 mt-1">
+                <CollapsibleContent className="ml-5 mt-1 space-y-0.5 border-l border-sidebar-border pl-2">
                   {item.subItems.map((subItem) => (
                     <Link
                       key={subItem.path}
                       to={subItem.path}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2 ml-6 rounded-lg text-sm font-medium transition-all duration-200",
+                        "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
                         isSubItemActive(subItem.path)
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                          ? "bg-sidebar-primary/10 font-semibold text-sidebar-primary"
+                          : "font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                       )}
                     >
                       {subItem.icon && <subItem.icon className="h-4 w-4 shrink-0" />}
@@ -566,9 +579,9 @@ const Layout = ({ children }: LayoutProps) => {
                 to={item.path}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
                   location.pathname === item.path
-                    ? "bg-primary/10 text-primary"
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
                     : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 )}
               >
@@ -710,14 +723,62 @@ const Layout = ({ children }: LayoutProps) => {
                 <OfflineIndicator />
                 <SucursalSwitcher />
                 <GlobalSearch />
+                {/* Creación rápida (estilo barra superior de las referencias) */}
+                <Button size="sm" variant="outline" className="rounded-full" onClick={() => navigate("/app/citas")}>
+                  <CalendarPlus className="mr-1.5 h-4 w-4" aria-hidden="true" /> Cita
+                </Button>
+                <Button size="sm" className="rounded-full" onClick={() => navigate("/pacientes?nuevo=1")}>
+                  <UserPlus className="mr-1.5 h-4 w-4" aria-hidden="true" /> Paciente
+                </Button>
                 <NotificationBell />
                 <LanguageSwitcher />
               </div>
             </div>
           </div>
         )}
-        <div className="p-4 sm:p-6 lg:p-8">{children}</div>
+        <div className={`p-4 sm:p-6 lg:p-8 ${isMobile ? "pb-24" : ""}`}>{children}</div>
       </main>
+
+      {/* Navegación inferior en móvil (patrón de las apps de referencia) */}
+      {isMobile && (
+        <nav
+          aria-label="Navegación principal"
+          className="fixed inset-x-3 bottom-3 z-50 flex items-center justify-around rounded-2xl border bg-card/95 p-1.5 shadow-lg backdrop-blur"
+        >
+          {[
+            { to: "/app", label: "Inicio", icon: LayoutDashboard },
+            { to: "/pacientes", label: va === "veterinaria" ? "Mascotas" : va === "aesthetic" ? "Clientes" : "Pacientes", icon: Users },
+            { to: "/pacientes?nuevo=1", label: "Nuevo", icon: Plus, destacado: true },
+            { to: "/app/citas", label: "Citas", icon: Calendar },
+          ].map(({ to, label, icon: Icon, destacado }) => {
+            const activo = !destacado && location.pathname === to;
+            return (
+              <Link
+                key={to}
+                to={to}
+                aria-current={activo ? "page" : undefined}
+                className={cn(
+                  "flex min-h-11 min-w-14 flex-col items-center justify-center gap-0.5 rounded-xl px-2 text-[11px] font-medium transition-colors",
+                  destacado
+                    ? "bg-primary text-primary-foreground"
+                    : activo ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Icon className="h-5 w-5" aria-hidden="true" />
+                {label}
+              </Link>
+            );
+          })}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            className="flex min-h-11 min-w-14 flex-col items-center justify-center gap-0.5 rounded-xl px-2 text-[11px] font-medium text-muted-foreground hover:text-foreground"
+          >
+            <MenuIcon className="h-5 w-5" aria-hidden="true" />
+            Menú
+          </button>
+        </nav>
+      )}
 
       {/* Theme Customizer Dialog */}
       <ThemeCustomizer 
@@ -729,3 +790,10 @@ const Layout = ({ children }: LayoutProps) => {
 };
 
 export default Layout;
+
+const SECCION: Record<string, string> = {
+  dashboard: "Menú principal", agenda: "Menú principal", pacientes: "Menú principal",
+  clinico: "Clínica", diagnostico: "Clínica", recursos: "Clínica", turnos: "Clínica", telemedicina: "Clínica",
+  financiero: "Gestión", equipo: "Gestión", crm: "Gestión", avanzado: "Gestión",
+  config: "Otros", soporte: "Otros",
+};

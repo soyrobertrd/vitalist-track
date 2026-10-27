@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Phone, Calendar, User, Mail, Ticket, Building2, CheckCircle2 } from "lucide-react";
+import { Phone, User, Mail, Ticket, Building2, CheckCircle2 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { format } from "date-fns";
@@ -11,6 +11,14 @@ import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog"
 import { SelectionCheckbox } from "@/components/SelectionCheckbox";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { CitaTicketDialog } from "@/components/CitaTicketDialog";
+
+const ESTADO_ACENTO: Record<string, string> = {
+  pendiente: "bg-primary",
+  realizada: "bg-success",
+  cancelada: "bg-destructive",
+  no_realizada: "bg-destructive",
+  postpuesta: "bg-warning",
+};
 
 interface Visita {
   id: string;
@@ -76,14 +84,14 @@ export const VisitaCardAgendada = ({
   const getEstadoBadgeColor = (estado: string) => {
     switch (estado) {
       case "pendiente":
-        return "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20";
+        return "border-primary/30 bg-primary/10 text-primary";
       case "realizada":
-        return "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20";
+        return "border-success/30 bg-success/10 text-success";
       case "cancelada":
       case "no_realizada":
-        return "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20";
+        return "border-destructive/30 bg-destructive/10 text-destructive";
       case "postpuesta":
-        return "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20";
+        return "border-warning/30 bg-warning/10 text-warning";
       default:
         return "bg-muted text-muted-foreground";
     }
@@ -93,31 +101,18 @@ export const VisitaCardAgendada = ({
     return tipo === "domicilio" ? "🏠" : "🏥";
   };
 
+  // numero_principal indica cuál contacto es el principal ("paciente" | "cuidador"), no es un teléfono
+  const usaCuidador = () =>
+    visita.pacientes?.numero_principal === "cuidador" ? !!visita.pacientes.contacto_cuidador : !visita.pacientes?.contacto_px;
+
   const getMainPhone = () => {
     if (!visita.pacientes) return visita.solicitante_telefono ?? null;
-    // Priority: numero_principal > contacto_px > contacto_cuidador
-    if (visita.pacientes.numero_principal) {
-      return visita.pacientes.numero_principal;
-    }
-    if (visita.pacientes.contacto_px) {
-      return visita.pacientes.contacto_px;
-    }
-    return visita.pacientes.contacto_cuidador;
+    return usaCuidador() ? visita.pacientes.contacto_cuidador ?? null : visita.pacientes.contacto_px ?? null;
   };
 
   const hasWhatsApp = () => {
     if (!visita.pacientes) return false;
-    // If numero_principal matches contacto_cuidador, use cuidador's whatsapp flag
-    if (visita.pacientes.numero_principal && visita.pacientes.numero_principal === visita.pacientes.contacto_cuidador) {
-      return visita.pacientes.whatsapp_cuidador;
-    }
-    // If numero_principal matches contacto_px or is set, use px's whatsapp flag
-    if (visita.pacientes.numero_principal && visita.pacientes.numero_principal === visita.pacientes.contacto_px) {
-      return visita.pacientes.whatsapp_px;
-    }
-    // Fallback: check which contact we're using
-    if (visita.pacientes.contacto_px) return visita.pacientes.whatsapp_px;
-    return visita.pacientes.whatsapp_cuidador;
+    return usaCuidador() ? visita.pacientes.whatsapp_cuidador : visita.pacientes.whatsapp_px;
   };
 
   const getWhatsAppLink = () => {
@@ -133,156 +128,109 @@ export const VisitaCardAgendada = ({
   const whatsAppEnabled = hasWhatsApp();
   const whatsAppLink = getWhatsAppLink();
 
+  const nombre = visita.pacientes
+    ? `${visita.pacientes.nombre} ${visita.pacientes.apellido}`
+    : visita.solicitante_nombre ?? "Sin paciente";
+  const fechaCita = visita.fecha_hora_visita ? new Date(visita.fecha_hora_visita) : null;
+  // Franja lateral de color: atrasada > hoy > estado
+  const acento = overdue ? "bg-destructive" : today ? "bg-success" : ESTADO_ACENTO[visita.estado] ?? "bg-border";
+
   return (
-    <Card 
-      className={`cursor-pointer shadow-none border border-border/60 hover:border-primary/50 transition-colors flex flex-col h-full relative ${
-        isSelected 
-          ? 'ring-2 ring-primary bg-primary/5' 
-          : overdue 
-            ? 'border-destructive border-2 bg-destructive/5' 
-            : today 
-              ? 'border-green-500 border-2 bg-green-500/5' 
-              : ''
+    <Card
+      className={`group relative flex h-full cursor-pointer flex-col overflow-hidden transition-colors hover:border-primary/40 ${
+        isSelected ? "ring-2 ring-primary bg-primary/5" : ""
       }`}
       onClick={() => !selectionMode && onVisitaClick(visita)}
     >
-      {/* Selection checkbox */}
+      <span className={`absolute inset-y-0 left-0 w-1 ${acento}`} aria-hidden="true" />
+
       {selectionMode && onToggleSelect && (
-        <SelectionCheckbox
-          checked={isSelected}
-          onCheckedChange={onToggleSelect}
-        />
+        <SelectionCheckbox checked={isSelected} onCheckedChange={onToggleSelect} />
       )}
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-2">
-          <CardTitle className="text-base line-clamp-2 flex-1">
-            {visita.pacientes
-              ? `${visita.pacientes.nombre} ${visita.pacientes.apellido}`
-              : visita.solicitante_nombre ?? "Sin paciente"}
-            {visita.origen === "enlace_publico" && (
-              <Badge variant="outline" className="ml-2 align-middle text-[10px] font-normal">
-                {visita.pendiente_registro ? "Pendiente de registrar" : "Reserva en línea"}
-              </Badge>
-            )}
-          </CardTitle>
-          <div className="flex gap-1 flex-wrap justify-end items-center">
-            {mainPhone && (
-              <a
-                href={`tel:${mainPhone.replace(/\D/g, '')}`}
-                onClick={(e) => e.stopPropagation()}
-                className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-                aria-label="Llamar al paciente"
-                title="Llamar"
-              >
-                <Phone className="h-4 w-4" />
-              </a>
-            )}
-            {whatsAppEnabled && whatsAppLink && (
-              <a
-                href={whatsAppLink}
-                onClick={(e) => e.stopPropagation()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-green-500 text-white hover:bg-green-600"
-                aria-label="Enviar mensaje por WhatsApp"
-                title="WhatsApp"
-              >
-                <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4" />
-              </a>
-            )}
-            {overdue && (
-              <Badge variant="destructive" className="text-xs">
-                Atrasada
-              </Badge>
-            )}
-            {today && !overdue && (
-              <Badge className="bg-green-500 text-white text-xs">
-                Hoy
-              </Badge>
-            )}
-            <Badge className={getEstadoBadgeColor(visita.estado)} variant="secondary">
-              {formatearTexto(visita.estado)}
-            </Badge>
-          </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-3 flex-1 flex flex-col">
-        {visita.fecha_hora_visita && (
-          <div className="bg-primary/5 p-3 rounded-lg">
-            <p className="text-xs text-muted-foreground mb-1">Fecha y Hora</p>
-            <p className="font-semibold flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-primary" />
-              {format(new Date(visita.fecha_hora_visita), "dd/MM/yyyy")}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {format(new Date(visita.fecha_hora_visita), "HH:mm")}
-            </p>
-          </div>
-        )}
-        
-        {visita.personal_salud && (
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Profesional Asignado</p>
-            <p className="text-sm font-medium flex items-center gap-2">
-              <User className="h-4 w-4" />
-              {visita.personal_salud.nombre} {visita.personal_salud.apellido}
-            </p>
-          </div>
-        )}
 
-        {visita.profesionales_adicionales && visita.profesionales_adicionales.length > 0 && (
-          <p className="text-xs text-muted-foreground">
-            +{visita.profesionales_adicionales.length} profesional(es) más
+      <CardHeader className={`flex flex-row items-start gap-3 space-y-0 pb-3 ${selectionMode ? "pl-10" : "pl-5"}`}>
+        {/* Bloque de hora, como en las agendas de las referencias */}
+        {fechaCita && (
+          <div className="flex w-14 shrink-0 flex-col items-center rounded-xl bg-primary/10 py-1.5 text-primary">
+            <span className="text-base font-bold leading-none tabular-nums">{format(fechaCita, "HH:mm")}</span>
+            <span className="mt-1 text-[10px] font-medium uppercase">{format(fechaCita, "d MMM", { locale: es })}</span>
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <CardTitle className="line-clamp-1 text-base font-semibold">{nombre}</CardTitle>
+          <p className="mt-0.5 flex items-center gap-1.5 truncate text-xs text-muted-foreground">
+            <User className="h-3 w-3 shrink-0" aria-hidden="true" />
+            {visita.personal_salud ? `${visita.personal_salud.nombre} ${visita.personal_salud.apellido}` : "Sin profesional"}
+            {visita.profesionales_adicionales && visita.profesionales_adicionales.length > 0 && (
+              <span className="shrink-0">+{visita.profesionales_adicionales.length}</span>
+            )}
           </p>
-        )}
+        </div>
+        <Badge variant="outline" className={`shrink-0 text-[11px] ${getEstadoBadgeColor(visita.estado)}`}>
+          {formatearTexto(visita.estado)}
+        </Badge>
+      </CardHeader>
 
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <Badge variant={visita.tipo_visita === "domicilio" ? "secondary" : "default"} className="text-xs">
-            {visita.tipo_visita === "domicilio" ? "🏠 Domiciliaria" : "🏥 Ambulatoria (Consultorio)"}
+      <CardContent className="flex flex-1 flex-col gap-3 pl-5">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {overdue && <Badge variant="outline" className="border-destructive/30 bg-destructive/10 text-[11px] text-destructive">Atrasada</Badge>}
+          {today && !overdue && <Badge variant="outline" className="border-success/30 bg-success/10 text-[11px] text-success">Hoy</Badge>}
+          <Badge variant="outline" className="text-[11px] font-normal">
+            {visita.tipo_visita === "domicilio" ? "Domiciliaria" : "Consultorio"}
           </Badge>
           {visita.confirmada_por_paciente && (
-            <Badge variant="outline" className="text-xs text-green-600 border-green-500/30 bg-green-500/10 flex items-center gap-1">
-              <CheckCircle2 className="h-3 w-3" /> Confirmada
+            <Badge variant="outline" className="gap-1 border-success/30 bg-success/10 text-[11px] text-success">
+              <CheckCircle2 className="h-3 w-3" aria-hidden="true" /> Confirmada
+            </Badge>
+          )}
+          {visita.origen === "enlace_publico" && (
+            <Badge variant="outline" className="border-primary/30 bg-primary/10 text-[11px] text-primary">
+              {visita.pendiente_registro ? "Pendiente de registrar" : "Reserva en línea"}
             </Badge>
           )}
           {visita.pacientes?.clinica_origen && (
-            <Badge variant="outline" className="text-xs text-muted-foreground flex items-center gap-1">
-              <Building2 className="h-3 w-3 text-muted-foreground" />
+            <Badge variant="outline" className="gap-1 text-[11px] font-normal text-muted-foreground">
+              <Building2 className="h-3 w-3" aria-hidden="true" />
               {visita.pacientes.clinica_origen}
             </Badge>
           )}
         </div>
-        
+
         {visita.motivo_visita && (
-          <p className="text-xs text-muted-foreground line-clamp-2 pt-2 border-t">
-            {visita.motivo_visita}
-          </p>
+          <p className="line-clamp-2 flex-1 text-xs text-muted-foreground">{visita.motivo_visita}</p>
         )}
-        
-        <div className="grid grid-cols-2 gap-2 mt-2">
+
+        <div className="mt-auto flex items-center gap-1.5 border-t pt-3">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              setRecordatorioOpen(true);
-            }}
+            className="h-8 flex-1 rounded-full bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
+            onClick={(e) => { e.stopPropagation(); setRecordatorioOpen(true); }}
           >
-            <Mail className="h-4 w-4 mr-1" />
-            Recordatorio
+            <Mail className="mr-1.5 h-4 w-4" aria-hidden="true" /> Recordatorio
           </Button>
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              setTicketOpen(true);
-            }}
+            className="h-8 flex-1 rounded-full bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
+            onClick={(e) => { e.stopPropagation(); setTicketOpen(true); }}
           >
-            <Ticket className="h-4 w-4 mr-1" />
-            Ticket
+            <Ticket className="mr-1.5 h-4 w-4" aria-hidden="true" /> Ticket
           </Button>
+          {mainPhone && (
+            <Button asChild variant="ghost" size="icon" className="h-8 w-8 shrink-0 rounded-full">
+              <a href={`tel:${mainPhone.replace(/\D/g, "")}`} onClick={(e) => e.stopPropagation()} aria-label="Llamar al paciente" title="Llamar">
+                <Phone className="h-4 w-4" />
+              </a>
+            </Button>
+          )}
+          {whatsAppEnabled && whatsAppLink && (
+            <Button asChild variant="ghost" size="icon" className="h-8 w-8 shrink-0 rounded-full text-success hover:text-success">
+              <a href={whatsAppLink} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} aria-label="Enviar mensaje por WhatsApp" title="WhatsApp">
+                <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4" />
+              </a>
+            </Button>
+          )}
         </div>
       </CardContent>
 

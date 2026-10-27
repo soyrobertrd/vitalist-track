@@ -34,9 +34,15 @@ export function OnboardingChecklistWidget() {
   const { verticalActiva } = useVerticalFilter();
 
   const storageKey = `onboarding_checklist_dismissed_${currentWorkspace?.id || "default"}`;
-  const [dismissed, setDismissed] = useState(true);
+  const [dismissed, setDismissed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(storageKey) === "true";
+    } catch {
+      return false;
+    }
+  });
 
-  // Leer estado de visibilidad
+  // Sincronizar al cambiar de workspace
   useEffect(() => {
     try {
       const isDismissed = localStorage.getItem(storageKey) === "true";

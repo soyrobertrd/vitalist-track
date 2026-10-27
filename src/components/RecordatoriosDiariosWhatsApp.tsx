@@ -113,6 +113,7 @@ export const RecordatoriosDiariosWhatsApp = () => {
             : "telefónica",
         fecha,
         hora,
+        enlace_confirmar: `${window.location.origin}/confirmar-cita?cita=${item.id}&tipo=${item.tipo}`,
       },
     });
     if (res.ok) {

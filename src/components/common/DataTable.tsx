@@ -10,7 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Inbox } from "lucide-react";
+import { EmptyState } from "./EmptyState";
 
 export interface ColumnDef<T> {
   key: string;
@@ -236,9 +237,14 @@ export function DataTable<T extends Record<string, any>>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length + (actions ? 1 : 0)}
-                  className="h-28 text-center text-xs text-muted-foreground"
+                  className="py-10"
                 >
-                  {emptyMessage}
+                  <EmptyState
+                    icon={Inbox}
+                    title={emptyMessage}
+                    description="No hay información disponible que coincida con los filtros seleccionados."
+                    className="border-none bg-transparent p-4"
+                  />
                 </TableCell>
               </TableRow>
             ) : (

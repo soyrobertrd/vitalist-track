@@ -18,8 +18,17 @@ interface DuplicateGroup {
   patients: any[];
 }
 
-export const DetectarDuplicadosDialog = () => {
-  const [open, setOpen] = useState(false);
+interface DetectarDuplicadosDialogProps {
+  /** Modo controlado: se abre desde fuera (p. ej. un menú de acciones) y no muestra su botón */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export const DetectarDuplicadosDialog = ({ open: openProp, onOpenChange }: DetectarDuplicadosDialogProps = {}) => {
+  const [openInterno, setOpenInterno] = useState(false);
+  const controlado = openProp !== undefined;
+  const open = controlado ? openProp : openInterno;
+  const setOpen = (v: boolean) => (controlado ? onOpenChange?.(v) : setOpenInterno(v));
   const [loading, setLoading] = useState(false);
   const [duplicates, setDuplicates] = useState<DuplicateGroup[]>([]);
   const [manualSearch, setManualSearch] = useState("");
@@ -238,12 +247,14 @@ export const DetectarDuplicadosDialog = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">
-          <UserX className="mr-2 h-4 w-4" />
-          Detectar Duplicados
-        </Button>
-      </DialogTrigger>
+      {!controlado && (
+        <DialogTrigger asChild>
+          <Button variant="outline">
+            <UserX className="mr-2 h-4 w-4" />
+            Detectar Duplicados
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

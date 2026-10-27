@@ -11,6 +11,11 @@ import {
 } from "lucide-react";
 import { format, differenceInYears } from "date-fns";
 import { es } from "date-fns/locale";
+import { HeaderPaciente360 } from "@/components/ficha-clinica/HeaderPaciente360";
+import { SectionTitle } from "@/components/common/SectionTitle";
+import { ArrowLeft, Cake, Phone as PhoneIcon, Mail as MailIcon, MapPin as MapPinIcon, StickyNote } from "lucide-react";
+import { TimelineClinica } from "@/components/ficha-clinica/TimelineClinica";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExportarDatosGDPR } from "@/components/pacientes/ExportarDatosGDPR";
 import { DEMO_MODE, DEMO_PACIENTES, DEMO_CITAS } from "@/lib/mock-live-seed";
 
@@ -110,140 +115,146 @@ export default function HubPaciente360() {
   const filtrado = filtroModulo ? timeline.filter((e) => e.modulo === filtroModulo) : timeline;
 
   return (
-    <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
-      {/* Header Fijo Clínico 360° (Fase 9 - punto 3) */}
-      <Card className="shadow-none border-border bg-card">
-        <CardContent className="p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl border border-primary/20 shrink-0">
-              {paciente.nombre?.[0]}{paciente.apellido?.[0]}
-            </div>
-            <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-xl font-bold tracking-tight">
-                  {paciente.nombre} {paciente.apellido}
-                </h1>
-                <Badge variant="outline" className="text-xs font-mono">
-                  Cédula: {paciente.cedula || "N/A"}
-                </Badge>
-                {edad !== null && (
-                  <Badge variant="secondary" className="text-xs tabular-nums">
-                    {edad} años
-                  </Badge>
-                )}
-                {paciente.alergias ? (
-                  <Badge variant="destructive" className="text-xs">
-                    ⚠️ Alergias: {paciente.alergias}
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="text-xs border-success/30 text-success bg-success/5">
-                    Sin alergias registradas
-                  </Badge>
-                )}
-              </div>
-              <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Phone className="h-3.5 w-3.5" />
-                  {paciente.contacto_px || paciente.numero_principal || "Sin teléfono"}
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-                  Seguro / ARS: {paciente.ars_nombre || "Senasa (Contributivo)"}
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1">
-                  <Clock className="h-3.5 w-3.5 text-warning" />
-                  Próxima cita: {proximaCita ? format(new Date(proximaCita.fecha_hora_visita), "dd MMM, HH:mm", { locale: es }) : "No programada"}
-                </span>
-              </div>
-            </div>
+    <div className="mx-auto max-w-7xl space-y-6">
+      <Link
+        to="/pacientes"
+        className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Volver a la lista de pacientes
+      </Link>
+
+      {/* Header Unificado Fijo 360° (Fase 9.3) */}
+      <HeaderPaciente360 pacienteId={paciente.id} />
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <Tabs defaultValue="timeline" className="min-w-0">
+        <TabsList>
+          <TabsTrigger value="timeline" className="flex items-center gap-1.5">
+            <Activity className="h-4 w-4" /> Línea de Tiempo Integral
+          </TabsTrigger>
+          <TabsTrigger value="auditoria" className="flex items-center gap-1.5">
+            <ShieldAlert className="h-4 w-4" /> Auditoría & Módulos
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="timeline" className="mt-4">
+          <SectionTitle className="mb-4">Expediente cronológico</SectionTitle>
+          <Card className="shadow-none">
+            <CardContent className="pt-6">
+              <TimelineClinica pacienteId={paciente.id} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="auditoria" className="mt-4 space-y-4">
+          <SectionTitle>Actividad por módulo</SectionTitle>
+          {/* Resumen por módulo */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+            <button
+              onClick={() => setFiltroModulo(null)}
+              className={`rounded-2xl border bg-card p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                filtroModulo === null ? "border-primary bg-primary/10" : "hover:border-primary/40"
+              }`}
+            >
+              <div className="text-xs text-muted-foreground">Todos</div>
+              <div className="text-lg font-bold">{timeline.length}</div>
+            </button>
+            {Object.entries(moduloLabel).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setFiltroModulo(key)}
+                className={`rounded-2xl border bg-card p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  filtroModulo === key ? "border-primary bg-primary/10" : "hover:border-primary/40"
+                }`}
+              >
+                <div className="text-xs text-muted-foreground">{label}</div>
+                <div className="text-lg font-bold">{conteos[key] || 0}</div>
+              </button>
+            ))}
           </div>
 
-          <div className="flex flex-wrap gap-2 shrink-0">
-            <Button asChild size="sm">
-              <Link to="/app/citas?action=nueva"><Calendar className="h-4 w-4 mr-1.5" /> Agendar Cita</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to={`/pacientes?id=${paciente.id}`}><User className="h-4 w-4 mr-1.5" /> Ver Ficha</Link>
-            </Button>
-            <ExportarDatosGDPR pacienteId={paciente.id} pacienteNombre={`${paciente.nombre}_${paciente.apellido ?? ""}`} />
-          </div>
-        </CardContent>
-      </Card>
-
-
-      {/* Resumen por módulo */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-        <button
-          onClick={() => setFiltroModulo(null)}
-          className={`p-3 rounded-lg border text-left transition ${
-            filtroModulo === null ? "bg-primary/10 border-primary" : "hover:bg-muted"
-          }`}
-        >
-          <div className="text-xs text-muted-foreground">Todos</div>
-          <div className="text-lg font-bold">{timeline.length}</div>
-        </button>
-        {Object.entries(moduloLabel).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => setFiltroModulo(key)}
-            className={`p-3 rounded-lg border text-left transition ${
-              filtroModulo === key ? "bg-primary/10 border-primary" : "hover:bg-muted"
-            }`}
-          >
-            <div className="text-xs text-muted-foreground">{label}</div>
-            <div className="text-lg font-bold">{conteos[key] || 0}</div>
-          </button>
-        ))}
-      </div>
-
-      <Card className="shadow-none border-border">
-        <CardHeader>
-          <CardTitle>
-            Línea de tiempo cronológica
-            {filtroModulo && (
-              <Badge variant="outline" className="ml-2">
-                {moduloLabel[filtroModulo]}
-              </Badge>
-            )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {filtrado.length === 0 && (
-            <p className="text-sm text-muted-foreground">Sin eventos registrados.</p>
-          )}
-          <div className="space-y-3">
-            {filtrado.map((e, i) => {
-              const Icon = iconMap[e.tipo] || Activity;
-              return (
-                <div
-                  key={i}
-                  className="flex gap-3 items-start border-l-2 border-primary/30 pl-4 pb-2"
-                >
-                  <Icon className="h-4 w-4 mt-1 text-primary shrink-0" />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between flex-wrap gap-2">
-                      <p className="font-medium text-sm">{e.titulo}</p>
-                      <div className="flex gap-1">
-                        <Badge variant="secondary" className="text-xs">
-                          {moduloLabel[e.modulo] || e.modulo}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs capitalize">
-                          {e.estado}
-                        </Badge>
+          <Card className="shadow-none border-border">
+            <CardHeader>
+              <CardTitle className="text-base font-semibold">
+                Eventos del Sistema y Módulos
+                {filtroModulo && (
+                  <Badge variant="outline" className="ml-2">
+                    {moduloLabel[filtroModulo]}
+                  </Badge>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {filtrado.length === 0 && (
+                <p className="text-sm text-muted-foreground">Sin eventos registrados.</p>
+              )}
+              <div className="space-y-3">
+                {filtrado.map((e, i) => {
+                  const Icon = iconMap[e.tipo] || Activity;
+                  return (
+                    <div
+                      key={i}
+                      className="flex gap-3 items-start border-l-2 border-primary/30 pl-4 pb-2"
+                    >
+                      <Icon className="h-4 w-4 mt-1 text-primary shrink-0" />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <p className="font-medium text-sm">{e.titulo}</p>
+                          <div className="flex gap-1">
+                            <Badge variant="secondary" className="text-xs">
+                              {moduloLabel[e.modulo] || e.modulo}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs capitalize">
+                              {e.estado}
+                            </Badge>
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(e.fecha), "PPp", { locale: es })}
+                        </p>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {format(new Date(e.fecha), "PPp")}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Panel derecho: información general + notas importantes */}
+      <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+        <section className="rounded-2xl border bg-card p-5">
+          <h2 className="mb-4 text-base font-semibold">Información general</h2>
+          <ul className="space-y-4">
+            {[
+              { icon: Cake, label: "Fecha de nacimiento", valor: paciente.fecha_nacimiento ? `${format(new Date(paciente.fecha_nacimiento), "dd/MM/yyyy")}${edad !== null ? ` (${edad} años)` : ""}` : null },
+              { icon: PhoneIcon, label: "Teléfono", valor: paciente.contacto_px },
+              { icon: MailIcon, label: "Correo", valor: paciente.email_px },
+              { icon: MapPinIcon, label: "Dirección", valor: paciente.direccion_domicilio || paciente.zona },
+            ].map(({ icon: Icon, label, valor }) => (
+              <li key={label} className="flex items-start gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-xs text-muted-foreground">{label}</span>
+                  <span className="block break-words text-sm font-medium">{valor || "—"}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="rounded-2xl border bg-card p-5">
+          <h2 className="mb-3 flex items-center gap-1.5 text-base font-semibold">
+            <StickyNote className="h-4 w-4 text-primary" aria-hidden="true" /> Notas importantes
+          </h2>
+          <p className="whitespace-pre-line rounded-xl border border-dashed p-3 text-sm text-muted-foreground">
+            {paciente.historia_medica_basica || "Sin notas registradas."}
+          </p>
+        </section>
+      </aside>
+      </div>
     </div>
   );
 }

@@ -11,6 +11,7 @@ import { NotificacionPlanAccion } from "@/components/NotificacionPlanAccion";
 import { PatientTimeline } from "@/components/PatientTimeline";
 import { FichaClinicaPaciente } from "@/components/ficha-clinica/FichaClinicaPaciente";
 import { GenerarTokenPortal } from "@/components/GenerarTokenPortal";
+import { SectionTitle } from "@/components/common/SectionTitle";
 
 const capital = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
@@ -69,7 +70,8 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
   const edad = paciente.fecha_nacimiento
     ? Math.floor((Date.now() - new Date(paciente.fecha_nacimiento).getTime()) / 31_557_600_000)
     : null;
-  const telefono = paciente.numero_principal || paciente.contacto_px || paciente.contacto_cuidador;
+  // numero_principal indica cuál contacto es el principal ("paciente" | "cuidador"), no es un teléfono
+  const telefono = (paciente.numero_principal === "cuidador" ? paciente.contacto_cuidador : paciente.contacto_px) || paciente.contacto_px || paciente.contacto_cuidador;
   const waNumero = (n: string) => n.replace(/\D/g, "").replace(/^([89]\d{9})$/, "1$1");
   const fechaHora = (iso: string | null) =>
     iso ? new Date(iso).toLocaleString("es-DO", { dateStyle: "medium", timeStyle: "short" }) : "Sin fecha";
@@ -92,7 +94,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90dvh] max-w-4xl flex-col gap-0 overflow-hidden p-0">
+      <DialogContent className="flex max-h-[90dvh] max-w-6xl flex-col gap-0 overflow-hidden p-0">
         {/* Encabezado fijo: identidad + acciones rápidas */}
         <DialogHeader className="space-y-0 border-b p-6 pb-4 text-left">
           <div className="flex flex-wrap items-start gap-4 pr-8">
@@ -141,22 +143,26 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
           </div>
         </DialogHeader>
 
-        <div className="flex-1 space-y-5 overflow-y-auto p-6">
+        <div className="grid flex-1 gap-6 overflow-y-auto bg-background/60 p-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="min-w-0 space-y-6">
           <NotificacionPlanAccion pacienteId={pacienteId || ""} />
 
-          {/* Resumen de un vistazo */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <SectionTitle>Resumen general</SectionTitle>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {[
               { icon: Calendar, label: "Próxima cita", valor: proximaCita ? fechaHora(proximaCita) : "No programada" },
               { icon: Phone, label: "Próxima llamada", valor: proximaLlamada ? fechaHora(proximaLlamada) : "No programada" },
               { icon: Pill, label: "Medicamentos", valor: String(medicamentos.length) },
-              { icon: MapPin, label: "Zona", valor: paciente.zona ? capital(paciente.zona.replace(/_/g, " ")) : "—" },
+              { icon: History, label: "Citas pendientes", valor: String(visitas.length + llamadas.length) },
             ].map(({ icon: Icon, label, valor }) => (
-              <div key={label} className="rounded-lg border p-3">
-                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Icon className="h-3.5 w-3.5" aria-hidden="true" /> {label}
-                </p>
-                <p className="mt-1 text-sm font-semibold tabular-nums">{valor}</p>
+              <div key={label} className="flex items-center gap-3 rounded-2xl border bg-card p-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-xs text-muted-foreground">{label}</span>
+                  <span className="block truncate text-sm font-semibold tabular-nums">{valor}</span>
+                </span>
               </div>
             ))}
           </div>
@@ -172,31 +178,10 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="resumen" className="space-y-5 pt-2">
-              <section>
-                <h3 className="mb-3 text-sm font-semibold">Datos personales</h3>
-                <dl className="grid gap-4 sm:grid-cols-2">
-                  <Dato label="Fecha de nacimiento">{fecha(paciente.fecha_nacimiento)}</Dato>
-                  <Dato label="Teléfono">{paciente.contacto_px}</Dato>
-                  <Dato label="Correo">{paciente.email_px}</Dato>
-                  <Dato label="Barrio">{paciente.barrio}</Dato>
-                  <Dato label="Dirección" full>
-                    {paciente.direccion_domicilio && (
-                      <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(paciente.direccion_domicilio)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-primary hover:underline"
-                      >
-                        {paciente.direccion_domicilio}
-                      </a>
-                    )}
-                  </Dato>
-                </dl>
-              </section>
-
+            <TabsContent value="resumen" className="space-y-4 pt-4">
+              {!paciente.nombre_cuidador && !parametros && <Vacio texto="Sin cuidador ni parámetros de seguimiento registrados" />}
               {paciente.nombre_cuidador && (
-                <section className="border-t pt-5">
+                <section className="rounded-2xl border bg-card p-5">
                   <h3 className="mb-3 text-sm font-semibold">Cuidador</h3>
                   <dl className="grid gap-4 sm:grid-cols-2">
                     <Dato label="Nombre">{paciente.nombre_cuidador}</Dato>
@@ -224,17 +209,9 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
                 </section>
               )}
 
-              {paciente.historia_medica_basica && (
-                <section className="border-t pt-5">
-                  <h3 className="mb-3 flex items-center gap-1.5 text-sm font-semibold">
-                    <Heart className="h-4 w-4 text-primary" aria-hidden="true" /> Historia médica
-                  </h3>
-                  <p className="whitespace-pre-line text-sm">{paciente.historia_medica_basica}</p>
-                </section>
-              )}
 
               {parametros && (
-                <section className="border-t pt-5">
+                <section className="rounded-2xl border bg-card p-5">
                   <h3 className="mb-3 text-sm font-semibold">Parámetros de seguimiento</h3>
                   <dl className="grid gap-4 sm:grid-cols-2">
                     <Dato label="Próxima llamada programada">{fecha(parametros.fecha_proxima_llamada_prog)}</Dato>
@@ -308,6 +285,51 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
               <PatientTimeline pacienteId={pacienteId || ""} />
             </TabsContent>
           </Tabs>
+        </div>
+
+        {/* Panel derecho: información general + notas importantes */}
+        <aside className="space-y-4 lg:sticky lg:top-0 lg:self-start">
+          <section className="rounded-2xl border bg-card p-5">
+            <h3 className="mb-4 text-base font-semibold">Información general</h3>
+            <ul className="space-y-4">
+              {[
+                { icon: Calendar, label: "Fecha de nacimiento", valor: paciente.fecha_nacimiento ? `${fecha(paciente.fecha_nacimiento)}${edad !== null ? ` (${edad} años)` : ""}` : null },
+                { icon: Phone, label: "Teléfono", valor: paciente.contacto_px },
+                { icon: Mail, label: "Correo", valor: paciente.email_px },
+                { icon: MapPin, label: "Zona / Barrio", valor: [paciente.zona && capital(paciente.zona.replace(/_/g, " ")), paciente.barrio].filter(Boolean).join(" · ") || null },
+              ].map(({ icon: Icon, label, valor }) => (
+                <li key={label} className="flex items-start gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                    <Icon className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-xs text-muted-foreground">{label}</span>
+                    <span className="block break-words text-sm font-medium">{valor || "—"}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {paciente.direccion_domicilio && (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(paciente.direccion_domicilio)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 block rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground transition-colors hover:text-primary"
+              >
+                {paciente.direccion_domicilio}
+              </a>
+            )}
+          </section>
+
+          <section className="rounded-2xl border bg-card p-5">
+            <h3 className="mb-3 flex items-center gap-1.5 text-base font-semibold">
+              <Heart className="h-4 w-4 text-primary" aria-hidden="true" /> Notas importantes
+            </h3>
+            <p className="whitespace-pre-line rounded-xl border border-dashed p-3 text-sm text-muted-foreground">
+              {paciente.historia_medica_basica || "Sin notas registradas."}
+            </p>
+          </section>
+        </aside>
         </div>
       </DialogContent>
     </Dialog>

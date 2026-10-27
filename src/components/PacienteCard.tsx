@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Phone, MapPin, Calendar, PhoneCall, Pencil, Trash2, Building2 } from "lucide-react";
+import { Phone, MapPin, Calendar, PhoneCall, Pencil, Trash2, Building2, Eye } from "lucide-react";
+import { AccionesMenu } from "@/components/common/AccionesMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { SelectionCheckbox } from "@/components/SelectionCheckbox";
+import { avatarColor, iniciales as getIniciales, tituloNombre } from "@/lib/avatar";
 
 interface PacienteCardProps {
   paciente: {
@@ -39,7 +39,6 @@ interface PacienteCardProps {
 
 export const PacienteCard = ({
   paciente,
-  profesionalNombre,
   onViewDetail,
   onEdit,
   onAgendarLlamada,
@@ -50,45 +49,24 @@ export const PacienteCard = ({
   isSelected = false,
   onToggleSelect,
 }: PacienteCardProps) => {
-  const STATUS_STYLE: Record<string, { dot: string; label: string }> = {
-    activo: { dot: "bg-success", label: "Activo" },
-    inactivo: { dot: "bg-muted-foreground", label: "Inactivo" },
-  };
-  const status = STATUS_STYLE[paciente.status_px] ?? {
-    dot: "bg-destructive",
-    label: paciente.status_px.charAt(0).toUpperCase() + paciente.status_px.slice(1),
-  };
-
   // Solo se resalta la dificultad cuando requiere atención (medio/alto); "bajo" no añade ruido.
-  const DIFICULTAD_STYLE: Record<string, string> = {
-    medio: "border-warning/30 bg-warning/10 text-warning",
-    alto: "border-destructive/30 bg-destructive/10 text-destructive",
+  // La dificultad se comunica con el color de la tarjeta (franja y borde), no con una etiqueta.
+  const DIFICULTAD_STYLE: Record<string, { franja: string; borde: string; label: string }> = {
+    bajo: { franja: "bg-success", borde: "", label: "Dificultad baja" },
+    medio: { franja: "bg-warning", borde: "border-warning/40", label: "Dificultad media" },
+    alto: { franja: "bg-destructive", borde: "border-destructive/40 bg-destructive/[0.03]", label: "Dificultad alta" },
   };
+  const dificultad = DIFICULTAD_STYLE[paciente.grado_dificultad];
 
-  const iniciales = `${paciente.nombre?.[0] ?? ""}${paciente.apellido?.[0] ?? ""}`.toUpperCase();
+  const iniciales = getIniciales(paciente.nombre, paciente.apellido);
 
   // Get the phone number to display based on priority and check if it has WhatsApp
   const getDisplayPhoneWithWhatsApp = () => {
-    // If numero_principal is set, use that
-    if (paciente.numero_principal) {
-      // Check which contact matches numero_principal to determine WhatsApp flag
-      if (paciente.numero_principal === paciente.contacto_cuidador) {
-        return { phone: paciente.numero_principal, hasWhatsApp: paciente.whatsapp_cuidador };
-      }
-      if (paciente.numero_principal === paciente.contacto_px) {
-        return { phone: paciente.numero_principal, hasWhatsApp: paciente.whatsapp_px };
-      }
-      // If numero_principal doesn't match either, still return it (could be a different number)
-      return { phone: paciente.numero_principal, hasWhatsApp: false };
-    }
-    // Otherwise, prefer patient's phone, fallback to caregiver's
-    if (paciente.contacto_px) {
-      return { phone: paciente.contacto_px, hasWhatsApp: paciente.whatsapp_px };
-    }
-    if (paciente.contacto_cuidador) {
-      return { phone: paciente.contacto_cuidador, hasWhatsApp: paciente.whatsapp_cuidador };
-    }
-    return { phone: null, hasWhatsApp: false };
+    const px = { phone: paciente.contacto_px, hasWhatsApp: paciente.whatsapp_px };
+    const cuidador = { phone: paciente.contacto_cuidador, hasWhatsApp: paciente.whatsapp_cuidador };
+    const principal = paciente.numero_principal === "cuidador" ? cuidador : px;
+    const otro = principal === px ? cuidador : px;
+    return principal.phone ? principal : otro.phone ? otro : { phone: null, hasWhatsApp: false };
   };
 
   const { phone: displayPhone, hasWhatsApp } = getDisplayPhoneWithWhatsApp();
@@ -125,9 +103,12 @@ export const PacienteCard = ({
         }
       }}
       className={`group relative flex h-full cursor-pointer flex-col overflow-hidden border bg-card text-card-foreground shadow-none transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-        isSelected ? "ring-2 ring-primary bg-primary/5" : ""
+        isSelected ? "ring-2 ring-primary bg-primary/5" : dificultad?.borde ?? ""
       }`}
     >
+      {dificultad && (
+        <span className={`absolute inset-y-0 left-0 w-1 ${dificultad.franja}`} title={dificultad.label} aria-hidden="true" />
+      )}
       {selectionMode && onToggleSelect && (
         <SelectionCheckbox checked={isSelected} onCheckedChange={onToggleSelect} />
       )}
@@ -135,33 +116,26 @@ export const PacienteCard = ({
       <CardHeader className={`flex flex-row items-start gap-3 space-y-0 pb-3 ${selectionMode ? "pl-10" : ""}`}>
         <div
           aria-hidden="true"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary"
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${avatarColor(paciente.id)}`}
         >
           {iniciales}
         </div>
         <div className="min-w-0 flex-1">
-          <CardTitle className="line-clamp-1 text-base font-semibold transition-colors group-hover:text-primary">
-            {paciente.nombre} {paciente.apellido}
+          <CardTitle className="line-clamp-2 text-sm font-semibold leading-snug transition-colors group-hover:text-primary">
+            {tituloNombre(`${paciente.nombre} ${paciente.apellido}`)}
           </CardTitle>
-          <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${status.dot}`} aria-hidden="true" />
-            <span>{status.label}</span>
-            {profesionalNombre && (
-              <>
-                <span aria-hidden="true">·</span>
-                <span className="truncate">{profesionalNombre}</span>
-              </>
-            )}
-          </div>
+          {dificultad && <span className="sr-only">{dificultad.label}</span>}
         </div>
-        {DIFICULTAD_STYLE[paciente.grado_dificultad] && (
-          <Badge
-            variant="outline"
-            className={`shrink-0 text-[11px] font-medium ${DIFICULTAD_STYLE[paciente.grado_dificultad]}`}
-          >
-            {paciente.grado_dificultad === "alto" ? "Alta dificultad" : "Dificultad media"}
-          </Badge>
-        )}
+        <AccionesMenu
+          label={`Acciones de ${paciente.nombre} ${paciente.apellido}`}
+          acciones={[
+            { label: "Ver ficha 360", icon: Eye, onSelect: onViewDetail },
+            { label: "Agendar llamada", icon: PhoneCall, onSelect: onAgendarLlamada },
+            { label: "Agendar visita", icon: Calendar, onSelect: onAgendarVisita },
+            { label: "Editar paciente", icon: Pencil, onSelect: onEdit },
+            { label: "Eliminar paciente", icon: Trash2, onSelect: () => onDelete?.(), peligro: true, oculta: !(isAdmin && onDelete) },
+          ]}
+        />
       </CardHeader>
 
       <CardContent className="flex flex-1 flex-col gap-3">
@@ -232,31 +206,6 @@ export const PacienteCard = ({
           )}
         </div>
 
-        <div className="-mx-2 flex items-center gap-1 border-t px-0 pt-2">
-          <Button size="sm" variant="ghost" onClick={stop(onAgendarLlamada)} className="h-8 flex-1">
-            <PhoneCall className="mr-1.5 h-4 w-4" aria-hidden="true" />
-            Llamada
-          </Button>
-          <Button size="sm" variant="ghost" onClick={stop(onAgendarVisita)} className="h-8 flex-1">
-            <Calendar className="mr-1.5 h-4 w-4" aria-hidden="true" />
-            Visita
-          </Button>
-          <Button size="icon" variant="ghost" onClick={stop(onEdit)} className="h-8 w-8" aria-label="Editar paciente" title="Editar">
-            <Pencil className="h-4 w-4" aria-hidden="true" />
-          </Button>
-          {isAdmin && onDelete && (
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={stop(onDelete)}
-              className="h-8 w-8 text-muted-foreground hover:text-destructive"
-              aria-label="Eliminar paciente"
-              title="Eliminar"
-            >
-              <Trash2 className="h-4 w-4" aria-hidden="true" />
-            </Button>
-          )}
-        </div>
       </CardContent>
     </Card>
   );

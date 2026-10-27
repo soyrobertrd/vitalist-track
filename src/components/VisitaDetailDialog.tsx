@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -39,6 +39,9 @@ export function VisitaDetailDialog({
   const [loading, setLoading] = useState(false);
   const [showRecordatorioDialog, setShowRecordatorioDialog] = useState(false);
   const [fechaError, setFechaError] = useState<string | null>(null);
+  const [candidatoEspera, setCandidatoEspera] = useState<any | null>(null);
+  const [showReasignarDialog, setShowReasignarDialog] = useState(false);
+  const [reasignando, setReasignando] = useState(false);
   const { medicamentos } = useMedicamentosPaciente(visita?.paciente_id || null);
   const { validarFechaAgendamiento } = useDiasLaborables();
 
@@ -46,6 +49,103 @@ export function VisitaDetailDialog({
 
   const hasEmail = visita.pacientes?.email_px || visita.pacientes?.email_cuidador;
   const hasPhone = visita.pacientes?.contacto_px || visita.pacientes?.contacto_cuidador;
+
+  const handleReasignarHueco = async () => {
+    if (!candidatoEspera) return;
+    setReasignando(true);
+    try {
+      const { error: insErr } = await supabase.from("control_visitas").insert({
+        paciente_id: candidatoEspera.paciente_id,
+        profesional_id: visita.profesional_id,
+        fecha_hora_visita: visita.fecha_hora_visita,
+        tipo_visita: visita.tipo_visita || "ambulatoria",
+        estado: "pendiente",
+        motivo_visita: `Hueco liberado (Lista espera: ${candidatoEspera.motivo || "Consulta"})`,
+        sucursal_id: visita.sucursal_id || null,
+        workspace_id: visita.workspace_id || null,
+      });
+
+      if (insErr) throw insErr;
+
+      await supabase
+        .from("lista_espera")
+        .update({
+          estado: "asignada",
+          fecha_asignada: new Date().toISOString(),
+        } as any)
+        .eq("id", candidatoEspera.id);
+
+      const nombrePx = candidatoEspera.pacientes?.nombre
+        ? `${candidatoEspera.pacientes.nombre} ${candidatoEspera.pacientes.apellido || ""}`
+        : "el paciente en espera";
+
+      toast.success(`¡Hueco reasignado exitosamente a ${nombrePx}!`);
+      setShowReasignarDialog(false);
+      setCandidatoEspera(null);
+      onOpenChange(false);
+      onSuccess();
+    } catch (err: any) {
+      toast.error(err.message || "Error al reasignar hueco");
+    } finally {
+      setReasignando(false);
+    }
+  };
+
+  const handleCancelar = async () => {
+    setLoading(true);
+    const anteriorEstado = visita.estado || "pendiente";
+    const { error } = await supabase
+      .from("control_visitas")
+      .update({ estado: "cancelada" })
+      .eq("id", visita.id);
+
+    if (error) {
+      toast.error("Error al cancelar la cita");
+      setLoading(false);
+      return;
+    }
+
+    // Crear llamada de seguimiento 2-3 días después
+    await createFollowUpCall(2);
+
+    // Buscar si hay pacientes en lista de espera para ofrecer reasignación inmediata
+    try {
+      const { data: listaEsperaCandidates } = await supabase
+        .from("lista_espera")
+        .select("id, paciente_id, prioridad, motivo, pacientes:paciente_id(id, nombre, apellido, numero_principal, contacto_px)")
+        .eq("estado", "esperando")
+        .order("prioridad", { ascending: false })
+        .order("fecha_solicitud", { ascending: true })
+        .limit(1);
+
+      if (listaEsperaCandidates && listaEsperaCandidates.length > 0) {
+        setCandidatoEspera(listaEsperaCandidates[0]);
+        setShowReasignarDialog(true);
+        toast.info("Cita cancelada. Hay pacientes en Lista de Espera listos para este hueco.");
+        setLoading(false);
+        return;
+      }
+    } catch {
+      // Ignorar error de búsqueda de lista de espera
+    }
+
+    toast.success("Cita cancelada y seguimiento programado", {
+      action: {
+        label: "Deshacer",
+        onClick: async () => {
+          await supabase
+            .from("control_visitas")
+            .update({ estado: anteriorEstado })
+            .eq("id", visita.id);
+          toast.success("Cancelación revertida exitosamente");
+          onSuccess();
+        },
+      },
+    });
+    onSuccess();
+    onOpenChange(false);
+    setLoading(false);
+  };
 
   const handleFechaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fechaStr = e.target.value;
@@ -101,38 +201,6 @@ export function VisitaDetailDialog({
     } else {
       toast.success("Visita reagendada exitosamente");
       onSuccess();
-    }
-    setLoading(false);
-  };
-
-  const handleCancelar = async () => {
-    setLoading(true);
-    const anteriorEstado = visita.estado || "pendiente";
-    const { error } = await supabase
-      .from("control_visitas")
-      .update({ estado: "cancelada" })
-      .eq("id", visita.id);
-
-    if (error) {
-      toast.error("Error al cancelar la cita");
-    } else {
-      // Crear llamada de seguimiento 2-3 días después
-      await createFollowUpCall(2);
-      toast.success("Cita cancelada y seguimiento programado", {
-        action: {
-          label: "Deshacer",
-          onClick: async () => {
-            await supabase
-              .from("control_visitas")
-              .update({ estado: anteriorEstado })
-              .eq("id", visita.id);
-            toast.success("Cancelación revertida exitosamente");
-            onSuccess();
-          },
-        },
-      });
-      onSuccess();
-      onOpenChange(false);
     }
     setLoading(false);
   };
@@ -209,6 +277,7 @@ export function VisitaDetailDialog({
   const esRealizada = visita.estado === "realizada";
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto glass-dialog">
         <DialogHeader>
@@ -562,5 +631,74 @@ export function VisitaDetailDialog({
         />
       </DialogContent>
     </Dialog>
+
+    {/* Diálogo de Reasignación Inteligente de Lista de Espera */}
+    <Dialog open={showReasignarDialog} onOpenChange={setShowReasignarDialog}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-primary">
+            <Clock className="h-5 w-5" />
+            Hueco Disponible en Lista de Espera
+          </DialogTitle>
+          <DialogDescription>
+            La cita ha sido cancelada. Existe un paciente en lista de espera listo para ocupar este horario de inmediato.
+          </DialogDescription>
+        </DialogHeader>
+
+        {candidatoEspera && (
+          <div className="space-y-3 py-2 text-sm border rounded-lg p-3 bg-muted/40">
+            <div>
+              <span className="text-muted-foreground text-xs uppercase font-semibold">Paciente:</span>
+              <p className="font-semibold text-base">
+                {candidatoEspera.pacientes?.nombre} {candidatoEspera.pacientes?.apellido}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground text-xs uppercase font-semibold">Prioridad:</span>
+              <Badge variant="outline" className="capitalize font-mono">
+                {candidatoEspera.prioridad || "Normal"}
+              </Badge>
+            </div>
+            {candidatoEspera.motivo && (
+              <div>
+                <span className="text-muted-foreground text-xs uppercase font-semibold">Motivo:</span>
+                <p className="text-muted-foreground">{candidatoEspera.motivo}</p>
+              </div>
+            )}
+            <div className="pt-1 text-xs text-muted-foreground">
+              Horario liberado:{" "}
+              <strong className="text-foreground">
+                {visita.fecha_hora_visita
+                  ? format(new Date(visita.fecha_hora_visita), "EEEE d 'de' MMMM, HH:mm", { locale: es })
+                  : "Mismo horario"}
+              </strong>
+            </div>
+          </div>
+        )}
+
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setShowReasignarDialog(false);
+              setCandidatoEspera(null);
+              onOpenChange(false);
+              onSuccess();
+            }}
+            disabled={reasignando}
+          >
+            Dejar hueco libre
+          </Button>
+          <Button
+            onClick={handleReasignarHueco}
+            disabled={reasignando}
+            className="bg-primary hover:bg-primary/90"
+          >
+            {reasignando ? "Asignando…" : "Asignar Hueco a Paciente"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }

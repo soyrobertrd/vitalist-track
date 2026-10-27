@@ -9,6 +9,9 @@ import { InventarioAlertasWidget } from "@/components/InventarioAlertasWidget";
 import { AgendarCitaButton } from "@/components/AgendarCitaButton";
 import { PlanLimitAlert } from "@/components/PlanLimitAlert";
 import { OnboardingChecklistWidget } from "@/components/dashboard/OnboardingChecklistWidget";
+import { AlertasAccion, type AlertaAccion } from "@/components/dashboard/AlertasAccion";
+import { AgendaDiaPanel } from "@/components/dashboard/AgendaDiaPanel";
+import { Button } from "@/components/ui/button";
 import { format, subDays, startOfDay, endOfDay, startOfMonth, subMonths, eachDayOfInterval } from "date-fns";
 import { es } from "date-fns/locale";
 import { toZonedTime } from "date-fns-tz";
@@ -23,6 +26,16 @@ import { BarCard } from "@/components/charts/BarCard";
 import { TrendCard } from "@/components/charts/TrendCard";
 import { calculateForecast, type TimeSeriesPoint as TrendPoint } from "@/lib/forecast";
 import { VERTICAL_LABELS as verticalLabel } from "@/config/verticales";
+import { VerticalMetricsWidget } from "@/components/dashboard/VerticalMetricsWidget";
+import { MedicalHeroBanner } from "@/components/dashboard/MedicalHeroBanner";
+import { EnhancedKPIs } from "@/components/dashboard/EnhancedKPIs";
+import { QuickLinksBar } from "@/components/dashboard/QuickLinksBar";
+import { ExaminationsWidget } from "@/components/dashboard/ExaminationsWidget";
+import { VitalStatsCards } from "@/components/dashboard/VitalStatsCards";
+import { DoctorScheduleWidget } from "@/components/dashboard/DoctorScheduleWidget";
+import { TodayAppointmentsTable } from "@/components/dashboard/TodayAppointmentsTable";
+import { NewPatientsWidget } from "@/components/dashboard/NewPatientsWidget";
+import { PhysicianProfileCard } from "@/components/dashboard/PhysicianProfileCard";
 
 const Dashboard = () => {
   const { t } = useTranslation("dashboard");
@@ -33,6 +46,7 @@ const Dashboard = () => {
   const { verticalActiva } = useVerticalFilter();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [nombreUsuario, setNombreUsuario] = useState<string>("");
   const [stats, setStats] = useState({
     totalPacientes: 0,
     pacientesActivos: 0,
@@ -53,10 +67,10 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    // Update time every second
+    // Basta con refrescar cada minuto (antes re-renderizaba todo el dashboard cada segundo)
     const timer = setInterval(() => {
       setCurrentTime(new Date());
-    }, 1000);
+    }, 60_000);
 
     return () => clearInterval(timer);
   }, []);
@@ -66,6 +80,8 @@ const Dashboard = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setCurrentUserId(user.id);
+        const { data: perfil } = await supabase.from("profiles").select("nombre").eq("id", user.id).maybeSingle();
+        setNombreUsuario((perfil as any)?.nombre ?? "");
       }
     };
     getCurrentUser();
@@ -169,32 +185,28 @@ const Dashboard = () => {
       const noContactadas = callsData.filter(c => c.resultado_seguimiento === 'no_contestada').length;
       const pendientesCalls = callsData.filter(c => c.estado === 'pendiente' || c.estado === 'agendada').length;
 
-      // 1. Donut: Estado de Citas del Mes (Optimización y reducción de cancelaciones)
-      const totalVisits = visitsData.length;
-      const confirmadasVisits = visitsData.filter(v => v.estado === 'confirmada' || v.confirmada_por_paciente).length;
-      const pendientesVisits = visitsData.filter(v => v.estado === 'pendiente').length;
-      const realizadasVisits = visitsData.filter(v => v.estado === 'realizada').length;
-      const canceladasVisits = visitsData.filter(v => v.estado === 'cancelada').length;
+      // 1. Donut: Distribución de Pacientes por Estado (activo, inactivo, seguimiento)
+      const countActivos = pacientesAll.filter(p => p.status_px === 'activo').length;
+      const countSeguimiento = pacientesAll.filter(p => p.status_px === 'seguimiento' || p.status_px === 'alta').length;
+      const countInactivos = pacientesAll.filter(p => p.status_px === 'inactivo').length;
 
-      // Sin datos → lista vacía; DonutCard muestra su estado vacío (nunca cifras inventadas).
-      const donutSegments: DonutSegment[] = totalVisits > 0 ? [
-        { name: "Confirmadas", value: confirmadasVisits, fill: "hsl(var(--primary))" },
-        { name: "Pendientes", value: pendientesVisits, fill: "hsl(var(--chart-2))" },
-        { name: "Atendidas", value: realizadasVisits, fill: "hsl(var(--chart-3))" },
-        { name: "Canceladas", value: canceladasVisits, fill: "hsl(var(--destructive))" },
+      const donutSegments: DonutSegment[] = totalPacientesCount > 0 ? [
+        { name: "Activos", value: countActivos, fill: "hsl(var(--primary))" },
+        { name: "Seguimiento", value: countSeguimiento, fill: "hsl(var(--warning))" },
+        { name: "Inactivos", value: countInactivos, fill: "hsl(var(--muted-foreground))" },
       ] : [];
       setDonutData(donutSegments);
 
-      // 2. BarCard: Citas por Día de la Semana (Ambulatorias prioritarias vs Domiciliarias)
+      // 2. BarCard: Volumen de Citas Semanales (Atendidas vs Canceladas / Inasistencias)
       const days = eachDayOfInterval({ start: sevenDaysAgo, end: now });
       const dayLabels = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
       const barPoints = days.map((d) => {
         const dateStr = format(d, 'yyyy-MM-dd');
         const dayVisits = visitsData.filter(v => v.fecha_hora_visita && v.fecha_hora_visita.startsWith(dateStr));
-        const ambulatorias = dayVisits.filter(v => v.tipo_visita !== 'domicilio').length;
-        const domiciliarias = dayVisits.filter(v => v.tipo_visita === 'domicilio').length;
+        const atendidas = dayVisits.filter(v => v.estado === 'realizada' || v.estado === 'atendido').length;
+        const canceladas = dayVisits.filter(v => v.estado === 'cancelada' || v.estado === 'no_show' || v.estado === 'no_realizada').length;
 
-        return { label: dayLabels[d.getDay()], ambulatorias, domiciliarias };
+        return { label: dayLabels[d.getDay()], atendidas, canceladas };
       });
       setBarData(barPoints);
 
@@ -243,33 +255,44 @@ const Dashboard = () => {
   const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--warning))"];
   const localTime = toZonedTime(currentTime, timezone);
 
+  const hora = localTime.getHours();
+  const saludo = hora < 12 ? "Buenos días" : hora < 19 ? "Buenas tardes" : "Buenas noches";
+
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            Dashboard{verticalActiva && verticalActiva !== "todas" ? ` · ${verticalLabel[verticalActiva as keyof typeof verticalLabel] || ""}` : ""}
-          </h1>
-          <p className="text-muted-foreground">Resumen completo de la operación{verticalActiva && verticalActiva !== "todas" ? " de esta vertical" : ""}</p>
-        </div>
-        <div className="flex items-center gap-3 flex-wrap">
-          <AgendarCitaButton size="sm" />
-          <div className="flex items-center gap-2 text-muted-foreground bg-card p-3 rounded-lg border">
-            <Clock className="h-5 w-5" />
-            <div className="text-right">
-              <div className="text-sm font-medium text-foreground">
-                {format(localTime, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })}
-              </div>
-              <div className="text-lg font-bold text-primary">
-                {format(localTime, "hh:mm:ss a", { locale: es })}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="space-y-6">
+      {/* 1. Hero Banner Médico Interactivo (Inspirado en MediCore AI, Youcare y DocuCare) */}
+      <MedicalHeroBanner
+        nombreUsuario={nombreUsuario}
+        currentTime={currentTime}
+        visitasHoy={stats.visitasHoy}
+        sucursalNombre={currentWorkspace?.nombre || "Sede Central"}
+        verticalActiva={verticalActiva}
+      />
 
       {/* Alerta de límite del plan (cerca o alcanzado) */}
       <PlanLimitAlert resource="pacientes" />
+
+      {/* Alertas accionables con datos reales del centro */}
+      <AlertasAccion
+        alertas={[
+          extraStats.pacientesAltoRiesgo > 0 && {
+            id: "alto-riesgo",
+            nivel: "critica",
+            titulo: "Pacientes de alto seguimiento",
+            detalle: `${extraStats.pacientesAltoRiesgo} pacientes (${extraStats.porcentajeAltoRiesgo}% del total) requieren confirmación prioritaria.`,
+            etiqueta: "Alta prioridad",
+            accion: { label: "Ver pacientes", to: "/pacientes" },
+          },
+          stats.llamadasPendientes > 0 && {
+            id: "llamadas-pendientes",
+            nivel: "aviso",
+            titulo: "Llamadas de seguimiento pendientes",
+            detalle: `Tienes ${stats.llamadasPendientes} llamadas agendadas o pendientes en los últimos 30 días.`,
+            etiqueta: "Seguimiento",
+            accion: { label: "Ir a llamadas", to: "/llamadas" },
+          },
+        ].filter(Boolean) as AlertaAccion[]}
+      />
 
       {/* Checklist guiada de activación del centro clínico (Fase 8) */}
       <OnboardingChecklistWidget />
@@ -280,119 +303,121 @@ const Dashboard = () => {
       {/* Alertas de inventario (bajo stock + vencimientos) */}
       <InventarioAlertasWidget />
 
-      {/* Stats Grid with Interactive KPIs */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <InteractiveKPI
-          title={t("total_patients")}
-          value={stats.totalPacientes}
-          subtitle={t("patients_active_count", { count: stats.pacientesActivos })}
-          icon={Users}
-          trend={{ value: 12, isPositive: true }}
-          onClick={() => navigate('/pacientes')}
-          color="primary"
-        />
-        <InteractiveKPI
-          title={t("pending_calls")}
-          value={stats.llamadasPendientes}
-          subtitle={t("to_do")}
-          icon={Phone}
-          trend={{ value: 5, isPositive: false }}
-          onClick={() => navigate('/llamadas')}
-          color="warning"
-        />
-        <InteractiveKPI
-          title="Citas Hoy"
-          value={stats.visitasHoy}
-          subtitle="Agendadas"
-          icon={Calendar}
-          trend={{ value: 8, isPositive: true }}
-          onClick={() => navigate('/app/citas')}
-          color="success"
-        />
-        <InteractiveKPI
-          title={t("view_calendar")}
-          value={t("agenda")}
-          subtitle={t("appointments_visits")}
-          icon={CalendarDays}
-          onClick={() => navigate('/calendario')}
-          color="secondary"
-        />
-      </div>
-
-      {/* Gráficos Modernos Fase 7 - Modo B (shadow-none) */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* 1. Donut: Optimización de Citas */}
-        <DonutCard
-          title="Distribución de Citas del Mes"
-          periodo="Últimos 30 días"
-          data={donutData}
-          centerLabel="Total Citas"
-          loading={loadingCharts}
-        />
-
-        {/* 2. Barras: Ambulatorias vs Domiciliarias */}
-        <BarCard
-          title="Citas por Día de la Semana"
-          periodo="Últimos 7 días"
-          data={barData}
-          xAxisKey="label"
-          stacked
-          series={[
-            { key: "ambulatorias", label: "Ambulatorias (Consultorio)", color: "hsl(var(--primary))" },
-            { key: "domiciliarias", label: "Domiciliarias", color: "hsl(var(--chart-2))" },
-          ]}
-          loading={loadingCharts}
-        />
-      </div>
-
-      {/* 3. Proyección con Forecast e Intervalo de Confianza */}
-      <TrendCard
-        title="Proyección de Pacientes y Consultas"
-        periodo="Histórico 6 meses + Proyección a 3 meses"
-        data={trendData}
-        loading={loadingCharts}
+      {/* 2. Tarjetas KPI Enriquecidas (Inspiradas en Imagen 1 Careline y CareSpace) */}
+      <EnhancedKPIs
+        totalPacientes={stats.totalPacientes}
+        pacientesActivos={stats.pacientesActivos}
+        visitasHoy={stats.visitasHoy}
+        llamadasPendientes={stats.llamadasPendientes}
+        tasaCumplimiento={extraStats.tasaCumplimiento}
       />
 
-      {/* Activity Summary - Modo B Plano sin sombras */}
+      {/* 3. Barra de Accesos Rápidos Clínicos (Inspirada en MediCore AI y Youcare) */}
+      <QuickLinksBar />
+
+      {/* 4. Banda de Monitoreo Clínico Pastel (Inspirada en Examinations de la tableta) */}
+      <ExaminationsWidget />
+
+      {/* 5. Contenido principal (2 Columnas: Clínico & Agenda / Equipo) */}
+      <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
+        {/* Columna Izquierda: Citas de Hoy + Gráficos Analíticos */}
+        <div className="min-w-0 space-y-6">
+          {/* Citas Programadas para Hoy (Inspirada en Careline) */}
+          <TodayAppointmentsTable />
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Donut: Distribución de Pacientes por Estado */}
+            <DonutCard
+              title="Distribución de Pacientes por Estado"
+              description="Activo, inactivo y en seguimiento"
+              periodo="Total Pacientes"
+              data={donutData}
+              centerLabel="Pacientes"
+              loading={loadingCharts}
+            />
+
+            {/* Barras: Volumen de Citas Semanales */}
+            <BarCard
+              title="Volumen de Citas Semanales"
+              description="Atendidas vs. canceladas / inasistencias"
+              periodo="Últimos 7 días"
+              data={barData}
+              xAxisKey="label"
+              stacked
+              series={[
+                { key: "atendidas", label: "Atendidas / Asistencias", color: "hsl(var(--primary))" },
+                { key: "canceladas", label: "Canceladas / No-Show", color: "hsl(var(--destructive))" },
+              ]}
+              loading={loadingCharts}
+            />
+          </div>
+
+          {/* Proyección con Forecast e Intervalo de Confianza */}
+          <TrendCard
+            title="Proyección de Pacientes y Consultas"
+            periodo="Histórico 6 meses + Proyección a 3 meses"
+            data={trendData}
+            loading={loadingCharts}
+          />
+
+          {/* Métricas Especializadas por Vertical Médica */}
+          <VerticalMetricsWidget className="pt-2" />
+        </div>
+
+        {/* Columna Derecha: Agenda del Día + Médico Activo + Disponibilidad de Equipo */}
+        <aside className="space-y-6 xl:sticky xl:top-20 xl:self-start">
+          <AgendaDiaPanel />
+          <PhysicianProfileCard />
+          <DoctorScheduleWidget />
+        </aside>
+      </div>
+
+      {/* 6. Indicadores de Calidad y Signos Vitales (Inspirado en Today's Achievement) */}
+      <VitalStatsCards />
+
+      {/* 7. Pacientes Recientes (Inspirado en CareSpace) */}
+      <NewPatientsWidget />
+
+      {/* 8. Resumen Operativo de Eficiencia */}
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="shadow-none border border-border/60">
+        <Card className="rounded-3xl border border-border/60 shadow-none">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Duración Promedio de Consulta</CardTitle>
+            <CardTitle className="text-sm font-semibold">Duración Promedio de Consulta</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold tabular-nums">{extraStats.duracionPromedio} min</div>
-            <p className="text-xs text-muted-foreground">Promedio en últimos 30 días</p>
-            <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-primary" style={{ width: `${Math.min(extraStats.duracionPromedio * 10, 100)}%` }} />
+            <div className="text-2xl font-bold tabular-nums text-foreground">{extraStats.duracionPromedio} min</div>
+            <p className="text-xs text-muted-foreground mt-0.5">Promedio en últimos 30 días</p>
+            <div className="mt-4 h-2 w-full rounded-full bg-muted overflow-hidden">
+              <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(extraStats.duracionPromedio * 10, 100)}%` }} />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-none border border-border/60">
+        <Card className="rounded-3xl border border-border/60 shadow-none">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Tasa de Asistencia a Citas</CardTitle>
+            <CardTitle className="text-sm font-semibold">Tasa de Asistencia Global</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold tabular-nums">{extraStats.tasaCumplimiento || 92}%</div>
-            <p className="text-xs text-muted-foreground">Efectividad contra No-Show</p>
-            <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-success" style={{ width: `${extraStats.tasaCumplimiento || 92}%` }} />
+            <div className="text-2xl font-bold tabular-nums text-foreground">{extraStats.tasaCumplimiento}%</div>
+            <p className="text-xs text-muted-foreground mt-0.5">Efectividad contra inasistencias</p>
+            <div className="mt-4 h-2 w-full rounded-full bg-muted overflow-hidden">
+              <div className="h-full rounded-full bg-emerald-500" style={{ width: `${extraStats.tasaCumplimiento}%` }} />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-none border border-border/60">
+        <Card className="rounded-3xl border border-border/60 shadow-none">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-medium">Pacientes de Alto Seguimiento</CardTitle>
+            <CardTitle className="text-sm font-semibold">Pacientes de Alto Seguimiento</CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold tabular-nums">{extraStats.pacientesAltoRiesgo}</div>
-            <p className="text-xs text-muted-foreground">Requieren confirmación prioritaria</p>
-            <div className="mt-4 h-2 w-full bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-destructive" style={{ width: `${extraStats.porcentajeAltoRiesgo}%` }} />
+            <div className="text-2xl font-bold tabular-nums text-foreground">{extraStats.pacientesAltoRiesgo}</div>
+            <p className="text-xs text-muted-foreground mt-0.5">Requieren confirmación prioritaria</p>
+            <div className="mt-4 h-2 w-full rounded-full bg-muted overflow-hidden">
+              <div className="h-full rounded-full bg-destructive" style={{ width: `${extraStats.porcentajeAltoRiesgo}%` }} />
             </div>
           </CardContent>
         </Card>
@@ -402,3 +427,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

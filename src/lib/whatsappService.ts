@@ -117,8 +117,20 @@ export async function getPlantillaPorCategoria(
   return (data as unknown as PlantillaWhatsApp) ?? null;
 }
 
+const PLANTILLAS_DEFAULT: Record<WhatsAppCategoria, string> = {
+  recordatorio_cita:
+    "Hola {{paciente_nombre}}, le recordamos su cita {{tipo_visita}} con {{profesional_nombre}} para el {{fecha}} a las {{hora}}.\n\nPara confirmar su asistencia en 1 toque pulse aquí:\n{{enlace_confirmar}}",
+  confirmacion_cita:
+    "Hola {{paciente_nombre}}, su cita con {{profesional_nombre}} para el {{fecha}} a las {{hora}} está confirmada.",
+  cobro_pendiente:
+    "Hola {{paciente_nombre}}, tiene un saldo pendiente de consulta médica. Puede consultar los detalles en recepción.",
+  visita_en_camino:
+    "Hola {{paciente_nombre}}, el profesional de salud va en camino a su domicilio.",
+  custom: "{{mensaje}}",
+};
+
 /**
- * Helper integrado: carga plantilla, renderiza y abre WhatsApp.
+ * Helper integrado: carga plantilla (o usa predeterminada clínica), renderiza y abre WhatsApp.
  */
 export async function enviarWhatsAppConPlantilla(params: {
   categoria: WhatsAppCategoria;
@@ -131,10 +143,8 @@ export async function enviarWhatsAppConPlantilla(params: {
   destinatario?: "paciente" | "cuidador";
 }): Promise<{ ok: boolean; error?: string }> {
   const plantilla = await getPlantillaPorCategoria(params.categoria);
-  if (!plantilla) {
-    return { ok: false, error: `No hay plantilla activa para ${params.categoria}` };
-  }
-  const mensaje = renderPlantilla(plantilla.contenido, params.variables);
+  const contenido = plantilla?.contenido || PLANTILLAS_DEFAULT[params.categoria] || PLANTILLAS_DEFAULT.recordatorio_cita;
+  const mensaje = renderPlantilla(contenido, params.variables);
   return abrirWhatsApp({
     telefono: params.telefono,
     mensaje,
@@ -143,7 +153,7 @@ export async function enviarWhatsAppConPlantilla(params: {
     citaId: params.citaId,
     tipoCita: params.tipoCita,
     tipoRecordatorio: params.categoria,
-    plantillaId: plantilla.id,
+    plantillaId: plantilla?.id ?? null,
     destinatario: params.destinatario,
   });
 }

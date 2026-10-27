@@ -107,7 +107,7 @@ export function BuscarPacienteRecepcion({ cedulaInicial = "" }: Props) {
           <DialogHeader>
             <DialogTitle>Historial clínico</DialogTitle>
           </DialogHeader>
-          {pacienteSel && <FichaClinicaPaciente pacienteId={pacienteSel} />}
+          {pacienteSel && <FichaClinicaPaciente pacienteId={pacienteSel} conCabecera />}
         </DialogContent>
       </Dialog>
     </>

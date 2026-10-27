@@ -280,7 +280,7 @@ const ConfiguracionAdmin = () => {
         className="grid gap-6 lg:grid-cols-[240px_1fr]"
       >
         {/* Navegación Lateral con border-l y herencia de color de vertical (Fase 3) */}
-        <TabsList className="h-auto w-full justify-start overflow-x-auto bg-transparent p-0 lg:flex-col lg:items-stretch lg:overflow-visible lg:sticky lg:top-4 lg:self-start space-y-4">
+        <TabsList className="h-auto w-full justify-start overflow-x-auto gap-0 border-0 bg-transparent p-0 lg:flex-col lg:items-stretch lg:overflow-visible lg:sticky lg:top-4 lg:self-start space-y-4">
           {NAV_GROUPS.map((group) => (
             <div key={group.label} className="flex gap-1 lg:flex-col">
               <p className="hidden lg:block px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -290,7 +290,7 @@ const ConfiguracionAdmin = () => {
                 <TabsTrigger
                   key={value}
                   value={value}
-                  className="shrink-0 justify-start gap-2.5 px-3 py-2 text-sm rounded-md transition-all text-muted-foreground hover:text-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border-l-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:font-medium"
+                  className="mb-0 border-b-0 shrink-0 justify-start gap-2.5 px-3 py-2 text-sm rounded-md transition-all text-muted-foreground hover:text-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:border-l-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:font-medium"
                 >
                   <Icon className="h-4 w-4" />
                   {label}

@@ -11,7 +11,7 @@ export const GlassCard = ({ children, className, onClick }: GlassCardProps) => {
     <div
       onClick={onClick}
       className={cn(
-        "rounded-xl border bg-card text-card-foreground shadow-none transition-all",
+        "rounded-2xl border bg-card text-card-foreground shadow-none transition-all",
         onClick && "cursor-pointer hover:border-primary/40",
         className
       )}
