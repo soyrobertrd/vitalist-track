@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node scripts/verify-local-user-auth.mjs",
+    "test": "node scripts/seed-local-environment.mjs && node scripts/verify-local-user-auth.mjs",
     "seed:local": "node scripts/seed-local-environment.mjs",
     "verify:auth": "node scripts/verify-local-user-auth.mjs",
     "ci": "tsc --noEmit && vite build"
