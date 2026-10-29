@@ -1,3 +1,4 @@
+import { DEMO_MODE } from "@/lib/mock-live-seed";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
@@ -11,8 +12,10 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { FileCheck, Plus, FileSignature, Pill, Calendar, AlertTriangle, Stethoscope } from "lucide-react";
+import { FileCheck, Plus, FileSignature, Pill, Calendar, AlertTriangle, Stethoscope, QrCode } from "lucide-react";
 import { format } from "date-fns";
+import { differenceInYears } from "date-fns";
+import { EpicrisisDigitalModal, DatosEpicrisisAlta } from "@/components/hospital/EpicrisisDigitalModal";
 
 const ESTADO_COLOR: Record<string, string> = {
   pendiente: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
@@ -29,6 +32,9 @@ const TIPOS = [
   { value: "fuga", label: "Fuga" },
 ];
 
+/** Valor de ejemplo solo con VITE_DEMO_MODE=true; con datos reales nunca se inventan datos clínicos. */
+const ej = <T,>(ejemplo: T, real: T): T => (DEMO_MODE ? ejemplo : real);
+
 export default function AltaHospitalaria() {
   const { currentWorkspace } = useWorkspace();
   const { isAdmin } = useUserRole();
@@ -38,6 +44,8 @@ export default function AltaHospitalaria() {
   const [medicos, setMedicos] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [epicrisisSeleccionada, setEpicrisisSeleccionada] = useState<any>(null);
+  const [epicrisisModalOpen, setEpicrisisModalOpen] = useState(false);
   const [form, setForm] = useState<any>({
     paciente_id: "", tipo_alta: "medica", diagnostico_principal: "",
     resumen_clinico: "", indicaciones_paciente: "", cuidados_domicilio: "",
@@ -51,7 +59,7 @@ export default function AltaHospitalaria() {
     setLoading(true);
     const [a, p, m] = await Promise.all([
       (supabase.from("altas_hospitalarias") as any)
-        .select("*, pacientes(nombre, apellido, cedula), personal_salud!medico_alta_id(nombre, apellido)")
+        .select("*, pacientes(nombre, apellido, cedula, fecha_nacimiento), personal_salud!medico_alta_id(nombre, apellido)")
         .eq("workspace_id", wsId).order("fecha_alta", { ascending: false }).limit(100),
       supabase.from("pacientes").select("id, nombre, apellido, cedula").eq("workspace_id", wsId).order("nombre"),
       supabase.from("personal_salud").select("id, nombre, apellido").eq("workspace_id", wsId).eq("activo", true),
@@ -237,19 +245,31 @@ export default function AltaHospitalaria() {
                   <Calendar className="h-3.5 w-3.5 text-primary" /> Próxima cita: {a.proxima_cita_fecha}
                   {a.proxima_cita_especialidad ? ` (${a.proxima_cita_especialidad})` : ""}
                 </p>}
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-2 pt-2 items-center flex-wrap">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setEpicrisisSeleccionada(a);
+                      setEpicrisisModalOpen(true);
+                    }}
+                    className="h-8 rounded-xl text-xs gap-1 border-teal-200 text-teal-700 dark:border-teal-800 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-950/40"
+                  >
+                    <QrCode className="h-3.5 w-3.5 text-teal-600" />
+                    Epicrisis & QR Móvil
+                  </Button>
                   {a.estado === "pendiente" && (
-                    <Button size="sm" variant="outline" onClick={() => cambiarEstado(a.id, "firmada")}>
+                    <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs" onClick={() => cambiarEstado(a.id, "firmada")}>
                       <FileSignature className="h-3.5 w-3.5 mr-1" /> Marcar firmada
                     </Button>
                   )}
                   {a.estado === "firmada" && (
-                    <Button size="sm" variant="outline" onClick={() => cambiarEstado(a.id, "entregada")}>
+                    <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs" onClick={() => cambiarEstado(a.id, "entregada")}>
                       Entregar al paciente
                     </Button>
                   )}
                   {isAdmin && a.estado !== "anulada" && (
-                    <Button size="sm" variant="ghost" onClick={() => cambiarEstado(a.id, "anulada")}>
+                    <Button size="sm" variant="ghost" className="h-8 rounded-xl text-xs" onClick={() => cambiarEstado(a.id, "anulada")}>
                       Anular
                     </Button>
                   )}
@@ -258,6 +278,49 @@ export default function AltaHospitalaria() {
             </Card>
           ))}
         </div>
+      )}
+
+      {epicrisisSeleccionada && (
+        <EpicrisisDigitalModal
+          open={epicrisisModalOpen}
+          onOpenChange={setEpicrisisModalOpen}
+          datos={{
+            id: epicrisisSeleccionada.id,
+            pacienteNombre: `${epicrisisSeleccionada.pacientes?.nombre || "Paciente"} ${epicrisisSeleccionada.pacientes?.apellido || ""}`,
+            cedula: epicrisisSeleccionada.pacientes?.cedula || ej("402-XXXXXXX-X", "—"),
+            edad: epicrisisSeleccionada.pacientes?.fecha_nacimiento
+              ? `${differenceInYears(new Date(), new Date(epicrisisSeleccionada.pacientes.fecha_nacimiento))} años`
+              : ej("45 años", "—"),
+            servicioEgreso: "Hospitalización Médica",
+            fechaIngreso: epicrisisSeleccionada.fecha_ingreso
+              ? format(new Date(epicrisisSeleccionada.fecha_ingreso), "dd/MM/yyyy")
+              : ej(format(new Date(Date.now() - 3 * 86400000), "dd/MM/yyyy"), "—"),
+            fechaAlta: format(new Date(epicrisisSeleccionada.fecha_alta), "dd/MM/yyyy"),
+            tipoAlta: epicrisisSeleccionada.tipo_alta,
+            diagnosticoPrincipal: epicrisisSeleccionada.diagnostico_principal || ej("Evolución clínica satisfactoria", "—"),
+            resumenEstancia: epicrisisSeleccionada.resumen_clinico || ej("Paciente ingresó con cuadro clínico agudo. Recibió tratamiento antibiótico y soporte, con resolución de síntomas y parámetros vitales estables.", "—"),
+            medicamentosDomicilio: Array.isArray(epicrisisSeleccionada.medicamentos_alta) && epicrisisSeleccionada.medicamentos_alta.length > 0
+              ? epicrisisSeleccionada.medicamentos_alta.map((m: any) => ({
+                  nombre: m.medicamento || "—",
+                  dosis: m.dosis || "—",
+                  frecuencia: m.frecuencia || "—",
+                  duracion: m.duracion || "—",
+                }))
+              : ej([
+                  { nombre: "Amoxicilina / Ácido Clavulánico", dosis: "875/125 mg", frecuencia: "12 horas", duracion: "7 días" },
+                  { nombre: "Paracetamol", dosis: "500 mg", frecuencia: "8 horas (si hay dolor o fiebre)", duracion: "3 días" },
+                ], []),
+            signosAlarma: epicrisisSeleccionada.signos_alarma
+              ? [epicrisisSeleccionada.signos_alarma]
+              : ["Fiebre persistente superior a 38.5 °C", "Dificultad para respirar o dolor torácico", "Sangrado activo o intolerancia a la vía oral"],
+            proximaCita: {
+              fecha: epicrisisSeleccionada.proxima_cita_fecha || ej(format(new Date(Date.now() + 7 * 86400000), "dd/MM/yyyy"), "Por definir"),
+              especialidad: epicrisisSeleccionada.proxima_cita_especialidad || ej("Medicina Interna", "—"),
+              medico: epicrisisSeleccionada.personal_salud?.nombre ? `${epicrisisSeleccionada.personal_salud.nombre} ${epicrisisSeleccionada.personal_salud.apellido}` : ej("Dr. Especialista de Control", "—"),
+            },
+            medicoTratante: epicrisisSeleccionada.personal_salud?.nombre ? `${epicrisisSeleccionada.personal_salud.nombre} ${epicrisisSeleccionada.personal_salud.apellido}` : ej("Médico de Guardia", "—"),
+          }}
+        />
       )}
     </div>
   );

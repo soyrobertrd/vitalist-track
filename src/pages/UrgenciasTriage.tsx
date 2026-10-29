@@ -3,8 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Clock, ArrowRight } from "lucide-react";
+import { AlertCircle, Clock, ArrowRight, Activity, Zap, CheckCircle2, Siren } from "lucide-react";
 import { format } from "date-fns";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
 
 const NIVEL_COLOR: Record<string, string> = {
   rojo: "bg-red-600 text-white",
@@ -54,13 +56,45 @@ export default function UrgenciasTriage() {
   const porNivel = (nivel: string) =>
     registros.filter((r) => triages[r.id]?.nivel === nivel);
 
+  const rojosCount = porNivel("rojo").length;
+  const naranjasCount = porNivel("naranja").length;
+
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <AlertCircle className="h-7 w-7 text-red-500" /> Urgencias & Triage Manchester
-        </h1>
-        <p className="text-muted-foreground">Gestión de sala de emergencias con tiempos objetivo por nivel.</p>
+    <div className="space-y-6">
+      <ClinicalPageHeader
+        title="Urgencias & Triage Manchester"
+        subtitle="Clasificación clínica por gravedad (5 niveles), tiempos de espera máximos y activación de reanimación"
+        icon={Siren}
+        variant="rose"
+      />
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <ClinicalKpiCard
+          title="Nivel 1 - Rojo (STAT)"
+          value={rojosCount}
+          icon={Siren}
+          variant="rose"
+          alert={rojosCount > 0}
+        />
+        <ClinicalKpiCard
+          title="Nivel 2 - Naranja (≤10m)"
+          value={naranjasCount}
+          icon={Zap}
+          variant="amber"
+          alert={naranjasCount > 0}
+        />
+        <ClinicalKpiCard
+          title="Nivel 3 - Amarillo (≤60m)"
+          value={porNivel("amarillo").length}
+          icon={Clock}
+          variant="blue"
+        />
+        <ClinicalKpiCard
+          title="Total en Sala / Box"
+          value={registros.length}
+          icon={Activity}
+          variant="teal"
+        />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

@@ -373,4 +373,22 @@ All colors MUST be HSL.
       opacity: 0.7;
     }
   }
+
+  /* Ocultar barra de scroll en el sidebar manteniendo el scroll activo */
+  aside nav,
+  [data-sidebar="content"],
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE y Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  aside nav::-webkit-scrollbar,
+  [data-sidebar="content"]::-webkit-scrollbar,
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+    height: 0px;
+    background: transparent;
+  }
 }
+

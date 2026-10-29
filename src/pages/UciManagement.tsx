@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Activity, Droplet, ClipboardList, FileDown, Plus } from "lucide-react";
+import { escapeDeep } from "@/lib/escape-html";
 
 interface Admision { id: string; paciente_id: string; fecha_ingreso: string; estado: string; cama_id: string | null }
 
@@ -110,23 +111,25 @@ export default function UciManagement() {
   };
 
   const exportarPDF = () => {
+    // Datos clínicos escapados antes de interpolarlos en el HTML del reporte
+    const [infEsc, balEsc, karEsc] = [escapeDeep(infusiones), escapeDeep(balances), escapeDeep(kardex)];
     const html = `
       <html><head><title>UCI - Reporte</title>
       <style>body{font-family:Arial;padding:20px}h1,h2{color:#333}table{border-collapse:collapse;width:100%;margin:10px 0}td,th{border:1px solid #ccc;padding:6px;text-align:left;font-size:12px}</style>
       </head><body>
       <h1>Reporte UCI - Admisión ${adId.slice(0, 8)}</h1>
       <p>Generado: ${new Date().toLocaleString("es-DO")}</p>
-      <h2>Infusiones (${infusiones.length})</h2>
+      <h2>Infusiones (${infEsc.length})</h2>
       <table><tr><th>Medicamento</th><th>Dosis</th><th>Vía</th><th>Velocidad</th><th>Fecha</th></tr>
-      ${infusiones.map((i) => `<tr><td>${i.medicamento}</td><td>${i.dosis || ""}</td><td>${i.via || ""}</td><td>${i.velocidad || ""}</td><td>${new Date(i.created_at).toLocaleString("es-DO")}</td></tr>`).join("")}
+      ${infEsc.map((i) => `<tr><td>${i.medicamento}</td><td>${i.dosis || ""}</td><td>${i.via || ""}</td><td>${i.velocidad || ""}</td><td>${new Date(i.created_at).toLocaleString("es-DO")}</td></tr>`).join("")}
       </table>
-      <h2>Balance hídrico (${balances.length})</h2>
+      <h2>Balance hídrico (${balEsc.length})</h2>
       <table><tr><th>Ingresos (ml)</th><th>Egresos (ml)</th><th>Neto</th><th>Tipo</th><th>Fecha</th></tr>
-      ${balances.map((b) => `<tr><td>${b.ingresos_ml}</td><td>${b.egresos_ml}</td><td>${b.ingresos_ml - b.egresos_ml}</td><td>${b.tipo}</td><td>${new Date(b.created_at).toLocaleString("es-DO")}</td></tr>`).join("")}
+      ${balEsc.map((b) => `<tr><td>${b.ingresos_ml}</td><td>${b.egresos_ml}</td><td>${b.ingresos_ml - b.egresos_ml}</td><td>${b.tipo}</td><td>${new Date(b.created_at).toLocaleString("es-DO")}</td></tr>`).join("")}
       </table>
-      <h2>Kardex (${kardex.length})</h2>
+      <h2>Kardex (${karEsc.length})</h2>
       <table><tr><th>Turno</th><th>Actividad</th><th>Observaciones</th><th>Fecha</th></tr>
-      ${kardex.map((k) => `<tr><td>${k.turno}</td><td>${k.cuidados?.actividad || ""}</td><td>${k.observaciones || ""}</td><td>${new Date(k.created_at).toLocaleString("es-DO")}</td></tr>`).join("")}
+      ${karEsc.map((k) => `<tr><td>${k.turno}</td><td>${k.cuidados?.actividad || ""}</td><td>${k.observaciones || ""}</td><td>${new Date(k.created_at).toLocaleString("es-DO")}</td></tr>`).join("")}
       </table>
       </body></html>`;
     const w = window.open("", "_blank");

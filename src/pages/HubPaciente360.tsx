@@ -224,6 +224,25 @@ export default function HubPaciente360() {
 
       {/* Panel derecho: información general + notas importantes */}
       <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+        {/* Acciones Clínicas Rápidas */}
+        <section className="rounded-2xl border bg-card p-5 space-y-3">
+          <h2 className="text-base font-semibold">Acciones Clínicas</h2>
+          <div className="flex flex-col gap-2">
+            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9">
+              <Link to="/escalas-medicas">
+                <HeartPulse className="h-4 w-4 text-purple-600" />
+                Evaluar Escala Médica
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9">
+              <Link to="/notas-medicas">
+                <FileText className="h-4 w-4 text-emerald-600" />
+                Nueva Nota SOAP / Junta
+              </Link>
+            </Button>
+          </div>
+        </section>
+
         <section className="rounded-2xl border bg-card p-5">
           <h2 className="mb-4 text-base font-semibold">Información general</h2>
           <ul className="space-y-4">

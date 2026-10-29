@@ -84,9 +84,9 @@ export function TodayAppointmentsTable() {
             const doc = v.personal_salud ? `Dr. ${v.personal_salud.nombre}` : "Dr. General";
             const hora = v.fecha_hora_visita ? format(new Date(v.fecha_hora_visita), "HH:mm") : "09:00";
             let normEstado: AppointmentItem["estado"] = "confirmada";
-            if (v.estado === "realizada" || v.estado === "atendido") normEstado = "atendida";
+            if ((v.estado as string) === "realizada" || (v.estado as string) === "atendido") normEstado = "atendida";
             else if (v.estado === "cancelada") normEstado = "cancelada";
-            else if (v.estado === "en_curso") normEstado = "en_espera";
+            else if ((v.estado as string) === "en_curso") normEstado = "en_espera";
             else if (v.estado === "pendiente") normEstado = "pendiente";
 
             return {

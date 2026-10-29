@@ -13,7 +13,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Plus, Droplets, Heart, AlertTriangle, Package } from "lucide-react";
+import { Plus, Droplets, Heart, AlertTriangle, Package, ShieldCheck, HeartPulse, ShieldAlert } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
+import { CompatibilidadTransfusionalTab } from "@/components/banco-sangre/CompatibilidadTransfusionalTab";
+import { HemovigilanciaReaccionesTab } from "@/components/banco-sangre/HemovigilanciaReaccionesTab";
 
 const BancoSangre = () => {
   const { currentWorkspace } = useWorkspace();
@@ -86,23 +90,64 @@ const BancoSangre = () => {
   const pendientes = (solicitudes || []).filter(s => s.estado === "pendiente").length;
 
   return (
-    <div className="space-y-4 p-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Banco de Sangre</h1>
+    <div className="space-y-6">
+      <ClinicalPageHeader
+        title="Banco de Sangre & Hemovigilancia"
+        subtitle="Stock de hemocomponentes, compatibilidad cruzada ABO/RhD, donantes y prevención de reacciones adversas"
+        icon={Droplets}
+        variant="rose"
+      />
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <ClinicalKpiCard
+          title="Unidades Disponibles"
+          value={disponibles}
+          icon={Droplets}
+          variant="rose"
+        />
+        <ClinicalKpiCard
+          title="Donantes Registrados"
+          value={(donantes || []).length}
+          icon={Heart}
+          variant="teal"
+        />
+        <ClinicalKpiCard
+          title="Solicitudes Pendientes"
+          value={pendientes}
+          icon={AlertTriangle}
+          variant="amber"
+          alert={pendientes > 0}
+        />
+        <ClinicalKpiCard
+          title="Vencidas / Descarte"
+          value={vencidas}
+          icon={Package}
+          variant="blue"
+        />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card><CardContent className="pt-4 text-center"><Droplets className="h-6 w-6 mx-auto text-red-500" /><p className="text-2xl font-bold">{disponibles}</p><p className="text-xs text-muted-foreground">Unidades disponibles</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><Heart className="h-6 w-6 mx-auto text-pink-500" /><p className="text-2xl font-bold">{(donantes || []).length}</p><p className="text-xs text-muted-foreground">Donantes</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><AlertTriangle className="h-6 w-6 mx-auto text-yellow-500" /><p className="text-2xl font-bold">{pendientes}</p><p className="text-xs text-muted-foreground">Solicitudes pendientes</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><Package className="h-6 w-6 mx-auto text-destructive" /><p className="text-2xl font-bold">{vencidas}</p><p className="text-xs text-muted-foreground">Vencidas</p></CardContent></Card>
-      </div>
-
-      <Tabs value={tab} onValueChange={setTab}>
-        <TabsList>
-          <TabsTrigger value="inventario">Inventario</TabsTrigger>
-          <TabsTrigger value="donantes">Donantes</TabsTrigger>
-          <TabsTrigger value="solicitudes">Solicitudes</TabsTrigger>
+      <Tabs value={tab} onValueChange={setTab} className="space-y-4">
+        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
+          <TabsTrigger value="inventario" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <Droplets className="h-4 w-4 text-red-600" />
+            Inventario de Unidades
+          </TabsTrigger>
+          <TabsTrigger value="compatibilidad" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <HeartPulse className="h-4 w-4 text-rose-600" />
+            Compatibilidad Transfusional
+          </TabsTrigger>
+          <TabsTrigger value="hemovigilancia" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <ShieldAlert className="h-4 w-4 text-amber-600" />
+            Hemovigilancia & RAT
+          </TabsTrigger>
+          <TabsTrigger value="donantes" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <Heart className="h-4 w-4 text-teal-600" />
+            Donantes
+          </TabsTrigger>
+          <TabsTrigger value="solicitudes" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <AlertTriangle className="h-4 w-4 text-purple-600" />
+            Solicitudes de Transfusión
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="inventario">
@@ -181,6 +226,14 @@ const BancoSangre = () => {
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="compatibilidad">
+          <CompatibilidadTransfusionalTab />
+        </TabsContent>
+
+        <TabsContent value="hemovigilancia">
+          <HemovigilanciaReaccionesTab />
         </TabsContent>
       </Tabs>
 

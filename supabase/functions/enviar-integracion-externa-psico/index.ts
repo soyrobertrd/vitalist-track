@@ -9,6 +9,27 @@ const Body = z.object({
   payload: z.record(z.any()),
 });
 
+// SSRF: solo https hacia hosts públicos por nombre o IP pública.
+// shortcut: no resuelve DNS (un dominio que apunte a una IP privada pasa), añadir resolución si se exponen endpoints internos.
+export function endpointPermitido(raw: string): boolean {
+  let u: URL;
+  try { u = new URL(raw); } catch { return false; }
+  if (u.protocol !== "https:" || u.username || u.password) return false;
+  const h = u.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  if (h === "localhost" || h.endsWith(".localhost") || h.endsWith(".internal") || h.endsWith(".local")) return false;
+  if (h.includes(":")) return false; // IPv6 literal
+  const m = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+  if (m) {
+    const [a, b] = [Number(m[1]), Number(m[2])];
+    if (a === 0 || a === 10 || a === 127 || a >= 224) return false;
+    if (a === 169 && b === 254) return false;
+    if (a === 172 && b >= 16 && b <= 31) return false;
+    if (a === 192 && b === 168) return false;
+    if (a === 100 && b >= 64 && b <= 127) return false;
+  } else if (/^[\d.]+$/.test(h) || /^0x/i.test(h)) return false; // formas numéricas raras
+  return true;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -58,7 +79,10 @@ Deno.serve(async (req) => {
     // POST al endpoint externo (si configurado)
     let respuesta: any = { simulado: true };
     let estado: "enviado" | "fallido" = "enviado";
-    if (integ.endpoint) {
+    if (integ.endpoint && !endpointPermitido(integ.endpoint)) {
+      respuesta = { error: "Endpoint no permitido (solo https a hosts públicos)" };
+      estado = "fallido";
+    } else if (integ.endpoint) {
       try {
         const r = await fetch(integ.endpoint, {
           method: "POST",
@@ -67,6 +91,7 @@ Deno.serve(async (req) => {
             ...(integ.api_key_cifrada ? { Authorization: `Bearer ${integ.api_key_cifrada}` } : {}),
           },
           body: JSON.stringify({ tipo: tipo_referencia, referencia_id, data: payload }),
+          redirect: "manual",
         });
         respuesta = { status: r.status, body: await r.text().then(t => t.slice(0, 2000)) };
         if (!r.ok) estado = "fallido";

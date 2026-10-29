@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { useProfessionalVertical } from "@/hooks/useProfessionalVertical";
+import { escapeDeep, escapeHtml } from "@/lib/escape-html";
 
 interface RecetaItem {
   id?: string;
@@ -198,10 +199,12 @@ export function RecetasPaciente({ pacienteId }: Props) {
     fetchRecetas();
   };
 
-  const printReceta = (r: Receta) => {
+  const printReceta = (rRaw: Receta) => {
     const w = window.open("", "_blank");
     if (!w) return;
-    const centroNombre = currentWorkspace?.nombre || "Vitalist Track - Centro Clínico";
+    // Receta y nombre del centro escapados: son texto libre que se escribe como HTML
+    const r = escapeDeep(rRaw) as Receta;
+    const centroNombre = escapeHtml(currentWorkspace?.nombre || "Vitalist Track - Centro Clínico");
     const prof = r.personal_salud ? `Dr(a). ${r.personal_salud.nombre} ${r.personal_salud.apellido}` : "Médico Tratante";
     const fecha = new Date(r.fecha_emision).toLocaleDateString("es-DO", {
       day: "2-digit",

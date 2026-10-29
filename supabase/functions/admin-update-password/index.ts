@@ -75,6 +75,22 @@ serve(async (req: Request) => {
       );
     }
 
+    // El rol admin es global: además se exige que el usuario objetivo sea de una clínica que el caller administra.
+    const { data: adminWs } = await supabaseAdmin
+      .from("workspace_members").select("workspace_id")
+      .eq("user_id", userData.user.id).in("role", ["owner", "admin"]);
+    const wsIds = (adminWs ?? []).map((w: { workspace_id: string }) => w.workspace_id);
+    const { data: shared } = wsIds.length
+      ? await supabaseAdmin.from("workspace_members").select("workspace_id")
+          .eq("user_id", userId).in("workspace_id", wsIds).limit(1)
+      : { data: [] };
+    if (!shared?.length) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: user is not in a workspace you administer" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Update user password using admin client
     const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
       userId,

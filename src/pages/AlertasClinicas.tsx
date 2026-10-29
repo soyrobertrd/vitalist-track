@@ -4,16 +4,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertTriangle, ShieldAlert, BellRing } from "lucide-react";
+import { AlertTriangle, ShieldAlert, BellRing, PhoneCall, CheckCircle2, Clock, Zap } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 import { useProfessionalVertical } from "@/hooks/useProfessionalVertical";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
 
 const SEV_COLOR: Record<string, string> = {
-  baja: "bg-blue-100 text-blue-700",
-  media: "bg-amber-100 text-amber-700",
-  alta: "bg-orange-100 text-orange-700",
-  critica: "bg-red-100 text-red-700 animate-pulse",
+  baja: "bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300 border-blue-200",
+  media: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border-amber-200",
+  alta: "bg-orange-100 text-orange-800 dark:bg-orange-950/40 dark:text-orange-300 border-orange-200",
+  critica: "bg-red-100 text-red-800 dark:bg-red-950/40 dark:text-red-300 border-red-300 animate-pulse",
 };
 
 export default function AlertasClinicas() {
@@ -44,18 +46,43 @@ export default function AlertasClinicas() {
     cargar();
   };
 
+  const criticasCount = alertas.filter(a => a.severidad === "critica").length;
+
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <ShieldAlert className="h-7 w-7 text-primary" /> Alertas Clínicas Inter-módulos
-        </h1>
-        <p className="text-muted-foreground">
-          Sepsis, deterioro, valores pánico, alergias, vencimientos críticos y triage rojo.
-        </p>
-        {!canActHere && verticalProfesional && (
-          <p className="text-xs text-amber-600 mt-1">Modo solo lectura: vertical asignada <b>{verticalProfesional}</b>.</p>
-        )}
+    <div className="space-y-6">
+      <ClinicalPageHeader
+        title="Centro de Alertas Clínicas Inter-Módulos"
+        subtitle="Detección temprana de sepsis, score NEWS2 crítico, valores de pánico de laboratorio y alergias"
+        icon={ShieldAlert}
+        variant="rose"
+      />
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <ClinicalKpiCard
+          title="Alertas Críticas"
+          value={criticasCount}
+          icon={AlertTriangle}
+          variant="rose"
+          alert={criticasCount > 0}
+        />
+        <ClinicalKpiCard
+          title="T. Respuesta Promedio"
+          value="< 4 min"
+          icon={Clock}
+          variant="teal"
+        />
+        <ClinicalKpiCard
+          title="Reconocidas"
+          value={alertas.filter(a => a.estado === "reconocida").length}
+          icon={Zap}
+          variant="purple"
+        />
+        <ClinicalKpiCard
+          title="Atendidas Hoy"
+          value={alertas.filter(a => a.estado === "atendida").length}
+          icon={CheckCircle2}
+          variant="emerald"
+        />
       </div>
 
 

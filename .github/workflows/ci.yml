@@ -33,5 +33,6 @@ jobs:
       - name: Production Vite Build
         run: npm run build
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://qkjjyiymzaouqslzbxrp.supabase.co' }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder' }}
+          VITE_SUPABASE_URL: "https://qkjjyiymzaouqslzbxrp.supabase.co"
+          VITE_SUPABASE_PUBLISHABLE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFramp5aXltemFvdXFzbHpieHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MzMwNTAsImV4cCI6MjA3NjAwOTA1MH0.u6bPHPxs_Rf63A9kIsIKdZVYIQiAjKojIcVgCEdd5RM"
+

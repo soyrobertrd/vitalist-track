@@ -2,11 +2,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Phone, MapPin, Heart, Pill, Mail, History } from "lucide-react";
+import { Calendar, Phone, MapPin, Heart, Pill, Mail, History, Printer } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { printFichaClinica360 } from "@/lib/clinical-print-service";
 import { NotificacionPlanAccion } from "@/components/NotificacionPlanAccion";
 import { PatientTimeline } from "@/components/PatientTimeline";
 import { FichaClinicaPaciente } from "@/components/ficha-clinica/FichaClinicaPaciente";
@@ -22,6 +24,7 @@ interface PacienteDetailDialogProps {
 }
 
 export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: PacienteDetailDialogProps) {
+  const { currentWorkspace } = useWorkspace();
   const [paciente, setPaciente] = useState<any>(null);
   const [medicamentos, setMedicamentos] = useState<any[]>([]);
   const [llamadas, setLlamadas] = useState<any[]>([]);
@@ -119,26 +122,57 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
 
           <div className="mt-4 flex flex-wrap gap-2">
             {telefono && (
-              <Button asChild size="sm" variant="outline">
+              <Button asChild size="sm" variant="outline" className="rounded-xl">
                 <a href={`tel:${telefono.replace(/\D/g, "")}`}>
                   <Phone className="mr-1.5 h-4 w-4" aria-hidden="true" /> Llamar
                 </a>
               </Button>
             )}
             {telefono && (paciente.whatsapp_px || paciente.whatsapp_cuidador) && (
-              <Button asChild size="sm" variant="outline">
+              <Button asChild size="sm" variant="outline" className="rounded-xl">
                 <a href={`https://wa.me/${waNumero(telefono)}`} target="_blank" rel="noopener noreferrer">
                   <FontAwesomeIcon icon={faWhatsapp} className="mr-1.5 h-4 w-4 text-success" /> WhatsApp
                 </a>
               </Button>
             )}
             {paciente.email_px && (
-              <Button asChild size="sm" variant="outline">
+              <Button asChild size="sm" variant="outline" className="rounded-xl">
                 <a href={`mailto:${paciente.email_px}`}>
                   <Mail className="mr-1.5 h-4 w-4" aria-hidden="true" /> Email
                 </a>
               </Button>
             )}
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-xl text-primary font-medium"
+              onClick={() => {
+                printFichaClinica360(
+                  {
+                    nombre: paciente.nombre,
+                    apellido: paciente.apellido,
+                    cedula: paciente.cedula,
+                    fecha_nacimiento: paciente.fecha_nacimiento,
+                    sexo: paciente.sexo,
+                    contacto_px: paciente.contacto_px,
+                    contacto_cuidador: paciente.contacto_cuidador,
+                    direccion_domicilio: paciente.direccion_domicilio,
+                    zona: paciente.zona,
+                    historia_medica_basica: paciente.historia_medica_basica,
+                    medicamentos: medicamentos.map((m: any) => ({
+                      nombre: m.medicamento || m.nombre,
+                      dosis: m.dosis,
+                      frecuencia: m.frecuencia,
+                    })),
+                  },
+                  {
+                    centroNombre: currentWorkspace?.nombre,
+                  }
+                );
+              }}
+            >
+              <Printer className="mr-1.5 h-4 w-4" /> Imprimir Ficha 360
+            </Button>
             <GenerarTokenPortal pacienteId={pacienteId!} pacienteNombre={nombreCompleto} />
           </div>
         </DialogHeader>
@@ -150,18 +184,38 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
           <SectionTitle>Resumen general</SectionTitle>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {[
-              { icon: Calendar, label: "Próxima cita", valor: proximaCita ? fechaHora(proximaCita) : "No programada" },
-              { icon: Phone, label: "Próxima llamada", valor: proximaLlamada ? fechaHora(proximaLlamada) : "No programada" },
-              { icon: Pill, label: "Medicamentos", valor: String(medicamentos.length) },
-              { icon: History, label: "Citas pendientes", valor: String(visitas.length + llamadas.length) },
-            ].map(({ icon: Icon, label, valor }) => (
-              <div key={label} className="flex items-center gap-3 rounded-2xl border bg-card p-4">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Icon className="h-4 w-4" aria-hidden="true" />
+              {
+                icon: Calendar,
+                label: "Próxima cita",
+                valor: proximaCita ? fechaHora(proximaCita) : "No programada",
+                iconStyle: "bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400",
+              },
+              {
+                icon: Phone,
+                label: "Próxima llamada",
+                valor: proximaLlamada ? fechaHora(proximaLlamada) : "No programada",
+                iconStyle: "bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400",
+              },
+              {
+                icon: Pill,
+                label: "Medicamentos",
+                valor: String(medicamentos.length),
+                iconStyle: "bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-400",
+              },
+              {
+                icon: History,
+                label: "Citas pendientes",
+                valor: String(visitas.length + llamadas.length),
+                iconStyle: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400",
+              },
+            ].map(({ icon: Icon, label, valor, iconStyle }) => (
+              <div key={label} className="flex items-center gap-3 rounded-2xl border border-border/80 bg-card p-3.5 shadow-none transition-all hover:shadow-sm">
+                <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconStyle}`}>
+                  <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-xs text-muted-foreground">{label}</span>
-                  <span className="block truncate text-sm font-semibold tabular-nums">{valor}</span>
+                  <span className="block text-xs font-medium text-muted-foreground">{label}</span>
+                  <span className="block truncate text-sm font-bold tabular-nums text-foreground">{valor}</span>
                 </span>
               </div>
             ))}

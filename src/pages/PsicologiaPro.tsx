@@ -44,16 +44,13 @@ const ESCALAS_INFO: Record<string, { label: string; max: number; cortes: { label
  * llamar hooks de forma condicional (rules-of-hooks).
  */
 export default function PsicologiaPro() {
-  const [tab] = useTabParam("");
-  if (!tab) return <Navigate to="/dashboard" replace />;
   return <PsicologiaProContent />;
 }
 
 function PsicologiaProContent() {
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
-  const [tab, setTab] = useTabParam("");
-  const isResumen = !tab;
+  const [tab, setTab] = useTabParam("fichas");
 
   const { data: pacientes = [] } = useQuery({
     queryKey: ["pacientes_psico_combo", wsId],
@@ -238,41 +235,116 @@ function PsicologiaProContent() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Brain className="h-6 w-6" /> Psicología & Psiquiatría Pro
-        </h1>
-        <p className="text-muted-foreground">Salud mental integral — sesiones, notas privadas, escalas, seguimiento emocional, psiquiatría y paquetes.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+            <Brain className="h-6 w-6 text-purple-600 dark:text-purple-400" /> Psicología & Psiquiatría Pro
+          </h1>
+          <p className="text-sm text-muted-foreground">Salud mental integral — sesiones, notas privadas, escalas, seguimiento emocional, psiquiatría y paquetes.</p>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <Button variant="outline" className="rounded-xl border-border/80 gap-2 shadow-none" onClick={() => setOpenPp(true)}>
+            <Plus className="h-4 w-4" /> Nueva Ficha
+          </Button>
+          <Button className="rounded-xl gap-2 shadow-none" onClick={() => setOpenSes(true)}>
+            <Plus className="h-4 w-4" /> Agendar Sesión
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><ClipboardCheck className="h-5 w-5 mx-auto mb-1 text-primary" /><p className="text-2xl font-bold tabular-nums">{sesionesProximas}</p><p className="text-xs text-muted-foreground">Sesiones próximas</p></CardContent></Card>
-        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><AlertTriangle className="h-5 w-5 mx-auto mb-1 text-destructive" /><p className="text-2xl font-bold tabular-nums">{alertasRiesgo}</p><p className="text-xs text-muted-foreground">Alertas riesgo</p></CardContent></Card>
-        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><Activity className="h-5 w-5 mx-auto mb-1 text-warning" /><p className="text-2xl font-bold tabular-nums">{noShow}</p><p className="text-xs text-muted-foreground">No-show</p></CardContent></Card>
-        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><ListChecks className="h-5 w-5 mx-auto mb-1 text-primary" /><p className="text-2xl font-bold tabular-nums">{tareasPendientes}</p><p className="text-xs text-muted-foreground">Tareas pendientes</p></CardContent></Card>
-        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><Pill className="h-5 w-5 mx-auto mb-1 text-primary" /><p className="text-2xl font-bold tabular-nums">{prescActivas}</p><p className="text-xs text-muted-foreground">Prescripciones</p></CardContent></Card>
-        <Card className="shadow-none border-border"><CardContent className="pt-4 text-center"><Heart className="h-5 w-5 mx-auto mb-1 text-primary" /><p className="text-2xl font-bold tabular-nums">{refillPend}</p><p className="text-xs text-muted-foreground">Refill pendiente</p></CardContent></Card>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <ClipboardCheck className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums leading-none">{sesionesProximas}</p>
+              <p className="text-xs text-muted-foreground mt-1">Próximas</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className={`rounded-2xl shadow-none transition-colors ${alertasRiesgo > 0 ? "border-rose-500/40 bg-rose-500/[0.03]" : "border-border/80 hover:border-rose-500/40"}`}>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${alertasRiesgo > 0 ? "bg-rose-500/20 text-rose-600 dark:text-rose-400" : "bg-rose-500/10 text-rose-600 dark:text-rose-400"}`}>
+              <AlertTriangle className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums leading-none text-rose-600 dark:text-rose-400">{alertasRiesgo}</p>
+              <p className="text-xs text-muted-foreground mt-1">Alertas riesgo</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-amber-500/40 transition-colors">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <Activity className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums leading-none">{noShow}</p>
+              <p className="text-xs text-muted-foreground mt-1">No-show</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-teal-500/40 transition-colors">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+              <ListChecks className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums leading-none">{tareasPendientes}</p>
+              <p className="text-xs text-muted-foreground mt-1">Tareas pend.</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-purple-500/40 transition-colors">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+              <Pill className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums leading-none">{prescActivas}</p>
+              <p className="text-xs text-muted-foreground mt-1">Prescripciones</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-blue-500/40 transition-colors">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+              <Heart className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums leading-none">{refillPend}</p>
+              <p className="text-xs text-muted-foreground mt-1">Refill pend.</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="flex flex-wrap h-auto">
-          <TabsTrigger value="fichas">Fichas psico</TabsTrigger>
-          <TabsTrigger value="sesiones">Sesiones</TabsTrigger>
-          <TabsTrigger value="notas">Notas clínicas</TabsTrigger>
-          <TabsTrigger value="evaluaciones">Tests/Escalas</TabsTrigger>
-          <TabsTrigger value="tareas">Tareas</TabsTrigger>
-          <TabsTrigger value="seguimiento">Seguimiento</TabsTrigger>
-          <TabsTrigger value="psiquiatria">Psiquiatría</TabsTrigger>
-          <TabsTrigger value="paquetes">Paquetes</TabsTrigger>
-          <TabsTrigger value="nichos"><Layers className="h-4 w-4 mr-1" />Sub-módulos</TabsTrigger>
-          <TabsTrigger value="cuestionarios"><ClipboardList className="h-4 w-4 mr-1" />Cuestionarios</TabsTrigger>
-          <TabsTrigger value="graficas"><LineChart className="h-4 w-4 mr-1" />Progreso</TabsTrigger>
-          <TabsTrigger value="ultra-privadas"><Lock className="h-4 w-4 mr-1" />Ultra privadas</TabsTrigger>
-          <TabsTrigger value="facturacion"><Receipt className="h-4 w-4 mr-1" />Facturación</TabsTrigger>
-          <TabsTrigger value="exportar"><FileDown className="h-4 w-4 mr-1" />Exportar HC</TabsTrigger>
-          <TabsTrigger value="recordatorios"><Bell className="h-4 w-4 mr-1" />Recordatorios</TabsTrigger>
-          <TabsTrigger value="integraciones"><Plug className="h-4 w-4 mr-1" />Integraciones</TabsTrigger>
-          <TabsTrigger value="portal"><Link2 className="h-4 w-4 mr-1" />Portal paciente</TabsTrigger>
+      <Tabs value={tab} onValueChange={setTab} className="space-y-4">
+        <TabsList className="w-full flex justify-start gap-1 overflow-x-auto p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
+          <TabsTrigger value="fichas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Fichas psico</TabsTrigger>
+          <TabsTrigger value="sesiones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Sesiones</TabsTrigger>
+          <TabsTrigger value="notas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Notas clínicas</TabsTrigger>
+          <TabsTrigger value="evaluaciones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Tests/Escalas</TabsTrigger>
+          <TabsTrigger value="tareas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Tareas</TabsTrigger>
+          <TabsTrigger value="seguimiento" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Seguimiento</TabsTrigger>
+          <TabsTrigger value="psiquiatria" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Psiquiatría</TabsTrigger>
+          <TabsTrigger value="paquetes" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Paquetes</TabsTrigger>
+          <TabsTrigger value="nichos" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Layers className="h-3.5 w-3.5 mr-1" />Sub-módulos</TabsTrigger>
+          <TabsTrigger value="cuestionarios" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><ClipboardList className="h-3.5 w-3.5 mr-1" />Cuestionarios</TabsTrigger>
+          <TabsTrigger value="graficas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><LineChart className="h-3.5 w-3.5 mr-1" />Progreso</TabsTrigger>
+          <TabsTrigger value="ultra-privadas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Lock className="h-3.5 w-3.5 mr-1" />Ultra privadas</TabsTrigger>
+          <TabsTrigger value="facturacion" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Receipt className="h-3.5 w-3.5 mr-1" />Facturación</TabsTrigger>
+          <TabsTrigger value="exportar" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><FileDown className="h-3.5 w-3.5 mr-1" />Exportar HC</TabsTrigger>
+          <TabsTrigger value="recordatorios" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Bell className="h-3.5 w-3.5 mr-1" />Recordatorios</TabsTrigger>
+          <TabsTrigger value="integraciones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Plug className="h-3.5 w-3.5 mr-1" />Integraciones</TabsTrigger>
+          <TabsTrigger value="portal" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Link2 className="h-3.5 w-3.5 mr-1" />Portal paciente</TabsTrigger>
         </TabsList>
 
         {/* FICHAS */}
@@ -328,22 +400,25 @@ function PsicologiaProContent() {
             </Dialog>
           </div>
           {pacientesPsico.length === 0 ? (
-            <Card><CardContent className="py-8 text-center text-muted-foreground">Aún no hay fichas psicológicas</CardContent></Card>
+            <Card className="rounded-2xl border-border/80 shadow-none"><CardContent className="py-8 text-center text-muted-foreground">Aún no hay fichas psicológicas</CardContent></Card>
           ) : pacientesPsico.map((p:any)=>(
-            <Card key={p.id}><CardContent className="py-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium flex items-center gap-2">{p.pacientes?.nombre} {p.pacientes?.apellido}
-                    {p.alerta_interna_activa && <Badge variant="destructive" className="text-[10px]"><AlertTriangle className="h-3 w-3 mr-1" />Riesgo alto</Badge>}
-                    {p.es_menor && <Badge variant="outline" className="text-[10px]">Menor</Badge>}
-                  </p>
-                  <p className="text-sm text-muted-foreground line-clamp-1">{p.motivo_consulta || "Sin motivo registrado"}</p>
+            <Card key={p.id} className="rounded-2xl border-border/80 shadow-none hover:border-purple-500/40 transition-colors">
+              <CardContent className="py-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <p className="font-medium text-foreground flex items-center gap-2">{p.pacientes?.nombre} {p.pacientes?.apellido}
+                      {p.alerta_interna_activa && <Badge variant="destructive" className="text-[10px] rounded-full px-2 py-0.5"><AlertTriangle className="h-3 w-3 mr-1" />Riesgo alto</Badge>}
+                      {p.es_menor && <Badge variant="outline" className="text-[10px] rounded-full">Menor</Badge>}
+                    </p>
+                    <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">{p.motivo_consulta || "Sin motivo registrado"}</p>
+                  </div>
+                  <div className="text-xs text-muted-foreground flex items-center gap-2">
+                    <span className="px-2 py-1 rounded-lg bg-muted/50">Riesgo suicida: <b className="text-foreground">{p.riesgo_suicida}</b></span>
+                    <span className="px-2 py-1 rounded-lg bg-muted/50">Autolesión: <b className="text-foreground">{p.riesgo_autolesion}</b></span>
+                  </div>
                 </div>
-                <div className="text-right text-xs text-muted-foreground">
-                  Riesgo suicida: <b>{p.riesgo_suicida}</b> · autolesión: <b>{p.riesgo_autolesion}</b>
-                </div>
-              </div>
-            </CardContent></Card>
+              </CardContent>
+            </Card>
           ))}
         </TabsContent>
 
@@ -351,8 +426,8 @@ function PsicologiaProContent() {
         <TabsContent value="sesiones" className="space-y-3">
           <div className="flex justify-end">
             <Dialog open={openSes} onOpenChange={setOpenSes}>
-              <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" />Agendar sesión</Button></DialogTrigger>
-              <DialogContent><DialogHeader><DialogTitle>Nueva sesión</DialogTitle></DialogHeader>
+              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" />Agendar sesión</Button></DialogTrigger>
+              <DialogContent className="rounded-2xl"><DialogHeader><DialogTitle>Nueva sesión</DialogTitle></DialogHeader>
                 <div className="space-y-3">
                   <div><Label>Paciente</Label>
                     <Select value={sesForm.paciente_id} onValueChange={v=>setSesForm({...sesForm, paciente_id:v})}>
@@ -387,20 +462,22 @@ function PsicologiaProContent() {
                     </Select>
                   </div>
                   <div><Label>Motivo</Label><Textarea value={sesForm.motivo} onChange={e=>setSesForm({...sesForm, motivo:e.target.value})} /></div>
-                  <Button onClick={crearSesion} className="w-full">Agendar</Button>
+                  <Button onClick={crearSesion} className="w-full rounded-xl">Agendar</Button>
                 </div>
               </DialogContent>
             </Dialog>
           </div>
-          {sesiones.length === 0 ? <Card><CardContent className="py-8 text-center text-muted-foreground">Sin sesiones</CardContent></Card>
+          {sesiones.length === 0 ? <Card className="rounded-2xl border-border/80 shadow-none"><CardContent className="py-8 text-center text-muted-foreground">Sin sesiones</CardContent></Card>
           : sesiones.map((s:any)=>(
-            <Card key={s.id}><CardContent className="py-4 flex items-center justify-between">
-              <div>
-                <p className="font-medium">{s.pacientes?.nombre} {s.pacientes?.apellido} · {s.tipo_sesion.replace(/_/g," ")}</p>
-                <p className="text-sm text-muted-foreground">{format(new Date(s.fecha_hora), "dd/MM/yyyy HH:mm", {locale:es})} · {s.modalidad}{s.recurrencia_semanal?" · semanal":""}</p>
-              </div>
-              <Badge variant={s.estado === "no_show" ? "destructive" : s.estado === "realizada" ? "default" : "secondary"}>{s.estado}</Badge>
-            </CardContent></Card>
+            <Card key={s.id} className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
+              <CardContent className="py-4 flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-foreground">{s.pacientes?.nombre} {s.pacientes?.apellido} · <span className="capitalize">{s.tipo_sesion.replace(/_/g," ")}</span></p>
+                  <p className="text-sm text-muted-foreground">{format(new Date(s.fecha_hora), "dd/MM/yyyy HH:mm", {locale:es})} · <span className="capitalize">{s.modalidad}</span>{s.recurrencia_semanal?" · semanal":""}</p>
+                </div>
+                <Badge variant={s.estado === "no_show" ? "destructive" : s.estado === "realizada" ? "default" : "secondary"} className="rounded-full text-xs">{s.estado}</Badge>
+              </CardContent>
+            </Card>
           ))}
         </TabsContent>
 
@@ -408,8 +485,8 @@ function PsicologiaProContent() {
         <TabsContent value="notas" className="space-y-3">
           <div className="flex justify-end">
             <Dialog open={openNot} onOpenChange={setOpenNot}>
-              <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" />Nueva nota</Button></DialogTrigger>
-              <DialogContent className="max-h-[85vh] overflow-y-auto"><DialogHeader><DialogTitle>Nota clínica privada</DialogTitle></DialogHeader>
+              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" />Nueva nota</Button></DialogTrigger>
+              <DialogContent className="max-h-[85vh] overflow-y-auto rounded-2xl"><DialogHeader><DialogTitle>Nota clínica privada</DialogTitle></DialogHeader>
                 <div className="space-y-3">
                   <div><Label>Paciente</Label>
                     <Select value={notForm.paciente_id} onValueChange={v=>setNotForm({...notForm, paciente_id:v})}>
@@ -431,24 +508,26 @@ function PsicologiaProContent() {
                   </div>
                   <div><Label>Contenido</Label><Textarea rows={8} value={notForm.contenido} onChange={e=>setNotForm({...notForm, contenido:e.target.value})} /></div>
                   <div className="flex items-center gap-2"><input type="checkbox" checked={notForm.es_privada} onChange={e=>setNotForm({...notForm, es_privada:e.target.checked})} /><Label>Nota privada (solo terapeuta y supervisor)</Label></div>
-                  <Button onClick={crearNota} className="w-full">Guardar nota</Button>
+                  <Button onClick={crearNota} className="w-full rounded-xl">Guardar nota</Button>
                 </div>
               </DialogContent>
             </Dialog>
           </div>
-          {notas.length === 0 ? <Card><CardContent className="py-8 text-center text-muted-foreground">Sin notas</CardContent></Card>
+          {notas.length === 0 ? <Card className="rounded-2xl border-border/80 shadow-none"><CardContent className="py-8 text-center text-muted-foreground">Sin notas</CardContent></Card>
           : notas.map((n:any)=>(
-            <Card key={n.id}><CardContent className="py-4">
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-medium flex items-center gap-2">
-                  {n.es_privada && <Lock className="h-3.5 w-3.5 text-muted-foreground" />}
-                  {n.pacientes?.nombre} {n.pacientes?.apellido} · <Badge variant="outline">{n.tipo_nota.replace(/_/g," ")}</Badge>
-                  {n.bloqueada_supervisor && <Badge variant="destructive" className="text-[10px]">Bloqueada</Badge>}
-                </p>
-                <span className="text-xs text-muted-foreground">{format(new Date(n.created_at), "dd/MM/yyyy HH:mm", {locale:es})}</span>
-              </div>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap line-clamp-4">{n.contenido}</p>
-            </CardContent></Card>
+            <Card key={n.id} className="rounded-2xl border-border/80 shadow-none hover:border-purple-500/40 transition-colors">
+              <CardContent className="py-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-medium text-foreground flex items-center gap-2">
+                    {n.es_privada && <Lock className="h-3.5 w-3.5 text-muted-foreground" />}
+                    {n.pacientes?.nombre} {n.pacientes?.apellido} · <Badge variant="outline" className="rounded-full text-xs">{n.tipo_nota.replace(/_/g," ")}</Badge>
+                    {n.bloqueada_supervisor && <Badge variant="destructive" className="text-[10px] rounded-full">Bloqueada</Badge>}
+                  </p>
+                  <span className="text-xs text-muted-foreground tabular-nums">{format(new Date(n.created_at), "dd/MM/yyyy HH:mm", {locale:es})}</span>
+                </div>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap line-clamp-4">{n.contenido}</p>
+              </CardContent>
+            </Card>
           ))}
         </TabsContent>
 

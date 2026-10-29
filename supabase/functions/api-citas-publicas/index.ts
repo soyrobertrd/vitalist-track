@@ -49,6 +49,17 @@ Deno.serve(async (req) => {
   if ("error" in auth) return jres({ error: auth.error }, auth.status);
   const { token, admin } = auth;
 
+  // Los IDs que manda el cliente deben pertenecer al workspace de la API key.
+  const sucursalesWs = async () => {
+    const { data } = await admin.from("sucursales").select("id").eq("workspace_id", token.workspace_id);
+    return (data ?? []).map((s: any) => s.id as string);
+  };
+  const profesionalDelWs = async (profId: string) => {
+    const { data } = await admin.from("afiliaciones_profesional").select("profesional_id")
+      .eq("workspace_id", token.workspace_id).eq("profesional_id", profId).eq("estado", "activa").maybeSingle();
+    return !!data;
+  };
+
   try {
     // GET /especialidades — lista de especialidades del workspace
     if (req.method === "GET" && path === "especialidades") {
@@ -73,8 +84,10 @@ Deno.serve(async (req) => {
     // GET /consultorios?sucursal_id=
     if (req.method === "GET" && path === "consultorios") {
       const sid = url.searchParams.get("sucursal_id");
-      let q = admin.from("consultorios").select("id, sucursal_id, nombre, codigo, tipo").eq("activo", true);
-      if (sid) q = q.eq("sucursal_id", sid);
+      const sucs = await sucursalesWs();
+      if (sid && !sucs.includes(sid)) return jres({ consultorios: [] });
+      const q = admin.from("consultorios").select("id, sucursal_id, nombre, codigo, tipo").eq("activo", true)
+        .in("sucursal_id", sid ? [sid] : sucs);
       const { data } = await q;
       return jres({ consultorios: data ?? [] });
     }
@@ -101,6 +114,7 @@ Deno.serve(async (req) => {
       const fecha = url.searchParams.get("fecha");
       const consultorioId = url.searchParams.get("consultorio_id");
       if (!profId || !fecha) return jres({ error: "profesional_id y fecha requeridos" }, 400);
+      if (!(await profesionalDelWs(profId))) return jres({ error: "Profesional no encontrado" }, 404);
 
       // 1) Reglas de licencia / vacaciones / ausencias en esta fecha
       const { data: ausencias } = await admin
@@ -143,7 +157,8 @@ Deno.serve(async (req) => {
 
       let consultorio_label: string | null = null;
       if (consultorioId) {
-        const { data: c } = await admin.from("consultorios").select("nombre").eq("id", consultorioId).maybeSingle();
+        const { data: c } = await admin.from("consultorios").select("nombre").eq("id", consultorioId)
+          .in("sucursal_id", await sucursalesWs()).maybeSingle();
         consultorio_label = c?.nombre || null;
       }
 
@@ -179,6 +194,7 @@ Deno.serve(async (req) => {
       if (!paciente?.cedula || !profesional_id || !fecha_hora) {
         return jres({ error: "Campos requeridos: paciente.cedula, profesional_id, fecha_hora" }, 400);
       }
+      if (!(await profesionalDelWs(profesional_id))) return jres({ error: "Profesional no encontrado" }, 404);
 
       // Upsert paciente por cédula dentro del workspace
       let { data: pac } = await admin
@@ -233,18 +249,20 @@ Deno.serve(async (req) => {
       if (!cedula) return jres({ error: "cedula requerida" }, 400);
       const { data: pac } = await admin
         .from("pacientes")
-        .select("id, nombre, apellido")
+        .select("id")
         .eq("cedula", cedula)
         .eq("workspace_id", token.workspace_id)
         .maybeSingle();
       if (!pac) return jres({ citas: [] });
       const { data: citas } = await admin
         .from("control_visitas")
-        .select("id, fecha_hora_visita, estado, modalidad, motivo_visita, profesional_id")
+        .select("id, fecha_hora_visita, estado, modalidad, profesional_id")
         .eq("paciente_id", pac.id)
+        .eq("workspace_id", token.workspace_id)
         .gte("fecha_hora_visita", new Date().toISOString())
         .order("fecha_hora_visita", { ascending: true });
-      return jres({ paciente: pac, citas: citas ?? [] });
+      // La cédula no es un secreto: no se devuelven nombre ni motivo clínico.
+      return jres({ citas: citas ?? [] });
     }
 
     // POST /cancelar { visita_id, cedula }
@@ -255,11 +273,12 @@ Deno.serve(async (req) => {
         .from("control_visitas")
         .select("id, paciente_id, pacientes(cedula)")
         .eq("id", visita_id)
+        .eq("workspace_id", token.workspace_id)
         .maybeSingle();
       if (!v || (v as any).pacientes?.cedula !== cedula) {
         return jres({ error: "No autorizado" }, 403);
       }
-      await admin.from("control_visitas").update({ estado: "cancelada" }).eq("id", visita_id);
+      await admin.from("control_visitas").update({ estado: "cancelada" }).eq("id", visita_id).eq("workspace_id", token.workspace_id);
       return jres({ ok: true });
     }
 

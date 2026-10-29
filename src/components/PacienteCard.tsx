@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Phone, MapPin, Calendar, PhoneCall, Pencil, Trash2, Building2, Eye } from "lucide-react";
+import { Phone, MapPin, Calendar, PhoneCall, Pencil, Trash2, Building2, Eye, ArrowRight, UserCheck } from "lucide-react";
 import { AccionesMenu } from "@/components/common/AccionesMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
@@ -39,6 +39,7 @@ interface PacienteCardProps {
 
 export const PacienteCard = ({
   paciente,
+  profesionalNombre,
   onViewDetail,
   onEdit,
   onAgendarLlamada,
@@ -102,7 +103,7 @@ export const PacienteCard = ({
           onCardActivate();
         }
       }}
-      className={`group relative flex h-full cursor-pointer flex-col overflow-hidden border bg-card text-card-foreground shadow-none transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+      className={`group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border bg-card text-card-foreground shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         isSelected ? "ring-2 ring-primary bg-primary/5" : dificultad?.borde ?? ""
       }`}
     >
@@ -113,17 +114,22 @@ export const PacienteCard = ({
         <SelectionCheckbox checked={isSelected} onCheckedChange={onToggleSelect} />
       )}
 
-      <CardHeader className={`flex flex-row items-start gap-3 space-y-0 pb-3 ${selectionMode ? "pl-10" : ""}`}>
+      <CardHeader className={`flex flex-row items-start gap-3 space-y-0 pb-2.5 ${selectionMode ? "pl-10" : ""}`}>
         <div
           aria-hidden="true"
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${avatarColor(paciente.id)}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold ${avatarColor(paciente.id)}`}
         >
           {iniciales}
         </div>
         <div className="min-w-0 flex-1">
-          <CardTitle className="line-clamp-2 text-sm font-semibold leading-snug transition-colors group-hover:text-primary">
-            {tituloNombre(`${paciente.nombre} ${paciente.apellido}`)}
-          </CardTitle>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <CardTitle className="line-clamp-1 text-sm font-bold leading-snug transition-colors group-hover:text-primary">
+              {tituloNombre(`${paciente.nombre} ${paciente.apellido}`)}
+            </CardTitle>
+          </div>
+          <span className="text-[11px] font-medium text-muted-foreground capitalize">
+            {paciente.status_px === "activo" ? "Activo en programa" : paciente.status_px}
+          </span>
           {dificultad && <span className="sr-only">{dificultad.label}</span>}
         </div>
         <AccionesMenu
@@ -138,14 +144,14 @@ export const PacienteCard = ({
         />
       </CardHeader>
 
-      <CardContent className="flex flex-1 flex-col gap-3">
-        <div className="flex-1 space-y-2 text-sm">
+      <CardContent className="flex flex-1 flex-col justify-between gap-3 pt-0">
+        <div className="space-y-2 text-xs">
           {displayPhone && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <Phone className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
               <a
                 href={`tel:${displayPhone.replace(/\D/g, "")}`}
-                className="tabular-nums transition-colors hover:text-foreground"
+                className="tabular-nums transition-colors hover:text-foreground font-medium"
                 onClick={(e) => e.stopPropagation()}
               >
                 {displayPhone}
@@ -160,7 +166,7 @@ export const PacienteCard = ({
                   aria-label="Escribir por WhatsApp"
                   title="WhatsApp"
                 >
-                  <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4 text-success" />
+                  <FontAwesomeIcon icon={faWhatsapp} className="h-3.5 w-3.5 text-success" />
                 </a>
               )}
             </div>
@@ -196,9 +202,9 @@ export const PacienteCard = ({
           )}
 
           {enfermedades && (
-            <div className="flex flex-wrap gap-1 pt-1">
+            <div className="flex flex-wrap gap-1 pt-0.5">
               {enfermedades.map((e) => (
-                <span key={e} className="max-w-full truncate rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                <span key={e} className="max-w-full truncate rounded-md bg-muted/70 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                   {e}
                 </span>
               ))}
@@ -206,6 +212,15 @@ export const PacienteCard = ({
           )}
         </div>
 
+        {/* Footer con enlace interactivo Ficha 360 */}
+        <div className="mt-2 flex items-center justify-between border-t border-border/60 pt-2.5 text-[11px]">
+          <span className="text-muted-foreground truncate max-w-[140px]">
+            {profesionalNombre ? `Dr(a). ${profesionalNombre}` : "Sin médico asignado"}
+          </span>
+          <span className="inline-flex items-center gap-1 font-semibold text-primary group-hover:translate-x-0.5 transition-transform">
+            Ficha 360 <ArrowRight className="h-3 w-3" />
+          </span>
+        </div>
       </CardContent>
     </Card>
   );

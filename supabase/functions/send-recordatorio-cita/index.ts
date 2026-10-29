@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { safeEqual } from "../_shared/cron-auth.ts";
 import { resolveWorkspaceLocale, formatDateInTz, formatTimeInTz } from "../_shared/locale.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
@@ -85,6 +86,23 @@ const handler = async (req: Request): Promise<Response> => {
       profesional = data.personal_salud;
     }
 
+    // Crons llaman con la service key; un usuario solo puede actuar sobre citas de su clínica.
+    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+    const esInterno = token.length > 0 && safeEqual(token, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "");
+    if (!esInterno) {
+      const { data: { user } } = await supabaseClient.auth.getUser(token);
+      const { data: member } = user && cita?.workspace_id
+        ? await supabaseClient.from("workspace_members").select("user_id")
+            .eq("workspace_id", cita.workspace_id).eq("user_id", user.id).maybeSingle()
+        : { data: null };
+      if (!member) {
+        return new Response(JSON.stringify({ error: "No autorizado" }),
+          { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
+      }
+    }
+    // El historial de reintentos solo lo gestionan los crons.
+    const historialSeguro = esInterno ? historialId : undefined;
+
     // Verificar si el paciente tiene notificaciones activas
     if (!paciente?.notificaciones_activas) {
       console.log("Paciente tiene notificaciones desactivadas, omitiendo envío");
@@ -119,6 +137,7 @@ const handler = async (req: Request): Promise<Response> => {
         .select("*")
         .eq("id", plantillaId)
         .eq("activo", true)
+        .eq("workspace_id", cita.workspace_id)
         .single();
       plantilla = data;
     } else {
@@ -267,12 +286,12 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Error de Resend:", errorData);
       
       // Registrar error en historial y programar reintento
-      if (esReintento && historialId) {
+      if (esReintento && historialSeguro) {
         // Get current attempts first
         const { data: currentRecord } = await supabaseClient
           .from("historial_recordatorios")
           .select("intentos")
-          .eq("id", historialId)
+          .eq("id", historialSeguro)
           .single();
         
         await supabaseClient
@@ -282,7 +301,7 @@ const handler = async (req: Request): Promise<Response> => {
             error_mensaje: errorData,
             intentos: (currentRecord?.intentos || 0) + 1,
           })
-          .eq("id", historialId);
+          .eq("id", historialSeguro);
       } else {
         // Crear registro con estado fallido y programar reintento
         const proximoReintento = new Date();
@@ -314,7 +333,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Correo enviado exitosamente:", emailData);
 
     // Guardar en historial como enviado
-    if (esReintento && historialId) {
+    if (esReintento && historialSeguro) {
       await supabaseClient
         .from("historial_recordatorios")
         .update({
@@ -322,7 +341,7 @@ const handler = async (req: Request): Promise<Response> => {
           error_mensaje: null,
           enviado_at: new Date().toISOString(),
         })
-        .eq("id", historialId);
+        .eq("id", historialSeguro);
     } else {
       await supabaseClient
         .from("historial_recordatorios")

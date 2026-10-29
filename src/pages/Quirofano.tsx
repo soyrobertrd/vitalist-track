@@ -15,11 +15,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Plus, Scissors, Calendar as CalendarIcon, Clock, Users, CheckSquare, DollarSign, AlertTriangle } from "lucide-react";
+import { Plus, Scissors, Calendar as CalendarIcon, Clock, Users, CheckSquare, DollarSign, AlertTriangle, FileSignature } from "lucide-react";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { PacienteCombobox } from "@/components/PacienteCombobox";
 import { ProfesionalCombobox } from "@/components/ProfesionalCombobox";
+import { ConsentimientoQuirurgicoModal, RegistroConsentimientoQuirurgico } from "@/components/clinical/ConsentimientoQuirurgicoModal";
 
 const CHECKLIST_PREOP = [
   "Identificación del paciente verificada",
@@ -56,6 +57,8 @@ export default function Quirofano() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [salaDialogOpen, setSalaDialogOpen] = useState(false);
   const [detailCirugia, setDetailCirugia] = useState<any>(null);
+  const [cirugiaSeleccionada, setCirugiaSeleccionada] = useState<any>(null);
+  const [consentimientoModalOpen, setConsentimientoModalOpen] = useState(false);
 
   // Form state
   const [form, setForm] = useState({
@@ -318,15 +321,27 @@ export default function Quirofano() {
                         <TableCell><Badge className={prioridadBadge(c.prioridad)}>{c.prioridad}</Badge></TableCell>
                         <TableCell><Badge className={estadoBadge(c.estado)}>{c.estado}</Badge></TableCell>
                         <TableCell>
-                          <div className="flex gap-1">
+                          <div className="flex gap-1 items-center">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setCirugiaSeleccionada(c);
+                                setConsentimientoModalOpen(true);
+                              }}
+                              className="h-8 px-2 rounded-xl text-xs gap-1 border-teal-200 text-teal-700 dark:border-teal-800 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-950/40"
+                            >
+                              <FileSignature className="h-3.5 w-3.5 text-teal-600" />
+                              Consentimiento
+                            </Button>
                             {c.estado === "programada" && (
-                              <Button size="sm" variant="outline" onClick={() => actualizarEstado(c.id, "en_curso")}>Iniciar</Button>
+                              <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs" onClick={() => actualizarEstado(c.id, "en_curso")}>Iniciar</Button>
                             )}
                             {c.estado === "en_curso" && (
-                              <Button size="sm" variant="outline" onClick={() => actualizarEstado(c.id, "completada")}>Completar</Button>
+                              <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs" onClick={() => actualizarEstado(c.id, "completada")}>Completar</Button>
                             )}
                             {c.estado === "programada" && (
-                              <Button size="sm" variant="ghost" onClick={() => actualizarEstado(c.id, "cancelada")}>Cancelar</Button>
+                              <Button size="sm" variant="ghost" className="h-8 rounded-xl text-xs" onClick={() => actualizarEstado(c.id, "cancelada")}>Cancelar</Button>
                             )}
                           </div>
                         </TableCell>
@@ -408,6 +423,20 @@ export default function Quirofano() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Modal de Consentimiento Quirúrgico e Invasivo */}
+      <ConsentimientoQuirurgicoModal
+        open={consentimientoModalOpen}
+        onOpenChange={setConsentimientoModalOpen}
+        pacienteNombre={
+          cirugiaSeleccionada?.pacientes
+            ? `${cirugiaSeleccionada.pacientes.nombre} ${cirugiaSeleccionada.pacientes.apellido}`
+            : "Paciente Quirúrgico"
+        }
+        onGuardarConsentimiento={(datos: RegistroConsentimientoQuirurgico) => {
+          toast.success(`Consentimiento para ${datos.nombreProcedimiento} registrado con firma digital.`);
+        }}
+      />
     </div>
   );
 }

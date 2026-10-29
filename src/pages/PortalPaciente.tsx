@@ -13,10 +13,14 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   CalendarDays, Pill, AlertTriangle, Shield, User, Clock,
   CheckCircle2, XCircle, Loader2, Receipt, Smile, Eye, HeartPulse, ClipboardList, Send,
+  Syringe, FileText,
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
+import { CarnetVacunacionTab } from "@/components/portal-paciente/CarnetVacunacionTab";
+import { RecetasQrTab } from "@/components/portal-paciente/RecetasQrTab";
+import { EpicrisisConsentimientosTab } from "@/components/portal-paciente/EpicrisisConsentimientosTab";
 
 type Vertical = "clinica" | "dental" | "aesthetic" | "recovery" | "vision";
 
@@ -178,7 +182,9 @@ export default function PortalPaciente() {
         <Tabs defaultValue="citas">
           <TabsList className="flex flex-wrap h-auto gap-1">
             <TabsTrigger value="citas" className="gap-1"><CalendarDays className="h-4 w-4" /> Citas</TabsTrigger>
-            <TabsTrigger value="recetas" className="gap-1"><Pill className="h-4 w-4" /> Recetas</TabsTrigger>
+            <TabsTrigger value="recetas" className="gap-1"><Pill className="h-4 w-4" /> Recetas con QR</TabsTrigger>
+            <TabsTrigger value="vacunas" className="gap-1"><Syringe className="h-4 w-4" /> Vacunas</TabsTrigger>
+            <TabsTrigger value="documentos" className="gap-1"><FileText className="h-4 w-4" /> Epicrisis & Actas</TabsTrigger>
             {showFacturas && <TabsTrigger value="facturas" className="gap-1"><Receipt className="h-4 w-4" /> Facturas</TabsTrigger>}
             {showDental && <TabsTrigger value="dental" className="gap-1"><Smile className="h-4 w-4" /> Dental</TabsTrigger>}
             {showVision && <TabsTrigger value="vision" className="gap-1"><Eye className="h-4 w-4" /> Visión</TabsTrigger>}
@@ -251,32 +257,19 @@ export default function PortalPaciente() {
             )}
           </TabsContent>
 
-          {/* RECETAS */}
+          {/* RECETAS CON QR */}
           <TabsContent value="recetas" className="space-y-4">
-            {(data.recetas || []).length > 0 ? (
-              <Card>
-                <CardHeader><CardTitle className="text-lg">Recetas médicas</CardTitle></CardHeader>
-                <CardContent className="space-y-3">
-                  {data.recetas!.map((r, i) => (
-                    <div key={i} className="p-3 rounded-lg border space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium">{r.medicamento}</span>
-                        <Badge className={estadoBadge(r.estado)}>{r.estado}</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{r.dosis} · {r.frecuencia}</p>
-                      {r.inicio && (
-                        <p className="text-xs text-muted-foreground">
-                          {format(new Date(r.inicio + "T12:00:00"), "dd/MM/yyyy")}
-                          {r.fin && ` → ${format(new Date(r.fin + "T12:00:00"), "dd/MM/yyyy")}`}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            ) : (
-              <Alert><AlertDescription>No hay recetas registradas.</AlertDescription></Alert>
-            )}
+            <RecetasQrTab />
+          </TabsContent>
+
+          {/* VACUNAS */}
+          <TabsContent value="vacunas" className="space-y-4">
+            <CarnetVacunacionTab pacienteNombre={pac.nombre} />
+          </TabsContent>
+
+          {/* EPICRISIS Y CONSENTIMIENTOS */}
+          <TabsContent value="documentos" className="space-y-4">
+            <EpicrisisConsentimientosTab />
           </TabsContent>
 
           {/* FACTURAS */}

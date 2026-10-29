@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,6 +9,17 @@ const corsHeaders = {
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Solo personal autenticado: la anon key es pública y no basta para consultar el registro JCE.
+  const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
+  const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!);
+  const { data: { user } } = await supabase.auth.getUser(token);
+  if (!user) {
+    return new Response(
+      JSON.stringify({ error: 'No autorizado' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 
   try {
@@ -20,13 +32,11 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Consultando cédula: ${cedula}`);
 
     // JCE API endpoint
     const apiUrl = `http://190.122.98.11:11080/jce/api/citizen/${cedula}`;
     
     try {
-      console.log(`Llamando a JCE API: ${apiUrl}`);
       const response = await fetch(apiUrl, {
         headers: {
           'Accept': 'application/json',
@@ -37,7 +47,6 @@ serve(async (req) => {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Datos JCE:', JSON.stringify(data));
         
         if (data.success && data.citizenInfo) {
           const info = data.citizenInfo;

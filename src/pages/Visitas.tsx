@@ -40,6 +40,8 @@ import { VideoConsultaFields } from "@/components/VideoConsultaFields";
 import { ProgramarVisitaDialog } from "@/components/visitas/ProgramarVisitaDialog";
 import { RegistrarVisitaNoAgendadaDialog } from "@/components/visitas/RegistrarVisitaNoAgendadaDialog";
 import { AgendaMobileLista } from "@/components/visitas/AgendaMobileLista";
+import { ModoBrigadaCampo } from "@/components/visitas/ModoBrigadaCampo";
+import { Briefcase } from "lucide-react";
 import type { VideoProveedor } from "@/lib/videoLinks";
 
 import type { Paciente, Personal } from "@/types/db";
@@ -542,43 +544,51 @@ const Visitas = () => {
       )}
 
       {/* Stats Cards - Modo B Plano sin sombras */}
+      {/* Stats Cards - Diseño Clínico Moderno */}
       <div className="hidden md:grid gap-4 grid-cols-1 md:grid-cols-4">
-        <GlassCard className="p-4 shadow-none border border-border/60">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Total Citas</p>
-              <p className="text-2xl font-bold">{stats.totalVisitas}</p>
-            </div>
-            <Activity className="h-8 w-8 text-primary" />
+        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-sm">
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Total Citas</p>
+            <p className="text-2xl font-bold tabular-nums text-foreground mt-0.5">{stats.totalVisitas}</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Registros en el sistema</p>
           </div>
-        </GlassCard>
-        <GlassCard className="p-4 shadow-none border border-border/60">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Pendientes</p>
-              <p className="text-2xl font-bold text-orange-600">{stats.pendientes}</p>
-            </div>
-            <Clock className="h-8 w-8 text-orange-600" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
+            <Activity className="h-5 w-5" />
           </div>
-        </GlassCard>
-        <GlassCard className="p-4 shadow-none border border-border/60">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Confirmadas / Atendidas</p>
-              <p className="text-2xl font-bold text-green-600">{stats.realizadas}</p>
-            </div>
-            <TrendingUp className="h-8 w-8 text-green-600" />
+        </div>
+
+        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-sm">
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Pendientes</p>
+            <p className="text-2xl font-bold tabular-nums text-amber-600 dark:text-amber-400 mt-0.5">{stats.pendientes}</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Por confirmar y atender</p>
           </div>
-        </GlassCard>
-        <GlassCard className="p-4 shadow-none border border-border/60">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Canceladas (No-Show)</p>
-              <p className="text-2xl font-bold text-red-600">{stats.canceladas}</p>
-            </div>
-            <Badge variant="destructive">{stats.canceladas}</Badge>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
+            <Clock className="h-5 w-5" />
           </div>
-        </GlassCard>
+        </div>
+
+        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-sm">
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Completadas</p>
+            <p className="text-2xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400 mt-0.5">{stats.realizadas}</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Atenciones exitosas</p>
+          </div>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
+            <TrendingUp className="h-5 w-5" />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-sm">
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">No-Show / Canceladas</p>
+            <p className="text-2xl font-bold tabular-nums text-rose-600 dark:text-rose-400 mt-0.5">{stats.canceladas}</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Inasistencias registradas</p>
+          </div>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400">
+            <CalendarOff className="h-5 w-5" />
+          </div>
+        </div>
       </div>
 
       {/* Botones secundarios - Debajo de stats, solo desktop */}
@@ -668,15 +678,29 @@ const Visitas = () => {
 
       {/* Vista Desktop (>=640px) con Tabs completos */}
       <div className="hidden sm:block">
-        <Tabs defaultValue="agendadas" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="agendadas">
-            Visitas Agendadas ({visitasAgendadas.length})
-          </TabsTrigger>
-          <TabsTrigger value="historial">
-            Historial ({visitasHistorial.length})
-          </TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="brigada" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 rounded-2xl bg-muted/40 p-1.5 h-auto border border-border/70">
+            <TabsTrigger value="brigada" className="rounded-xl font-semibold text-xs py-2 gap-1.5">
+              <Briefcase className="h-4 w-4 text-emerald-600" />
+              Modo Brigada / En Campo
+            </TabsTrigger>
+            <TabsTrigger value="agendadas" className="rounded-xl font-semibold text-xs py-2 gap-1.5">
+              <Calendar className="h-4 w-4 text-blue-600" />
+              Monitor & Agendadas ({visitasAgendadas.length})
+            </TabsTrigger>
+            <TabsTrigger value="historial" className="rounded-xl font-semibold text-xs py-2 gap-1.5">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              Historial ({visitasHistorial.length})
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="brigada" className="mt-6">
+            <ModoBrigadaCampo
+              profesionales={personal}
+              profesionalActivoId={selectedProfesionalId || personal[0]?.id || "prof-1"}
+              onCambiarProfesional={setSelectedProfesionalId}
+            />
+          </TabsContent>
         
         <TabsContent value="agendadas" className="mt-6">
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

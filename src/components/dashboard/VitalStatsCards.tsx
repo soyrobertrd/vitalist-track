@@ -8,14 +8,14 @@ export function VitalStatsCards() {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold tracking-wide text-foreground uppercase text-xs text-muted-foreground">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Indicadores de Calidad y Signos Vitales
         </h2>
       </div>
 
       <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
         {/* 1. Frecuencia Cardíaca */}
-        <div className="flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+        <div className="flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400">
@@ -46,7 +46,7 @@ export function VitalStatsCards() {
         </div>
 
         {/* 2. Presión Arterial */}
-        <div className="flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+        <div className="flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
@@ -77,7 +77,7 @@ export function VitalStatsCards() {
         </div>
 
         {/* 3. Tasa de Asistencia */}
-        <div className="flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+        <div className="flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
@@ -108,7 +108,7 @@ export function VitalStatsCards() {
         </div>
 
         {/* 4. Adherencia a Prescripciones */}
-        <div className="flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
+        <div className="flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-400">

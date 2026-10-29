@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ClipboardList, Zap } from "lucide-react";
+import { ClipboardList, Zap, ShieldAlert, Sparkles, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 import { useProfessionalVertical } from "@/hooks/useProfessionalVertical";
+import { verificarFarmacovigilancia } from "@/lib/clinical/drug-interaction-checker";
+import { AlertaInteraccionesBadge } from "@/components/clinical/AlertaInteraccionesBadge";
 
 const PRIORIDAD_COLOR: Record<string, string> = {
   rutina: "bg-slate-100 text-slate-700",
@@ -54,6 +56,16 @@ export default function OrdenesMedicas() {
         {!canActHere && verticalProfesional && (
           <p className="text-xs text-amber-600 mt-1">Modo solo lectura: tu vertical asignada es <b>{verticalProfesional}</b>.</p>
         )}
+      </div>
+
+      {/* Demostración de Farmacovigilancia Activa en Prescripción */}
+      <div className="space-y-2">
+        <AlertaInteraccionesBadge
+          resultado={verificarFarmacovigilancia(
+            ["Warfarina 5mg", "Ketorolaco 30mg IV", "Enalapril 20mg"],
+            ["Penicilina", "AINEs"]
+          )}
+        />
       </div>
 
 

@@ -185,21 +185,23 @@ export default function Planes() {
           return (
             <Card
               key={plan.codigo}
-              className={`flex flex-col ${
+              className={`flex flex-col rounded-3xl transition-all duration-200 hover:-translate-y-1 hover:shadow-md ${
                 isPro
-                  ? "border-primary shadow-lg shadow-primary/10 relative"
+                  ? "border-2 border-primary bg-card shadow-sm relative"
                   : isPlus
-                  ? "border-purple-500/60 shadow-lg shadow-purple-500/10 relative"
-                  : ""
+                  ? "border-2 border-purple-500/70 bg-card shadow-sm relative"
+                  : "border border-border/80 bg-card"
               }`}
             >
               {isPro && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Más popular</Badge>
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-bold text-primary-foreground shadow-sm">
+                  ★ Más Popular
+                </span>
               )}
               {isPlus && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white">
-                  Recomendado clínicas
-                </Badge>
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-purple-600 px-3 py-0.5 text-xs font-bold text-white shadow-sm">
+                  Clínicas & Redes
+                </span>
               )}
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -279,7 +281,7 @@ export default function Planes() {
 
               <CardFooter>
                 <Button
-                  className="w-full"
+                  className="w-full rounded-xl font-semibold"
                   variant={isPro || isPlus ? "default" : "outline"}
                   disabled={isCurrent || changing !== null}
                   onClick={() => handleSelectPlan(plan.codigo)}

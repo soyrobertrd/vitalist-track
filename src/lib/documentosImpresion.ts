@@ -4,6 +4,7 @@
  */
 
 import type { VerticalTipo } from "@/contexts/VerticalContext";
+import { escapeDeep, safeColor } from "@/lib/escape-html";
 
 export interface DatosPacienteImpresion {
   nombre: string;
@@ -63,7 +64,9 @@ const VERTICAL_COLORS: Record<string, string> = {
   psicologia: "#7c3aed",
 };
 
-export function imprimirDocumentoClinico(params: DocumentoClinicoParams) {
+export function imprimirDocumentoClinico(paramsRaw: DocumentoClinicoParams) {
+  // Texto libre del paciente/centro escapado antes de armar el HTML (evita XSS almacenado al imprimir)
+  const params = escapeDeep(paramsRaw) as DocumentoClinicoParams;
   const {
     tipo,
     titulo,
@@ -80,7 +83,7 @@ export function imprimirDocumentoClinico(params: DocumentoClinicoParams) {
     vertical = "clinica",
   } = params;
 
-  const colorTema = params.colorPrimarioHex || VERTICAL_COLORS[vertical] || "#2563eb";
+  const colorTema = safeColor(paramsRaw.colorPrimarioHex, VERTICAL_COLORS[vertical] || "#2563eb");
   const fechaHoy = new Date().toLocaleDateString("es-DO", {
     year: "numeric",
     month: "long",

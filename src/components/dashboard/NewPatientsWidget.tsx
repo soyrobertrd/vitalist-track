@@ -123,7 +123,7 @@ export function NewPatientsWidget() {
           return (
             <div
               key={p.id}
-              className="group flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-4.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
+              className="group flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
             >
               <div>
                 <div className="flex items-start justify-between gap-2">

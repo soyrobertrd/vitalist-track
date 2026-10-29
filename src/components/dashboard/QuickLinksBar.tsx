@@ -74,7 +74,7 @@ export function QuickLinksBar() {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold tracking-wide text-foreground uppercase text-xs text-muted-foreground">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Accesos Rápidos Clínicos
         </h2>
       </div>

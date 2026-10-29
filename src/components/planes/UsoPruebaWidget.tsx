@@ -35,7 +35,7 @@ export function UsoPruebaWidget({ pacientesCount = 7, citasCount = 8 }: UsoPrueb
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div className="h-9 w-9 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0">
-            <Sparkles className="h-4.5 w-4.5" />
+            <Sparkles className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">

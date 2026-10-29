@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Phone, Calendar, AlertCircle, TrendingUp, Activity, Clock, CalendarDays } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveKPI } from "@/components/InteractiveKPI";
 import { RecordatoriosDiariosWhatsApp } from "@/components/RecordatoriosDiariosWhatsApp";
@@ -36,6 +34,9 @@ import { DoctorScheduleWidget } from "@/components/dashboard/DoctorScheduleWidge
 import { TodayAppointmentsTable } from "@/components/dashboard/TodayAppointmentsTable";
 import { NewPatientsWidget } from "@/components/dashboard/NewPatientsWidget";
 import { PhysicianProfileCard } from "@/components/dashboard/PhysicianProfileCard";
+import { HealthScoreWidget } from "@/components/dashboard/HealthScoreWidget";
+import { ActiveTreatmentWidget } from "@/components/dashboard/ActiveTreatmentWidget";
+import { OperationalEfficiencyCards } from "@/components/dashboard/OperationalEfficiencyCards";
 
 const Dashboard = () => {
   const { t } = useTranslation("dashboard");
@@ -372,56 +373,25 @@ const Dashboard = () => {
         </aside>
       </div>
 
-      {/* 6. Indicadores de Calidad y Signos Vitales (Inspirado en Today's Achievement) */}
+      {/* 6. Score Clínico de Salud y Ondas de Salud (Inspirado en AI Healthcare 88) */}
+      <HealthScoreWidget />
+
+      {/* 7. Prescripciones y Tratamientos Activos (Inspirado en MediApp Pro) */}
+      <ActiveTreatmentWidget />
+
+      {/* 8. Indicadores de Calidad y Signos Vitales (Inspirado en Today's Achievement) */}
       <VitalStatsCards />
 
-      {/* 7. Pacientes Recientes (Inspirado en CareSpace) */}
+      {/* 9. Pacientes Recientes (Inspirado en CareSpace) */}
       <NewPatientsWidget />
 
-      {/* 8. Resumen Operativo de Eficiencia */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="rounded-3xl border border-border/60 shadow-none">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-semibold">Duración Promedio de Consulta</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold tabular-nums text-foreground">{extraStats.duracionPromedio} min</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Promedio en últimos 30 días</p>
-            <div className="mt-4 h-2 w-full rounded-full bg-muted overflow-hidden">
-              <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(extraStats.duracionPromedio * 10, 100)}%` }} />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-3xl border border-border/60 shadow-none">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-semibold">Tasa de Asistencia Global</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold tabular-nums text-foreground">{extraStats.tasaCumplimiento}%</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Efectividad contra inasistencias</p>
-            <div className="mt-4 h-2 w-full rounded-full bg-muted overflow-hidden">
-              <div className="h-full rounded-full bg-emerald-500" style={{ width: `${extraStats.tasaCumplimiento}%` }} />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-3xl border border-border/60 shadow-none">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-sm font-semibold">Pacientes de Alto Seguimiento</CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold tabular-nums text-foreground">{extraStats.pacientesAltoRiesgo}</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Requieren confirmación prioritaria</p>
-            <div className="mt-4 h-2 w-full rounded-full bg-muted overflow-hidden">
-              <div className="h-full rounded-full bg-destructive" style={{ width: `${extraStats.porcentajeAltoRiesgo}%` }} />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* 10. Resumen Operativo y Calidad Clínica (Inspirado en DocuCare y Healthence) */}
+      <OperationalEfficiencyCards
+        duracionPromedio={extraStats.duracionPromedio}
+        tasaCumplimiento={extraStats.tasaCumplimiento}
+        pacientesAltoRiesgo={extraStats.pacientesAltoRiesgo}
+        porcentajeAltoRiesgo={extraStats.porcentajeAltoRiesgo}
+      />
     </div>
   );
 };

@@ -5097,6 +5097,11 @@ export type Database = {
           video_proveedor: string | null
           video_token: string | null
           workspace_id: string | null
+          solicitante_nombre: string | null
+          solicitante_telefono: string | null
+          solicitante_email: string | null
+          origen: string
+          pendiente_registro: boolean
         }
         Insert: {
           confirmado_por_recordatorio?: boolean | null
@@ -5122,6 +5127,11 @@ export type Database = {
           video_proveedor?: string | null
           video_token?: string | null
           workspace_id?: string | null
+          solicitante_nombre?: string | null
+          solicitante_telefono?: string | null
+          solicitante_email?: string | null
+          origen?: string
+          pendiente_registro?: boolean
         }
         Update: {
           confirmado_por_recordatorio?: boolean | null
@@ -5147,6 +5157,11 @@ export type Database = {
           video_proveedor?: string | null
           video_token?: string | null
           workspace_id?: string | null
+          solicitante_nombre?: string | null
+          solicitante_telefono?: string | null
+          solicitante_email?: string | null
+          origen?: string
+          pendiente_registro?: boolean
         }
         Relationships: [
           {

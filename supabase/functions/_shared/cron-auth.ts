@@ -11,7 +11,7 @@
 const encoder = new TextEncoder();
 
 /** Comparación en tiempo constante para evitar timing attacks. */
-function safeEqual(a: string, b: string): boolean {
+export function safeEqual(a: string, b: string): boolean {
   const x = encoder.encode(a);
   const y = encoder.encode(b);
   let diff = x.length ^ y.length;

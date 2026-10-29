@@ -183,6 +183,8 @@ const Layout = ({ children }: LayoutProps) => {
       verticales: ["clinica"] as VerticalTipo[],
       subItems: [
         { path: "/triaje", label: "Triaje" },
+        { path: "/escalas-medicas", label: "Escalas Médicas & Calculadoras" },
+        { path: "/notas-medicas", label: "Notas Médicas & Multidisciplinario" },
         { path: "/hospitalizacion", label: "Hospitalización" },
         { path: "/alta-hospitalaria", label: "Alta Hospitalaria" },
         { path: "/rondas-medicas", label: "Rondas / Visitas médicas" },
@@ -191,6 +193,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/quirofano", label: "Quirófano / Cirugía" },
         { path: "/urgencias-triage", label: "Urgencias / Triage" },
         { path: "/censo-camas", label: "Censo & Mapa de Camas" },
+        { path: "/edificacion-hospitalaria", label: "Edificación & Censo Camas", icon: Building2 },
         { path: "/oncologia", label: "Oncología & Quimio" },
         { path: "/maternidad-neonatologia", label: "Maternidad & Neonatología" },
         { path: "/ordenes-medicas", label: "Órdenes Médicas (CPOE)" },
@@ -270,6 +273,7 @@ const Layout = ({ children }: LayoutProps) => {
       path: "/equipo", icon: UserCog, label: "Equipo & RRHH", adminOnly: true, moduleKey: "equipo",
       subItems: [
         { path: "/personal", label: "Personal de salud" },
+        { path: "/turnos-personal", label: "Turnos & Guardias 24/7", icon: Calendar },
         { path: "/rrhh", label: "Recursos Humanos" },
         { path: "/organizaciones", label: "Organizaciones", icon: Building2 },
         { path: "/comisiones-empleados", label: "Comisiones empleados", icon: DollarSign },
@@ -518,7 +522,7 @@ const Layout = ({ children }: LayoutProps) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
+      <nav className="flex-1 p-2 space-y-1 overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {visibleMenuItems.filter(item => !item.adminOnly || (item.adminOnly && isAdmin)).map((item, idx, lista) => (
           <div key={item.path}>
             {/* Etiquetas de sección (MENÚ / CLÍNICA / GESTIÓN / OTROS), como en las referencias */}

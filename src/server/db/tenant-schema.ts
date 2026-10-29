@@ -193,3 +193,215 @@ export const auditLogs = sqliteTable('audit_logs', {
   payloadJson: text('payload_json'),
   timestamp: text('timestamp').notNull().$defaultFn(() => new Date().toISOString()),
 });
+
+// 13. Hospital Wings & Floors (Edificación Hospitalaria)
+export const hospitalWings = sqliteTable('hospital_wings', {
+  id: text('id').primaryKey(),
+  branchId: text('branch_id').notNull().references(() => branches.id),
+  name: text('name').notNull(),
+  floorNumber: integer('floor_number').notNull(),
+  serviceType: text('service_type').notNull(), // 'uci', 'urgencias', 'hospitalizacion', 'quirofano'
+  bedCapacity: integer('bed_capacity').notNull().default(0),
+  isActive: integer('is_active', { mode: 'boolean' }).default(true).notNull(),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// 14. Hospital Beds (Censo de Camas)
+export const hospitalBeds = sqliteTable('hospital_beds', {
+  id: text('id').primaryKey(),
+  wingId: text('wing_id').notNull().references(() => hospitalWings.id),
+  branchId: text('branch_id').notNull().references(() => branches.id),
+  bedNumber: text('bed_number').notNull(),
+  bedType: text('bed_type').notNull().default('estandar'), // 'estandar', 'uci_critica', 'aislamiento_infeccioso', 'cuna'
+  status: text('status', {
+    enum: ['disponible', 'ocupada', 'limpieza', 'aislamiento', 'mantenimiento'],
+  }).default('disponible').notNull(),
+  currentPatientId: text('current_patient_id').references(() => patients.id),
+  isolationType: text('isolation_type'), // 'contacto', 'gotitas', 'aerosoles', null
+  lastCleanedAt: text('last_cleaned_at'),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// 15. Staff Shifts & Rostering (Turnos del Personal Médico y Enfermería)
+export const staffShifts = sqliteTable('staff_shifts', {
+  id: text('id').primaryKey(),
+  branchId: text('branch_id').notNull().references(() => branches.id),
+  userId: text('user_id').notNull(),
+  role: text('role', { enum: ['medico', 'enfermera', 'coordinador', 'tecnico'] }).notNull(),
+  shiftDate: text('shift_date').notNull(),
+  shiftType: text('shift_type', { enum: ['dia', 'noche', 'guardia_24h'] }).notNull(),
+  startTime: text('start_time').notNull(),
+  endTime: text('end_time').notNull(),
+  department: text('department').notNull(),
+  status: text('status', {
+    enum: ['programado', 'en_curso', 'completado', 'ausente', 'intercambiado'],
+  }).default('programado').notNull(),
+  handOverCompleted: integer('handover_completed', { mode: 'boolean' }).default(false).notNull(),
+  notes: text('notes'),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// 16. Shift Handover Protocol SBAR (Pases de Guardia Digital)
+export const shiftHandoverSbar = sqliteTable('shift_handover_sbar', {
+  id: text('id').primaryKey(),
+  branchId: text('branch_id').notNull().references(() => branches.id),
+  shiftId: text('shift_id').references(() => staffShifts.id),
+  handingOverUserId: text('handing_over_user_id').notNull(),
+  receivingUserId: text('receiving_user_id').notNull(),
+  handoverDate: text('handover_date').notNull(),
+  crashCartChecked: integer('crash_cart_checked', { mode: 'boolean' }).default(false).notNull(),
+  crashCartSealed: integer('crash_cart_sealed', { mode: 'boolean' }).default(true).notNull(),
+  censusTotalBeds: integer('census_total_beds').notNull().default(0),
+  censusOccupiedBeds: integer('census_occupied_beds').notNull().default(0),
+  censusCriticallyIll: integer('census_critically_ill').notNull().default(0),
+  shiftIncidentsSummary: text('shift_incidents_summary'),
+  handingOverSignatureSvg: text('handing_over_signature_svg'),
+  receivingSignatureSvg: text('receiving_signature_svg'),
+  status: text('status', { enum: ['borrador', 'firmado', 'archivado'] }).default('borrador').notNull(),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// 17. SBAR Patient Handover Notes (Detalle Clínico SBAR por Paciente)
+export const sbarPatientNotes = sqliteTable('sbar_patient_notes', {
+  id: text('id').primaryKey(),
+  handoverId: text('handover_id').notNull().references(() => shiftHandoverSbar.id, { onDelete: 'cascade' }),
+  patientId: text('patient_id').notNull().references(() => patients.id),
+  bedNumber: text('bed_number').notNull(),
+  situation: text('situation').notNull(),
+  background: text('background').notNull(),
+  assessment: text('assessment').notNull(),
+  recommendation: text('recommendation').notNull(),
+  news2Score: integer('news2_score').default(0).notNull(),
+  alertLevel: text('alert_level', { enum: ['bajo', 'medio', 'alto', 'critico'] }).default('bajo').notNull(),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// 18. Surgical & Invasive Consents (Consentimientos Informados Digitales)
+export const surgicalConsents = sqliteTable('surgical_consents', {
+  id: text('id').primaryKey(),
+  patientId: text('patient_id').notNull().references(() => patients.id),
+  branchId: text('branch_id').notNull().references(() => branches.id),
+  physicianUserId: text('physician_user_id').notNull(),
+  procedureName: text('procedure_name').notNull(),
+  procedureRisks: text('procedure_risks').notNull(),
+  alternativeTreatments: text('alternative_treatments'),
+  patientSignatureSvg: text('patient_signature_svg').notNull(),
+  physicianSignatureSvg: text('physician_signature_svg').notNull(),
+  witnessName: text('witness_name'),
+  witnessSignatureSvg: text('witness_signature_svg'),
+  signedAt: text('signed_at').notNull().$defaultFn(() => new Date().toISOString()),
+  valid: integer('valid', { mode: 'boolean' }).default(true).notNull(),
+  revokedAt: text('revoked_at'),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// 19. High-Risk Drug Independent Double-Check (ISMP Protocol)
+export const highRiskDrugVerifications = sqliteTable('high_risk_drug_verifications', {
+  id: text('id').primaryKey(),
+  patientId: text('patient_id').notNull().references(() => patients.id),
+  branchId: text('branch_id').notNull().references(() => branches.id),
+  nurse1UserId: text('nurse1_user_id').notNull(),
+  nurse1PinVerified: integer('nurse1_pin_verified', { mode: 'boolean' }).default(true).notNull(),
+  nurse2UserId: text('nurse2_user_id').notNull(),
+  nurse2PinVerified: integer('nurse2_pin_verified', { mode: 'boolean' }).default(true).notNull(),
+  drugName: text('drug_name').notNull(),
+  dosage: text('dosage').notNull(),
+  concentration: text('concentration').notNull(),
+  infusionRate: text('infusion_rate').notNull(),
+  route: text('route').notNull(), // 'iv_continua', 'iv_bolo', 'epidural'
+  pumpChannel: text('pump_channel'),
+  verifiedAt: text('verified_at').notNull().$defaultFn(() => new Date().toISOString()),
+  notes: text('notes'),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// 20. Blood Bank Units (Banco de Sangre y Hemocomponentes)
+export const bloodBankUnits = sqliteTable('blood_bank_units', {
+  id: text('id').primaryKey(),
+  branchId: text('branch_id').notNull().references(() => branches.id),
+  unitCode: text('unit_code').notNull().unique(),
+  componentType: text('component_type', {
+    enum: ['globulos_rojos', 'plasma_fresco', 'plaquetas', 'crioprecipitados'],
+  }).notNull(),
+  bloodType: text('blood_type', {
+    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+  }).notNull(),
+  volumeMl: integer('volume_ml').notNull(),
+  donationDate: text('donation_date').notNull(),
+  expirationDate: text('expiration_date').notNull(),
+  status: text('status', {
+    enum: ['disponible', 'reservada', 'transfundida', 'descartada', 'cuarentena'],
+  }).default('disponible').notNull(),
+  donorDocNumber: text('donor_doc_number'),
+  serologyTested: integer('serology_tested', { mode: 'boolean' }).default(true).notNull(),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// 21. Transfusion Adverse Reactions (Hemovigilancia RAT)
+export const transfusionAdverseReactions = sqliteTable('transfusion_adverse_reactions', {
+  id: text('id').primaryKey(),
+  branchId: text('branch_id').notNull().references(() => branches.id),
+  unitId: text('unit_id').notNull().references(() => bloodBankUnits.id),
+  patientId: text('patient_id').notNull().references(() => patients.id),
+  reportingNurseUserId: text('reporting_nurse_user_id').notNull(),
+  reactionDate: text('reaction_date').notNull(),
+  symptomOnsetMinutes: integer('symptom_onset_minutes').notNull(),
+  symptomsJson: text('symptoms_json').notNull(),
+  severityLevel: text('severity_level', {
+    enum: ['leve', 'moderada', 'grave', 'amenaza_vital'],
+  }).notNull(),
+  imputability: text('imputability', {
+    enum: ['definitiva', 'probable', 'posible', 'dudosa'],
+  }).notNull(),
+  outcome: text('outcome'),
+  correctiveActions: text('corrective_actions'),
+  notifiedToHealthAuthority: integer('notified_to_health_authority', { mode: 'boolean' }).default(false).notNull(),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// 22. DICOM Diagnostic Reports & Measurements
+export const dicomDiagnosticReports = sqliteTable('dicom_diagnostic_reports', {
+  id: text('id').primaryKey(),
+  branchId: text('branch_id').notNull().references(() => branches.id),
+  patientId: text('patient_id').references(() => patients.id),
+  studyInstanceUid: text('study_instance_uid').notNull(),
+  modality: text('modality').notNull(),
+  technique: text('technique'),
+  comparisonText: text('comparison_text'),
+  structuredFindings: text('structured_findings').notNull(),
+  conclusion: text('conclusion').notNull(),
+  radsClassification: text('rads_classification'),
+  cobbAngle: real('cobb_angle'),
+  caliperMm: real('caliper_mm'),
+  hounsfieldDensityHu: integer('hounsfield_density_hu'),
+  radiologistUserId: text('radiologist_user_id').notNull(),
+  radiologistSignature: text('radiologist_signature'),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
+});
+
+// ==========================================
+// TIPOS DE INFERENCIA DRIZZLE
+// ==========================================
+export type Branch = typeof branches.$inferSelect;
+export type Patient = typeof patients.$inferSelect;
+export type Appointment = typeof appointments.$inferSelect;
+export type MedicalRecord = typeof medicalRecords.$inferSelect;
+export type Prescription = typeof prescriptions.$inferSelect;
+export type Invoice = typeof invoices.$inferSelect;
+export type InventoryItem = typeof inventoryItems.$inferSelect;
+export type HospitalWing = typeof hospitalWings.$inferSelect;
+export type HospitalBed = typeof hospitalBeds.$inferSelect;
+export type StaffShift = typeof staffShifts.$inferSelect;
+export type ShiftHandoverSbar = typeof shiftHandoverSbar.$inferSelect;
+export type SbarPatientNote = typeof sbarPatientNotes.$inferSelect;
+export type SurgicalConsent = typeof surgicalConsents.$inferSelect;
+export type HighRiskDrugVerification = typeof highRiskDrugVerifications.$inferSelect;
+export type BloodBankUnit = typeof bloodBankUnits.$inferSelect;
+export type TransfusionAdverseReaction = typeof transfusionAdverseReactions.$inferSelect;
+export type DicomDiagnosticReport = typeof dicomDiagnosticReports.$inferSelect;
+

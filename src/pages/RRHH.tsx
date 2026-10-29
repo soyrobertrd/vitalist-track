@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
-import { MobilePageHeader } from "@/components/MobilePageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Plus, Building, Briefcase, FolderOpen, CalendarDays, Check, X } from "lucide-react";
+import { Plus, Building, Briefcase, FolderOpen, CalendarDays, Check, X, Users } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
+import { StatusBadge } from "@/components/common/StatusBadge";
 
 const TIPO_PERMISO_LABELS: Record<string, string> = {
   vacaciones: "Vacaciones",
@@ -132,49 +134,84 @@ export default function RRHH() {
     fetch();
   };
 
+  const solicitudesPendientes = permisos.filter((p: any) => p.estado === "solicitado").length;
+
   return (
     <div className="space-y-6">
-      <MobilePageHeader title="Recursos Humanos" description="Departamentos, puestos, expedientes y permisos" />
+      <ClinicalPageHeader
+        title="Talento Humano & Recursos Humanos"
+        subtitle="Departamentos, puestos de trabajo, expedientes de personal y solicitudes de vacaciones o permisos"
+        icon={Users}
+        variant="purple"
+      >
+        <Button variant="outline" className="rounded-xl border-border/80 shadow-none gap-2" onClick={() => setOpenDept(true)}>
+          <Plus className="h-4 w-4" /> Nuevo Depto
+        </Button>
+        <Button className="rounded-xl shadow-none gap-2" onClick={() => setOpenPuesto(true)}>
+          <Plus className="h-4 w-4" /> Nuevo Puesto
+        </Button>
+      </ClinicalPageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card><CardContent className="pt-4 text-center"><p className="text-xs text-muted-foreground">Departamentos</p><p className="text-2xl font-bold">{departamentos.length}</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><p className="text-xs text-muted-foreground">Puestos</p><p className="text-2xl font-bold">{puestos.length}</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><p className="text-xs text-muted-foreground">Expedientes</p><p className="text-2xl font-bold">{expedientes.length}</p></CardContent></Card>
-        <Card><CardContent className="pt-4 text-center"><p className="text-xs text-muted-foreground">Solicitudes pendientes</p><p className="text-2xl font-bold">{permisos.filter((p: any) => p.estado === "solicitado").length}</p></CardContent></Card>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <ClinicalKpiCard
+          title="Departamentos"
+          value={departamentos.length}
+          icon={Building}
+          variant="blue"
+        />
+        <ClinicalKpiCard
+          title="Puestos laborales"
+          value={puestos.length}
+          icon={Briefcase}
+          variant="emerald"
+        />
+        <ClinicalKpiCard
+          title="Expedientes de personal"
+          value={expedientes.length}
+          icon={FolderOpen}
+          variant="purple"
+        />
+        <ClinicalKpiCard
+          title="Solicitudes pendientes"
+          value={solicitudesPendientes}
+          icon={CalendarDays}
+          variant="amber"
+          alert={solicitudesPendientes > 0}
+        />
       </div>
 
-      <Tabs defaultValue="departamentos" className="w-full">
-        <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="departamentos" className="flex items-center gap-1.5"><Building className="h-4 w-4" /> Departamentos</TabsTrigger>
-          <TabsTrigger value="puestos" className="flex items-center gap-1.5"><Briefcase className="h-4 w-4" /> Puestos</TabsTrigger>
-          <TabsTrigger value="expedientes" className="flex items-center gap-1.5"><FolderOpen className="h-4 w-4" /> Expedientes</TabsTrigger>
-          <TabsTrigger value="permisos" className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4" /> Vacaciones / Permisos</TabsTrigger>
+      <Tabs defaultValue="departamentos" className="space-y-4">
+        <TabsList className="w-full sm:w-auto flex justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
+          <TabsTrigger value="departamentos" className="rounded-xl px-4 py-1.5 text-xs font-medium"><Building className="h-4 w-4 mr-1.5" /> Departamentos</TabsTrigger>
+          <TabsTrigger value="puestos" className="rounded-xl px-4 py-1.5 text-xs font-medium"><Briefcase className="h-4 w-4 mr-1.5" /> Puestos</TabsTrigger>
+          <TabsTrigger value="expedientes" className="rounded-xl px-4 py-1.5 text-xs font-medium"><FolderOpen className="h-4 w-4 mr-1.5" /> Expedientes</TabsTrigger>
+          <TabsTrigger value="permisos" className="rounded-xl px-4 py-1.5 text-xs font-medium"><CalendarDays className="h-4 w-4 mr-1.5" /> Vacaciones / Permisos</TabsTrigger>
         </TabsList>
 
         {/* Departamentos */}
         <TabsContent value="departamentos" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Dialog open={openDept} onOpenChange={setOpenDept}>
-              <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" /> Nuevo departamento</Button></DialogTrigger>
-              <DialogContent>
+              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo departamento</Button></DialogTrigger>
+              <DialogContent className="rounded-2xl">
                 <DialogHeader><DialogTitle>Nuevo departamento</DialogTitle></DialogHeader>
                 <div className="grid gap-3">
                   <div><Label>Nombre</Label><Input value={deptForm.nombre} onChange={(e) => setDeptForm({ ...deptForm, nombre: e.target.value })} /></div>
                   <div><Label>Descripción</Label><Textarea value={deptForm.descripcion} onChange={(e) => setDeptForm({ ...deptForm, descripcion: e.target.value })} /></div>
-                  <Button onClick={crearDept}>Guardar</Button>
+                  <Button onClick={crearDept} className="rounded-xl">Guardar</Button>
                 </div>
               </DialogContent>
             </Dialog>
           </div>
-          <Card>
+          <Card className="rounded-2xl border-border/80 shadow-none overflow-hidden">
             <Table>
               <TableHeader><TableRow><TableHead>Nombre</TableHead><TableHead>Descripción</TableHead><TableHead>Estado</TableHead></TableRow></TableHeader>
               <TableBody>
                 {departamentos.map((d: any) => (
-                  <TableRow key={d.id}>
-                    <TableCell className="font-medium">{d.nombre}</TableCell>
-                    <TableCell>{d.descripcion || "—"}</TableCell>
-                    <TableCell><Badge variant={d.activo ? "default" : "secondary"}>{d.activo ? "Activo" : "Inactivo"}</Badge></TableCell>
+                  <TableRow key={d.id} className="hover:bg-muted/40">
+                    <TableCell className="font-semibold text-foreground">{d.nombre}</TableCell>
+                    <TableCell className="text-muted-foreground">{d.descripcion || "—"}</TableCell>
+                    <TableCell><StatusBadge status={d.activo ? "activo" : "inactivo"} /></TableCell>
                   </TableRow>
                 ))}
                 {!departamentos.length && <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground py-8">Sin departamentos</TableCell></TableRow>}
@@ -187,11 +224,11 @@ export default function RRHH() {
         <TabsContent value="puestos" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Dialog open={openPuesto} onOpenChange={setOpenPuesto}>
-              <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" /> Nuevo puesto</Button></DialogTrigger>
-              <DialogContent>
-                <DialogHeader><DialogTitle>Nuevo puesto</DialogTitle></DialogHeader>
+              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo puesto</Button></DialogTrigger>
+              <DialogContent className="rounded-2xl">
+                <DialogHeader><DialogTitle>Nuevo puesto laboral</DialogTitle></DialogHeader>
                 <div className="grid gap-3">
-                  <div><Label>Nombre</Label><Input value={puestoForm.nombre} onChange={(e) => setPuestoForm({ ...puestoForm, nombre: e.target.value })} /></div>
+                  <div><Label>Nombre del puesto</Label><Input value={puestoForm.nombre} onChange={(e) => setPuestoForm({ ...puestoForm, nombre: e.target.value })} /></div>
                   <div>
                     <Label>Departamento</Label>
                     <Select value={puestoForm.departamento_id} onValueChange={(v) => setPuestoForm({ ...puestoForm, departamento_id: v })}>
@@ -200,28 +237,28 @@ export default function RRHH() {
                     </Select>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div><Label>Nivel</Label><Input value={puestoForm.nivel} onChange={(e) => setPuestoForm({ ...puestoForm, nivel: e.target.value })} /></div>
+                    <div><Label>Nivel jerárquico</Label><Input value={puestoForm.nivel} onChange={(e) => setPuestoForm({ ...puestoForm, nivel: e.target.value })} placeholder="Ej: Senior, Asistencial..." /></div>
                     <div><Label>Salario mín.</Label><Input type="number" value={puestoForm.salario_min} onChange={(e) => setPuestoForm({ ...puestoForm, salario_min: +e.target.value })} /></div>
                   </div>
                   <div><Label>Salario máx.</Label><Input type="number" value={puestoForm.salario_max} onChange={(e) => setPuestoForm({ ...puestoForm, salario_max: +e.target.value })} /></div>
-                  <Button onClick={crearPuesto}>Guardar</Button>
+                  <Button onClick={crearPuesto} className="rounded-xl">Guardar</Button>
                 </div>
               </DialogContent>
             </Dialog>
           </div>
-          <Card>
+          <Card className="rounded-2xl border-border/80 shadow-none overflow-hidden">
             <Table>
               <TableHeader><TableRow><TableHead>Nombre</TableHead><TableHead>Departamento</TableHead><TableHead>Nivel</TableHead><TableHead>Rango salarial</TableHead></TableRow></TableHeader>
               <TableBody>
                 {puestos.map((p: any) => (
-                  <TableRow key={p.id}>
-                    <TableCell className="font-medium">{p.nombre}</TableCell>
-                    <TableCell>{deptName(p.departamento_id)}</TableCell>
-                    <TableCell>{p.nivel || "—"}</TableCell>
-                    <TableCell>{p.salario_min && p.salario_max ? `${p.salario_min} – ${p.salario_max}` : "—"}</TableCell>
+                  <TableRow key={p.id} className="hover:bg-muted/40">
+                    <TableCell className="font-semibold text-foreground">{p.nombre}</TableCell>
+                    <TableCell className="text-muted-foreground">{deptName(p.departamento_id)}</TableCell>
+                    <TableCell><Badge variant="outline" className="rounded-full text-[11px]">{p.nivel || "General"}</Badge></TableCell>
+                    <TableCell className="tabular-nums font-medium">{p.salario_min && p.salario_max ? `$${p.salario_min.toLocaleString()} – $${p.salario_max.toLocaleString()}` : "—"}</TableCell>
                   </TableRow>
                 ))}
-                {!puestos.length && <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">Sin puestos</TableCell></TableRow>}
+                {!puestos.length && <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">Sin puestos configurados</TableCell></TableRow>}
               </TableBody>
             </Table>
           </Card>
@@ -231,9 +268,9 @@ export default function RRHH() {
         <TabsContent value="expedientes" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Dialog open={openExpediente} onOpenChange={setOpenExpediente}>
-              <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" /> Nuevo expediente</Button></DialogTrigger>
-              <DialogContent>
-                <DialogHeader><DialogTitle>Nuevo expediente</DialogTitle></DialogHeader>
+              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo expediente</Button></DialogTrigger>
+              <DialogContent className="rounded-2xl">
+                <DialogHeader><DialogTitle>Nuevo expediente de personal</DialogTitle></DialogHeader>
                 <div className="grid gap-3">
                   <div>
                     <Label>Empleado</Label>
@@ -265,25 +302,25 @@ export default function RRHH() {
                     <div><Label>Inicio contrato</Label><Input type="date" value={expForm.fecha_inicio_contrato} onChange={(e) => setExpForm({ ...expForm, fecha_inicio_contrato: e.target.value })} /></div>
                   </div>
                   <div><Label>Notas</Label><Textarea value={expForm.notas} onChange={(e) => setExpForm({ ...expForm, notas: e.target.value })} /></div>
-                  <Button onClick={crearExpediente}>Guardar</Button>
+                  <Button onClick={crearExpediente} className="rounded-xl">Guardar</Button>
                 </div>
               </DialogContent>
             </Dialog>
           </div>
-          <Card>
+          <Card className="rounded-2xl border-border/80 shadow-none overflow-hidden">
             <Table>
               <TableHeader><TableRow><TableHead>Empleado</TableHead><TableHead>Puesto</TableHead><TableHead>Contrato</TableHead><TableHead>Inicio</TableHead><TableHead>Evaluación</TableHead></TableRow></TableHeader>
               <TableBody>
                 {expedientes.map((e: any) => (
-                  <TableRow key={e.id}>
-                    <TableCell className="font-medium">{empName(e.empleado_id)}</TableCell>
+                  <TableRow key={e.id} className="hover:bg-muted/40">
+                    <TableCell className="font-semibold text-foreground">{empName(e.empleado_id)}</TableCell>
                     <TableCell>{puestoName(e.puesto_id)}</TableCell>
-                    <TableCell><Badge variant="outline">{e.tipo_contrato}</Badge></TableCell>
-                    <TableCell>{e.fecha_inicio_contrato || "—"}</TableCell>
-                    <TableCell>{e.evaluacion_actual ?? "—"}</TableCell>
+                    <TableCell><Badge variant="outline" className="rounded-full text-[11px] capitalize">{e.tipo_contrato}</Badge></TableCell>
+                    <TableCell className="tabular-nums text-sm text-muted-foreground">{e.fecha_inicio_contrato || "—"}</TableCell>
+                    <TableCell><Badge variant="secondary" className="rounded-full text-[11px]">{e.evaluacion_actual ? `${e.evaluacion_actual}/100` : "Pendiente"}</Badge></TableCell>
                   </TableRow>
                 ))}
-                {!expedientes.length && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Sin expedientes</TableCell></TableRow>}
+                {!expedientes.length && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Sin expedientes registrados</TableCell></TableRow>}
               </TableBody>
             </Table>
           </Card>
@@ -293,8 +330,8 @@ export default function RRHH() {
         <TabsContent value="permisos" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Dialog open={openPermiso} onOpenChange={setOpenPermiso}>
-              <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" /> Nueva solicitud</Button></DialogTrigger>
-              <DialogContent>
+              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" /> Nueva solicitud</Button></DialogTrigger>
+              <DialogContent className="rounded-2xl">
                 <DialogHeader><DialogTitle>Solicitar permiso / vacaciones</DialogTitle></DialogHeader>
                 <div className="grid gap-3">
                   <div>
@@ -319,35 +356,35 @@ export default function RRHH() {
                     <div><Label>Días</Label><Input type="number" value={permForm.dias} onChange={(e) => setPermForm({ ...permForm, dias: +e.target.value })} /></div>
                   </div>
                   <div><Label>Notas</Label><Textarea value={permForm.notas} onChange={(e) => setPermForm({ ...permForm, notas: e.target.value })} /></div>
-                  <Button onClick={crearPermiso}>Enviar solicitud</Button>
+                  <Button onClick={crearPermiso} className="rounded-xl">Enviar solicitud</Button>
                 </div>
               </DialogContent>
             </Dialog>
           </div>
-          <Card>
+          <Card className="rounded-2xl border-border/80 shadow-none overflow-hidden">
             <Table>
-              <TableHeader><TableRow><TableHead>Número</TableHead><TableHead>Empleado</TableHead><TableHead>Tipo</TableHead><TableHead>Desde</TableHead><TableHead>Hasta</TableHead><TableHead>Días</TableHead><TableHead>Estado</TableHead><TableHead></TableHead></TableRow></TableHeader>
+              <TableHeader><TableRow><TableHead>Número</TableHead><TableHead>Empleado</TableHead><TableHead>Tipo</TableHead><TableHead>Desde</TableHead><TableHead>Hasta</TableHead><TableHead>Días</TableHead><TableHead>Estado</TableHead><TableHead className="text-right">Acción</TableHead></TableRow></TableHeader>
               <TableBody>
                 {permisos.map((p: any) => (
-                  <TableRow key={p.id}>
+                  <TableRow key={p.id} className="hover:bg-muted/40">
                     <TableCell className="font-mono text-xs">{p.numero}</TableCell>
-                    <TableCell className="font-medium">{empName(p.empleado_id)}</TableCell>
+                    <TableCell className="font-semibold text-foreground">{empName(p.empleado_id)}</TableCell>
                     <TableCell>{TIPO_PERMISO_LABELS[p.tipo] || p.tipo}</TableCell>
-                    <TableCell>{p.fecha_inicio}</TableCell>
-                    <TableCell>{p.fecha_fin}</TableCell>
-                    <TableCell>{p.dias}</TableCell>
-                    <TableCell><Badge className={ESTADO_COLORS[p.estado] || ""}>{p.estado}</Badge></TableCell>
-                    <TableCell>
+                    <TableCell className="tabular-nums text-sm text-muted-foreground">{p.fecha_inicio}</TableCell>
+                    <TableCell className="tabular-nums text-sm text-muted-foreground">{p.fecha_fin}</TableCell>
+                    <TableCell className="tabular-nums font-medium">{p.dias}d</TableCell>
+                    <TableCell><StatusBadge status={p.estado} /></TableCell>
+                    <TableCell className="text-right">
                       {p.estado === "solicitado" && (
-                        <div className="flex gap-1">
-                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => cambiarEstadoPermiso(p.id, "aprobado")}><Check className="h-4 w-4 text-green-600" /></Button>
-                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => cambiarEstadoPermiso(p.id, "rechazado")}><X className="h-4 w-4 text-red-600" /></Button>
+                        <div className="flex justify-end gap-1">
+                          <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-emerald-500/10 text-emerald-600" onClick={() => cambiarEstadoPermiso(p.id, "aprobado")} title="Aprobar"><Check className="h-4 w-4" /></Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-rose-500/10 text-rose-600" onClick={() => cambiarEstadoPermiso(p.id, "rechazado")} title="Rechazar"><X className="h-4 w-4" /></Button>
                         </div>
                       )}
                     </TableCell>
                   </TableRow>
                 ))}
-                {!permisos.length && <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Sin solicitudes</TableCell></TableRow>}
+                {!permisos.length && <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Sin solicitudes de permisos</TableCell></TableRow>}
               </TableBody>
             </Table>
           </Card>

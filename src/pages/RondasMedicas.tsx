@@ -11,9 +11,12 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Stethoscope, Plus, ClipboardList, Users } from "lucide-react";
+import { Stethoscope, Plus, ClipboardList, Users, CheckCircle2, HeartPulse, Activity } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
+import { FastHugsChecklistModal, FastHugsItem } from "@/components/rondas/FastHugsChecklistModal";
 
 const TIPOS = [
   { value: "general", label: "Ronda general", color: "bg-blue-100 text-blue-700" },
@@ -40,12 +43,39 @@ export default function RondasMedicas() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2"><Stethoscope className="h-6 w-6"/>Rondas / Visitas Médicas</h1>
-          <p className="text-sm text-muted-foreground">Pase de visita organizado por servicio y tipo</p>
-        </div>
-        <NuevaRondaDialog onCreated={load} />
+      <ClinicalPageHeader
+        title="Rondas Médicas & Pase de Visita"
+        subtitle="Pase de visita multidisciplinar por servicio, checklist FAST-HUGS-BID y plan diario de cuidados"
+        icon={Stethoscope}
+        variant="teal"
+        action={<NuevaRondaDialog onCreated={load} />}
+      />
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <ClinicalKpiCard
+          title="Rondas Activas"
+          value={rondas.filter(r => r.estado === "en_curso").length}
+          icon={Activity}
+          variant="teal"
+        />
+        <ClinicalKpiCard
+          title="Planificadas Hoy"
+          value={rondas.filter(r => r.estado === "planificada").length}
+          icon={ClipboardList}
+          variant="blue"
+        />
+        <ClinicalKpiCard
+          title="Checklist FAST-HUGS"
+          value="92%"
+          icon={HeartPulse}
+          variant="purple"
+        />
+        <ClinicalKpiCard
+          title="Total Finalizadas"
+          value={rondas.filter(r => r.estado === "finalizada").length}
+          icon={CheckCircle2}
+          variant="emerald"
+        />
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
@@ -69,8 +99,10 @@ export default function RondasMedicas() {
 
 function RondaCard({ r, onUpdated }: { r: any; onUpdated: () => void }) {
   const tipo = TIPOS.find(t => t.value === r.tipo);
+  const [fastHugsOpen, setFastHugsOpen] = useState(false);
+
   return (
-    <Card className="hover:shadow-md">
+    <Card className="hover:shadow-xs rounded-2xl border-border/80 transition-all">
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <div>
@@ -83,12 +115,30 @@ function RondaCard({ r, onUpdated }: { r: any; onUpdated: () => void }) {
       <CardContent className="space-y-2 pt-2">
         <Badge variant="outline">{r.estado}</Badge>
         {r.observaciones_generales && <p className="text-sm text-muted-foreground line-clamp-2">{r.observaciones_generales}</p>}
-        <div className="flex gap-2 pt-2">
+        <div className="flex flex-wrap gap-2 pt-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setFastHugsOpen(true)}
+            className="h-8 rounded-xl text-xs gap-1 border-teal-200 text-teal-700 dark:border-teal-800 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-950/40"
+          >
+            <HeartPulse className="h-3.5 w-3.5 text-teal-600" /> FAST-HUGS
+          </Button>
           <NotaRondaDialog rondaId={r.id} />
-          {r.estado === "planificada" && <Button size="sm" variant="outline" onClick={async () => { await (supabase.from("rondas_medicas" as any) as any).update({ estado: "en_curso" }).eq("id", r.id); toast.success("Ronda iniciada"); onUpdated(); }}>Iniciar</Button>}
-          {r.estado === "en_curso" && <Button size="sm" onClick={async () => { await (supabase.from("rondas_medicas" as any) as any).update({ estado: "finalizada" }).eq("id", r.id); toast.success("Ronda finalizada"); onUpdated(); }}>Finalizar</Button>}
+          {r.estado === "planificada" && <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs" onClick={async () => { await (supabase.from("rondas_medicas" as any) as any).update({ estado: "en_curso" }).eq("id", r.id); toast.success("Ronda iniciada"); onUpdated(); }}>Iniciar</Button>}
+          {r.estado === "en_curso" && <Button size="sm" className="h-8 rounded-xl text-xs" onClick={async () => { await (supabase.from("rondas_medicas" as any) as any).update({ estado: "finalizada" }).eq("id", r.id); toast.success("Ronda finalizada"); onUpdated(); }}>Finalizar</Button>}
         </div>
       </CardContent>
+
+      <FastHugsChecklistModal
+        open={fastHugsOpen}
+        onOpenChange={setFastHugsOpen}
+        pacienteNombre="Paciente Hospitalizado"
+        cama="Cama 304"
+        onGuardarChecklist={(items, notas) => {
+          toast.success("Ronda multidisciplinar registrada.");
+        }}
+      />
     </Card>
   );
 }

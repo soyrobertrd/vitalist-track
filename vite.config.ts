@@ -15,4 +15,19 @@ export default defineConfig(() => ({
     },
     dedupe: ["react", "react-dom"],
   },
+  build: {
+    target: "esnext",
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-query": ["@tanstack/react-query"],
+          "vendor-ui": ["@radix-ui/react-dialog", "@radix-ui/react-select", "@radix-ui/react-tabs", "@radix-ui/react-tooltip", "lucide-react"],
+          "vendor-utils": ["date-fns", "clsx", "tailwind-merge"],
+        },
+      },
+    },
+  },
 }));
+

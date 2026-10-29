@@ -11,27 +11,117 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Heart, Plus, Activity, Pill, ClipboardCheck } from "lucide-react";
+import { Heart, Plus, Activity, Pill, ClipboardCheck, AlertOctagon, Droplets, Bed, Baby, FileCheck2 } from "lucide-react";
 import { format } from "date-fns";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
+import { StatusBadge } from "@/components/common/StatusBadge";
+import { EnfermeriaEmergenciasTab } from "@/components/enfermeria/areas/EnfermeriaEmergenciasTab";
+import { EnfermeriaUciTab } from "@/components/enfermeria/areas/EnfermeriaUciTab";
+import { EnfermeriaPisoHospitalizacionTab } from "@/components/enfermeria/areas/EnfermeriaPisoHospitalizacionTab";
+import { EnfermeriaPediatricaNeonatalTab } from "@/components/enfermeria/areas/EnfermeriaPediatricaNeonatalTab";
+import { PaseGuardiaSbarTab } from "@/components/enfermeria/sbar/PaseGuardiaSbarTab";
 
 export default function Enfermeria() {
+  const [counts, setCounts] = useState({ signos: 0, planes: 0, meds: 0, proc: 0 });
+
+  useEffect(() => {
+    Promise.all([
+      (supabase.from("signos_vitales_turno" as any) as any).select("id", { count: "exact", head: true }),
+      (supabase.from("plan_cuidados_enfermeria" as any) as any).select("id", { count: "exact", head: true }).eq("estado", "activo"),
+      (supabase.from("administracion_medicamentos" as any) as any).select("id", { count: "exact", head: true }).eq("estado", "programada"),
+      (supabase.from("procedimientos_enfermeria" as any) as any).select("id", { count: "exact", head: true }),
+    ]).then(([s, pl, m, pr]) => {
+      setCounts({
+        signos: s.count || 0,
+        planes: pl.count || 0,
+        meds: m.count || 0,
+        proc: pr.count || 0,
+      });
+    });
+  }, []);
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2"><Heart className="h-6 w-6"/>Enfermería</h1>
-        <p className="text-sm text-muted-foreground">Valoración, plan de cuidados, signos vitales y administración de medicamentos</p>
+      <ClinicalPageHeader
+        title="Enfermería & Cuidados Clínicos"
+        subtitle="Valoración integral, signos vitales por turno, planes NANDA/NIC/NOC y administración de fármacos"
+        icon={Heart}
+        variant="teal"
+      />
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <ClinicalKpiCard
+          title="Signos vitales tomados"
+          value={counts.signos}
+          icon={Activity}
+          variant="teal"
+        />
+        <ClinicalKpiCard
+          title="Planes activos NANDA"
+          value={counts.planes}
+          icon={ClipboardCheck}
+          variant="blue"
+        />
+        <ClinicalKpiCard
+          title="Fármacos programados"
+          value={counts.meds}
+          icon={Pill}
+          variant="purple"
+          alert={counts.meds > 0}
+        />
+        <ClinicalKpiCard
+          title="Procedimientos"
+          value={counts.proc}
+          icon={Heart}
+          variant="emerald"
+        />
       </div>
-      <Tabs defaultValue="signos">
-        <TabsList>
-          <TabsTrigger value="signos"><Activity className="h-4 w-4 mr-1"/>Signos vitales</TabsTrigger>
-          <TabsTrigger value="plan"><ClipboardCheck className="h-4 w-4 mr-1"/>Plan de cuidados</TabsTrigger>
-          <TabsTrigger value="med"><Pill className="h-4 w-4 mr-1"/>Administración meds</TabsTrigger>
-          <TabsTrigger value="proc">Procedimientos</TabsTrigger>
+
+      <Tabs defaultValue="emergencias" className="space-y-4">
+        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
+          <TabsTrigger value="emergencias" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <AlertOctagon className="h-4 w-4 text-red-600"/>
+            Emergencias (Triage & STAT)
+          </TabsTrigger>
+          <TabsTrigger value="uci" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <Droplets className="h-4 w-4 text-blue-600"/>
+            UCI (Balance Hídrico & RASS)
+          </TabsTrigger>
+          <TabsTrigger value="piso" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <Bed className="h-4 w-4 text-purple-600"/>
+            Piso / Habitaciones (Kardex 5C)
+          </TabsTrigger>
+          <TabsTrigger value="pediatria" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <Baby className="h-4 w-4 text-teal-600"/>
+            Pediátrico & Neonatal
+          </TabsTrigger>
+          <TabsTrigger value="sbar" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <FileCheck2 className="h-4 w-4 text-cyan-600"/>
+            Pase de Guardia (SBAR)
+          </TabsTrigger>
+          <TabsTrigger value="signos" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <Activity className="h-4 w-4 text-emerald-600"/>
+            Signos Vitales
+          </TabsTrigger>
+          <TabsTrigger value="plan" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <ClipboardCheck className="h-4 w-4 text-amber-600"/>
+            Planes NANDA
+          </TabsTrigger>
+          <TabsTrigger value="med" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+            <Pill className="h-4 w-4 text-indigo-600"/>
+            Fármacos
+          </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="emergencias" className="mt-4"><EnfermeriaEmergenciasTab/></TabsContent>
+        <TabsContent value="uci" className="mt-4"><EnfermeriaUciTab/></TabsContent>
+        <TabsContent value="piso" className="mt-4"><EnfermeriaPisoHospitalizacionTab/></TabsContent>
+        <TabsContent value="pediatria" className="mt-4"><EnfermeriaPediatricaNeonatalTab/></TabsContent>
+        <TabsContent value="sbar" className="mt-4"><PaseGuardiaSbarTab/></TabsContent>
         <TabsContent value="signos" className="mt-4"><SignosVitalesTab/></TabsContent>
         <TabsContent value="plan" className="mt-4"><PlanCuidadosTab/></TabsContent>
         <TabsContent value="med" className="mt-4"><AdminMedicamentosTab/></TabsContent>
-        <TabsContent value="proc" className="mt-4"><ProcedimientosTab/></TabsContent>
       </Tabs>
     </div>
   );
@@ -110,23 +200,28 @@ function SignosVitalesTab() {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="grid gap-2">
+      <div className="grid gap-2.5">
         {items.map(i => (
-          <Card key={i.id}><CardContent className="py-3 flex items-center justify-between flex-wrap gap-2">
-            <div>
-              <p className="font-medium">{i.pacientes?.nombre} {i.pacientes?.apellido} <Badge variant="outline" className="ml-2">{i.turno}</Badge></p>
-              <p className="text-xs text-muted-foreground">{format(new Date(i.fecha_registro), "dd/MM HH:mm")}</p>
-            </div>
-            <div className="text-sm flex gap-3 flex-wrap">
-              {i.ta_sistolica && <span>TA {i.ta_sistolica}/{i.ta_diastolica}</span>}
-              {i.fc && <span>FC {i.fc}</span>}
-              {i.temperatura && <span>T° {i.temperatura}</span>}
-              {i.saturacion && <span>SatO2 {i.saturacion}%</span>}
-              {i.dolor_eva != null && <span>Dolor {i.dolor_eva}/10</span>}
-            </div>
-          </CardContent></Card>
+          <Card key={i.id} className="rounded-2xl border-border/80 shadow-none hover:border-teal-500/40 transition-colors">
+            <CardContent className="p-4 flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <p className="font-semibold text-foreground text-sm flex items-center gap-2">
+                  {i.pacientes?.nombre} {i.pacientes?.apellido} 
+                  <Badge variant="outline" className="rounded-full text-[11px] capitalize">{i.turno}</Badge>
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">{format(new Date(i.fecha_registro), "dd/MM HH:mm")}</p>
+              </div>
+              <div className="text-xs flex gap-2.5 flex-wrap">
+                {i.ta_sistolica && <span className="px-2.5 py-1 rounded-lg bg-muted/60 font-medium">TA: <b>{i.ta_sistolica}/{i.ta_diastolica}</b></span>}
+                {i.fc && <span className="px-2.5 py-1 rounded-lg bg-muted/60 font-medium">FC: <b>{i.fc}</b> lpm</span>}
+                {i.temperatura && <span className="px-2.5 py-1 rounded-lg bg-muted/60 font-medium">T°: <b>{i.temperatura}°C</b></span>}
+                {i.saturacion && <span className="px-2.5 py-1 rounded-lg bg-muted/60 font-medium">SatO2: <b>{i.saturacion}%</b></span>}
+                {i.dolor_eva != null && <span className="px-2.5 py-1 rounded-lg bg-muted/60 font-medium">EVA: <b>{i.dolor_eva}/10</b></span>}
+              </div>
+            </CardContent>
+          </Card>
         ))}
-        {items.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Sin registros</p>}
+        {items.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Sin registros de signos vitales</p>}
       </div>
     </div>
   );
@@ -154,11 +249,11 @@ function PlanCuidadosTab() {
     toast.success("Plan creado"); setOpen(false); setForm({ prioridad: "media" }); load();
   }
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1"/>Nuevo plan</Button></DialogTrigger>
-          <DialogContent>
+          <DialogTrigger asChild><Button className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1.5"/>Nuevo plan</Button></DialogTrigger>
+          <DialogContent className="rounded-2xl">
             <DialogHeader><DialogTitle>Plan de cuidados (NANDA/NOC/NIC)</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Paciente</Label><PacienteSelect value={form.admision_id ?? ""} onChange={(v,p) => setForm({...form, admision_id: v, paciente_id: p})}/></div>
@@ -172,22 +267,24 @@ function PlanCuidadosTab() {
                 </Select>
               </div>
             </div>
-            <DialogFooter><Button onClick={save}>Crear</Button></DialogFooter>
+            <DialogFooter><Button onClick={save} className="rounded-xl">Crear Plan</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
-      <div className="grid gap-2 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         {items.map(i => (
-          <Card key={i.id}><CardContent className="py-3">
-            <div className="flex items-start justify-between mb-1">
-              <p className="font-medium">{i.pacientes?.nombre} {i.pacientes?.apellido}</p>
-              <Badge>{i.prioridad}</Badge>
-            </div>
-            <p className="text-sm font-medium">{i.diagnostico_nanda}</p>
-            {i.intervencion_nic && <p className="text-xs text-muted-foreground mt-1">{i.intervencion_nic}</p>}
-          </CardContent></Card>
+          <Card key={i.id} className="rounded-2xl border-border/80 shadow-none hover:border-blue-500/40 transition-colors">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-2">
+                <p className="font-semibold text-foreground text-sm">{i.pacientes?.nombre} {i.pacientes?.apellido}</p>
+                <Badge variant={i.prioridad === "alta" ? "destructive" : "secondary"} className="rounded-full text-[10px] capitalize">Prioridad {i.prioridad}</Badge>
+              </div>
+              <p className="text-sm font-medium text-foreground">{i.diagnostico_nanda}</p>
+              {i.intervencion_nic && <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2">{i.intervencion_nic}</p>}
+            </CardContent>
+          </Card>
         ))}
-        {items.length === 0 && <p className="col-span-2 text-sm text-muted-foreground text-center py-8">Sin planes activos</p>}
+        {items.length === 0 && <p className="col-span-2 text-sm text-muted-foreground text-center py-8">Sin planes de cuidados activos</p>}
       </div>
     </div>
   );
@@ -219,11 +316,11 @@ function AdminMedicamentosTab() {
     load();
   }
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1"/>Programar</Button></DialogTrigger>
-          <DialogContent>
+          <DialogTrigger asChild><Button className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1.5"/>Programar fármaco</Button></DialogTrigger>
+          <DialogContent className="rounded-2xl">
             <DialogHeader><DialogTitle>Administración de medicamento</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Paciente</Label><PacienteSelect value={form.admision_id ?? ""} onChange={(v,p) => setForm({...form, admision_id: v, paciente_id: p})}/></div>
@@ -234,27 +331,29 @@ function AdminMedicamentosTab() {
               </div>
               <div><Label>Hora programada</Label><Input type="datetime-local" value={form.hora_programada ?? ""} onChange={e => setForm({...form, hora_programada: e.target.value})}/></div>
             </div>
-            <DialogFooter><Button onClick={save}>Programar</Button></DialogFooter>
+            <DialogFooter><Button onClick={save} className="rounded-xl">Programar</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
-      <div className="grid gap-2">
+      <div className="grid gap-2.5">
         {items.map(i => (
-          <Card key={i.id}><CardContent className="py-3 flex items-center justify-between flex-wrap gap-2">
-            <div>
-              <p className="font-medium">{i.medicamento} <span className="text-sm text-muted-foreground">{i.dosis} {i.via}</span></p>
-              <p className="text-xs text-muted-foreground">{i.pacientes?.nombre} {i.pacientes?.apellido} • {i.hora_programada && format(new Date(i.hora_programada),"dd/MM HH:mm")}</p>
-            </div>
-            <div className="flex gap-2">
-              <Badge variant={i.estado === "administrada" ? "default" : "outline"}>{i.estado}</Badge>
-              {i.estado === "programada" && <>
-                <Button size="sm" onClick={() => marcar(i.id, "administrada")}>✓</Button>
-                <Button size="sm" variant="outline" onClick={() => marcar(i.id, "omitida")}>Omitir</Button>
-              </>}
-            </div>
-          </CardContent></Card>
+          <Card key={i.id} className="rounded-2xl border-border/80 shadow-none hover:border-purple-500/40 transition-colors">
+            <CardContent className="p-4 flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <p className="font-semibold text-foreground text-sm">{i.medicamento} <span className="text-xs font-normal text-muted-foreground">({i.dosis} · {i.via})</span></p>
+                <p className="text-xs text-muted-foreground mt-0.5">{i.pacientes?.nombre} {i.pacientes?.apellido} • {i.hora_programada && format(new Date(i.hora_programada),"dd/MM HH:mm")}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <StatusBadge status={i.estado} />
+                {i.estado === "programada" && <>
+                  <Button size="sm" className="rounded-xl h-8 px-2.5" onClick={() => marcar(i.id, "administrada")}>✓ Administrar</Button>
+                  <Button size="sm" variant="outline" className="rounded-xl h-8 px-2.5" onClick={() => marcar(i.id, "omitida")}>Omitir</Button>
+                </>}
+              </div>
+            </CardContent>
+          </Card>
         ))}
-        {items.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Sin medicamentos</p>}
+        {items.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Sin medicamentos programados</p>}
       </div>
     </div>
   );
@@ -279,11 +378,11 @@ function ProcedimientosTab() {
     toast.success("Registrado"); setOpen(false); setForm({}); load();
   }
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1"/>Nuevo</Button></DialogTrigger>
-          <DialogContent>
+          <DialogTrigger asChild><Button className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1.5"/>Nuevo procedimiento</Button></DialogTrigger>
+          <DialogContent className="rounded-2xl">
             <DialogHeader><DialogTitle>Procedimiento de enfermería</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Paciente</Label><PacienteSelect value={form.admision_id ?? ""} onChange={(v,p) => setForm({...form, admision_id: v, paciente_id: p})}/></div>
@@ -291,19 +390,25 @@ function ProcedimientosTab() {
               <div><Label>Descripción</Label><Textarea value={form.descripcion ?? ""} onChange={e => setForm({...form, descripcion: e.target.value})}/></div>
               <div><Label>Resultado</Label><Textarea value={form.resultado ?? ""} onChange={e => setForm({...form, resultado: e.target.value})}/></div>
             </div>
-            <DialogFooter><Button onClick={save}>Guardar</Button></DialogFooter>
+            <DialogFooter><Button onClick={save} className="rounded-xl">Guardar</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
-      <div className="grid gap-2">
+      <div className="grid gap-2.5">
         {items.map(i => (
-          <Card key={i.id}><CardContent className="py-3">
-            <p className="font-medium">{i.tipo}</p>
-            <p className="text-xs text-muted-foreground">{i.pacientes?.nombre} {i.pacientes?.apellido} • {format(new Date(i.fecha_hora),"dd/MM HH:mm")}</p>
-            {i.descripcion && <p className="text-sm mt-1">{i.descripcion}</p>}
-          </CardContent></Card>
+          <Card key={i.id} className="rounded-2xl border-border/80 shadow-none hover:border-emerald-500/40 transition-colors">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between gap-2">
+                <p className="font-semibold text-foreground text-sm">{i.tipo}</p>
+                <span className="text-xs text-muted-foreground">{format(new Date(i.fecha_hora),"dd/MM HH:mm")}</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">{i.pacientes?.nombre} {i.pacientes?.apellido}</p>
+              {i.descripcion && <p className="text-sm mt-1.5 text-foreground/90">{i.descripcion}</p>}
+              {i.resultado && <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Resultado: {i.resultado}</p>}
+            </CardContent>
+          </Card>
         ))}
-        {items.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Sin procedimientos</p>}
+        {items.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">Sin procedimientos registrados</p>}
       </div>
     </div>
   );

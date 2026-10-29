@@ -98,6 +98,8 @@ const AfiliacionesProfesional = lazy(() => import("./pages/AfiliacionesProfesion
 const UciManagement = lazy(() => import("./pages/UciManagement"));
 const RondasMedicas = lazy(() => import("./pages/RondasMedicas"));
 const Enfermeria = lazy(() => import("./pages/Enfermeria"));
+const EscalasMedicas = lazy(() => import("./pages/EscalasMedicas"));
+const NotasMedicas = lazy(() => import("./pages/NotasMedicas"));
 const LaboratorioAvanzado = lazy(() => import("./pages/LaboratorioAvanzado"));
 const AgendaUniversal = lazy(() => import("./pages/AgendaUniversal"));
 const ChecklistRLS = lazy(() => import("./pages/ChecklistRLS"));
@@ -155,6 +157,8 @@ const GestionCalidad = lazy(() => import("./pages/GestionCalidad"));
 const CentroTelemedicina = lazy(() => import("./pages/CentroTelemedicina"));
 const CentroComando = lazy(() => import("./pages/CentroComando"));
 const WorkflowsClinicos = lazy(() => import("./pages/WorkflowsClinicos"));
+const TurnosPersonal = lazy(() => import("./pages/TurnosPersonal"));
+const EdificacionHospitalaria = lazy(() => import("./pages/EdificacionHospitalaria"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -462,6 +466,14 @@ const App = () => {
                   element={session ? <Layout><Enfermeria /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
+                  path="/escalas-medicas"
+                  element={session ? <Layout><EscalasMedicas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/notas-medicas"
+                  element={session ? <Layout><NotasMedicas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
                   path="/laboratorio-avanzado"
                   element={session ? <Layout><LaboratorioAvanzado /></Layout> : <Navigate to="/auth" />}
                 />
@@ -484,6 +496,14 @@ const App = () => {
                 <Route
                   path="/censo-camas"
                   element={session ? <Layout><CensoCamas /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/turnos-personal"
+                  element={session ? <Layout><TurnosPersonal /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/edificacion-hospitalaria"
+                  element={session ? <Layout><EdificacionHospitalaria /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/oncologia"
