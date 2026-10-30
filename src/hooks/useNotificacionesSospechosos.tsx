@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 
 interface CriterioIngreso {
@@ -22,7 +22,7 @@ export function useNotificacionesSospechosos() {
       const fechaLimite = new Date();
       fechaLimite.setDate(fechaLimite.getDate() - CRITERIOS_DEFAULT.diasSeguimiento);
 
-      const { data: sospechosos, error } = await supabase
+      const { data: sospechosos, error } = await db
         .from("pacientes")
         .select(`
           *,

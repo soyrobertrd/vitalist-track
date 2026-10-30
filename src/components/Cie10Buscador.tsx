@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, Check, Loader2, X } from "lucide-react";
@@ -44,7 +44,7 @@ export function Cie10Buscador({ value, onSelect, onClear, placeholder = "Buscar 
     const t = setTimeout(async () => {
       setLoading(true);
       const term = query.trim();
-      const { data } = await supabase
+      const { data } = await db
         .from("cie10_codigos")
         .select("id, codigo, descripcion, capitulo, categoria")
         .eq("activo", true)

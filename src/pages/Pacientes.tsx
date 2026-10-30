@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Plus, Users, UserX, Search, RotateCcw, Pencil, Eye, Calendar, ExternalLink } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { DataTable, ColumnDef } from "@/components/common/DataTable";
 
 // Hooks
@@ -120,7 +120,7 @@ const Pacientes = () => {
   };
 
   const handleReactivar = async (pacienteId: string, nombre: string) => {
-    const { error } = await supabase
+    const { error } = await db
       .from("pacientes")
       .update({ status_px: "activo", motivo_inactividad: null })
       .eq("id", pacienteId);
@@ -152,7 +152,7 @@ const Pacientes = () => {
 
     try {
       if (action === "assign_professional" && value) {
-        const { error } = await supabase
+        const { error } = await db
           .from("pacientes")
           .update({ profesional_asignado_id: value })
           .in("id", selectedIds);
@@ -165,7 +165,7 @@ const Pacientes = () => {
           updateData.motivo_inactividad = null;
         }
         
-        const { error } = await supabase
+        const { error } = await db
           .from("pacientes")
           .update(updateData)
           .in("id", selectedIds);

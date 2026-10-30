@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -88,7 +88,7 @@ export default function BancoSangreAvanzado() {
   const { data: donantes = [], isLoading: loadingDonantes } = useQuery({
     queryKey: ["donantes_banco_sangre"],
     queryFn: async () => {
-      const { data } = await supabase.from("donantes").select("*").order("created_at", { ascending: false }).limit(100);
+      const { data } = await db.from("donantes").select("*").order("created_at", { ascending: false }).limit(100);
       return (data || []) as any[];
     }
   });
@@ -96,7 +96,7 @@ export default function BancoSangreAvanzado() {
   const { data: inventario = [], isLoading: loadingInv } = useQuery({
     queryKey: ["inventario_hemocomponentes"],
     queryFn: async () => {
-      const { data } = await supabase.from("inventario_hemocomponentes").select("*").order("fecha_vencimiento");
+      const { data } = await db.from("inventario_hemocomponentes").select("*").order("fecha_vencimiento");
       return (data || []) as any[];
     }
   });
@@ -104,7 +104,7 @@ export default function BancoSangreAvanzado() {
   const { data: transfusiones = [], isLoading: loadingTrans } = useQuery({
     queryKey: ["transfusiones_banco"],
     queryFn: async () => {
-      const { data } = await supabase.from("transfusiones").select("*").order("hora_inicio", { ascending: false }).limit(50);
+      const { data } = await db.from("transfusiones").select("*").order("hora_inicio", { ascending: false }).limit(50);
       return (data || []) as any[];
     }
   });
@@ -115,7 +115,7 @@ export default function BancoSangreAvanzado() {
       if (!formDataDonante.nombre || !formDataDonante.cedula) {
         throw new Error("Complete los datos requeridos del donante.");
       }
-      const { data: d, error: errD } = await supabase.from("donantes").insert({
+      const { data: d, error: errD } = await db.from("donantes").insert({
         nombre: formDataDonante.nombre,
         apellido: formDataDonante.apellido,
         cedula: formDataDonante.cedula,
@@ -126,7 +126,7 @@ export default function BancoSangreAvanzado() {
 
       // Registrar bolsa en inventario
       const fechaVenc = new Date(Date.now() + 35 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
-      await supabase.from("inventario_hemocomponentes").insert({
+      await db.from("inventario_hemocomponentes").insert({
         tipo_sangre: formDataDonante.tipo_sangre,
         tipo_componente: "Concentrado de Hematíes",
         fecha_extraccion: new Date().toISOString().split("T")[0],

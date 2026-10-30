@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,8 @@ export default function CredencialesProfesionales() {
   const load = async () => {
     if (!wsId) return;
     const [c, p] = await Promise.all([
-      supabase.from("credenciales_profesionales").select("*, personal_salud(nombre,apellido,especialidad)").eq("workspace_id", wsId).order("fecha_vencimiento"),
-      supabase.from("personal_salud").select("id,nombre,apellido,especialidad").eq("workspace_id", wsId).eq("activo", true),
+      db.from("credenciales_profesionales").select("*, personal_salud(nombre,apellido,especialidad)").eq("workspace_id", wsId).order("fecha_vencimiento"),
+      db.from("personal_salud").select("id,nombre,apellido,especialidad").eq("workspace_id", wsId).eq("activo", true),
     ]);
     setList(c.data || []); setProfesionales(p.data || []);
   };
@@ -38,7 +38,7 @@ export default function CredencialesProfesionales() {
     const payload: any = { ...form, workspace_id: wsId };
     if (!payload.fecha_emision) delete payload.fecha_emision;
     if (!payload.fecha_vencimiento) delete payload.fecha_vencimiento;
-    const { error } = await supabase.from("credenciales_profesionales").insert(payload);
+    const { error } = await db.from("credenciales_profesionales").insert(payload);
     if (error) return toast.error(error.message);
     toast.success("Credencial guardada");
     setOpen(false); load();

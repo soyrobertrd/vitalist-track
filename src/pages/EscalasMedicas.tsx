@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -99,7 +99,7 @@ export default function EscalasMedicas() {
   // Cargar pacientes
   useEffect(() => {
     if (!currentWorkspace) return;
-    (supabase as any)
+    (db as any)
       .from("pacientes")
       .select("id, nombre, apellido")
       .eq("workspace_id", currentWorkspace.id)

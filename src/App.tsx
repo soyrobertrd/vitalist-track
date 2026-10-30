@@ -4,8 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { Session } from "@supabase/supabase-js";
+import { db } from "@/integrations/db/client";
+type Session = { user: { id: string; email?: string } };
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { WorkspaceProvider } from "./contexts/WorkspaceContext";
 import { ActiveSucursalProvider } from "./contexts/ActiveSucursalContext";
@@ -188,7 +188,7 @@ const App = () => {
   useEffect(() => {
     let isMounted = true;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = db.auth.onAuthStateChange(
       (event, session) => {
         if (!isMounted) return;
         setSession(session);
@@ -196,7 +196,7 @@ const App = () => {
       }
     );
 
-    supabase.auth.getSession()
+    db.auth.getSession()
       .then(({ data: { session } }) => {
         if (!isMounted) return;
         setSession(session);

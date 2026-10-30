@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -174,7 +174,7 @@ export default function ProtocolosClinicos() {
   const cargar = async () => {
     setLoading(true);
     try {
-      const { data } = await (supabase as any)
+      const { data } = await (db as any)
         .from("protocolos_clinicos")
         .select("*")
         .eq("activo", true)

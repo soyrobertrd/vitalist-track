@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ export default function VerticalComunicacionesTab({ verticalTipo }: Props) {
     queryKey: ["comunicaciones_multicanal", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("comunicaciones_multicanal") as any)
+      const { data } = await (db.from("comunicaciones_multicanal") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("created_at", { ascending: false }).limit(50);
       return data || [];
     },
@@ -47,7 +47,7 @@ export default function VerticalComunicacionesTab({ verticalTipo }: Props) {
     queryKey: ["plantillas_comunicacion", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("plantillas_comunicacion") as any)
+      const { data } = await (db.from("plantillas_comunicacion") as any)
         .select("*").eq("workspace_id", wsId!).order("nombre");
       return (data || []).filter((p: any) => !p.vertical_tipo || p.vertical_tipo === verticalTipo);
     },
@@ -57,7 +57,7 @@ export default function VerticalComunicacionesTab({ verticalTipo }: Props) {
     queryKey: ["campanas_comunicacion", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("campanas_comunicacion") as any)
+      const { data } = await (db.from("campanas_comunicacion") as any)
         .select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false });
       return (data || []).filter((c: any) => !c.vertical_tipo || c.vertical_tipo === verticalTipo);
     },
@@ -65,7 +65,7 @@ export default function VerticalComunicacionesTab({ verticalTipo }: Props) {
 
   const crearPlantilla = useMutation({
     mutationFn: async () => {
-      const { error } = await (supabase.from("plantillas_comunicacion") as any).insert({
+      const { error } = await (db.from("plantillas_comunicacion") as any).insert({
         workspace_id: wsId, vertical_tipo: verticalTipo, nombre: pNombre, canal: pCanal,
         evento: pEvento || null, asunto_template: pAsunto || null, contenido_template: pContenido,
       });

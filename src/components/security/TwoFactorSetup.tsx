@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { ShieldCheck, ShieldOff, KeyRound } from "lucide-react";
 import { sanitizeSvg } from "@/lib/sanitize";
@@ -19,7 +19,7 @@ export function TwoFactorSetup() {
 
   const cargar = async () => {
     setLoading(true);
-    const { data, error } = await supabase.auth.mfa.listFactors();
+    const { data, error } = await db.auth.mfa.listFactors();
     if (!error) setFactors((data?.totp ?? []) as any);
     setLoading(false);
   };
@@ -28,7 +28,7 @@ export function TwoFactorSetup() {
 
   const iniciar = async () => {
     setBusy(true);
-    const { data, error } = await supabase.auth.mfa.enroll({
+    const { data, error } = await db.auth.mfa.enroll({
       factorType: "totp",
       friendlyName: `TOTP ${new Date().toLocaleDateString()}`,
     });
@@ -40,9 +40,9 @@ export function TwoFactorSetup() {
   const verificar = async () => {
     if (!enrollment || code.length !== 6) return;
     setBusy(true);
-    const { data: ch, error: ce } = await supabase.auth.mfa.challenge({ factorId: enrollment.factorId });
+    const { data: ch, error: ce } = await db.auth.mfa.challenge({ factorId: enrollment.factorId });
     if (ce || !ch) { setBusy(false); toast.error(ce?.message ?? "Error en challenge"); return; }
-    const { error: ve } = await supabase.auth.mfa.verify({
+    const { error: ve } = await db.auth.mfa.verify({
       factorId: enrollment.factorId, challengeId: ch.id, code,
     });
     setBusy(false);
@@ -54,7 +54,7 @@ export function TwoFactorSetup() {
 
   const remover = async (factorId: string) => {
     setBusy(true);
-    const { error } = await supabase.auth.mfa.unenroll({ factorId });
+    const { error } = await db.auth.mfa.unenroll({ factorId });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("2FA desactivado");

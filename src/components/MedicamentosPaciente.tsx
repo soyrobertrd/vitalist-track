@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Plus, Trash2, Pill } from "lucide-react";
 
@@ -36,7 +36,7 @@ export function MedicamentosPaciente({ pacienteId }: MedicamentosPacienteProps) 
   }, [pacienteId]);
 
   const fetchMedicamentos = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("medicamentos_paciente")
       .select("*")
       .eq("paciente_id", pacienteId)
@@ -56,7 +56,7 @@ export function MedicamentosPaciente({ pacienteId }: MedicamentosPacienteProps) 
     }
 
     setLoading(true);
-    const { error } = await supabase
+    const { error } = await db
       .from("medicamentos_paciente")
       .insert({
         paciente_id: pacienteId,
@@ -83,7 +83,7 @@ export function MedicamentosPaciente({ pacienteId }: MedicamentosPacienteProps) 
   };
 
   const handleDeleteMedicamento = async (id: string) => {
-    const { error } = await supabase
+    const { error } = await db
       .from("medicamentos_paciente")
       .delete()
       .eq("id", id);

@@ -58,8 +58,9 @@ import {
   FileText,
   Syringe,
   Camera,
+  Zap,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -88,6 +89,7 @@ import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
 import { SucursalSwitcher } from "@/components/SucursalSwitcher";
 import { VerticalSwitcher } from "@/components/VerticalSwitcher";
+import { ModoOperativoSwitcher } from "@/components/common/ModoOperativoSwitcher";
 import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useFreePlan } from "@/hooks/useFreePlan";
@@ -169,7 +171,8 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/aesthetic-pro?tab=cuidados_post", label: "Cuidados & Rutina en Casa", icon: Sparkles, verticales: ["aesthetic"] },
         { path: "/aesthetic-pro?tab=gift_cards", label: "Gift Cards & Membresías", icon: Heart, verticales: ["aesthetic"] },
         { path: "/aesthetic-pro?tab=membresias", label: "Membresías Spa", icon: Heart, verticales: ["aesthetic"] },
-        { path: "/vision-care?tab=recetas", label: "Recetas ópticas", verticales: ["vision"] },
+        { path: "/vision-care?tab=recetas", label: "Recetas ópticas", icon: FileText, verticales: ["vision"] },
+        { path: "/vision-care?tab=gabinete_refraccion", label: "Gabinete & Refracción", icon: Eye, verticales: ["vision"] },
         { path: "/vet-care?tab=mascotas", label: "Fichas de mascotas", verticales: ["veterinaria"] },
         { path: "/vet-care?tab=vacunas", label: "Calendario de vacunas", verticales: ["veterinaria"] },
         { path: "/vet-care?tab=boxes", label: "Boxes & Aislamiento", icon: BedDouble, verticales: ["veterinaria"] },
@@ -263,8 +266,10 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/aesthetic-pro?tab=cabinas", label: "Cabinas", icon: Building2, verticales: ["aesthetic"] },
         { path: "/aesthetic-pro?tab=procedimientos", label: "Procedimientos", verticales: ["aesthetic"] },
         { path: "/aesthetic-pro?tab=paquetes", label: "Paquetes", icon: Boxes, verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=aparatologia", label: "Aparatología & Pulsos", icon: Zap, verticales: ["aesthetic"] },
         { path: "/vision-care?tab=inventario", label: "Inventario óptico", icon: Boxes, verticales: ["vision"] },
         { path: "/vision-care?tab=ordenes", label: "Órdenes de laboratorio", verticales: ["vision"] },
+        { path: "/vision-care?tab=taller_biselado", label: "Taller & Biselado", icon: Wrench, verticales: ["vision"] },
         { path: "/vision-care?tab=combos", label: "Combos lentes", verticales: ["vision"] },
         { path: "/vision-care?tab=garantias", label: "Garantías", verticales: ["vision"] },
         { path: "/recovery-care?tab=habitaciones", label: "Habitaciones", icon: BedDouble, verticales: ["recovery"] },
@@ -291,6 +296,7 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/costeo-servicios", label: "Costeo por Servicio" },
         { path: "/dental-care?tab=comisiones", label: "Comisiones doctores", verticales: ["dental"] },
         { path: "/aesthetic-pro?tab=financiamiento", label: "Financiamiento estética", verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=comisiones_terapeutas", label: "Comisiones Estética & Spa", icon: DollarSign, verticales: ["aesthetic"] },
       ]
     },
 
@@ -492,7 +498,7 @@ const Layout = ({ children }: LayoutProps) => {
   }, [location.pathname]);
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await db.auth.signOut();
     if (error) {
       toast.error("Error al cerrar sesión");
     } else {
@@ -724,6 +730,7 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
           <div className="flex items-center gap-2">
             <OfflineIndicator />
+            <ModoOperativoSwitcher />
             <SucursalSwitcher compact />
             <GlobalSearch />
             <NotificationBell />
@@ -751,6 +758,7 @@ const Layout = ({ children }: LayoutProps) => {
               <Breadcrumbs />
               <div className="flex items-center gap-3">
                 <OfflineIndicator />
+                <ModoOperativoSwitcher />
                 <SucursalSwitcher />
                 <GlobalSearch />
                 {/* Creación rápida (estilo barra superior de las referencias) */}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Building2, CheckCircle2, AlertCircle } from "lucide-react";
@@ -28,8 +28,8 @@ export default function AceptarInvitacion() {
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    db.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: sub } = db.auth.onAuthStateChange((_e, s) => setSession(s));
     return () => sub.subscription.unsubscribe();
   }, []);
 
@@ -40,7 +40,7 @@ export default function AceptarInvitacion() {
       return;
     }
     (async () => {
-      const { data, error } = await supabase.rpc("get_invitation_details", { _token: token });
+      const { data, error } = await db.rpc("get_invitation_details", { _token: token });
       if (error) {
         setDetails({ valid: false, error: error.message });
       } else {
@@ -53,7 +53,7 @@ export default function AceptarInvitacion() {
   const handleAccept = async () => {
     if (!token) return;
     setAccepting(true);
-    const { data, error } = await supabase.rpc("accept_workspace_invitation", { _token: token });
+    const { data, error } = await db.rpc("accept_workspace_invitation", { _token: token });
     setAccepting(false);
     if (error) {
       toast.error(error.message);

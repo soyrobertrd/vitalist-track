@@ -13,7 +13,7 @@ import { es } from "date-fns/locale";
 import { toast } from "sonner";
 import { useCitaTickets, type CitaTicket } from "@/hooks/useCitaTickets";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 
 interface CitaTicketDialogProps {
   open: boolean;
@@ -58,7 +58,7 @@ export function CitaTicketDialog({
     if (!open) return;
     obtenerOCrearTicket({ tipo, citaId, pacienteId }).then(setTicket);
     if (currentWorkspace?.id) {
-      supabase
+      db
         .from("workspaces")
         .select("nombre, logo_url, direccion, telefono, email_contacto, sitio_web, instrucciones_cita")
         .eq("id", currentWorkspace.id)

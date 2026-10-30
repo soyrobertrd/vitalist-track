@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -55,7 +55,7 @@ export function ListaEspera() {
 
   const fetchItems = useCallback(async () => {
     setLoading(true);
-    let q = supabase
+    let q = db
       .from("lista_espera")
       .select("*, pacientes:paciente_id(nombre, apellido), personal_salud:profesional_id(nombre, apellido)")
       .order("prioridad", { ascending: true })
@@ -75,8 +75,8 @@ export function ListaEspera() {
   useEffect(() => {
     const load = async () => {
       const [p, pr] = await Promise.all([
-        supabase.from("pacientes").select("id, nombre, apellido").order("nombre").limit(500),
-        supabase.from("personal_salud").select("id, nombre, apellido").order("nombre"),
+        db.from("pacientes").select("id, nombre, apellido").order("nombre").limit(500),
+        db.from("personal_salud").select("id, nombre, apellido").order("nombre"),
       ]);
       if (p.data) setPacientes(p.data);
       if (pr.data) setProfesionales(pr.data);
@@ -99,8 +99,8 @@ export function ListaEspera() {
     };
 
     const { error } = editing.id
-      ? await supabase.from("lista_espera").update(payload).eq("id", editing.id)
-      : await supabase.from("lista_espera").insert(payload);
+      ? await db.from("lista_espera").update(payload).eq("id", editing.id)
+      : await db.from("lista_espera").insert(payload);
     if (error) { toast.error(error.message); return; }
     toast.success("Guardado");
     setDialogOpen(false);
@@ -110,7 +110,7 @@ export function ListaEspera() {
   const cambiarEstado = async (id: string, estado: string) => {
     const update: any = { estado };
     if (estado === "asignada") update.fecha_asignada = new Date().toISOString();
-    await supabase.from("lista_espera").update(update).eq("id", id);
+    await db.from("lista_espera").update(update).eq("id", id);
     toast.success("Estado actualizado");
     fetchItems();
   };

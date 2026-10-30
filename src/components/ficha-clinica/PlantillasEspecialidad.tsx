@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -68,7 +68,7 @@ export function PlantillasEspecialidadAdmin() {
 
   const fetchPlantillas = useCallback(async () => {
     setLoading(true);
-    const q = supabase.from("plantillas_especialidad").select("*").order("especialidad").order("nombre");
+    const q = db.from("plantillas_especialidad").select("*").order("especialidad").order("nombre");
     if (currentWorkspace) q.eq("workspace_id", currentWorkspace.id);
     const { data } = await q;
     setPlantillas((data || []) as unknown as Plantilla[]);
@@ -109,8 +109,8 @@ export function PlantillasEspecialidadAdmin() {
     };
 
     const { error } = editing.id
-      ? await supabase.from("plantillas_especialidad").update(payload).eq("id", editing.id)
-      : await supabase.from("plantillas_especialidad").insert(payload);
+      ? await db.from("plantillas_especialidad").update(payload).eq("id", editing.id)
+      : await db.from("plantillas_especialidad").insert(payload);
     if (error) { toast.error("Error: " + error.message); return; }
     toast.success("Plantilla guardada");
     setDialogOpen(false);
@@ -119,7 +119,7 @@ export function PlantillasEspecialidadAdmin() {
 
   const del = async (id: string) => {
     if (!confirm("¿Eliminar esta plantilla?")) return;
-    await supabase.from("plantillas_especialidad").delete().eq("id", id);
+    await db.from("plantillas_especialidad").delete().eq("id", id);
     toast.success("Eliminada");
     fetchPlantillas();
   };
@@ -233,12 +233,12 @@ export function ConsultasEspecialidad({ pacienteId }: ConsultasProps) {
   const fetch = useCallback(async () => {
     setLoading(true);
     const [c, p, prof] = await Promise.all([
-      supabase.from("consultas_especialidad")
+      db.from("consultas_especialidad")
         .select("*, personal_salud:profesional_id(nombre, apellido), plantillas_especialidad:plantilla_id(nombre)")
         .eq("paciente_id", pacienteId)
         .order("created_at", { ascending: false }),
-      supabase.from("plantillas_especialidad").select("*").eq("activo", true).order("especialidad"),
-      supabase.from("personal_salud").select("id, nombre, apellido").order("nombre"),
+      db.from("plantillas_especialidad").select("*").eq("activo", true).order("especialidad"),
+      db.from("personal_salud").select("id, nombre, apellido").order("nombre"),
     ]);
     if (c.data) setConsultas(c.data as unknown as ConsultaEsp[]);
     if (p.data) setPlantillas(p.data as unknown as Plantilla[]);
@@ -273,8 +273,8 @@ export function ConsultasEspecialidad({ pacienteId }: ConsultasProps) {
       workspace_id: currentWorkspace?.id || null,
     };
     const { error } = editing.id
-      ? await supabase.from("consultas_especialidad").update(payload).eq("id", editing.id)
-      : await supabase.from("consultas_especialidad").insert(payload);
+      ? await db.from("consultas_especialidad").update(payload).eq("id", editing.id)
+      : await db.from("consultas_especialidad").insert(payload);
     if (error) { toast.error(error.message); return; }
     toast.success("Consulta guardada");
     setDialogOpen(false);

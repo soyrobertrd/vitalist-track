@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -74,7 +74,7 @@ export default function ForecastIngresos() {
 
   const cargar = async () => {
     if (!wsId) return;
-    const { data, error } = await (supabase as any)
+    const { data, error } = await (db as any)
       .from("forecast_ingresos")
       .select("*")
       .eq("workspace_id", wsId)
@@ -100,7 +100,7 @@ export default function ForecastIngresos() {
       return;
     }
 
-    const { error } = await (supabase as any).from("forecast_ingresos").insert({
+    const { error } = await (db as any).from("forecast_ingresos").insert({
       workspace_id: wsId,
       anio,
       mes: parseInt(form.mes),
@@ -121,7 +121,7 @@ export default function ForecastIngresos() {
   };
 
   const eliminar = async (id: string) => {
-    const { error } = await (supabase as any).from("forecast_ingresos").delete().eq("id", id);
+    const { error } = await (db as any).from("forecast_ingresos").delete().eq("id", id);
     if (error) {
       toast.error("Error al eliminar");
     } else {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,8 +31,8 @@ export default function EvaluacionesDesempeno() {
   const cargar = async () => {
     if (!wsId) return;
     const [{ data: a }, { data: b }] = await Promise.all([
-      (supabase as any).from("evaluaciones_desempeno").select("*").eq("workspace_id", wsId).order("fecha_evaluacion", { ascending: false }),
-      supabase.from("personal_salud").select("id, nombre, apellido").eq("activo", true).order("nombre"),
+      (db as any).from("evaluaciones_desempeno").select("*").eq("workspace_id", wsId).order("fecha_evaluacion", { ascending: false }),
+      db.from("personal_salud").select("id, nombre, apellido").eq("activo", true).order("nombre"),
     ]);
     setEvals(a || []);
     setPersonal(b || []);
@@ -47,8 +47,8 @@ export default function EvaluacionesDesempeno() {
 
   const guardar = async () => {
     if (!wsId || !form.empleado_id || !form.periodo) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await (supabase as any).from("evaluaciones_desempeno").insert({
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await (db as any).from("evaluaciones_desempeno").insert({
       workspace_id: wsId,
       empleado_id: form.empleado_id,
       evaluador_id: user?.id,

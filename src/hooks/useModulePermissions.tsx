@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 
 export interface ModulePermission {
   module_name: string;
@@ -16,13 +16,13 @@ export const useModulePermissions = () => {
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await db.auth.getUser();
         if (!user) {
           setLoading(false);
           return;
         }
 
-        const { data, error } = await supabase.rpc('get_user_module_permissions', {
+        const { data, error } = await db.rpc('get_user_module_permissions', {
           _user_id: user.id
         });
 

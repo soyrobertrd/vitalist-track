@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Mail, Send, Users, MessageCircle } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
@@ -56,7 +56,7 @@ export function EnviarRecordatorioDialog({
   }, [open, emailPaciente, emailCuidador, telefonoPaciente, telefonoCuidador]);
 
   const fetchPlantillas = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("plantillas_correo")
       .select("*")
       .eq("activo", true)
@@ -124,7 +124,7 @@ export function EnviarRecordatorioDialog({
       const url = `https://wa.me/${formattedPhone}?text=${mensaje}`;
       
       // Registrar en historial
-      supabase.from("historial_recordatorios").insert({
+      db.from("historial_recordatorios").insert({
         tipo_cita: tipo,
         cita_id: citaId,
         paciente_id: null, // Se puede obtener del contexto si es necesario
@@ -157,7 +157,7 @@ export function EnviarRecordatorioDialog({
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("send-recordatorio-cita", {
+      const { data, error } = await db.functions.invoke("send-recordatorio-cita", {
         body: {
           tipo,
           citaId,

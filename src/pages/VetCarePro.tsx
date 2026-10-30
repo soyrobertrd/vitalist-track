@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -77,11 +77,11 @@ export default function VetCarePro() {
     if (!wsId) return;
     try {
       const [mRes, vRes] = await Promise.all([
-        (supabase.from("vet_mascotas" as any) as any)
+        (db.from("vet_mascotas" as any) as any)
           .select("id, paciente_id, especie, raza, sexo, fecha_nacimiento, peso_kg, esterilizado, tutor_nombre, tutor_telefono, pacientes(nombre)")
           .eq("workspace_id", wsId)
           .order("created_at", { ascending: false }),
-        (supabase.from("vet_vacunas" as any) as any)
+        (db.from("vet_vacunas" as any) as any)
           .select("id, vacuna, fecha_aplicada, proxima_dosis, pacientes(nombre)")
           .eq("workspace_id", wsId)
           .order("proxima_dosis", { ascending: true, nullsFirst: false }),

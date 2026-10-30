@@ -3,7 +3,7 @@
  * Llama al RPC registrar_acceso_ficha sin bloquear la UI.
  */
 import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 
 type AccionAuditoria = "view" | "export" | "print" | "download" | "edit";
 
@@ -22,7 +22,7 @@ export async function registrarAcceso(opts: {
   metadata?: Record<string, unknown>;
 }) {
   try {
-    await supabase.rpc("registrar_acceso_ficha", {
+    await db.rpc("registrar_acceso_ficha", {
       _paciente_id: opts.pacienteId,
       _recurso: opts.recurso,
       _accion: opts.accion ?? "view",

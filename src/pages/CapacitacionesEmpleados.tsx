@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,8 +30,8 @@ export default function CapacitacionesEmpleados() {
   const cargar = async () => {
     if (!wsId) return;
     const [{ data: a }, { data: b }] = await Promise.all([
-      (supabase as any).from("capacitaciones_empleados").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
-      supabase.from("personal_salud").select("id, nombre, apellido").eq("activo", true).order("nombre"),
+      (db as any).from("capacitaciones_empleados").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
+      db.from("personal_salud").select("id, nombre, apellido").eq("activo", true).order("nombre"),
     ]);
     setCaps(a || []);
     setPersonal(b || []);
@@ -46,7 +46,7 @@ export default function CapacitacionesEmpleados() {
 
   const guardar = async () => {
     if (!wsId || !form.empleado_id || !form.curso) return;
-    const { error } = await (supabase as any).from("capacitaciones_empleados").insert({
+    const { error } = await (db as any).from("capacitaciones_empleados").insert({
       workspace_id: wsId,
       empleado_id: form.empleado_id,
       curso: form.curso,

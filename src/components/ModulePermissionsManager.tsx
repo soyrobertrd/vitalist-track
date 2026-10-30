@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -58,7 +58,7 @@ export const ModulePermissionsManager = () => {
   const fetchPermissions = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("module_permissions")
         .select("*")
         .order("role")
@@ -103,7 +103,7 @@ export const ModulePermissionsManager = () => {
     setSaving(true);
     try {
       for (const [id, change] of Object.entries(changes)) {
-        const { error } = await supabase
+        const { error } = await db
           .from("module_permissions")
           .update(change)
           .eq("id", id);

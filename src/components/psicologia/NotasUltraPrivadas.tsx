@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,12 +19,12 @@ type Paciente = { id: string; nombre: string; apellido: string };
 export default function NotasUltraPrivadas({ pacientes }: { pacientes: Paciente[] }) {
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
-  const sb = supabase as any;
+  const sb = db as any;
 
   const { data: notas = [], refetch } = useQuery({
     queryKey: ["notas_ultra_privadas", wsId], enabled: !!wsId,
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       const { data } = await sb.from("notas_ultra_privadas")
         .select("id, titulo, paciente_id, created_at, updated_at")
         .eq("workspace_id", wsId).eq("terapeuta_id", user?.id)
@@ -39,7 +39,7 @@ export default function NotasUltraPrivadas({ pacientes }: { pacientes: Paciente[
   const [form, setForm] = useState({ paciente_id: "", titulo: "", contenido: "" });
   const save = async () => {
     if (!wsId || !form.contenido) { toast.error("Contenido requerido"); return; }
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     const payload: any = { workspace_id: wsId, terapeuta_id: user?.id, titulo: form.titulo, contenido: form.contenido };
     if (form.paciente_id) payload.paciente_id = form.paciente_id;
     const { error } = await sb.from("notas_ultra_privadas").insert(payload);
@@ -50,7 +50,7 @@ export default function NotasUltraPrivadas({ pacientes }: { pacientes: Paciente[
 
   const [reading, setReading] = useState<{ id: string; titulo?: string; contenido?: string } | null>(null);
   const leerNota = async (id: string, titulo?: string) => {
-    const { data, error } = await (supabase.rpc as any)("leer_nota_ultra_privada", { _nota_id: id });
+    const { data, error } = await (db.rpc as any)("leer_nota_ultra_privada", { _nota_id: id });
     if (error) return toast.error(error.message);
     setReading({ id, titulo: titulo || data?.titulo, contenido: data?.contenido });
   };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -16,7 +16,7 @@ export function EspecialidadCombobox({ value, onChange, categoria, placeholder =
 
   useEffect(() => {
     (async () => {
-      let q = supabase.from("especialidades_catalogo").select("nombre,categoria").eq("activo", true).order("nombre");
+      let q = db.from("especialidades_catalogo").select("nombre,categoria").eq("activo", true).order("nombre");
       if (categoria) q = q.eq("categoria", categoria);
       const { data } = await q;
       setOpts((data as any) || []);

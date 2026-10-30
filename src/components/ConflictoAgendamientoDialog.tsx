@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -99,7 +99,7 @@ export function ConflictoAgendamientoDialog({
 
     const tabla = tipo === "llamada" ? "registro_llamadas" : "control_visitas";
 
-    const { error } = await supabase
+    const { error } = await db
       .from(tabla)
       .update(updateData)
       .eq("id", eventoExistente.id);

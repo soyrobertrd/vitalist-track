@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -34,13 +34,13 @@ const Compras = () => {
 
   const fetchProveedores = async () => {
     if (!currentWorkspace) return;
-    const { data } = await supabase.from("proveedores").select("*").eq("workspace_id", currentWorkspace.id).order("nombre");
+    const { data } = await db.from("proveedores").select("*").eq("workspace_id", currentWorkspace.id).order("nombre");
     setProveedores(data || []);
   };
 
   const handleCreateProveedor = async () => {
     if (!currentWorkspace || !provForm.nombre) { toast.error("Nombre requerido"); return; }
-    const { error } = await supabase.from("proveedores").insert({ workspace_id: currentWorkspace.id, ...provForm });
+    const { error } = await db.from("proveedores").insert({ workspace_id: currentWorkspace.id, ...provForm });
     if (error) toast.error(error.message);
     else { toast.success("Proveedor creado"); setProvDialog(false); setProvForm({ nombre: "", rnc: "", contacto_nombre: "", email: "", telefono: "", direccion: "", notas: "" }); fetchProveedores(); }
   };
@@ -59,14 +59,14 @@ const Compras = () => {
 
   const fetchOrdenes = async () => {
     if (!currentWorkspace) return;
-    const { data } = await supabase.from("ordenes_compra").select("*, proveedores(nombre)").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(200);
+    const { data } = await db.from("ordenes_compra").select("*, proveedores(nombre)").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(200);
     setOrdenes(data || []);
   };
 
   const handleCreateOrden = async () => {
     if (!currentWorkspace || items.length === 0) { toast.error("Agregue al menos un ítem"); return; }
     const total = items.reduce((s, i) => s + i.cantidad_solicitada * i.precio_unitario, 0);
-    const { data, error } = await supabase.from("ordenes_compra").insert({
+    const { data, error } = await db.from("ordenes_compra").insert({
       workspace_id: currentWorkspace.id,
       proveedor_id: ordenForm.proveedor_id || null,
       prioridad: ordenForm.prioridad,
@@ -77,7 +77,7 @@ const Compras = () => {
     if (error) { toast.error(error.message); return; }
     // Insert items
     const itemsInsert = items.map(i => ({ orden_id: data.id, descripcion: i.descripcion, cantidad_solicitada: i.cantidad_solicitada, precio_unitario: i.precio_unitario, unidad: i.unidad }));
-    const { error: e2 } = await supabase.from("items_orden_compra").insert(itemsInsert);
+    const { error: e2 } = await db.from("items_orden_compra").insert(itemsInsert);
     if (e2) toast.error(e2.message);
     else { toast.success("Orden de compra creada"); setOrdenDialog(false); setItems([]); setOrdenForm({ proveedor_id: "", prioridad: "normal", fecha_estimada_entrega: "", notas: "" }); fetchOrdenes(); }
   };
@@ -85,14 +85,14 @@ const Compras = () => {
   const updateEstadoOrden = async (id: string, estado: string) => {
     const updates: any = { estado };
     if (estado === "recibida") updates.fecha_recepcion = new Date().toISOString().split("T")[0];
-    const { error } = await supabase.from("ordenes_compra").update(updates).eq("id", id);
+    const { error } = await db.from("ordenes_compra").update(updates).eq("id", id);
     if (error) toast.error(error.message);
     else { toast.success("Estado actualizado"); fetchOrdenes(); }
   };
 
   const openDetalle = async (orden: any) => {
     setDetalleOrden(orden);
-    const { data } = await supabase.from("items_orden_compra").select("*").eq("orden_id", orden.id);
+    const { data } = await db.from("items_orden_compra").select("*").eq("orden_id", orden.id);
     setDetalleItems(data || []);
   };
 

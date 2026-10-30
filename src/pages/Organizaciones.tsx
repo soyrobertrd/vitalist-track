@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,7 +68,7 @@ export default function Organizaciones() {
 
   const loadInvitations = async () => {
     if (!currentWorkspace) return;
-    const { data } = await supabase
+    const { data } = await db
       .from("workspace_invitations" as any)
       .select("id, email, role, estado, expires_at, created_at")
       .eq("workspace_id", currentWorkspace.id)
@@ -80,7 +80,7 @@ export default function Organizaciones() {
   const loadMembers = async () => {
     if (!currentWorkspace) return;
     setLoadingMembers(true);
-    const { data: memberRows } = await supabase
+    const { data: memberRows } = await db
       .from("workspace_members")
       .select("id, user_id, role, joined_at")
       .eq("workspace_id", currentWorkspace.id);
@@ -92,7 +92,7 @@ export default function Organizaciones() {
     }
 
     const ids = memberRows.map((m) => m.user_id);
-    const { data: profiles } = await supabase
+    const { data: profiles } = await db
       .from("profiles")
       .select("id, nombre, apellido, email")
       .in("id", ids);
@@ -117,10 +117,10 @@ export default function Organizaciones() {
       toast.error("Nombre y slug son requeridos");
       return;
     }
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     if (!user) return;
     const slug = wsForm.slug.trim().toLowerCase().replace(/[^a-z0-9-]/g, "-");
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("workspaces")
       .insert({ nombre: wsForm.nombre.trim(), slug, owner_id: user.id, plan_codigo: "free" })
       .select()
@@ -130,7 +130,7 @@ export default function Organizaciones() {
       return;
     }
     // Add owner as workspace member
-    await supabase.from("workspace_members").insert({
+    await db.from("workspace_members").insert({
       workspace_id: data.id, user_id: user.id, role: "owner", invited_by: user.id,
     });
     toast.success("Organización creada");
@@ -157,9 +157,9 @@ export default function Organizaciones() {
     };
     let error;
     if (editingSucursal) {
-      ({ error } = await supabase.from("sucursales" as any).update(payload).eq("id", editingSucursal.id));
+      ({ error } = await db.from("sucursales" as any).update(payload).eq("id", editingSucursal.id));
     } else {
-      ({ error } = await supabase.from("sucursales" as any).insert(payload));
+      ({ error } = await db.from("sucursales" as any).insert(payload));
     }
     if (error) {
       toast.error(error.message);
@@ -188,7 +188,7 @@ export default function Organizaciones() {
 
   const handleDeleteSucursal = async (id: string) => {
     if (!confirm("¿Eliminar sucursal? Los pacientes/personal asignados quedarán sin sucursal.")) return;
-    const { error } = await supabase.from("sucursales" as any).delete().eq("id", id);
+    const { error } = await db.from("sucursales" as any).delete().eq("id", id);
     if (error) toast.error(error.message);
     else {
       toast.success("Sucursal eliminada");
@@ -199,7 +199,7 @@ export default function Organizaciones() {
   const handleInviteMember = async () => {
     if (!currentWorkspace || !inviteEmail.trim()) return;
     setInviting(true);
-    const { data, error } = await supabase.functions.invoke("send-workspace-invitation", {
+    const { data, error } = await db.functions.invoke("send-workspace-invitation", {
       body: {
         workspace_id: currentWorkspace.id,
         email: inviteEmail.trim().toLowerCase(),
@@ -219,7 +219,7 @@ export default function Organizaciones() {
 
   const handleRevokeInvitation = async (id: string) => {
     if (!confirm("¿Revocar esta invitación pendiente?")) return;
-    const { error } = await supabase
+    const { error } = await db
       .from("workspace_invitations" as any)
       .update({ estado: "revocada" })
       .eq("id", id);
@@ -231,7 +231,7 @@ export default function Organizaciones() {
   };
 
   const handleChangeMemberRole = async (memberId: string, newRole: Member["role"]) => {
-    const { error } = await supabase
+    const { error } = await db
       .from("workspace_members")
       .update({ role: newRole })
       .eq("id", memberId);
@@ -244,7 +244,7 @@ export default function Organizaciones() {
 
   const handleRemoveMember = async (memberId: string) => {
     if (!confirm("¿Quitar este miembro de la organización?")) return;
-    const { error } = await supabase.from("workspace_members").delete().eq("id", memberId);
+    const { error } = await db.from("workspace_members").delete().eq("id", memberId);
     if (error) toast.error(error.message);
     else {
       toast.success("Miembro removido");

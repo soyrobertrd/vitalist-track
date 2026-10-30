@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ArrowLeft, Check, Sparkles, Building2, UserCog, Users, Globe, Calendar, Ticket, ScanLine } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { CountryTimezoneSelector } from "@/components/CountryTimezoneSelector";
 import { getCurrencyFromCountry } from "@/lib/currency";
@@ -78,7 +78,7 @@ export default function Onboarding() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase
+    const { error } = await db
       .from("workspaces")
       .update({
         nombre: clinica.nombre,
@@ -103,7 +103,7 @@ export default function Onboarding() {
     if (!currentWorkspace) return;
     setSaving(true);
     const currency = getCurrencyFromCountry(region.country_code);
-    const { error } = await supabase
+    const { error } = await db
       .from("workspaces")
       .update({
         country_code: region.country_code,
@@ -127,7 +127,7 @@ export default function Onboarding() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase.from("personal_salud").insert({
+    const { error } = await db.from("personal_salud").insert({
       ...profesional,
       workspace_id: currentWorkspace?.id || null,
       activo: true,
@@ -147,7 +147,7 @@ export default function Onboarding() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase.from("pacientes").insert({
+    const { error } = await db.from("pacientes").insert({
       ...paciente,
       workspace_id: currentWorkspace?.id || null,
     });

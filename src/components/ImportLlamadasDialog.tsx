@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Upload, FileSpreadsheet, FileJson } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import * as XLSX from "xlsx";
 
 interface ImportLlamadasDialogProps {
@@ -84,7 +84,7 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
       // FORMATO NOMBRE + FRECUENCIA: nombre, fecha_ultima_llamada, fecha_proxima_llamada, frecuencia_llamada
       if ("nombre" in firstItem && "frecuencia_llamada" in firstItem) {
         // Obtener todos los pacientes
-        const { data: todosPacientes } = await supabase
+        const { data: todosPacientes } = await db
           .from("pacientes")
           .select("id, nombre, apellido");
 
@@ -120,12 +120,12 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
         const pacientesCedulas = [...new Set(data.map(d => d.paciente_cedula))];
         const profesionalesCedulas = [...new Set(data.map(d => d.profesional_cedula))];
 
-        const { data: pacientes } = await supabase
+        const { data: pacientes } = await db
           .from("pacientes")
           .select("id, cedula")
           .in("cedula", pacientesCedulas);
 
-        const { data: profesionales } = await supabase
+        const { data: profesionales } = await db
           .from("personal_salud")
           .select("id, cedula")
           .in("cedula", profesionalesCedulas);
@@ -149,7 +149,7 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
         const sanitize = (t: string = "") => t.replace(/\D/g, "");
         
         // Obtener todos los pacientes para matcheo flexible
-        const { data: todosPacientes } = await supabase
+        const { data: todosPacientes } = await db
           .from("pacientes")
           .select("id, contacto_px, contacto_cuidador, nombre, apellido");
 
@@ -213,7 +213,7 @@ export const ImportLlamadasDialog = ({ onSuccess }: ImportLlamadasDialogProps) =
       }
 
       // Insertar en la base de datos
-      const { error } = await supabase
+      const { error } = await db
         .from("registro_llamadas")
         .insert(llamadasToInsert);
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,14 +32,14 @@ export default function VerticalPersonalTab({ profesionalLabel = "Profesionales"
     queryKey: ["personal_salud", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase.from("personal_salud").select("*").eq("workspace_id", wsId!).order("nombre");
+      const { data } = await db.from("personal_salud").select("*").eq("workspace_id", wsId!).order("nombre");
       return data || [];
     },
   });
 
   const crear = async () => {
     if (!wsId || !form.nombre) return;
-    const { error } = await supabase.from("personal_salud").insert({
+    const { error } = await db.from("personal_salud").insert({
       workspace_id: wsId,
       nombre: form.nombre,
       apellido: form.apellido || null,

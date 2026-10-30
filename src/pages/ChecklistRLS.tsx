@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,7 @@ export default function ChecklistRLS() {
       categoria: "pacientes",
       esperado: "filtrado",
       ejecutar: async (wsId) => {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from("pacientes")
           .select("id, workspace_id")
           .limit(20);
@@ -70,7 +70,7 @@ export default function ChecklistRLS() {
       categoria: "clinico",
       esperado: "filtrado",
       ejecutar: async (wsId) => {
-        const { data, error } = await (supabase as any)
+        const { data, error } = await (db as any)
           .from("citas")
           .select("id, workspace_id")
           .limit(20);
@@ -89,7 +89,7 @@ export default function ChecklistRLS() {
       categoria: "clinico",
       esperado: "filtrado",
       ejecutar: async () => {
-        const { data, error } = await (supabase as any)
+        const { data, error } = await (db as any)
           .from("diagnosticos_clinicos")
           .select("id")
           .limit(5);
@@ -106,7 +106,7 @@ export default function ChecklistRLS() {
       categoria: "hospitalario",
       esperado: "filtrado",
       ejecutar: async (wsId) => {
-        const { data, error } = await (supabase as any)
+        const { data, error } = await (db as any)
           .from("blood_bank_units")
           .select("id, workspace_id")
           .limit(10);
@@ -125,7 +125,7 @@ export default function ChecklistRLS() {
       categoria: "hospitalario",
       esperado: "filtrado",
       ejecutar: async (wsId) => {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from("dicom_studies")
           .select("id, workspace_id")
           .limit(15);
@@ -144,7 +144,7 @@ export default function ChecklistRLS() {
       categoria: "hospitalario",
       esperado: "filtrado",
       ejecutar: async () => {
-        const { data, error } = await (supabase as any)
+        const { data, error } = await (db as any)
           .from("turnos_personal")
           .select("id")
           .limit(10);
@@ -162,7 +162,7 @@ export default function ChecklistRLS() {
       esperado: "denegado",
       ejecutar: async () => {
         // Verificar que un usuario regular no puede sobreescribir ni borrar logs de auditoría
-        const { error } = await (supabase as any)
+        const { error } = await (db as any)
           .from("audit_logs")
           .delete()
           .eq("id", "fake-attack-id");
@@ -181,7 +181,7 @@ export default function ChecklistRLS() {
       ejecutar: async () => {
         // Intento deliberado de leer datos asociando un workspace_id ajeno falso
         const fakeWorkspaceId = "00000000-0000-0000-0000-000000000000";
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from("pacientes")
           .select("id")
           .eq("workspace_id", fakeWorkspaceId)

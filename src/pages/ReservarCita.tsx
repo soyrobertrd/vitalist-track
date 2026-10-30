@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +30,7 @@ export default function ReservarCita() {
   const [listo, setListo] = useState(false);
 
   const api = async (accion: string, extra: Record<string, unknown> = {}) => {
-    const { data, error } = await supabase.functions.invoke("reservar-cita", { body: { slug, accion, ...extra } });
+    const { data, error } = await db.functions.invoke("reservar-cita", { body: { slug, accion, ...extra } });
     if (error || data?.error) {
       let msg = data?.error;
       try { msg = msg || (await (error as any)?.context?.json())?.error; } catch { /* sin cuerpo */ }

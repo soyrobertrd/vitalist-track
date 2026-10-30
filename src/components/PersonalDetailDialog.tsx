@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Phone, Calendar, User } from "lucide-react";
@@ -69,7 +69,7 @@ export function PersonalDetailDialog({ personal, open, onOpenChange }: PersonalD
     const manana = new Date(hoy);
     manana.setDate(manana.getDate() + 1);
 
-    const { data } = await supabase
+    const { data } = await db
       .from("registro_llamadas")
       .select(`
         *,
@@ -91,7 +91,7 @@ export function PersonalDetailDialog({ personal, open, onOpenChange }: PersonalD
     const manana = new Date(hoy);
     manana.setDate(manana.getDate() + 1);
 
-    const { data } = await supabase
+    const { data } = await db
       .from("control_visitas")
       .select(`
         *,

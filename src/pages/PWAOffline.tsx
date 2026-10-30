@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,11 +24,11 @@ export default function PWAOffline() {
   }, []);
 
   const load = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     if (!user) return;
     const [q, d] = await Promise.all([
-      supabase.from("offline_sync_queue").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(100),
-      supabase.from("device_registrations").select("*").eq("user_id", user.id),
+      db.from("offline_sync_queue").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(100),
+      db.from("device_registrations").select("*").eq("user_id", user.id),
     ]);
     setQueue(q.data || []);
     setDevices(d.data || []);
@@ -37,12 +37,12 @@ export default function PWAOffline() {
   useEffect(() => { load(); }, [currentWorkspace?.id]);
 
   const registrarDispositivo = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     if (!user || !currentWorkspace) return;
     const deviceId = localStorage.getItem("device_id") || crypto.randomUUID();
     localStorage.setItem("device_id", deviceId);
     const platform = /Mobi|Android/i.test(navigator.userAgent) ? "android" : /iPhone|iPad/i.test(navigator.userAgent) ? "ios" : "web";
-    const { error } = await supabase.from("device_registrations").upsert({
+    const { error } = await db.from("device_registrations").upsert({
       user_id: user.id,
       workspace_id: currentWorkspace.id,
       device_id: deviceId,
@@ -65,22 +65,22 @@ export default function PWAOffline() {
       try {
         // Replay operation
         if (item.operation_type === "insert") {
-          const { error } = await supabase.from(item.table_name as any).insert(item.payload);
+          const { error } = await db.from(item.table_name as any).insert(item.payload);
           if (error) throw error;
         } else if (item.operation_type === "update" && item.record_id) {
-          const { error } = await supabase.from(item.table_name as any).update(item.payload).eq("id", item.record_id);
+          const { error } = await db.from(item.table_name as any).update(item.payload).eq("id", item.record_id);
           if (error) throw error;
         } else if (item.operation_type === "delete" && item.record_id) {
-          const { error } = await supabase.from(item.table_name as any).delete().eq("id", item.record_id);
+          const { error } = await db.from(item.table_name as any).delete().eq("id", item.record_id);
           if (error) throw error;
         }
-        await supabase.from("offline_sync_queue").update({
+        await db.from("offline_sync_queue").update({
           estado: "sincronizado",
           synced_at: new Date().toISOString(),
         }).eq("id", item.id);
         ok++;
       } catch (e: any) {
-        await supabase.from("offline_sync_queue").update({
+        await db.from("offline_sync_queue").update({
           estado: "error",
           intentos: (item.intentos || 0) + 1,
           error_message: e.message,
@@ -94,9 +94,9 @@ export default function PWAOffline() {
   };
 
   const limpiarSincronizados = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     if (!user) return;
-    await supabase.from("offline_sync_queue").delete().eq("user_id", user.id).eq("estado", "sincronizado");
+    await db.from("offline_sync_queue").delete().eq("user_id", user.id).eq("estado", "sincronizado");
     toast.success("Cola limpia");
     load();
   };

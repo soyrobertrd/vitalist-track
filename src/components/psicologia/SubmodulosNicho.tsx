@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ export default function SubmodulosNicho({ pacientes }: { pacientes: Paciente[] }
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
 
-  const sb = supabase as any;
+  const sb = db as any;
   const qOpts = (key: string, table: string, order = "created_at") => ({
     queryKey: [key, wsId],
     enabled: !!wsId,

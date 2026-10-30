@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { History, ArrowRight, Trash2, Plus, Pencil } from "lucide-react";
@@ -30,7 +30,7 @@ export function HistorialDiagnosticos({ pacienteId }: { pacienteId: string }) {
   useEffect(() => {
     if (!show) return;
     (async () => {
-      const { data } = await (supabase.from("diagnosticos_auditoria") as any)
+      const { data } = await (db.from("diagnosticos_auditoria") as any)
         .select("id, diagnostico_id, accion, cie10_codigo, cambios, motivo, usuario_id, created_at")
         .eq("paciente_id", pacienteId)
         .order("created_at", { ascending: false })
@@ -39,7 +39,7 @@ export function HistorialDiagnosticos({ pacienteId }: { pacienteId: string }) {
 
       const ids = Array.from(new Set((data || []).map((d: any) => d.usuario_id).filter(Boolean)));
       if (ids.length > 0) {
-        const { data: profs } = await (supabase.from("profiles") as any)
+        const { data: profs } = await (db.from("profiles") as any)
           .select("id, nombre, apellido").in("id", ids);
         const map: Record<string, string> = {};
         (profs || []).forEach((p: any) => { map[p.id] = `${p.nombre} ${p.apellido || ""}`.trim(); });

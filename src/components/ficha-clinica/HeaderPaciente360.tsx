@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -33,10 +33,10 @@ export function HeaderPaciente360({ pacienteId, onEditPatient, className = "" }:
       setLoading(true);
       try {
         const [pacienteRes, alergiasRes, segurosRes, citasRes] = await Promise.all([
-          supabase.from("pacientes").select("*").eq("id", pacienteId).maybeSingle(),
-          supabase.from("alergias_paciente").select("sustancia, severidad").eq("paciente_id", pacienteId),
-          supabase.from("seguros_paciente").select("aseguradora, numero_afiliado, activo").eq("paciente_id", pacienteId).eq("activo", true).maybeSingle(),
-          supabase.from("control_visitas")
+          db.from("pacientes").select("*").eq("id", pacienteId).maybeSingle(),
+          db.from("alergias_paciente").select("sustancia, severidad").eq("paciente_id", pacienteId),
+          db.from("seguros_paciente").select("aseguradora, numero_afiliado, activo").eq("paciente_id", pacienteId).eq("activo", true).maybeSingle(),
+          db.from("control_visitas")
             .select("id, fecha_hora_visita, tipo_visita, estado")
             .eq("paciente_id", pacienteId)
             .gte("fecha_hora_visita", new Date().toISOString())

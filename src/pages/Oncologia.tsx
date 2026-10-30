@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -87,7 +87,7 @@ export default function Oncologia() {
     queryKey: ["pacientes-lista-onco", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("pacientes")
         .select("id, nombre, apellido, documento_identidad")
         .eq("workspace_id", currentWorkspace.id)
@@ -100,7 +100,7 @@ export default function Oncologia() {
   const { data: protocolos = [], isLoading: loadingProt } = useQuery({
     queryKey: ["protocolos_quimio"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("protocolos_quimio")
         .select("*")
         .eq("activo", true)
@@ -112,7 +112,7 @@ export default function Oncologia() {
   const { data: ciclos = [], isLoading: loadingCiclos } = useQuery({
     queryKey: ["ciclos_quimio"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("ciclos_quimio")
         .select("*")
         .order("fecha_programada", { ascending: false })
@@ -124,7 +124,7 @@ export default function Oncologia() {
   const { data: sillones = [], isLoading: loadingSillones } = useQuery({
     queryKey: ["sillones_infusion"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("sillones_infusion")
         .select("*")
         .eq("activo", true)
@@ -136,7 +136,7 @@ export default function Oncologia() {
   const { data: toxicidades = [], isLoading: loadingToxicidades } = useQuery({
     queryKey: ["toxicidades_oncologicas"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("toxicidades_oncologicas")
         .select("*")
         .order("fecha_evaluacion", { ascending: false })
@@ -148,7 +148,7 @@ export default function Oncologia() {
   // Mutación: Crear Ciclo
   const crearCiclo = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("ciclos_quimio").insert({
+      const { error } = await db.from("ciclos_quimio").insert({
         numero_ciclo: parseInt(formDataCiclo.numero_ciclo) || 1,
         fecha_programada: formDataCiclo.fecha_programada,
         bsa_m2: parseFloat(formDataCiclo.bsa_m2) || null,
@@ -175,7 +175,7 @@ export default function Oncologia() {
   // Mutación: Registrar Toxicidad
   const crearToxicidad = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("toxicidades_oncologicas").insert({
+      const { error } = await db.from("toxicidades_oncologicas").insert({
         tipo_toxicidad: formDataToxicidad.tipo_toxicidad,
         grado_ctcae: formDataToxicidad.grado_ctcae,
         manejo: formDataToxicidad.manejo,
@@ -195,7 +195,7 @@ export default function Oncologia() {
   const toggleSillon = useMutation({
     mutationFn: async ({ id, estado }: { id: string; estado: string }) => {
       const nuevo = estado === "libre" ? "ocupado" : estado === "ocupado" ? "limpieza" : "libre";
-      const { error } = await supabase.from("sillones_infusion").update({ estado: nuevo }).eq("id", id);
+      const { error } = await db.from("sillones_infusion").update({ estado: nuevo }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {

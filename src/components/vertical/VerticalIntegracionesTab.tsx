@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,7 @@ export default function VerticalIntegracionesTab({ verticalTipo }: Props) {
     queryKey: ["integraciones_externas_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("integraciones_externas_vertical") as any)
+      const { data } = await (db.from("integraciones_externas_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo)
         .order("created_at", { ascending: false });
       return data || [];
@@ -47,7 +47,7 @@ export default function VerticalIntegracionesTab({ verticalTipo }: Props) {
 
   const crear = async () => {
     if (!wsId || !form.nombre) return;
-    const { error } = await (supabase.from("integraciones_externas_vertical") as any).insert({
+    const { error } = await (db.from("integraciones_externas_vertical") as any).insert({
       workspace_id: wsId, vertical_tipo: verticalTipo,
       tipo_integracion: form.tipo_integracion, nombre: form.nombre,
     });
@@ -59,7 +59,7 @@ export default function VerticalIntegracionesTab({ verticalTipo }: Props) {
   };
 
   const toggleActivo = async (id: string, activo: boolean) => {
-    const { error } = await (supabase.from("integraciones_externas_vertical") as any).update({ activo: !activo }).eq("id", id);
+    const { error } = await (db.from("integraciones_externas_vertical") as any).update({ activo: !activo }).eq("id", id);
     if (error) { toast.error(error.message); return; }
     refetch();
   };

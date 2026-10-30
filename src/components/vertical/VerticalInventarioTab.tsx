@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ export default function VerticalInventarioTab({ verticalTipo }: Props) {
     queryKey: ["inventario_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("inventario_vertical") as any)
+      const { data } = await (db.from("inventario_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo)
         .order("nombre").limit(500);
       return data || [];
@@ -39,7 +39,7 @@ export default function VerticalInventarioTab({ verticalTipo }: Props) {
 
   const crear = async () => {
     if (!wsId || !form.nombre) return;
-    const { error } = await (supabase.from("inventario_vertical") as any).insert({
+    const { error } = await (db.from("inventario_vertical") as any).insert({
       workspace_id: wsId, vertical_tipo: verticalTipo,
       nombre: form.nombre, categoria: form.categoria || "general",
       sku: form.sku || null, stock_actual: parseFloat(form.stock_actual) || 0,
@@ -57,10 +57,10 @@ export default function VerticalInventarioTab({ verticalTipo }: Props) {
 
   const registrarMov = async () => {
     if (!wsId || !selectedItem || !movForm.cantidad) return;
-    const { error } = await (supabase.from("movimientos_inventario_vertical") as any).insert({
+    const { error } = await (db.from("movimientos_inventario_vertical") as any).insert({
       workspace_id: wsId, vertical_tipo: verticalTipo, item_id: selectedItem,
       tipo: movForm.tipo, cantidad: parseFloat(movForm.cantidad),
-      motivo: movForm.motivo || null, usuario_id: (await supabase.auth.getUser()).data.user?.id,
+      motivo: movForm.motivo || null, usuario_id: (await db.auth.getUser()).data.user?.id,
     });
     if (error) { toast.error(error.message); return; }
     toast.success("Movimiento registrado");

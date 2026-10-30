@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
@@ -55,7 +55,7 @@ export function NotasCredito({ pacienteId }: Props) {
 
   const fetchNotas = useCallback(async () => {
     setLoading(true);
-    let q = supabase
+    let q = db
       .from("notas_credito")
       .select("*, facturas:factura_id(numero_factura), pacientes:paciente_id(nombre, apellido)")
       .order("created_at", { ascending: false });
@@ -71,7 +71,7 @@ export function NotasCredito({ pacienteId }: Props) {
 
   useEffect(() => {
     const loadFacturas = async () => {
-      let q = supabase.from("facturas").select("id, numero_factura, monto_total, paciente_id").order("fecha_emision", { ascending: false }).limit(200);
+      let q = db.from("facturas").select("id, numero_factura, monto_total, paciente_id").order("fecha_emision", { ascending: false }).limit(200);
       if (currentWorkspace) q = q.eq("workspace_id", currentWorkspace.id);
       if (pacienteId) q = q.eq("paciente_id", pacienteId);
       const { data } = await q;
@@ -93,9 +93,9 @@ export function NotasCredito({ pacienteId }: Props) {
       notas: editing.notas || null,
       workspace_id: currentWorkspace?.id || null,
       sucursal_id: activeSucursalId || null,
-      creada_por: (await supabase.auth.getUser()).data.user?.id,
+      creada_por: (await db.auth.getUser()).data.user?.id,
     };
-    const { error } = await supabase.from("notas_credito").insert(payload);
+    const { error } = await db.from("notas_credito").insert(payload);
     if (error) { toast.error(error.message); return; }
     toast.success("Nota de crédito creada");
     setDialogOpen(false);
@@ -105,10 +105,10 @@ export function NotasCredito({ pacienteId }: Props) {
   const cambiarEstado = async (id: string, estado: string) => {
     const update: any = { estado };
     if (estado === "aprobada" || estado === "aplicada") {
-      update.aprobada_por = (await supabase.auth.getUser()).data.user?.id;
+      update.aprobada_por = (await db.auth.getUser()).data.user?.id;
       update.fecha_aprobacion = new Date().toISOString();
     }
-    await supabase.from("notas_credito").update(update).eq("id", id);
+    await db.from("notas_credito").update(update).eq("id", id);
     toast.success("Estado actualizado");
     fetchNotas();
   };

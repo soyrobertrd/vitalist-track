@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 
 // Mapeo de IDs internos a nombres de municipio para la API
 const MUNICIPIO_NOMBRES: Record<string, string> = {
@@ -28,7 +28,7 @@ export function useOGTICBarrios(municipioId: string | null) {
       try {
         const municipioNombre = MUNICIPIO_NOMBRES[municipioId] || municipioId;
         
-        const { data, error } = await supabase.functions.invoke('consultar-barrios', {
+        const { data, error } = await db.functions.invoke('consultar-barrios', {
           body: { municipio: municipioNombre }
         });
 

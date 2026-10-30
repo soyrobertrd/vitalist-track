@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,12 +32,12 @@ export default function CentroTelemedicina() {
     if (!currentWorkspace) return;
     const ws = currentWorkspace.id;
     const [s, p, pr, r] = await Promise.all([
-      supabase.from("telemedicina_sesiones")
+      db.from("telemedicina_sesiones")
         .select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)")
         .eq("workspace_id", ws).order("fecha_inicio", { ascending: false }).limit(50),
-      supabase.from("pacientes").select("id, nombre, apellido").limit(200),
-      supabase.from("personal_salud").select("id, nombre, apellido").limit(100),
-      supabase.from("telemedicina_recetas_digitales").select("*").order("created_at", { ascending: false }).limit(20),
+      db.from("pacientes").select("id, nombre, apellido").limit(200),
+      db.from("personal_salud").select("id, nombre, apellido").limit(100),
+      db.from("telemedicina_recetas_digitales").select("*").order("created_at", { ascending: false }).limit(20),
     ]);
     setSesiones(s.data || []);
     setPacientes(p.data || []);
@@ -49,7 +49,7 @@ export default function CentroTelemedicina() {
 
   const programarSesion = async () => {
     if (!currentWorkspace) return;
-    const { error } = await supabase.from("telemedicina_sesiones").insert({
+    const { error } = await db.from("telemedicina_sesiones").insert({
       workspace_id: currentWorkspace.id,
       paciente_id: form.paciente_id || null,
       profesional_id: form.profesional_id || null,
@@ -67,22 +67,22 @@ export default function CentroTelemedicina() {
   const cambiarEstado = async (id: string, estado: string) => {
     const updates: any = { estado };
     if (estado === "finalizada") updates.fecha_fin = new Date().toISOString();
-    await supabase.from("telemedicina_sesiones").update(updates).eq("id", id);
+    await db.from("telemedicina_sesiones").update(updates).eq("id", id);
     toast.success("Estado actualizado");
     load();
   };
 
   const abrirChat = async (sesion: any) => {
     setOpenChat(sesion);
-    const { data } = await supabase.from("telemedicina_chat_mensajes")
+    const { data } = await db.from("telemedicina_chat_mensajes")
       .select("*").eq("sesion_id", sesion.id).order("created_at");
     setMensajes(data || []);
   };
 
   const enviarMsg = async () => {
     if (!nuevoMsg.trim() || !openChat || !currentWorkspace) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("telemedicina_chat_mensajes").insert({
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await db.from("telemedicina_chat_mensajes").insert({
       sesion_id: openChat.id,
       workspace_id: currentWorkspace.id,
       remitente_tipo: "profesional",

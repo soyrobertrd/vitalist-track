@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +14,7 @@ export default function RecordatoriosSesionesPsico({ workspaceId }: Props) {
   const [loading, setLoading] = useState(false);
 
   const fetch = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("recordatorios_sesiones_psico")
       .select("*")
       .eq("workspace_id", workspaceId)
@@ -27,7 +27,7 @@ export default function RecordatoriosSesionesPsico({ workspaceId }: Props) {
 
   const programarAutomaticos = async () => {
     setLoading(true);
-    const { data: sesiones } = await supabase
+    const { data: sesiones } = await db
       .from("sesiones_psicologia")
       .select("id, paciente_id, fecha_hora")
       .eq("workspace_id", workspaceId)
@@ -41,7 +41,7 @@ export default function RecordatoriosSesionesPsico({ workspaceId }: Props) {
       canal: "email",
       programado_para: new Date(new Date(s.fecha_hora).getTime() - 24 * 60 * 60 * 1000).toISOString(),
     }));
-    const { error } = await supabase.from("recordatorios_sesiones_psico").insert(inserts);
+    const { error } = await db.from("recordatorios_sesiones_psico").insert(inserts);
     if (error) toast.error(error.message); else { toast.success(`${inserts.length} recordatorios programados`); fetch(); }
     setLoading(false);
   };

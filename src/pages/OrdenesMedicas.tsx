@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -92,7 +92,7 @@ export default function OrdenesMedicas() {
     queryKey: ["pacientes-lista-cpoe", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("pacientes")
         .select("id, nombre, apellido, cedula")
         .eq("workspace_id", currentWorkspace.id)
@@ -106,7 +106,7 @@ export default function OrdenesMedicas() {
     queryKey: ["ordenes_medicas_cpoe", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("ordenes_medicas")
         .select("*, pacientes(nombre, apellido, cedula)")
         .order("prioridad", { ascending: false })
@@ -122,7 +122,7 @@ export default function OrdenesMedicas() {
       if (!formData.paciente_id) throw new Error("Seleccione un paciente.");
       if (!formData.descripcion) throw new Error("Especifique la prescripción o indicación.");
 
-      const { error } = await supabase.from("ordenes_medicas").insert({
+      const { error } = await db.from("ordenes_medicas").insert({
         paciente_id: formData.paciente_id,
         tipo: formData.tipo,
         prioridad: formData.prioridad,
@@ -155,7 +155,7 @@ export default function OrdenesMedicas() {
     mutationFn: async ({ id, nuevoEstado }: { id: string; nuevoEstado: string }) => {
       const updates: any = { estado: nuevoEstado };
       if (nuevoEstado === "completada") updates.fecha_completada = new Date().toISOString();
-      const { error } = await supabase.from("ordenes_medicas").update(updates).eq("id", id);
+      const { error } = await db.from("ordenes_medicas").update(updates).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {

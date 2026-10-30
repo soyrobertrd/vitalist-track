@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 
 export interface Medicamento {
   id: string;
@@ -25,7 +25,7 @@ export function useMedicamentosPaciente(pacienteId: string | null) {
     if (!pacienteId) return;
     
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("medicamentos_paciente")
       .select("id, nombre_medicamento, dosis, frecuencia, muestra_medica")
       .eq("paciente_id", pacienteId)

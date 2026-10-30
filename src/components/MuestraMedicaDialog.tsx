@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Pill, Package } from "lucide-react";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
@@ -49,13 +49,13 @@ export function MuestraMedicaDialog({
   const descontarStockInventario = async (medicamentosNombres: string[]) => {
     if (!currentWorkspace?.id) return { sinStock: [] as string[], descontados: [] as string[] };
 
-    const { data: userData } = await supabase.auth.getUser();
+    const { data: userData } = await db.auth.getUser();
     const sinStock: string[] = [];
     const descontados: string[] = [];
 
     for (const nombre of medicamentosNombres) {
       // Buscar item por nombre + workspace + categoría muestra_medica
-      const { data: items } = await (supabase as any)
+      const { data: items } = await (db as any)
         .from("inventario_items")
         .select("id, stock_actual, nombre")
         .eq("workspace_id", currentWorkspace.id)
@@ -67,7 +67,7 @@ export function MuestraMedicaDialog({
 
       // Si no existe, crear el item con stock 0 para tener trazabilidad
       if (!itemId) {
-        const { data: nuevo } = await (supabase as any)
+        const { data: nuevo } = await (db as any)
           .from("inventario_items")
           .insert({
             workspace_id: currentWorkspace.id,
@@ -88,7 +88,7 @@ export function MuestraMedicaDialog({
       if (!itemId) continue;
 
       // Registrar movimiento de salida (trigger actualiza stock)
-      const { error: movErr } = await (supabase as any)
+      const { error: movErr } = await (db as any)
         .from("inventario_movimientos")
         .insert({
           item_id: itemId,
@@ -119,7 +119,7 @@ export function MuestraMedicaDialog({
       .map(m => m.nombre_medicamento);
 
     // 1. Crear registro de atención (entrega)
-    const { error } = await supabase.from("atencion_paciente").insert({
+    const { error } = await db.from("atencion_paciente").insert({
       paciente_id: pacienteId,
       tipo: "muestra_medica",
       descripcion: `Entrega de muestras médicas: ${medicamentosSeleccionados.join(", ")}`,

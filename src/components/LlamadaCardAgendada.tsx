@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,7 @@ export const LlamadaCardAgendada = ({
 
   useEffect(() => {
     if (llamada.pacientes) {
-      supabase
+      db
         .from("pacientes")
         .select("id, contacto_px, whatsapp_px, contacto_cuidador, whatsapp_cuidador, numero_principal")
         .eq("nombre", llamada.pacientes.nombre)

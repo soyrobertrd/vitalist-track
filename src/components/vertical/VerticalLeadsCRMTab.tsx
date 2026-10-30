@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,14 +37,14 @@ export default function VerticalLeadsCRMTab({ verticalTipo }: Props) {
     queryKey: ["leads_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("leads_vertical") as any).select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("created_at", { ascending: false }).limit(500);
+      const { data } = await (db.from("leads_vertical") as any).select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("created_at", { ascending: false }).limit(500);
       return data || [];
     },
   });
 
   const crear = async () => {
     if (!wsId || !form.nombre) return;
-    const { error } = await (supabase.from("leads_vertical") as any).insert({
+    const { error } = await (db.from("leads_vertical") as any).insert({
       workspace_id: wsId, vertical_tipo: verticalTipo, nombre: form.nombre,
       telefono: form.telefono || null, email: form.email || null, origen: form.origen,
       notas: form.notas || null, valor_estimado: form.valor_estimado ? parseFloat(form.valor_estimado) : null,
@@ -57,7 +57,7 @@ export default function VerticalLeadsCRMTab({ verticalTipo }: Props) {
   };
 
   const cambiarEstado = async (id: string, estado: string) => {
-    const { error } = await (supabase.from("leads_vertical") as any).update({ estado }).eq("id", id);
+    const { error } = await (db.from("leads_vertical") as any).update({ estado }).eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success("Estado actualizado");
     refetch();

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Phone, CheckCircle2, TrendingUp, Clock, AlertCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -24,7 +24,7 @@ export function IndicadoresLlamadas() {
 
   const fetchIndicadores = async () => {
     try {
-      const { data, error } = await supabase.rpc("calcular_indicadores_llamadas", {
+      const { data, error } = await db.rpc("calcular_indicadores_llamadas", {
         profesional_uuid: null,
         fecha_inicio: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
         fecha_fin: new Date().toISOString(),

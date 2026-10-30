@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -63,13 +63,13 @@ export default function VisorDICOM() {
   const load = async () => {
     if (!currentWorkspace) return;
     const [s, p] = await Promise.all([
-      supabase
+      db
         .from("dicom_studies")
         .select("*, pacientes(nombre, apellido)")
         .eq("workspace_id", currentWorkspace.id)
         .order("study_date", { ascending: false })
         .limit(100),
-      supabase.from("pacientes").select("id, nombre, apellido").limit(200),
+      db.from("pacientes").select("id, nombre, apellido").limit(200),
     ]);
     setStudies(s.data || []);
     setPacientes(p.data || []);
@@ -84,7 +84,7 @@ export default function VisorDICOM() {
     const uid =
       form.study_instance_uid ||
       `1.2.826.${Date.now()}.${Math.floor(Math.random() * 1000)}`;
-    const { error } = await supabase.from("dicom_studies").insert({
+    const { error } = await db.from("dicom_studies").insert({
       workspace_id: currentWorkspace.id,
       paciente_id: form.paciente_id || null,
       study_instance_uid: uid,
@@ -115,7 +115,7 @@ export default function VisorDICOM() {
   const abrirVisor = async (study: any) => {
     setOpenViewer(study);
     setCurrentIdx(0);
-    const { data: series } = await supabase
+    const { data: series } = await db
       .from("dicom_series")
       .select("id")
       .eq("study_id", study.id);
@@ -123,7 +123,7 @@ export default function VisorDICOM() {
       setInstances([]);
       return;
     }
-    const { data: insts } = await supabase
+    const { data: insts } = await db
       .from("dicom_instances")
       .select("*")
       .in(

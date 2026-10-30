@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
@@ -63,7 +63,7 @@ export function usePacientes(includeInactive: boolean = false) {
 
   const fetchPacientes = useCallback(async () => {
     setLoading(true);
-    let query = supabase
+    let query = db
       .from("pacientes")
       .select("*")
       .order("nombre", { ascending: true });
@@ -136,7 +136,7 @@ export function usePacientes(includeInactive: boolean = false) {
   }, []);
 
   const deletePaciente = useCallback(async (id: string) => {
-    const { error } = await supabase.from("pacientes").delete().eq("id", id);
+    const { error } = await db.from("pacientes").delete().eq("id", id);
     if (error) {
       toast.error("Error al eliminar paciente");
       return false;

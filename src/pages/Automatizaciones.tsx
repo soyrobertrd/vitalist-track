@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,7 +54,7 @@ const Automatizaciones = () => {
 
   const fetchAutomatizaciones = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("automatizaciones")
       .select("*")
       .order("created_at", { ascending: false });
@@ -68,7 +68,7 @@ const Automatizaciones = () => {
   };
 
   const fetchPlantillas = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("plantillas_correo")
       .select("id, nombre")
       .eq("activo", true);
@@ -76,7 +76,7 @@ const Automatizaciones = () => {
   };
 
   const fetchEncuestas = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("encuestas")
       .select("id, nombre")
       .eq("activo", true);
@@ -84,7 +84,7 @@ const Automatizaciones = () => {
   };
 
   const handleSubmit = async () => {
-    const { error } = await supabase.from("automatizaciones").insert([formData]);
+    const { error } = await db.from("automatizaciones").insert([formData]);
 
     if (error) {
       toast({ title: "Error al crear automatización", variant: "destructive" });
@@ -107,7 +107,7 @@ const Automatizaciones = () => {
   };
 
   const toggleAutomatizacion = async (id: string, activo: boolean) => {
-    const { error } = await supabase
+    const { error } = await db
       .from("automatizaciones")
       .update({ activo })
       .eq("id", id);
@@ -121,7 +121,7 @@ const Automatizaciones = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("automatizaciones").delete().eq("id", id);
+    const { error } = await db.from("automatizaciones").delete().eq("id", id);
 
     if (error) {
       toast({ title: "Error al eliminar automatización", variant: "destructive" });

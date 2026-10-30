@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,7 @@ export default function VerticalTelemedicinaAvanzadaTab({ verticalTipo }: Props)
     queryKey: ["telemedicina_sesiones", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("telemedicina_sesiones")
         .select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)")
         .eq("workspace_id", wsId!)
@@ -34,7 +34,7 @@ export default function VerticalTelemedicinaAvanzadaTab({ verticalTipo }: Props)
     queryKey: ["telemedicina_recetas_digitales", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("telemedicina_recetas_digitales")
         .select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)")
         .eq("workspace_id", wsId!)

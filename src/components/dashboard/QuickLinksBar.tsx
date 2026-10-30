@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Users, Calendar, DoorOpen, Pill, SmilePlus, ReceiptText, Brain, Heart, PawPrint, Microscope, BedDouble, ChevronRight, Sparkles } from "lucide-react";
+import { Users, Calendar, DoorOpen, Pill, SmilePlus, ReceiptText, Brain, Heart, PawPrint, Microscope, BedDouble, ChevronRight, Sparkles, Glasses } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface QuickLinkItem {
@@ -114,6 +114,15 @@ const ESPECIALIDADES_LINKS: QuickLinkItem[] = [
     to: "/vet-care",
     bgColor: "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200/70 dark:border-emerald-900/40",
     textColor: "text-emerald-600 dark:text-emerald-400",
+  },
+  {
+    id: "vision",
+    label: "VisionCare Pro",
+    description: "Refracción, taller & monturas",
+    icon: Glasses,
+    to: "/vision-care",
+    bgColor: "bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200/70 dark:border-indigo-900/40",
+    textColor: "text-indigo-600 dark:text-indigo-400",
   },
   {
     id: "dermatologia",

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ export default function PortalPacienteAdmin({ pacienteId }: Props) {
 
   const generar = async () => {
     setLoading(true);
-    const { data, error } = await supabase.rpc("generar_token_portal_paciente", { _paciente_id: pacienteId, _dias_validez: dias });
+    const { data, error } = await db.rpc("generar_token_portal_paciente", { _paciente_id: pacienteId, _dias_validez: dias });
     if (error) toast.error(error.message);
     else { setToken(data as string); toast.success("Token generado"); }
     setLoading(false);

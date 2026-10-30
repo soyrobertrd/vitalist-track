@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export default function FacturacionPsico({ pacientes }: { pacientes: any[] }) {
     queryKey: ["facturas_psico", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("facturas_psicologia" as any) as any)
+      const { data } = await (db.from("facturas_psicologia" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(200);
       return (data || []) as any[];
     },
@@ -32,13 +32,13 @@ export default function FacturacionPsico({ pacientes }: { pacientes: any[] }) {
   const crear = async () => {
     if (!wsId || !form.paciente_id || !form.numero) { toast.error("Paciente y número requeridos"); return; }
     const total = Number(form.subtotal) + Number(form.itbis);
-    const { error } = await (supabase.from("facturas_psicologia" as any) as any).insert({ workspace_id: wsId, ...form, total });
+    const { error } = await (db.from("facturas_psicologia" as any) as any).insert({ workspace_id: wsId, ...form, total });
     if (error) { toast.error(error.message); return; }
     toast.success("Factura emitida"); setOpen(false); refetch();
   };
 
   const marcarPagada = async (id: string) => {
-    const { error } = await (supabase.from("facturas_psicologia" as any) as any).update({ estado: "pagada", fecha_pago: new Date().toISOString() }).eq("id", id);
+    const { error } = await (db.from("facturas_psicologia" as any) as any).update({ estado: "pagada", fecha_pago: new Date().toISOString() }).eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success("Marcada como pagada"); refetch();
   };

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { format, startOfDay, endOfDay } from "date-fns";
 
 interface ProfessionalScore {
@@ -41,14 +41,14 @@ export function useAutoAssignProfessional(options: UseAutoAssignOptions = {}) {
     const fechaStr = format(fecha, "yyyy-MM-dd");
 
     const [llamadasRes, visitasRes] = await Promise.all([
-      supabase
+      db
         .from("registro_llamadas")
         .select("id")
         .eq("profesional_id", profesionalId)
         .eq("estado", "agendada")
         .gte("fecha_agendada", `${fechaStr}T00:00:00`)
         .lt("fecha_agendada", `${fechaStr}T23:59:59`),
-      supabase
+      db
         .from("control_visitas")
         .select("id")
         .eq("profesional_id", profesionalId)
@@ -69,7 +69,7 @@ export function useAutoAssignProfessional(options: UseAutoAssignOptions = {}) {
     const diaSemana = fecha.getDay();
 
     // Check absences
-    const { data: ausencias } = await supabase
+    const { data: ausencias } = await db
       .from("ausencias_profesionales")
       .select("*")
       .eq("profesional_id", profesionalId)
@@ -81,7 +81,7 @@ export function useAutoAssignProfessional(options: UseAutoAssignOptions = {}) {
     }
 
     // Check work schedule
-    const { data: horarios } = await supabase
+    const { data: horarios } = await db
       .from("horarios_profesionales")
       .select("*")
       .eq("profesional_id", profesionalId)
@@ -106,7 +106,7 @@ export function useAutoAssignProfessional(options: UseAutoAssignOptions = {}) {
 
       try {
         // Get all active professionals
-        const { data: profesionales } = await supabase
+        const { data: profesionales } = await db
           .from("personal_salud")
           .select("*")
           .eq("activo", true)
@@ -218,7 +218,7 @@ export function useAutoAssignProfessional(options: UseAutoAssignOptions = {}) {
   const autoAssignToPatient = useCallback(
     async (pacienteId: string): Promise<AutoAssignResult> => {
       // Get patient info
-      const { data: paciente } = await supabase
+      const { data: paciente } = await db
         .from("pacientes")
         .select("zona, barrio")
         .eq("id", pacienteId)

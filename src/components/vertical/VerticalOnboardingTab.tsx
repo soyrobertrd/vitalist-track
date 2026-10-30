@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,7 @@ export default function VerticalOnboardingTab({ verticalTipo }: Props) {
     queryKey: ["onboarding_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("onboarding_vertical") as any)
+      const { data } = await (db.from("onboarding_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).maybeSingle();
       return data;
     },
@@ -47,7 +47,7 @@ export default function VerticalOnboardingTab({ verticalTipo }: Props) {
   const { data: plantillas = [] } = useQuery({
     queryKey: ["plantillas_servicio_vertical", verticalTipo],
     queryFn: async () => {
-      const { data } = await (supabase.from("plantillas_servicio_vertical") as any)
+      const { data } = await (db.from("plantillas_servicio_vertical") as any)
         .select("*").eq("vertical_tipo", verticalTipo).eq("activo", true).order("subnicho, nombre_servicio");
       return data || [];
     },
@@ -58,7 +58,7 @@ export default function VerticalOnboardingTab({ verticalTipo }: Props) {
 
   const iniciar = async () => {
     if (!wsId) return;
-    const { error } = await (supabase.from("onboarding_vertical") as any).upsert({
+    const { error } = await (db.from("onboarding_vertical") as any).upsert({
       workspace_id: wsId, vertical_tipo: verticalTipo, paso_actual: 1,
       datos: { subnicho, nombre_negocio: nombreNegocio },
       plantilla_seleccionada: subnicho,
@@ -72,7 +72,7 @@ export default function VerticalOnboardingTab({ verticalTipo }: Props) {
     if (!onboarding) return;
     const siguiente = Math.min((onboarding.paso_actual || 1) + 1, 5);
     const completado = siguiente >= 5;
-    const { error } = await (supabase.from("onboarding_vertical") as any)
+    const { error } = await (db.from("onboarding_vertical") as any)
       .update({ paso_actual: siguiente, completado }).eq("id", onboarding.id);
     if (error) { toast.error(error.message); return; }
     toast.success(completado ? "¡Onboarding completado!" : `Paso ${siguiente} de 5`);

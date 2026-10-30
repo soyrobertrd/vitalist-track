@@ -17,7 +17,7 @@ import {
   Sparkles,
   HelpCircle,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import type { Plan } from "@/contexts/WorkspaceContext";
 import { CANONICAL_PLANES, PLAN_FEATURES_MAP, TRIAL_DAYS } from "@/config/planes";
 import { Button } from "@/components/ui/button";
@@ -138,7 +138,7 @@ export default function Landing() {
     }
     setSubmitting(true);
     try {
-      const { error } = await supabase.functions.invoke("contacto-landing", {
+      const { error } = await db.functions.invoke("contacto-landing", {
         body: parsed.data,
       });
       if (error) throw error;

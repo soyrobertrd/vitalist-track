@@ -3,7 +3,7 @@
  * Se muestra dentro de Reportes como nueva pestaña.
  */
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,7 @@ export function ComparativoSucursales() {
   const load = async () => {
     setLoading(true);
     try {
-      const { data: sucursales } = await supabase
+      const { data: sucursales } = await db
         .from("sucursales" as any)
         .select("id,nombre")
         .eq("workspace_id", currentWorkspace!.id)
@@ -49,20 +49,20 @@ export function ComparativoSucursales() {
       const results: SucursalKPI[] = await Promise.all(
         (sucursales as any[]).map(async (s) => {
           const [pacRes, visRes, llamRes, llamContactRes] = await Promise.all([
-            supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("sucursal_id", s.id),
-            supabase
+            db.from("pacientes").select("id", { count: "exact", head: true }).eq("sucursal_id", s.id),
+            db
               .from("control_visitas")
               .select("id", { count: "exact", head: true })
               .eq("sucursal_id", s.id)
               .eq("estado", "realizada")
               .gte("fecha_hora_visita", fromDate),
-            supabase
+            db
               .from("registro_llamadas")
               .select("id", { count: "exact", head: true })
               .eq("sucursal_id", s.id as any)
               .eq("estado", "realizada")
               .gte("created_at", fromDate),
-            supabase
+            db
               .from("registro_llamadas")
               .select("id", { count: "exact", head: true })
               .eq("sucursal_id", s.id as any)

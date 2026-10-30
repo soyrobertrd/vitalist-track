@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,10 +44,10 @@ export default function Interoperabilidad() {
     if (!currentWorkspace) return;
     setLoading(true);
     const [r1, r2, r3, r4] = await Promise.all([
-      supabase.from("fhir_resources").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(50),
-      supabase.from("hl7_messages").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(50),
-      supabase.from("hl7_endpoints").select("*").eq("workspace_id", currentWorkspace.id),
-      supabase.from("fhir_export_jobs").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(20),
+      db.from("fhir_resources").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(50),
+      db.from("hl7_messages").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(50),
+      db.from("hl7_endpoints").select("*").eq("workspace_id", currentWorkspace.id),
+      db.from("fhir_export_jobs").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(20),
     ]);
     setResources(r1.data || []);
     setMessages(r2.data || []);
@@ -62,7 +62,7 @@ export default function Interoperabilidad() {
 
   const crearEndpoint = async () => {
     if (!currentWorkspace) return;
-    const { error } = await supabase.from("hl7_endpoints").insert({ ...endpointForm, workspace_id: currentWorkspace.id });
+    const { error } = await db.from("hl7_endpoints").insert({ ...endpointForm, workspace_id: currentWorkspace.id });
     if (error) {
       toast.error(error.message);
       return;
@@ -80,7 +80,7 @@ export default function Interoperabilidad() {
       const segments = msgForm.raw_message.split(/\r?\n/).filter(Boolean).map((l) => l.split("|"));
       parsed = { segments };
     } catch {}
-    const { error } = await supabase.from("hl7_messages").insert({
+    const { error } = await db.from("hl7_messages").insert({
       workspace_id: currentWorkspace.id,
       message_type: msgForm.message_type,
       trigger_event: msgForm.trigger_event,
@@ -102,7 +102,7 @@ export default function Interoperabilidad() {
 
   const exportarFHIR = async (resource_type: string) => {
     if (!currentWorkspace) return;
-    const { error } = await supabase.from("fhir_export_jobs").insert({
+    const { error } = await db.from("fhir_export_jobs").insert({
       workspace_id: currentWorkspace.id,
       resource_types: [resource_type],
       estado: "pendiente",
@@ -113,7 +113,7 @@ export default function Interoperabilidad() {
     }
 
     if (resource_type === "Patient") {
-      const { data: pacs } = await supabase.from("pacientes").select("*").limit(100);
+      const { data: pacs } = await db.from("pacientes").select("*").limit(100);
       let count = 0;
       for (const p of pacs || []) {
         const fhir = {
@@ -124,7 +124,7 @@ export default function Interoperabilidad() {
           birthDate: p.fecha_nacimiento,
           telecom: [{ system: "phone", value: p.contacto_px }],
         };
-        await supabase.from("fhir_resources").insert({
+        await db.from("fhir_resources").insert({
           workspace_id: currentWorkspace.id,
           resource_type: "Patient",
           fhir_id: p.id,

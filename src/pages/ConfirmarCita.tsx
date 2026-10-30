@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -41,10 +41,10 @@ export default function ConfirmarCita() {
     }
   }, [token, citaId, tipo]);
 
-  // S11: si hay token se usa edge function, si hay citaId directo se usa supabase client
+  // S11: si hay token se usa edge function, si hay citaId directo se usa db client
   const llamar = async (accion: "ver" | "confirmar" | "reagendar", extra: Record<string, string> = {}) => {
     if (token) {
-      const { data, error } = await supabase.functions.invoke("confirmar-cita", {
+      const { data, error } = await db.functions.invoke("confirmar-cita", {
         body: { token, tipo, accion, ...extra },
       });
       if (error || data?.error) {
@@ -60,7 +60,7 @@ export default function ConfirmarCita() {
     const fechaCol = tipo === "llamada" ? "fecha_agendada" : "fecha_hora_visita";
 
     if (accion === "ver") {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from(tabla)
         .select(`id, ${fechaCol}, estado, ${tipo === "llamada" ? "motivo, " : ""}pacientes(nombre, apellido), personal_salud(nombre, apellido)`)
         .eq("id", citaId!)
@@ -74,7 +74,7 @@ export default function ConfirmarCita() {
         ? { estado: "agendada", notas_adicionales: "Confirmada por paciente vía WhatsApp (1 toque)" }
         : { estado: "confirmada", notas_visita: "Confirmada por paciente vía WhatsApp (1 toque)" };
 
-      const { error } = await supabase.from(tabla).update(updateData as any).eq("id", citaId!);
+      const { error } = await db.from(tabla).update(updateData as any).eq("id", citaId!);
       if (error) throw new Error("No se pudo confirmar la cita");
       return { ok: true };
     }
@@ -86,7 +86,7 @@ export default function ConfirmarCita() {
         ? { fecha_agendada: fechaHora, estado: "reagendada", notas_adicionales: nota }
         : { fecha_hora_visita: fechaHora, estado: "pendiente", notas_visita: nota };
 
-      const { error } = await supabase.from(tabla).update(updateData as any).eq("id", citaId!);
+      const { error } = await db.from(tabla).update(updateData as any).eq("id", citaId!);
       if (error) throw new Error("No se pudo reagendar la cita");
       return { ok: true };
     }

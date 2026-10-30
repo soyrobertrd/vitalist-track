@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -53,7 +53,7 @@ export function ThemeCustomizer({ open, onOpenChange }: ThemeCustomizerProps) {
     // Save to user settings
     setSaving(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (user) {
         toast.success(`Tema "${preset.name}" aplicado`);
       }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,14 +26,14 @@ export default function VerticalSucursalesTab({ verticalTipo }: Props) {
     queryKey: ["sucursales_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("sucursales_vertical") as any).select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("nombre");
+      const { data } = await (db.from("sucursales_vertical") as any).select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("nombre");
       return data || [];
     },
   });
 
   const crear = async () => {
     if (!wsId || !form.nombre) return;
-    const { error } = await (supabase.from("sucursales_vertical") as any).insert({
+    const { error } = await (db.from("sucursales_vertical") as any).insert({
       workspace_id: wsId, vertical_tipo: verticalTipo, nombre: form.nombre,
       direccion: form.direccion || null, telefono: form.telefono || null, email: form.email || null,
       horario_apertura: form.horario_apertura, horario_cierre: form.horario_cierre,

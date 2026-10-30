@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -113,7 +113,7 @@ export default function QuirofanoAvanzado() {
   const { data: salas = [], isLoading: loadingSalas } = useQuery({
     queryKey: ["quirofanos_salas"],
     queryFn: async () => {
-      const { data } = await supabase.from("quirofanos").select("*").order("nombre");
+      const { data } = await db.from("quirofanos").select("*").order("nombre");
       return (data || []) as any[];
     }
   });
@@ -121,7 +121,7 @@ export default function QuirofanoAvanzado() {
   const { data: programaciones = [], isLoading: loadingProg } = useQuery({
     queryKey: ["programaciones_quirurgicas"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("programaciones_quirurgicas")
         .select("*")
         .order("fecha_programada", { ascending: false })
@@ -133,7 +133,7 @@ export default function QuirofanoAvanzado() {
   const { data: urpa = [], isLoading: loadingUrpa } = useQuery({
     queryKey: ["recuperacion_post_anestesica"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("recuperacion_post_anestesica")
         .select("*")
         .order("hora_ingreso_urpa", { ascending: false })
@@ -146,7 +146,7 @@ export default function QuirofanoAvanzado() {
   const crearCirugia = useMutation({
     mutationFn: async () => {
       if (!formDataCirugia.procedimiento) throw new Error("Especifique el procedimiento.");
-      const { error } = await supabase.from("programaciones_quirurgicas").insert({
+      const { error } = await db.from("programaciones_quirurgicas").insert({
         procedimiento: formDataCirugia.procedimiento,
         quirofano_id: formDataCirugia.quirofano_id || null,
         tipo_anestesia: formDataCirugia.tipo_anestesia,

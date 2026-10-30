@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,7 @@ export default function RondasMedicas() {
   useEffect(() => { if (currentWorkspace) load(); }, [currentWorkspace, tab]);
 
   async function load() {
-    let q = (supabase.from("rondas_medicas" as any) as any).select("*, personal_salud!medico_lider_id(nombre,apellido)").eq("workspace_id", currentWorkspace!.id).order("fecha_ronda", { ascending: false });
+    let q = (db.from("rondas_medicas" as any) as any).select("*, personal_salud!medico_lider_id(nombre,apellido)").eq("workspace_id", currentWorkspace!.id).order("fecha_ronda", { ascending: false });
     if (tab === "activas") q = q.in("estado", ["planificada","en_curso"]);
     else q = q.in("estado", ["finalizada","cancelada"]);
     const { data } = await q;
@@ -124,8 +124,8 @@ function RondaCard({ r, onUpdated }: { r: any; onUpdated: () => void }) {
             <HeartPulse className="h-3.5 w-3.5 text-teal-600" /> FAST-HUGS
           </Button>
           <NotaRondaDialog rondaId={r.id} />
-          {r.estado === "planificada" && <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs" onClick={async () => { await (supabase.from("rondas_medicas" as any) as any).update({ estado: "en_curso" }).eq("id", r.id); toast.success("Ronda iniciada"); onUpdated(); }}>Iniciar</Button>}
-          {r.estado === "en_curso" && <Button size="sm" className="h-8 rounded-xl text-xs" onClick={async () => { await (supabase.from("rondas_medicas" as any) as any).update({ estado: "finalizada" }).eq("id", r.id); toast.success("Ronda finalizada"); onUpdated(); }}>Finalizar</Button>}
+          {r.estado === "planificada" && <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs" onClick={async () => { await (db.from("rondas_medicas" as any) as any).update({ estado: "en_curso" }).eq("id", r.id); toast.success("Ronda iniciada"); onUpdated(); }}>Iniciar</Button>}
+          {r.estado === "en_curso" && <Button size="sm" className="h-8 rounded-xl text-xs" onClick={async () => { await (db.from("rondas_medicas" as any) as any).update({ estado: "finalizada" }).eq("id", r.id); toast.success("Ronda finalizada"); onUpdated(); }}>Finalizar</Button>}
         </div>
       </CardContent>
 
@@ -150,13 +150,13 @@ function NuevaRondaDialog({ onCreated }: { onCreated: () => void }) {
 
   useEffect(() => {
     if (open && currentWorkspace) {
-      supabase.from("personal_salud").select("id,nombre,apellido").eq("workspace_id", currentWorkspace.id).order("nombre").then(({ data }) => setProfesionales(data ?? []));
+      db.from("personal_salud").select("id,nombre,apellido").eq("workspace_id", currentWorkspace.id).order("nombre").then(({ data }) => setProfesionales(data ?? []));
     }
   }, [open, currentWorkspace]);
 
   async function submit() {
     if (!currentWorkspace) return;
-    const { error } = await (supabase.from("rondas_medicas" as any) as any).insert({
+    const { error } = await (db.from("rondas_medicas" as any) as any).insert({
       workspace_id: currentWorkspace.id,
       tipo: form.tipo,
       fecha_ronda: form.fecha_ronda,
@@ -204,14 +204,14 @@ function NotaRondaDialog({ rondaId }: { rondaId: string }) {
 
   useEffect(() => {
     if (open) {
-      supabase.from("admisiones" as any).select("id,paciente_id,pacientes(nombre,apellido)").eq("estado", "activa").then(({ data }: any) => setPacientes(data ?? []));
+      db.from("admisiones" as any).select("id,paciente_id,pacientes(nombre,apellido)").eq("estado", "activa").then(({ data }: any) => setPacientes(data ?? []));
     }
   }, [open]);
 
   async function save() {
     if (!form.admision_id) return toast.error("Selecciona paciente");
     const adm = pacientes.find(p => p.id === form.admision_id);
-    const { error } = await (supabase.from("ronda_paciente_notas" as any) as any).insert({
+    const { error } = await (db.from("ronda_paciente_notas" as any) as any).insert({
       ronda_id: rondaId,
       admision_id: form.admision_id,
       paciente_id: adm.paciente_id,

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ export default function VerticalBITab({ verticalTipo }: Props) {
     queryKey: ["metricas_bi_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("metricas_bi_vertical") as any).select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("periodo", { ascending: false }).limit(12);
+      const { data } = await (db.from("metricas_bi_vertical") as any).select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("periodo", { ascending: false }).limit(12);
       return data || [];
     },
   });
@@ -26,7 +26,7 @@ export default function VerticalBITab({ verticalTipo }: Props) {
     queryKey: ["leads_bi_stats", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("leads_vertical") as any).select("estado, valor_estimado").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo);
+      const { data } = await (db.from("leads_vertical") as any).select("estado, valor_estimado").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo);
       return data || [];
     },
   });
@@ -35,7 +35,7 @@ export default function VerticalBITab({ verticalTipo }: Props) {
     queryKey: ["pagos_bi_stats", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("pagos_online_vertical") as any).select("monto, estado, metodo").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado");
+      const { data } = await (db.from("pagos_online_vertical") as any).select("monto, estado, metodo").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado");
       return data || [];
     },
   });

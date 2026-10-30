@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -155,8 +155,8 @@ export default function NotasMedicas() {
   useEffect(() => {
     if (!currentWorkspace) return;
     Promise.all([
-      supabase.from("pacientes").select("id, nombre, apellido").eq("workspace_id", currentWorkspace.id).eq("status_px", "activo").order("nombre"),
-      supabase.from("personal_salud").select("id, nombre, apellido, especialidad").eq("workspace_id", currentWorkspace.id).order("nombre"),
+      db.from("pacientes").select("id, nombre, apellido").eq("workspace_id", currentWorkspace.id).eq("status_px", "activo").order("nombre"),
+      db.from("personal_salud").select("id, nombre, apellido, especialidad").eq("workspace_id", currentWorkspace.id).order("nombre"),
     ]).then(([p, prof]) => {
       if (p.data && p.data.length > 0) {
         setPacientes(p.data);

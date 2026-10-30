@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +28,7 @@ export function DiagnosticosManager({ pacienteId, visitaId }: { pacienteId: stri
   const [notas, setNotas] = useState("");
 
   const load = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("diagnosticos_clinicos")
       .select("id, cie10_codigo, cie10_descripcion, tipo, certeza, notas, created_at")
       .eq("paciente_id", pacienteId)
@@ -40,8 +40,8 @@ export function DiagnosticosManager({ pacienteId, visitaId }: { pacienteId: stri
 
   const guardar = async () => {
     if (!sel) { toast.error("Selecciona un código CIE-10"); return; }
-    const { data: u } = await supabase.auth.getUser();
-    const { error } = await supabase.from("diagnosticos_clinicos").insert({
+    const { data: u } = await db.auth.getUser();
+    const { error } = await db.from("diagnosticos_clinicos").insert({
       paciente_id: pacienteId,
       visita_id: visitaId || null,
       cie10_codigo: sel.codigo,
@@ -57,7 +57,7 @@ export function DiagnosticosManager({ pacienteId, visitaId }: { pacienteId: stri
   };
 
   const eliminar = async (id: string) => {
-    const { error } = await supabase.from("diagnosticos_clinicos").delete().eq("id", id);
+    const { error } = await db.from("diagnosticos_clinicos").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success("Eliminado");
     load();

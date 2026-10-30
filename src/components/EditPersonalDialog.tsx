@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { ZonaSelect } from "@/components/ZonaSelect";
 import { BarrioCombobox } from "@/components/BarrioCombobox";
@@ -70,7 +70,7 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
       // Fetch current role
       const fetchRole = async () => {
         if (personal.user_id) {
-          const { data } = await supabase
+          const { data } = await db
             .from("user_roles")
             .select("role")
             .eq("user_id", personal.user_id)
@@ -92,7 +92,7 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
     setLoading(true);
     try {
       // Update personal_salud table
-      const { error: updateError } = await supabase
+      const { error: updateError } = await db
         .from("personal_salud")
         .update({
           ...formData,
@@ -106,13 +106,13 @@ export function EditPersonalDialog({ personal, open, onOpenChange, onSuccess }: 
       // Update role if changed and user_id exists
       if (personal.user_id && currentRole) {
         // Delete old role
-        await supabase
+        await db
           .from("user_roles")
           .delete()
           .eq("user_id", personal.user_id);
 
         // Insert new role
-        const { error: roleError } = await supabase
+        const { error: roleError } = await db
           .from("user_roles")
           .insert([{ 
             user_id: personal.user_id, 

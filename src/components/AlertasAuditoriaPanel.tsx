@@ -3,7 +3,7 @@
  * Permite ver, filtrar por severidad y resolver alertas.
  */
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,7 +54,7 @@ export function AlertasAuditoriaPanel() {
 
   const load = async () => {
     setLoading(true);
-    let q = (supabase as any)
+    let q = (db as any)
       .from("auditoria_alertas")
       .select("*")
       .order("created_at", { ascending: false })
@@ -72,7 +72,7 @@ export function AlertasAuditoriaPanel() {
 
     const userIds = [...new Set(list.map((a) => a.user_id))];
     if (userIds.length) {
-      const { data: profs } = await supabase
+      const { data: profs } = await db
         .from("profiles")
         .select("id,nombre,apellido,email")
         .in("id", userIds);
@@ -93,7 +93,7 @@ export function AlertasAuditoriaPanel() {
   const handleScan = async () => {
     setScanning(true);
     try {
-      const { data, error } = await (supabase as any).rpc("detectar_accesos_sospechosos", {
+      const { data, error } = await (db as any).rpc("detectar_accesos_sospechosos", {
         _workspace_id: currentWorkspace?.id ?? null,
       });
       if (error) throw error;
@@ -108,8 +108,8 @@ export function AlertasAuditoriaPanel() {
 
   const handleResolver = async () => {
     if (!selected) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await (supabase as any)
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await (db as any)
       .from("auditoria_alertas")
       .update({
         resuelto: true,

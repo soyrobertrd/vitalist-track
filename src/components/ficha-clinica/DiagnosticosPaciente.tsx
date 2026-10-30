@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -36,7 +36,7 @@ export function DiagnosticosPaciente({ pacienteId }: { pacienteId: string }) {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await db
       .from("diagnosticos_paciente")
       .select("*")
       .eq("paciente_id", pacienteId)
@@ -67,8 +67,8 @@ export function DiagnosticosPaciente({ pacienteId }: { pacienteId: string }) {
       notas: d.notas || null,
     };
     const { error } = d.id
-      ? await supabase.from("diagnosticos_paciente").update(payload).eq("id", d.id)
-      : await supabase.from("diagnosticos_paciente").insert(payload);
+      ? await db.from("diagnosticos_paciente").update(payload).eq("id", d.id)
+      : await db.from("diagnosticos_paciente").insert(payload);
     if (error) {
       toast.error("Error al guardar diagnóstico");
       return;
@@ -80,7 +80,7 @@ export function DiagnosticosPaciente({ pacienteId }: { pacienteId: string }) {
 
   const remove = async (id: string) => {
     if (!confirm("¿Eliminar este diagnóstico?")) return;
-    const { error } = await supabase.from("diagnosticos_paciente").delete().eq("id", id);
+    const { error } = await db.from("diagnosticos_paciente").delete().eq("id", id);
     if (error) {
       toast.error("Error al eliminar");
       return;

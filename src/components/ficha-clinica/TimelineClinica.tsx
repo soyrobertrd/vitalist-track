@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Badge } from "@/components/ui/badge";
 import { 
   FileText, Stethoscope, Calendar, Phone, Paperclip, 
@@ -39,13 +39,13 @@ export function TimelineClinica({ pacienteId }: { pacienteId: string }) {
       setLoading(true);
       try {
         const [evs, dxs, vis, lls, docs, recs, facts] = await Promise.all([
-          supabase.from("evoluciones_soap").select("id, fecha_evolucion, motivo_consulta, subjetivo, analisis").eq("paciente_id", pacienteId),
-          supabase.from("diagnosticos_paciente").select("id, fecha_diagnostico, descripcion, codigo_cie10, estado, tipo").eq("paciente_id", pacienteId),
-          supabase.from("control_visitas").select("id, fecha_hora_visita, motivo_visita, tipo_visita, estado, notas_visita").eq("paciente_id", pacienteId),
-          supabase.from("registro_llamadas").select("id, created_at, fecha_agendada, motivo, estado, resultado_seguimiento").eq("paciente_id", pacienteId),
-          supabase.from("documentos_clinicos").select("id, fecha_documento, created_at, titulo, categoria").eq("paciente_id", pacienteId),
-          supabase.from("recetas").select("id, fecha_emision, diagnostico_texto, recetas_items(id)").eq("paciente_id", pacienteId),
-          supabase.from("facturas").select("id, fecha_emision, numero_factura, monto_total, estado").eq("paciente_id", pacienteId),
+          db.from("evoluciones_soap").select("id, fecha_evolucion, motivo_consulta, subjetivo, analisis").eq("paciente_id", pacienteId),
+          db.from("diagnosticos_paciente").select("id, fecha_diagnostico, descripcion, codigo_cie10, estado, tipo").eq("paciente_id", pacienteId),
+          db.from("control_visitas").select("id, fecha_hora_visita, motivo_visita, tipo_visita, estado, notas_visita").eq("paciente_id", pacienteId),
+          db.from("registro_llamadas").select("id, created_at, fecha_agendada, motivo, estado, resultado_seguimiento").eq("paciente_id", pacienteId),
+          db.from("documentos_clinicos").select("id, fecha_documento, created_at, titulo, categoria").eq("paciente_id", pacienteId),
+          db.from("recetas").select("id, fecha_emision, diagnostico_texto, recetas_items(id)").eq("paciente_id", pacienteId),
+          db.from("facturas").select("id, fecha_emision, numero_factura, monto_total, estado").eq("paciente_id", pacienteId),
         ]);
 
         const all: TimelineEvent[] = [];

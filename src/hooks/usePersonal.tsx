@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 export interface Personal {
@@ -22,7 +22,7 @@ export function usePersonal(excludeAdmin = true) {
 
   const fetchPersonal = useCallback(async () => {
     setLoading(true);
-    let query = supabase
+    let query = db
       .from("personal_salud")
       .select("*")
       .eq("activo", true)
@@ -35,7 +35,7 @@ export function usePersonal(excludeAdmin = true) {
     // Filtro hardcoded removido. Ahora `excludeAdmin` excluye únicamente
     // las categorías administrativas configuradas en `especialidades_catalogo`.
     if (excludeAdmin) {
-      const { data: admins } = await supabase
+      const { data: admins } = await db
         .from("especialidades_catalogo")
         .select("nombre")
         .eq("categoria", "administrativa");

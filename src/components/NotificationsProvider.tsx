@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Bell, CheckCircle2, Calendar, Phone, Home } from "lucide-react";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -31,7 +31,7 @@ export const NotificationsProvider = () => {
     };
 
     // Subscribe to call insertions
-    const llamadasChannel = supabase
+    const llamadasChannel = db
       .channel('llamadas-notifications')
       .on(
         'postgres_changes',
@@ -44,7 +44,7 @@ export const NotificationsProvider = () => {
         async (payload) => {
           const llamada = payload.new as any;
           
-          const { data: paciente } = await supabase
+          const { data: paciente } = await db
             .from('pacientes')
             .select('nombre, apellido')
             .eq('id', llamada.paciente_id)
@@ -65,7 +65,7 @@ export const NotificationsProvider = () => {
       .subscribe();
 
     // Subscribe to call confirmations and reschedules
-    const llamadasConfirmacionChannel = supabase
+    const llamadasConfirmacionChannel = db
       .channel('llamadas-confirmacion-notifications')
       .on(
         'postgres_changes',
@@ -80,7 +80,7 @@ export const NotificationsProvider = () => {
           
           // Check if confirmed via reminder
           if (llamada.confirmado_por_recordatorio && !oldLlamada.confirmado_por_recordatorio) {
-            const { data: paciente } = await supabase
+            const { data: paciente } = await db
               .from('pacientes')
               .select('nombre, apellido')
               .eq('id', llamada.paciente_id)
@@ -94,7 +94,7 @@ export const NotificationsProvider = () => {
           
           // Check if rescheduled
           if (llamada.estado === 'reagendada' && oldLlamada.estado !== 'reagendada') {
-            const { data: paciente } = await supabase
+            const { data: paciente } = await db
               .from('pacientes')
               .select('nombre, apellido')
               .eq('id', llamada.paciente_id)
@@ -111,7 +111,7 @@ export const NotificationsProvider = () => {
       .subscribe();
 
     // Subscribe to visit insertions
-    const visitasChannel = supabase
+    const visitasChannel = db
       .channel('visitas-notifications')
       .on(
         'postgres_changes',
@@ -124,7 +124,7 @@ export const NotificationsProvider = () => {
         async (payload) => {
           const visita = payload.new as any;
           
-          const { data: paciente } = await supabase
+          const { data: paciente } = await db
             .from('pacientes')
             .select('nombre, apellido')
             .eq('id', visita.paciente_id)
@@ -146,7 +146,7 @@ export const NotificationsProvider = () => {
       .subscribe();
 
     // Subscribe to ticket check-ins (paciente llegó a recepción)
-    const ticketsChannel = supabase
+    const ticketsChannel = db
       .channel('tickets-checkin-notifications')
       .on(
         'postgres_changes',
@@ -168,7 +168,7 @@ export const NotificationsProvider = () => {
           let tipoLabel = ticket.tipo_cita;
 
           if (ticket.tipo_cita === 'visita' && ticket.visita_id) {
-            const { data: v } = await supabase
+            const { data: v } = await db
               .from('control_visitas')
               .select('profesional_id, fecha_hora_visita, tipo_visita')
               .eq('id', ticket.visita_id)
@@ -177,7 +177,7 @@ export const NotificationsProvider = () => {
             fechaCita = v?.fecha_hora_visita ?? null;
             tipoLabel = v?.tipo_visita === 'domicilio' ? 'visita domiciliaria' : 'visita';
           } else if (ticket.tipo_cita === 'llamada' && ticket.llamada_id) {
-            const { data: l } = await supabase
+            const { data: l } = await db
               .from('registro_llamadas')
               .select('profesional_id, fecha_agendada')
               .eq('id', ticket.llamada_id)
@@ -189,7 +189,7 @@ export const NotificationsProvider = () => {
 
           if (!profesionalId || profesionalId !== profile.id) return;
 
-          const { data: paciente } = await supabase
+          const { data: paciente } = await db
             .from('pacientes')
             .select('nombre, apellido')
             .eq('id', ticket.paciente_id)
@@ -211,7 +211,7 @@ export const NotificationsProvider = () => {
       .subscribe();
 
     // Subscribe to visit confirmations and reschedules
-    const visitasConfirmacionChannel = supabase
+    const visitasConfirmacionChannel = db
       .channel('visitas-confirmacion-notifications')
       .on(
         'postgres_changes',
@@ -226,7 +226,7 @@ export const NotificationsProvider = () => {
           
           // Check if confirmed via reminder
           if (visita.confirmado_por_recordatorio && !oldVisita.confirmado_por_recordatorio) {
-            const { data: paciente } = await supabase
+            const { data: paciente } = await db
               .from('pacientes')
               .select('nombre, apellido')
               .eq('id', visita.paciente_id)
@@ -242,7 +242,7 @@ export const NotificationsProvider = () => {
           // Check if rescheduled (date changed with reschedule note)
           if (visita.fecha_hora_visita !== oldVisita.fecha_hora_visita && 
               visita.notas_visita?.includes('Reagendada por paciente')) {
-            const { data: paciente } = await supabase
+            const { data: paciente } = await db
               .from('pacientes')
               .select('nombre, apellido')
               .eq('id', visita.paciente_id)
@@ -260,11 +260,11 @@ export const NotificationsProvider = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(llamadasChannel);
-      supabase.removeChannel(llamadasConfirmacionChannel);
-      supabase.removeChannel(visitasChannel);
-      supabase.removeChannel(visitasConfirmacionChannel);
-      supabase.removeChannel(ticketsChannel);
+      db.removeChannel(llamadasChannel);
+      db.removeChannel(llamadasConfirmacionChannel);
+      db.removeChannel(visitasChannel);
+      db.removeChannel(visitasConfirmacionChannel);
+      db.removeChannel(ticketsChannel);
     };
   }, [profile?.id]);
 

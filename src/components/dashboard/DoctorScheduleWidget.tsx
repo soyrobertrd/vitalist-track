@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,7 @@ export function DoctorScheduleWidget() {
     async function fetchPersonal() {
       if (!currentWorkspace?.id) return;
       try {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from("personal_salud")
           .select("id, nombre, apellido, especialidad, activo")
           .eq("workspace_id", currentWorkspace.id)

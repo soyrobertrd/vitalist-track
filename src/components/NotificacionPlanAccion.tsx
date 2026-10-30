@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CheckCircle } from "lucide-react";
@@ -29,7 +29,7 @@ export function NotificacionPlanAccion({ pacienteId }: { pacienteId: string }) {
   }, [pacienteId]);
 
   const fetchNotificaciones = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("notificaciones_plan_accion")
       .select("*")
       .eq("paciente_id", pacienteId)
@@ -45,7 +45,7 @@ export function NotificacionPlanAccion({ pacienteId }: { pacienteId: string }) {
     if (!selectedNotif) return;
     
     setLoading(true);
-    const { error } = await supabase
+    const { error } = await db
       .from("notificaciones_plan_accion")
       .update({
         completada: true,

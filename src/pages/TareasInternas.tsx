@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,9 +54,9 @@ export default function TareasInternas() {
   const cargar = async () => {
     if (!wsId) return;
     const [t, m] = await Promise.all([
-      (supabase.from("tareas_internas") as any).select("*")
+      (db.from("tareas_internas") as any).select("*")
         .eq("workspace_id", wsId).order("orden").order("created_at", { ascending: false }),
-      (supabase.from("workspace_members") as any)
+      (db.from("workspace_members") as any)
         .select("user_id, profiles!inner(nombre, apellido)").eq("workspace_id", wsId),
     ]);
     setTareas(t.data || []);
@@ -68,17 +68,17 @@ export default function TareasInternas() {
   // Realtime
   useEffect(() => {
     if (!wsId) return;
-    const channel = supabase.channel("tareas-rt")
+    const channel = db.channel("tareas-rt")
       .on("postgres_changes", { event: "*", schema: "public", table: "tareas_internas" }, () => cargar())
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => { db.removeChannel(channel); };
     // eslint-disable-next-line
   }, [wsId]);
 
   const crear = async () => {
     if (!form.titulo) { toast.error("Título requerido"); return; }
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await (supabase.from("tareas_internas") as any).insert({
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await (db.from("tareas_internas") as any).insert({
       workspace_id: wsId, titulo: form.titulo, descripcion: form.descripcion || null,
       departamento: form.departamento, prioridad: form.prioridad,
       asignado_a: form.asignado_a || null,
@@ -94,7 +94,7 @@ export default function TareasInternas() {
   const moverEstado = async (id: string, nuevo: string) => {
     const update: any = { estado: nuevo };
     if (nuevo === "hecha") update.completado_at = new Date().toISOString();
-    await (supabase.from("tareas_internas") as any).update(update).eq("id", id);
+    await (db.from("tareas_internas") as any).update(update).eq("id", id);
   };
 
   const filtradas = filtro === "todos" ? tareas : tareas.filter((t: any) => t.departamento === filtro);

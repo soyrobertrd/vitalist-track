@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Activity, AlertTriangle, ArchiveX, BellRing, RefreshCw, CheckCircle2, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -37,7 +37,7 @@ export function PanelSaludSistema() {
 
   const cargar = async () => {
     setLoading(true);
-    const { data: r, error } = await supabase.rpc("estadisticas_salud_sistema");
+    const { data: r, error } = await db.rpc("estadisticas_salud_sistema");
     if (error) toast.error(error.message);
     else setData(r as unknown as Salud);
     setLoading(false);
@@ -48,7 +48,7 @@ export function PanelSaludSistema() {
   const ejecutar = async (job: string) => {
     setRunning(job);
     try {
-      const { error } = await supabase.functions.invoke(job, { body: {} });
+      const { error } = await db.functions.invoke(job, { body: {} });
       if (error) throw error;
       toast.success(`Ejecutado: ${job}`);
       await cargar();

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 export interface PlanLimits {
@@ -28,9 +28,9 @@ export function usePlanLimits() {
     setLoading(true);
 
     const [pac, usr, prof] = await Promise.all([
-      supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
-      supabase.from("workspace_members").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
-      supabase.from("personal_salud").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id).eq("activo", true),
+      db.from("pacientes").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
+      db.from("workspace_members").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
+      db.from("personal_salud").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id).eq("activo", true),
     ]);
 
     const build = (used: number, max: number | null) => {

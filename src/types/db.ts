@@ -1,7 +1,7 @@
 /**
  * Tipos derivados del esquema de Supabase para uso en componentes.
  */
-import type { Tables } from "@/integrations/supabase/types";
+import type { Tables } from "@/integrations/db/types";
 
 export type Paciente = Tables<"pacientes">;
 export type Personal = Tables<"personal_salud">;

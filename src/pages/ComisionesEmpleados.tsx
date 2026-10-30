@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -277,7 +277,7 @@ export default function ComisionesEmpleados() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("comisiones_empleados" as any)
         .select("*")
         .order("fecha_generada", { ascending: false });
@@ -327,7 +327,7 @@ export default function ComisionesEmpleados() {
 
   const aprobarLiquidacion = async (liq: LiquidacionHonorario) => {
     try {
-      await supabase
+      await db
         .from("comisiones_empleados" as any)
         .update({ estado: "aprobada" })
         .eq("id", liq.id);
@@ -354,7 +354,7 @@ export default function ComisionesEmpleados() {
     if (!selectedLiq) return;
     const today = new Date().toISOString().slice(0, 10);
     try {
-      await supabase
+      await db
         .from("comisiones_empleados" as any)
         .update({
           estado: "pagada",

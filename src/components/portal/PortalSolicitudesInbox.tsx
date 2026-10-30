@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,7 +41,7 @@ export function PortalSolicitudesInbox() {
   const fetchItems = useCallback(async () => {
     if (!currentWorkspace) return;
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("portal_solicitudes")
       .select("*, paciente:pacientes(nombre, apellido)")
       .eq("workspace_id", currentWorkspace.id)
@@ -55,8 +55,8 @@ export function PortalSolicitudesInbox() {
   useEffect(() => { fetchItems(); }, [fetchItems]);
 
   const responder = async (s: Solicitud, nuevoEstado: "atendida" | "rechazada") => {
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await db
       .from("portal_solicitudes")
       .update({
         estado: nuevoEstado,

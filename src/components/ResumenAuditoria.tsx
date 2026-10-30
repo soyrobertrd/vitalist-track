@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ export default function ResumenAuditoria() {
   const [generando, setGenerando] = useState(false);
 
   const cargar = async () => {
-    const { data } = await (supabase.from("auditoria_resumenes") as any)
+    const { data } = await (db.from("auditoria_resumenes") as any)
       .select("*").order("created_at", { ascending: false }).limit(10);
     setResumenes(data || []);
   };
@@ -21,7 +21,7 @@ export default function ResumenAuditoria() {
 
   const generar = async (periodo: "diario" | "semanal") => {
     setGenerando(true);
-    const { error } = await (supabase as any).rpc("generar_resumen_auditoria", { _periodo: periodo });
+    const { error } = await (db as any).rpc("generar_resumen_auditoria", { _periodo: periodo });
     setGenerando(false);
     if (error) return toast.error(error.message);
     toast.success(`Resumen ${periodo} generado`);

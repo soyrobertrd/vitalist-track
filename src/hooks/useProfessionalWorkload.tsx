@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { format, startOfDay, endOfDay } from "date-fns";
 
 interface WorkloadData {
@@ -36,7 +36,7 @@ export function useProfessionalWorkload(options: UseProfessionalWorkloadOptions 
 
     try {
       // Get calls per professional for the date
-      const { data: llamadasData } = await supabase
+      const { data: llamadasData } = await db
         .from("registro_llamadas")
         .select(`
           profesional_id,
@@ -47,7 +47,7 @@ export function useProfessionalWorkload(options: UseProfessionalWorkloadOptions 
         .lt("fecha_agendada", `${fechaStr}T23:59:59`);
 
       // Get visits per professional for the date
-      const { data: visitasData } = await supabase
+      const { data: visitasData } = await db
         .from("control_visitas")
         .select(`
           profesional_id,

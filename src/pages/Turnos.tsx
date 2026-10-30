@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,7 @@ const Turnos = () => {
     queryKey: ["turnos", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("turnos_cola")
         .select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)")
         .eq("workspace_id", currentWorkspace.id)
@@ -47,7 +47,7 @@ const Turnos = () => {
   const createTurno = useMutation({
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Sin workspace");
-      const { error } = await supabase.from("turnos_cola").insert({
+      const { error } = await db.from("turnos_cola").insert({
         workspace_id: currentWorkspace.id,
         numero: "",
         servicio: form.servicio,
@@ -69,7 +69,7 @@ const Turnos = () => {
       if (estado === "llamado") updates.hora_llamado = new Date().toISOString();
       if (estado === "atendiendo") updates.hora_atencion = new Date().toISOString();
       if (estado === "completado" || estado === "no_presentado") updates.hora_fin = new Date().toISOString();
-      const { error } = await supabase.from("turnos_cola").update(updates).eq("id", id);
+      const { error } = await db.from("turnos_cola").update(updates).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {

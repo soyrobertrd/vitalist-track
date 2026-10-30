@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ export default function VerticalRecetasTab({ verticalTipo }: Props) {
     queryKey: ["recetas_digitales_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("recetas_digitales_vertical") as any)
+      const { data } = await (db.from("recetas_digitales_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo)
         .order("created_at", { ascending: false }).limit(200);
       return data || [];
@@ -37,7 +37,7 @@ export default function VerticalRecetasTab({ verticalTipo }: Props) {
   const crear = async () => {
     if (!wsId || !form.medicamentos) return;
     const meds = form.medicamentos.split("\n").filter(Boolean).map(m => ({ nombre: m.trim() }));
-    const { error } = await (supabase.from("recetas_digitales_vertical") as any).insert({
+    const { error } = await (db.from("recetas_digitales_vertical") as any).insert({
       workspace_id: wsId, vertical_tipo: verticalTipo,
       medicamentos: meds, indicaciones: form.indicaciones || null,
       vigencia_dias: parseInt(form.vigencia_dias) || 30,

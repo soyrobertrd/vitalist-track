@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,7 @@ export default function VerticalIoTTab({ verticalTipo }: Props) {
     queryKey: ["dispositivos_iot", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("dispositivos_iot")
         .select("*, pacientes(nombre, apellido)")
         .eq("workspace_id", wsId!)
@@ -34,7 +34,7 @@ export default function VerticalIoTTab({ verticalTipo }: Props) {
     enabled: !!wsId && dispositivos.length > 0,
     queryFn: async () => {
       const ids = dispositivos.map((d: any) => d.id);
-      const { data } = await supabase
+      const { data } = await db
         .from("lecturas_iot")
         .select("*, dispositivos_iot(tipo, pacientes(nombre, apellido))")
         .in("dispositivo_id", ids)

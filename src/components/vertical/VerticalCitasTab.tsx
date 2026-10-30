@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,7 @@ export default function VerticalCitasTab({ citaLabel = "Citas", tiposCita = ["Co
     queryKey: ["vertical_citas", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("control_visitas") as any).select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)").eq("workspace_id", wsId!).order("fecha_hora_visita", { ascending: false }).limit(100);
+      const { data } = await (db.from("control_visitas") as any).select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)").eq("workspace_id", wsId!).order("fecha_hora_visita", { ascending: false }).limit(100);
       return data || [];
     },
   });
@@ -47,7 +47,7 @@ export default function VerticalCitasTab({ citaLabel = "Citas", tiposCita = ["Co
     queryKey: ["pacientes_combo", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("pacientes") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).eq("status_px", "activo").order("nombre").limit(500);
+      const { data } = await (db.from("pacientes") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).eq("status_px", "activo").order("nombre").limit(500);
       return data || [];
     },
   });
@@ -56,7 +56,7 @@ export default function VerticalCitasTab({ citaLabel = "Citas", tiposCita = ["Co
     queryKey: ["profesionales_combo", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("personal_salud") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).order("nombre").limit(200);
+      const { data } = await (db.from("personal_salud") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).order("nombre").limit(200);
       return data || [];
     },
   });
@@ -64,7 +64,7 @@ export default function VerticalCitasTab({ citaLabel = "Citas", tiposCita = ["Co
   const crear = async () => {
     if (!wsId || !form.fecha || !form.hora) { toast.error("Fecha y hora requeridos"); return; }
     const fechaHora = `${form.fecha}T${form.hora}:00`;
-    const { error } = await supabase.from("control_visitas").insert({
+    const { error } = await db.from("control_visitas").insert({
       workspace_id: wsId,
       paciente_id: form.paciente_nombre || null,
       profesional_id: form.profesional_nombre || null,

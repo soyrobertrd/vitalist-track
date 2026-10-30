@@ -21,7 +21,7 @@ import {
 import { useUserRole } from "@/hooks/useUserRole";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
@@ -72,7 +72,7 @@ export default function ReportesProgramados() {
 
   const ejecutarAhora = async (r: any, soloDescargar: boolean) => {
     toast.loading(soloDescargar ? "Generando reporte…" : "Generando y enviando…", { id: "gen-rep" });
-    const { data, error } = await supabase.functions.invoke("generar-reporte", {
+    const { data, error } = await db.functions.invoke("generar-reporte", {
       body: {
         workspace_id: r.workspace_id,
         tipo_reporte: r.tipo_reporte,

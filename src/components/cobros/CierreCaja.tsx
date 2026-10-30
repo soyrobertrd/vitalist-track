@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -159,7 +159,7 @@ export function CierreCaja() {
   const fetchCierres = useCallback(async () => {
     setLoading(true);
     try {
-      let q = supabase
+      let q = db
         .from("cierres_caja")
         .select("*")
         .order("fecha", { ascending: false })
@@ -234,7 +234,7 @@ export function CierreCaja() {
     // Si hay RPC en Supabase calcular con la BD, de lo contrario mantener estado
     if (currentWorkspace) {
       try {
-        const { data } = await supabase.rpc("calcular_cierre_caja", {
+        const { data } = await db.rpc("calcular_cierre_caja", {
           _fecha: fechaArqueo,
           _workspace_id: currentWorkspace.id,
           _sucursal_id: activeSucursalId || null,
@@ -297,7 +297,7 @@ export function CierreCaja() {
     // Intentar upsert en Supabase
     if (currentWorkspace) {
       try {
-        await supabase.from("cierres_caja").upsert(
+        await db.from("cierres_caja").upsert(
           {
             fecha: fechaArqueo,
             workspace_id: currentWorkspace.id,

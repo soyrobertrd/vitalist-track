@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +50,7 @@ export function MapaCorporal({ pacienteId }: { pacienteId: string }) {
   const tipos = TIPOS_POR_VERTICAL[v] ?? TIPOS_POR_VERTICAL.default;
 
   async function load() {
-    const { data } = await supabase.from("mapa_corporal_marcas" as any)
+    const { data } = await db.from("mapa_corporal_marcas" as any)
       .select("*").eq("paciente_id", pacienteId).order("fecha", { ascending: false });
     setMarcas((data as any) ?? []);
   }
@@ -66,7 +66,7 @@ export function MapaCorporal({ pacienteId }: { pacienteId: string }) {
 
   async function guardar() {
     if (!editando || !currentWorkspaceId) return;
-    const { error } = await supabase.from("mapa_corporal_marcas" as any).insert({
+    const { error } = await db.from("mapa_corporal_marcas" as any).insert({
       workspace_id: currentWorkspaceId,
       paciente_id: pacienteId,
       vertical: v,
@@ -80,7 +80,7 @@ export function MapaCorporal({ pacienteId }: { pacienteId: string }) {
   }
 
   async function eliminar(id: string) {
-    const { error } = await supabase.from("mapa_corporal_marcas" as any).delete().eq("id", id);
+    const { error } = await db.from("mapa_corporal_marcas" as any).delete().eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Eliminada"); void load();
   }

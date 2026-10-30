@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -66,7 +66,7 @@ export function TodayAppointmentsTable() {
       if (!currentWorkspace?.id) return;
       try {
         const todayStr = new Date().toISOString().split("T")[0];
-        let q = supabase
+        let q = db
           .from("control_visitas")
           .select("id, fecha_hora_visita, estado, motivo_visita, solicitante_nombre, pacientes!control_visitas_paciente_id_fkey(nombre, apellido), personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)")
           .eq("workspace_id", currentWorkspace.id)

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,21 +27,21 @@ export default function ChatInterno() {
 
   const cargarCanales = async () => {
     if (!wsId) return;
-    const { data } = await (supabase.from("chat_canales") as any)
+    const { data } = await (db.from("chat_canales") as any)
       .select("*").eq("workspace_id", wsId).order("created_at");
     setCanales(data || []);
     if (!activo && (data || []).length > 0) setActivo(data[0]);
   };
 
   const cargarMensajes = async (canalId: string) => {
-    const { data } = await (supabase.from("chat_mensajes") as any)
+    const { data } = await (db.from("chat_mensajes") as any)
       .select("*").eq("canal_id", canalId).order("created_at").limit(200);
     setMensajes(data || []);
     // Cargar perfiles que faltan
     const userIds = [...new Set((data || []).map((m: any) => m.user_id))];
     const faltan = userIds.filter(id => !perfiles[id as string]);
     if (faltan.length) {
-      const { data: prof } = await (supabase.from("profiles") as any)
+      const { data: prof } = await (db.from("profiles") as any)
         .select("id, nombre, apellido, avatar_url").in("id", faltan);
       const map = { ...perfiles };
       (prof || []).forEach((p: any) => { map[p.id] = p; });
@@ -54,26 +54,26 @@ export default function ChatInterno() {
   useEffect(() => {
     if (!activo) return;
     cargarMensajes(activo.id);
-    const channel = supabase.channel(`chat-${activo.id}`)
+    const channel = db.channel(`chat-${activo.id}`)
       .on("postgres_changes",
         { event: "INSERT", schema: "public", table: "chat_mensajes", filter: `canal_id=eq.${activo.id}` },
         () => cargarMensajes(activo.id))
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => { db.removeChannel(channel); };
     // eslint-disable-next-line
   }, [activo?.id]);
 
   const enviar = async () => {
     if (!nuevo.trim() || !activo) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await (supabase.from("chat_mensajes") as any).insert({
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await (db.from("chat_mensajes") as any).insert({
       canal_id: activo.id, user_id: user?.id, contenido: nuevo.trim(), tipo: "texto",
     });
     if (error) {
       // si no es miembro, lo añadimos
       if (error.message.includes("policy")) {
-        await (supabase.from("chat_canal_miembros") as any).insert({ canal_id: activo.id, user_id: user?.id });
-        await (supabase.from("chat_mensajes") as any).insert({ canal_id: activo.id, user_id: user?.id, contenido: nuevo.trim(), tipo: "texto" });
+        await (db.from("chat_canal_miembros") as any).insert({ canal_id: activo.id, user_id: user?.id });
+        await (db.from("chat_mensajes") as any).insert({ canal_id: activo.id, user_id: user?.id, contenido: nuevo.trim(), tipo: "texto" });
       } else { toast.error(error.message); return; }
     }
     setNuevo("");
@@ -81,8 +81,8 @@ export default function ChatInterno() {
 
   const crearCanal = async () => {
     if (!form.nombre) { toast.error("Nombre requerido"); return; }
-    const { data: { user } } = await supabase.auth.getUser();
-    const { data, error } = await (supabase.from("chat_canales") as any).insert({
+    const { data: { user } } = await db.auth.getUser();
+    const { data, error } = await (db.from("chat_canales") as any).insert({
       workspace_id: wsId, nombre: form.nombre, tipo: form.tipo,
       descripcion: form.descripcion || null, privado: form.privado, created_by: user?.id,
     }).select().single();

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -44,18 +44,18 @@ function MuestrasTab() {
 
   useEffect(() => { load(); if (currentWorkspace) loadOrdenes(); }, [currentWorkspace]);
   async function load() {
-    const { data } = await (supabase.from("muestras_laboratorio" as any) as any).select("*, pacientes(nombre,apellido)").order("created_at",{ ascending:false }).limit(50);
+    const { data } = await (db.from("muestras_laboratorio" as any) as any).select("*, pacientes(nombre,apellido)").order("created_at",{ ascending:false }).limit(50);
     setItems(data ?? []);
   }
   async function loadOrdenes() {
-    const { data } = await supabase.from("ordenes_laboratorio").select("id,numero_orden,paciente_id,pacientes(nombre,apellido)").eq("workspace_id", currentWorkspace!.id).in("estado",["pendiente","en_proceso"]).limit(100);
+    const { data } = await db.from("ordenes_laboratorio").select("id,numero_orden,paciente_id,pacientes(nombre,apellido)").eq("workspace_id", currentWorkspace!.id).in("estado",["pendiente","en_proceso"]).limit(100);
     setOrdenes(data ?? []);
   }
   async function save() {
     if (!form.orden_id || !form.tipo_muestra) return toast.error("Faltan datos");
     const orden = ordenes.find(o => o.id === form.orden_id);
     const codigo = `MX-${Date.now().toString(36).toUpperCase()}`;
-    const { error } = await (supabase.from("muestras_laboratorio" as any) as any).insert({
+    const { error } = await (db.from("muestras_laboratorio" as any) as any).insert({
       orden_id: form.orden_id, paciente_id: orden.paciente_id,
       tipo_muestra: form.tipo_muestra, codigo_barras: codigo,
       recipiente: form.recipiente, volumen: form.volumen,
@@ -68,7 +68,7 @@ function MuestrasTab() {
     const upd: any = { estado };
     if (estado === "recibida") upd.fecha_recepcion = new Date().toISOString();
     if (motivo) upd.motivo_rechazo = motivo;
-    await (supabase.from("muestras_laboratorio" as any) as any).update(upd).eq("id", id);
+    await (db.from("muestras_laboratorio" as any) as any).update(upd).eq("id", id);
     load();
   }
   return (
@@ -124,18 +124,18 @@ function ProcesamientoTab() {
 
   useEffect(() => { load(); loadMuestras(); }, []);
   async function load() {
-    const { data } = await (supabase.from("procesamiento_lab" as any) as any).select("*").order("fecha_procesamiento",{ ascending:false }).limit(50);
+    const { data } = await (db.from("procesamiento_lab" as any) as any).select("*").order("fecha_procesamiento",{ ascending:false }).limit(50);
     setItems(data ?? []);
   }
   async function loadMuestras() {
-    const { data } = await (supabase.from("muestras_laboratorio" as any) as any).select("id,codigo_barras,tipo_muestra").eq("estado","recibida").limit(100);
+    const { data } = await (db.from("muestras_laboratorio" as any) as any).select("id,codigo_barras,tipo_muestra").eq("estado","recibida").limit(100);
     setMuestras(data ?? []);
   }
   async function save() {
     if (!form.muestra_id || !form.resultado) return toast.error("Faltan datos");
     const fueraRango = form.fuera_rango === true;
     const critico = form.critico === true;
-    const { error } = await (supabase.from("procesamiento_lab" as any) as any).insert({
+    const { error } = await (db.from("procesamiento_lab" as any) as any).insert({
       muestra_id: form.muestra_id, equipo: form.equipo,
       resultado: form.resultado, unidad: form.unidad,
       valor_referencia: form.valor_referencia, fuera_rango: fueraRango, critico,
@@ -200,7 +200,7 @@ function ControlCalidadTab() {
   const [form, setForm] = useState<any>({});
   useEffect(() => { if (currentWorkspace) load(); }, [currentWorkspace]);
   async function load() {
-    const { data } = await (supabase.from("control_calidad_lab" as any) as any).select("*").eq("workspace_id", currentWorkspace!.id).order("fecha",{ ascending:false }).limit(50);
+    const { data } = await (db.from("control_calidad_lab" as any) as any).select("*").eq("workspace_id", currentWorkspace!.id).order("fecha",{ ascending:false }).limit(50);
     setItems(data ?? []);
   }
   async function save() {
@@ -209,7 +209,7 @@ function ControlCalidadTab() {
     const esperado = parseFloat(form.valor_esperado);
     const desv = obtenido - esperado;
     const aprobado = Math.abs(desv) <= (esperado * 0.05);
-    const { error } = await (supabase.from("control_calidad_lab" as any) as any).insert({
+    const { error } = await (db.from("control_calidad_lab" as any) as any).insert({
       workspace_id: currentWorkspace.id, equipo: form.equipo, prueba: form.prueba,
       nivel_control: form.nivel, valor_obtenido: obtenido, valor_esperado: esperado,
       desviacion: desv, aprobado,
@@ -305,7 +305,7 @@ function AlertasTab() {
   }, [currentWorkspace]);
 
   async function load() {
-    const { data } = await (supabase.from("alertas_laboratorio" as any) as any)
+    const { data } = await (db.from("alertas_laboratorio" as any) as any)
       .select("*, pacientes(nombre,apellido)")
       .eq("workspace_id", currentWorkspace!.id)
       .order("created_at", { ascending: false })
@@ -321,7 +321,7 @@ function AlertasTab() {
     }
 
     try {
-      await (supabase.from("alertas_laboratorio" as any) as any)
+      await (db.from("alertas_laboratorio" as any) as any)
         .update({
           resuelto: true,
           notificado_a: `${medicoReceptor} (${servicioReceptor})`,

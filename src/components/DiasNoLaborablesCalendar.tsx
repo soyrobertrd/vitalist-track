@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -29,7 +29,7 @@ export function DiasNoLaborablesCalendar() {
   }, []);
 
   const fetchDiasNoLaborables = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("dias_no_laborables")
       .select("fecha, descripcion, es_ciclico")
       .order("fecha", { ascending: true });
@@ -54,7 +54,7 @@ export function DiasNoLaborablesCalendar() {
     const day = String(selectedDate.getDate()).padStart(2, '0');
     const fechaStr = `${year}-${month}-${day}`;
 
-    const { error } = await supabase
+    const { error } = await db
       .from("dias_no_laborables")
       .insert([{ fecha: fechaStr, descripcion: descripcion.trim(), es_ciclico: esCiclico }]);
 
@@ -72,7 +72,7 @@ export function DiasNoLaborablesCalendar() {
   };
 
   const handleDeleteDia = async (fecha: string) => {
-    const { error } = await supabase
+    const { error } = await db
       .from("dias_no_laborables")
       .delete()
       .eq("fecha", fecha);

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { PacienteCombobox } from "./PacienteCombobox";
 import { ProfesionalCombobox } from "./ProfesionalCombobox";
@@ -70,7 +70,7 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
   const handlePacienteChange = async (id: string) => {
     setPacienteId(id);
     if (id) {
-      const { data } = await supabase
+      const { data } = await db
         .from("pacientes")
         .select("zona, barrio, nombre, apellido")
         .eq("id", id)
@@ -118,7 +118,7 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
 
     // Verificar si ya existe una llamada agendada para este paciente
     if (!forceCreate) {
-      const { data: existente, error: checkError } = await supabase
+      const { data: existente, error: checkError } = await db
         .from("registro_llamadas")
         .select("*, personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
         .eq("paciente_id", pacienteId)
@@ -153,7 +153,7 @@ export function AgendarLlamadaDialog({ open, onOpenChange, pacientes, personal, 
       sucursal_id: sucursalId ?? sucursales.find(s => s.es_principal)?.id ?? null,
     };
 
-    const { error } = await supabase
+    const { error } = await db
       .from("registro_llamadas")
       .insert([llamadaData]);
 

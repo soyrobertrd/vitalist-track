@@ -8,7 +8,7 @@ import type { Plan, Workspace, WorkspaceRole } from "@/contexts/WorkspaceContext
 import type { VerticalTipo } from "@/contexts/VerticalContext";
 
 /** Datos demo solo con VITE_DEMO_MODE=true (nunca en producción). Si es false, Vite elimina este módulo del bundle. */
-export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
+export const DEMO_MODE = import.meta.env?.VITE_DEMO_MODE === "true";
 
 export interface DemoDoctor {
   id: string;

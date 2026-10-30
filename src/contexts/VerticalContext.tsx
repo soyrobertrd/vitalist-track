@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useUserRole } from "@/hooks/useUserRole";
 
@@ -36,14 +36,14 @@ export function VerticalProvider({ children }: { children: ReactNode }) {
       return;
     }
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     const [vw, vu] = await Promise.all([
-      (supabase.from("workspace_verticales") as any)
+      (db.from("workspace_verticales") as any)
         .select("vertical, activa")
         .eq("workspace_id", currentWorkspace.id)
         .eq("activa", true),
       user
-        ? (supabase.from("profiles") as any).select("vertical_asignada").eq("id", user.id).maybeSingle()
+        ? (db.from("profiles") as any).select("vertical_asignada").eq("id", user.id).maybeSingle()
         : Promise.resolve({ data: null }),
     ]);
     const lista = (vw.data || []).map((r: any) => r.vertical as VerticalTipo);

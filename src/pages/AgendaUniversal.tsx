@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 import { Card, CardContent } from "@/components/ui/card";
@@ -69,7 +69,7 @@ export default function AgendaUniversal() {
   }, [currentWorkspace, filterArea, verticalActiva]);
 
   async function loadCitas() {
-    let q: any = (supabase.from("citas_universales" as any) as any)
+    let q: any = (db.from("citas_universales" as any) as any)
       .select("*, pacientes(nombre,apellido), personal_salud(nombre,apellido), areas_servicio(nombre,tipo,color)")
       .eq("workspace_id", currentWorkspace!.id)
       .order("fecha_inicio", { ascending: true })
@@ -81,11 +81,11 @@ export default function AgendaUniversal() {
   }
 
   async function loadCombos() {
-    let pq: any = (supabase.from("pacientes") as any)
+    let pq: any = (db.from("pacientes") as any)
       .select("id,nombre,apellido")
       .eq("workspace_id", currentWorkspace!.id)
       .eq("status_px", "activo");
-    let prq: any = (supabase.from("personal_salud") as any)
+    let prq: any = (db.from("personal_salud") as any)
       .select("id,nombre,apellido")
       .eq("workspace_id", currentWorkspace!.id);
 
@@ -95,7 +95,7 @@ export default function AgendaUniversal() {
     }
 
     const [a, p, pr] = await Promise.all([
-      (supabase.from("areas_servicio" as any) as any)
+      (db.from("areas_servicio" as any) as any)
         .select("id,nombre,tipo,duracion_default_min,color,codigo,activo,capacidad_simultanea")
         .eq("workspace_id", currentWorkspace!.id)
         .order("nombre"),
@@ -115,7 +115,7 @@ export default function AgendaUniversal() {
     const area = areas.find(a => a.id === formCita.area_id);
     const inicio = new Date(formCita.fecha_inicio);
     const fin = new Date(inicio.getTime() + (area?.duracion_default_min ?? 30) * 60000);
-    const { error } = await (supabase.from("citas_universales" as any) as any).insert({
+    const { error } = await (db.from("citas_universales" as any) as any).insert({
       workspace_id: currentWorkspace!.id,
       vertical: verticalParaInsert,
       area_id: formCita.area_id,
@@ -136,7 +136,7 @@ export default function AgendaUniversal() {
   }
 
   async function cambiarEstado(id: string, estado: string) {
-    await (supabase.from("citas_universales" as any) as any).update({ estado }).eq("id", id);
+    await (db.from("citas_universales" as any) as any).update({ estado }).eq("id", id);
     toast.success(`Cita actualizada a ${estado}`);
     loadCitas();
   }
@@ -490,7 +490,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
       toast.error("El nombre y código de área son obligatorios");
       return;
     }
-    const { error } = await (supabase.from("areas_servicio" as any) as any).insert({
+    const { error } = await (db.from("areas_servicio" as any) as any).insert({
       workspace_id: currentWorkspace!.id,
       nombre: form.nombre,
       codigo: form.codigo.toUpperCase(),
@@ -509,7 +509,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
   }
 
   async function toggle(id: string, activo: boolean) {
-    await (supabase.from("areas_servicio" as any) as any).update({ activo: !activo }).eq("id", id);
+    await (db.from("areas_servicio" as any) as any).update({ activo: !activo }).eq("id", id);
     toast.success(`Área ${!activo ? "activada" : "desactivada"}`);
     onRefresh();
   }

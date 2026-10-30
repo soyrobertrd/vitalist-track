@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { CalendarDays, Clock, Stethoscope, MapPin, Loader2, Building2, Filter, AlertCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 
 export default function PortalPublicoDisponibilidad() {
   const [apiKey, setApiKey] = useState(localStorage.getItem("portal_api_key") || "");

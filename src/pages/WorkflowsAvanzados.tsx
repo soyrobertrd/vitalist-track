@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -63,9 +63,9 @@ export default function WorkflowsAvanzados() {
   const cargar = async () => {
     if (!wsId) return;
     const [r, e] = await Promise.all([
-      (supabase.from("workflow_reglas_globales") as any)
+      (db.from("workflow_reglas_globales") as any)
         .select("*").eq("workspace_id", wsId).order("prioridad", { ascending: false }),
-      (supabase.from("workflow_ejecuciones_globales") as any)
+      (db.from("workflow_ejecuciones_globales") as any)
         .select("*, workflow_reglas_globales(nombre)").eq("workspace_id", wsId)
         .order("created_at", { ascending: false }).limit(50),
     ]);
@@ -84,8 +84,8 @@ export default function WorkflowsAvanzados() {
     if (!form.nombre || !form.evento || form.acciones.length === 0) {
       toast.error("Completa nombre, evento y al menos una acción"); return;
     }
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await (supabase.from("workflow_reglas_globales") as any).insert({
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await (db.from("workflow_reglas_globales") as any).insert({
       workspace_id: wsId, nombre: form.nombre, descripcion: form.descripcion || null,
       evento: form.evento, retraso_minutos: form.retraso_minutos || 0, prioridad: form.prioridad || 0,
       acciones: form.acciones.map((a: string) => ({ tipo: a })),
@@ -99,7 +99,7 @@ export default function WorkflowsAvanzados() {
   };
 
   const toggleActiva = async (id: string, activa: boolean) => {
-    await (supabase.from("workflow_reglas_globales") as any).update({ activa }).eq("id", id);
+    await (db.from("workflow_reglas_globales") as any).update({ activa }).eq("id", id);
     cargar();
   };
 

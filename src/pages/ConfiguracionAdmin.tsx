@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -140,8 +140,8 @@ const ConfiguracionAdmin = () => {
     if (!currentWorkspace?.id) return;
     try {
       const [pRes, dRes] = await Promise.all([
-        supabase.from("pacientes").select("id", { count: "exact", head: true }),
-        supabase.from("personal_salud").select("id", { count: "exact", head: true }),
+        db.from("pacientes").select("id", { count: "exact", head: true }),
+        db.from("personal_salud").select("id", { count: "exact", head: true }),
       ]);
       if (pRes.count !== null && pRes.count !== undefined) {
         setPacientesCount(pRes.count);
@@ -161,7 +161,7 @@ const ConfiguracionAdmin = () => {
     if (!currentWorkspace?.id) return;
     setLoadingUsers(true);
     try {
-      const { data: members, error: membersError } = await supabase
+      const { data: members, error: membersError } = await db
         .from("workspace_members")
         .select("user_id, role")
         .eq("workspace_id", currentWorkspace.id);
@@ -175,7 +175,7 @@ const ConfiguracionAdmin = () => {
         return;
       }
 
-      const { data: profilesData, error: profilesError } = await supabase
+      const { data: profilesData, error: profilesError } = await db
         .from("profiles")
         .select("*")
         .in("id", userIds)
@@ -183,7 +183,7 @@ const ConfiguracionAdmin = () => {
 
       if (profilesError) throw profilesError;
 
-      const { data: rolesData } = await supabase
+      const { data: rolesData } = await db
         .from("user_roles")
         .select("user_id, role")
         .in("user_id", userIds);

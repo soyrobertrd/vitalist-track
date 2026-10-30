@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -295,13 +295,13 @@ export default function CatalogosClinicos() {
     (async () => {
       try {
         const [{ data: a }, { data: b }] = await Promise.all([
-          (supabase as any)
+          (db as any)
             .from("catalogo_cie10")
             .select("*")
             .eq("activo", true)
             .order("codigo")
             .limit(500),
-          (supabase as any)
+          (db as any)
             .from("catalogo_cpt")
             .select("*")
             .eq("activo", true)

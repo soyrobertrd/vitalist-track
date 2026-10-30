@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 
 interface UserProfile {
   id: string;
@@ -21,14 +21,14 @@ export function useUserProfile() {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await db.auth.getUser();
         if (!user) {
           setLoading(false);
           return;
         }
 
       // Get profile (without .single() to avoid error when no profile exists)
-      const { data: profileData, error: profileError } = await supabase
+      const { data: profileData, error: profileError } = await db
         .from("profiles")
         .select("*")
         .eq("id", user.id);
@@ -49,14 +49,14 @@ export function useUserProfile() {
       const profile = profileData[0];
 
         // Get role
-        const { data: roleData } = await supabase
+        const { data: roleData } = await db
           .from("user_roles")
           .select("role")
           .eq("user_id", user.id)
           .maybeSingle();
 
         // Get professional vertical (if user is a healthcare professional)
-        const { data: personalData } = await supabase
+        const { data: personalData } = await db
           .from("personal_salud")
           .select("vertical")
           .eq("user_id", user.id)
@@ -80,10 +80,10 @@ export function useUserProfile() {
   }, []);
 
   const updateProfile = async (updates: Partial<Omit<UserProfile, 'id' | 'rol'>>) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     if (!user) return { error: new Error("No user") };
 
-    const { error } = await supabase
+    const { error } = await db
       .from("profiles")
       .update(updates)
       .eq("id", user.id);

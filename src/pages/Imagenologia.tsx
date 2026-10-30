@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { usePacientes } from "@/hooks/usePacientes";
 import { usePersonal } from "@/hooks/usePersonal";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
@@ -138,7 +138,7 @@ export default function Imagenologia() {
   const fetchEstudios = async () => {
     if (!currentWorkspace) return;
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("estudios_imagen")
       .select("*, pacientes(id, nombre, apellido, cedula, fecha_nacimiento, genero), medico:medico_solicitante_id(id, nombre, apellido, especialidad), radiologo:radiologo_id(id, nombre, apellido)")
       .eq("workspace_id", currentWorkspace.id)
@@ -158,7 +158,7 @@ export default function Imagenologia() {
       toast.error("Seleccione el paciente y el tipo de estudio");
       return;
     }
-    const { error } = await supabase.from("estudios_imagen").insert({
+    const { error } = await db.from("estudios_imagen").insert({
       workspace_id: currentWorkspace.id,
       paciente_id: form.paciente_id,
       medico_solicitante_id: form.medico_solicitante_id || null,
@@ -199,7 +199,7 @@ export default function Imagenologia() {
   const updateEstado = async (id: string, estado: string) => {
     const updates: any = { estado };
     if (estado === "en_proceso") updates.fecha_realizacion = new Date().toISOString();
-    const { error } = await supabase.from("estudios_imagen").update(updates).eq("id", id);
+    const { error } = await db.from("estudios_imagen").update(updates).eq("id", id);
     if (error) toast.error(error.message);
     else {
       toast.success("Estado de adquisición actualizado");
@@ -234,7 +234,7 @@ export default function Imagenologia() {
       ? `${informe.conclusion}\n[CATEGORIZACIÓN: ${clasificacionSeleccionada}]`
       : informe.conclusion;
 
-    const { error } = await supabase
+    const { error } = await db
       .from("estudios_imagen")
       .update({
         hallazgos: informe.hallazgos,

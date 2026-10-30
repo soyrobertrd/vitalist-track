@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
@@ -75,12 +75,12 @@ const Llamadas = () => {
 
   const fetchData = async () => {
     const wsId = currentWorkspace?.id;
-    let llamadasQuery = supabase
+    let llamadasQuery = db
       .from("registro_llamadas")
       .select("*, pacientes!registro_llamadas_paciente_id_fkey(nombre, apellido), personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
       .order("fecha_agendada", { ascending: true });
-    let pacientesQuery = supabase.from("pacientes").select("*").eq("status_px", "activo");
-    let personalQuery = supabase.from("personal_salud").select("*").eq("activo", true);
+    let pacientesQuery = db.from("pacientes").select("*").eq("status_px", "activo");
+    let personalQuery = db.from("personal_salud").select("*").eq("activo", true);
     if (wsId) {
       llamadasQuery = llamadasQuery.eq("workspace_id", wsId);
       pacientesQuery = pacientesQuery.eq("workspace_id", wsId);
@@ -331,7 +331,7 @@ const Llamadas = () => {
 
     try {
       if (action === "assign_professional" && value) {
-        const { error } = await supabase
+        const { error } = await db
           .from("registro_llamadas")
           .update({ profesional_id: value })
           .in("id", selectedIds);
@@ -344,7 +344,7 @@ const Llamadas = () => {
           updateData.fecha_hora_realizada = new Date().toISOString();
         }
         
-        const { error } = await supabase
+        const { error } = await db
           .from("registro_llamadas")
           .update(updateData)
           .in("id", selectedIds);

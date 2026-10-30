@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ export default function ProgramaReferidos() {
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("referidos" as any).select("*").order("fecha_referido", { ascending: false });
+    const { data, error } = await db.from("referidos" as any).select("*").order("fecha_referido", { ascending: false });
     if (error) toast.error(error.message);
     setData((data as any[]) || []);
     setLoading(false);
@@ -23,7 +23,7 @@ export default function ProgramaReferidos() {
   const cambiarEstado = async (id: string, nuevoEstado: string) => {
     const upd: any = { estado: nuevoEstado };
     if (nuevoEstado === "convertido") upd.fecha_conversion = new Date().toISOString().slice(0,10);
-    const { error } = await supabase.from("referidos" as any).update(upd).eq("id", id);
+    const { error } = await db.from("referidos" as any).update(upd).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Estado actualizado");
     load();

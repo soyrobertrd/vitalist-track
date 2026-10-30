@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,7 @@ export default function ApiPublicaCitas() {
   async function load() {
     if (!currentWorkspace) return;
     setLoading(true);
-    const { data, error } = await supabase.from("public_appointment_tokens" as any)
+    const { data, error } = await db.from("public_appointment_tokens" as any)
       .select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false });
     if (error) toast.error(error.message);
     setTokens((data as any) ?? []);
@@ -34,18 +34,18 @@ export default function ApiPublicaCitas() {
 
   async function crear() {
     if (!currentWorkspace || !nombre.trim()) return;
-    const { error } = await supabase.from("public_appointment_tokens" as any)
+    const { error } = await db.from("public_appointment_tokens" as any)
       .insert({ workspace_id: currentWorkspace.id, nombre });
     if (error) toast.error(error.message); else { toast.success("API key generada"); setNombre(""); setOpen(false); load(); }
   }
 
   async function toggle(t: Token) {
-    await supabase.from("public_appointment_tokens" as any).update({ activo: !t.activo }).eq("id", t.id);
+    await db.from("public_appointment_tokens" as any).update({ activo: !t.activo }).eq("id", t.id);
     load();
   }
   async function eliminar(id: string) {
     if (!confirm("¿Eliminar API key?")) return;
-    await supabase.from("public_appointment_tokens" as any).delete().eq("id", id);
+    await db.from("public_appointment_tokens" as any).delete().eq("id", id);
     load();
   }
 

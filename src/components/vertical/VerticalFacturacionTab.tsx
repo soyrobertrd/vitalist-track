@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ export default function VerticalFacturacionTab() {
     queryKey: ["facturas", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("facturas") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(200);
+      const { data } = await (db.from("facturas") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(200);
       return data || [];
     },
   });
@@ -46,14 +46,14 @@ export default function VerticalFacturacionTab() {
     queryKey: ["pacientes_factura", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("pacientes") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).eq("status_px", "activo").order("nombre").limit(500);
+      const { data } = await (db.from("pacientes") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).eq("status_px", "activo").order("nombre").limit(500);
       return data || [];
     },
   });
 
   const crearFactura = async () => {
     if (!wsId || !form.monto_total) return;
-    const { error } = await supabase.from("facturas").insert({
+    const { error } = await db.from("facturas").insert({
       workspace_id: wsId,
       paciente_id: form.paciente_id || null,
       descripcion: form.descripcion || null,
@@ -70,7 +70,7 @@ export default function VerticalFacturacionTab() {
 
   const registrarPago = async () => {
     if (!selectedFactura || !pagoForm.monto) return;
-    const { error } = await supabase.from("pagos").insert({
+    const { error } = await db.from("pagos").insert({
       factura_id: selectedFactura,
       monto: pagoForm.monto,
       metodo: pagoForm.metodo || "efectivo",

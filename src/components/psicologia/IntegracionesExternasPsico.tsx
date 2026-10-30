@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ export default function IntegracionesExternasPsico({ workspaceId }: Props) {
   const [form, setForm] = useState({ tipo: "farmacia", nombre: "", endpoint: "" });
 
   const fetch = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("integraciones_externas_psico")
       .select("*").eq("workspace_id", workspaceId).order("created_at", { ascending: false });
     setItems(data || []);
@@ -26,19 +26,19 @@ export default function IntegracionesExternasPsico({ workspaceId }: Props) {
 
   const crear = async () => {
     if (!form.nombre) return toast.error("Nombre requerido");
-    const { error } = await supabase.from("integraciones_externas_psico").insert({
+    const { error } = await db.from("integraciones_externas_psico").insert({
       workspace_id: workspaceId, tipo: form.tipo, nombre: form.nombre, endpoint: form.endpoint || null,
     });
     if (error) toast.error(error.message); else { toast.success("Integración creada"); setForm({ tipo: "farmacia", nombre: "", endpoint: "" }); fetch(); }
   };
 
   const toggle = async (id: string, activo: boolean) => {
-    await supabase.from("integraciones_externas_psico").update({ activo: !activo }).eq("id", id);
+    await db.from("integraciones_externas_psico").update({ activo: !activo }).eq("id", id);
     fetch();
   };
 
   const eliminar = async (id: string) => {
-    await supabase.from("integraciones_externas_psico").delete().eq("id", id);
+    await db.from("integraciones_externas_psico").delete().eq("id", id);
     fetch();
   };
 

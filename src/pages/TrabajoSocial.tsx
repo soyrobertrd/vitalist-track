@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,7 +101,7 @@ export default function TrabajoSocial() {
     queryKey: ["casos_trabajo_social", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("casos_trabajo_social" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -115,7 +115,7 @@ export default function TrabajoSocial() {
     queryKey: ["referimientos_sociales", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("referimientos_sociales" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -130,7 +130,7 @@ export default function TrabajoSocial() {
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const numCaso = `TS-${Date.now().toString().slice(-6)}`;
-      const { error } = await supabase.from("casos_trabajo_social" as any).insert({
+      const { error } = await db.from("casos_trabajo_social" as any).insert({
         workspace_id: currentWorkspace.id,
         numero: numCaso,
         tipo_caso: formDataCaso.tipo_caso,
@@ -161,7 +161,7 @@ export default function TrabajoSocial() {
   const crearReferimiento = useMutation({
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
-      const { error } = await supabase.from("referimientos_sociales" as any).insert({
+      const { error } = await db.from("referimientos_sociales" as any).insert({
         workspace_id: currentWorkspace.id,
         caso_id: formDataRef.caso_id || null,
         institucion_destino: formDataRef.institucion_destino,

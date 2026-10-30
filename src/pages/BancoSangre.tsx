@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,7 @@ const BancoSangre = () => {
     queryKey: ["donantes-sangre", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase.from("donantes_sangre").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false });
+      const { data } = await db.from("donantes_sangre").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false });
       return data || [];
     },
     enabled: !!currentWorkspace?.id,
@@ -42,7 +42,7 @@ const BancoSangre = () => {
     queryKey: ["unidades-sangre", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase.from("unidades_sangre").select("*, donantes_sangre(nombre, apellido)").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false });
+      const { data } = await db.from("unidades_sangre").select("*, donantes_sangre(nombre, apellido)").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false });
       return data || [];
     },
     enabled: !!currentWorkspace?.id,
@@ -52,7 +52,7 @@ const BancoSangre = () => {
     queryKey: ["solicitudes-transfusion", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase.from("solicitudes_transfusion").select("*, pacientes(nombre, apellido)").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false });
+      const { data } = await db.from("solicitudes_transfusion").select("*, pacientes(nombre, apellido)").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false });
       return data || [];
     },
     enabled: !!currentWorkspace?.id,
@@ -61,7 +61,7 @@ const BancoSangre = () => {
   const createDonante = useMutation({
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error();
-      const { error } = await supabase.from("donantes_sangre").insert({ ...donForm, workspace_id: currentWorkspace.id } as any);
+      const { error } = await db.from("donantes_sangre").insert({ ...donForm, workspace_id: currentWorkspace.id } as any);
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["donantes-sangre"] }); setShowNewDonante(false); toast.success("Donante registrado"); },
@@ -71,7 +71,7 @@ const BancoSangre = () => {
   const createUnidad = useMutation({
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error();
-      const { error } = await supabase.from("unidades_sangre").insert({
+      const { error } = await db.from("unidades_sangre").insert({
         workspace_id: currentWorkspace.id,
         tipo_sangre: uniForm.tipo_sangre,
         factor_rh: uniForm.factor_rh,

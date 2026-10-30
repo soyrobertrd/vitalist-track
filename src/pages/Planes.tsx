@@ -3,7 +3,7 @@ import { Check, Crown, Loader2, Sparkles, Globe } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace, type Plan } from "@/contexts/WorkspaceContext";
 import { CANONICAL_PLANES, TRIAL_DAYS } from "@/config/planes";
 import { ClinicDomainManager } from "@/components/workspace/ClinicDomainManager";
@@ -51,8 +51,8 @@ export default function Planes() {
       if (!currentWorkspace?.id) return;
       try {
         const [pRes, vRes] = await Promise.all([
-          supabase.from("pacientes").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
-          supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
+          db.from("pacientes").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
+          db.from("control_visitas").select("id", { count: "exact", head: true }).eq("workspace_id", currentWorkspace.id),
         ]);
         if (typeof pRes.count === "number" && pRes.count > 0) setPacientesCount(pRes.count);
         if (typeof vRes.count === "number" && vRes.count > 0) setCitasCount(vRes.count);
@@ -79,13 +79,13 @@ export default function Planes() {
 
     setChanging(codigo);
     try {
-      const { error: upErr } = await supabase
+      const { error: upErr } = await db
         .from("workspaces")
         .update({ plan_codigo: codigo })
         .eq("id", currentWorkspace.id);
       if (upErr) throw upErr;
 
-      await supabase.from("subscripciones").insert({
+      await db.from("subscripciones").insert({
         workspace_id: currentWorkspace.id,
         plan_codigo: codigo,
         proveedor: "manual",

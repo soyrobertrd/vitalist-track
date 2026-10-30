@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, ShieldOff, PlayCircle, EyeOff, AlertTriangle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -40,7 +40,7 @@ export default function PanelRetencion() {
     if (!currentWorkspace?.id) return;
     setLoading(true);
     try {
-      const { data, error } = await (supabase as any).rpc("listar_pacientes_para_anonimizar", {
+      const { data, error } = await (db as any).rpc("listar_pacientes_para_anonimizar", {
         _workspace_id: currentWorkspace.id,
       });
       if (error) throw error;
@@ -59,7 +59,7 @@ export default function PanelRetencion() {
 
   const anonimizarUno = async (c: Candidato) => {
     try {
-      const { data, error } = await (supabase as any).rpc("anonimizar_paciente_seguro", {
+      const { data, error } = await (db as any).rpc("anonimizar_paciente_seguro", {
         _paciente_id: c.paciente_id,
         _motivo: "Anonimización manual desde panel",
       });
@@ -77,7 +77,7 @@ export default function PanelRetencion() {
     if (!currentWorkspace?.id) return;
     setEjecutando(true);
     try {
-      const { data, error } = await (supabase as any).rpc("aplicar_politica_retencion", {
+      const { data, error } = await (db as any).rpc("aplicar_politica_retencion", {
         _workspace_id: currentWorkspace.id,
         _dry_run: dryRun,
       });

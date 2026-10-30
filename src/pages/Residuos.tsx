@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,7 +94,7 @@ export default function Residuos() {
     queryKey: ["residuos_hospitalarios", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("residuos_hospitalarios" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -108,7 +108,7 @@ export default function Residuos() {
     queryKey: ["manifiestos_residuos", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("manifiestos_residuos" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -123,7 +123,7 @@ export default function Residuos() {
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const num = `RPBI-${Date.now().toString().slice(-6)}`;
-      const { error } = await supabase.from("residuos_hospitalarios" as any).insert({
+      const { error } = await db.from("residuos_hospitalarios" as any).insert({
         workspace_id: currentWorkspace.id,
         numero: num,
         tipo: formDataResiduo.tipo,
@@ -152,7 +152,7 @@ export default function Residuos() {
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const num = `MAN-${Date.now().toString().slice(-6)}`;
-      const { error } = await supabase.from("manifiestos_residuos" as any).insert({
+      const { error } = await db.from("manifiestos_residuos" as any).insert({
         workspace_id: currentWorkspace.id,
         numero: num,
         transportista: formDataManifiesto.transportista,

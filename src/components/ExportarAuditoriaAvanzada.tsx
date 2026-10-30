@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Download, FileSpreadsheet } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 
 export function ExportarAuditoriaAvanzada() {
@@ -19,7 +19,7 @@ export function ExportarAuditoriaAvanzada() {
   const exportar = async (formato: "csv" | "json") => {
     setLoading(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await db.auth.getSession();
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/exportar-auditoria-avanzada`;
       const res = await fetch(url, {
         method: "POST",

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -69,9 +69,9 @@ export default function VerticalIdiomaAccesibilidadTab() {
   const { data: prefIdioma } = useQuery({
     queryKey: ["preferencias_idioma"],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (!user) return null;
-      const { data } = await (supabase.from("preferencias_idioma") as any)
+      const { data } = await (db.from("preferencias_idioma") as any)
         .select("*").eq("user_id", user.id).maybeSingle();
       return data;
     },
@@ -80,9 +80,9 @@ export default function VerticalIdiomaAccesibilidadTab() {
   const { data: prefAccesibilidad } = useQuery({
     queryKey: ["configuracion_accesibilidad"],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (!user) return null;
-      const { data } = await (supabase.from("configuracion_accesibilidad") as any)
+      const { data } = await (db.from("configuracion_accesibilidad") as any)
         .select("*").eq("user_id", user.id).maybeSingle();
       return data;
     },
@@ -110,10 +110,10 @@ export default function VerticalIdiomaAccesibilidadTab() {
 
   const guardarIdioma = useMutation({
     mutationFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (!user) throw new Error("No autenticado");
       const payload = { user_id: user.id, idioma, zona_horaria: zona, formato_fecha: fmtFecha, formato_moneda: fmtMoneda };
-      const { error } = await (supabase.from("preferencias_idioma") as any).upsert(payload, { onConflict: "user_id" });
+      const { error } = await (db.from("preferencias_idioma") as any).upsert(payload, { onConflict: "user_id" });
       if (error) throw error;
     },
     onSuccess: () => { toast.success("Preferencias de idioma guardadas"); qc.invalidateQueries({ queryKey: ["preferencias_idioma"] }); },
@@ -122,14 +122,14 @@ export default function VerticalIdiomaAccesibilidadTab() {
 
   const guardarAccesibilidad = useMutation({
     mutationFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (!user) throw new Error("No autenticado");
       const payload = {
         user_id: user.id, alto_contraste: altoContraste, tamano_fuente: tamFuente,
         reducir_movimiento: reducirMov, lector_pantalla: lectorPantalla,
         navegacion_teclado: navTeclado, daltonismo,
       };
-      const { error } = await (supabase.from("configuracion_accesibilidad") as any).upsert(payload, { onConflict: "user_id" });
+      const { error } = await (db.from("configuracion_accesibilidad") as any).upsert(payload, { onConflict: "user_id" });
       if (error) throw error;
     },
     onSuccess: () => { toast.success("Preferencias de accesibilidad guardadas"); qc.invalidateQueries({ queryKey: ["configuracion_accesibilidad"] }); },

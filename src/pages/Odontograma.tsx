@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { differenceInYears } from "date-fns";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,7 +68,7 @@ const Odontograma = () => {
   const { data: resultados } = useQuery({
     queryKey: ["pacientes-odonto", currentWorkspace?.id, busqueda],
     queryFn: async () => {
-      let q = supabase
+      let q = db
         .from("pacientes")
         .select("id, nombre, apellido, cedula, fecha_nacimiento, email_px, contacto_px")
         .eq("workspace_id", currentWorkspace!.id)
@@ -83,7 +83,7 @@ const Odontograma = () => {
   const { data: odontogramas } = useQuery({
     queryKey: ["odontogramas", paciente?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("odontogramas").select("*").eq("paciente_id", paciente!.id).order("fecha_evaluacion", { ascending: false });
+      const { data } = await db.from("odontogramas").select("*").eq("paciente_id", paciente!.id).order("fecha_evaluacion", { ascending: false });
       if (data?.length && !odontogramaId) setOdontogramaId(data[0].id);
       return data ?? [];
     },
@@ -93,7 +93,7 @@ const Odontograma = () => {
   const { data: hallazgos = [] } = useQuery({
     queryKey: ["hallazgos", odontogramaId],
     queryFn: async () => {
-      const { data } = await supabase.from("hallazgos_dentales").select("*").eq("odontograma_id", odontogramaId!);
+      const { data } = await db.from("hallazgos_dentales").select("*").eq("odontograma_id", odontogramaId!);
       return (data ?? []) as (HallazgoDiente & { numero_diente: number; notas: string | null; created_at: string })[];
     },
     enabled: !!odontogramaId,
@@ -102,7 +102,7 @@ const Odontograma = () => {
   const { data: tratamientos = [] } = useQuery({
     queryKey: ["tratamientos-dental", odontogramaId, hallazgos.length],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("tratamientos_dentales")
         .select("*, hallazgos_dentales(numero_diente, cara)")
         .in("hallazgo_id", hallazgos.map((h) => h.id))
@@ -115,7 +115,7 @@ const Odontograma = () => {
   const { data: presupuestos = [] } = useQuery({
     queryKey: ["presupuestos-dental", paciente?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("presupuestos_dentales").select("*").eq("paciente_id", paciente!.id).order("created_at", { ascending: false });
+      const { data } = await db.from("presupuestos_dentales").select("*").eq("paciente_id", paciente!.id).order("created_at", { ascending: false });
       return data ?? [];
     },
     enabled: !!paciente,
@@ -123,7 +123,7 @@ const Odontograma = () => {
 
   const crearOdontograma = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("odontogramas")
         .insert({ workspace_id: currentWorkspace!.id, paciente_id: paciente!.id })
         .select()
@@ -142,7 +142,7 @@ const Odontograma = () => {
   const registrar = useMutation({
     mutationFn: async (p: { tipo: string; procedimiento?: string }) => {
       if (!odontogramaId || !diente) throw new Error("Selecciona un diente");
-      const { data: h, error } = await supabase
+      const { data: h, error } = await db
         .from("hallazgos_dentales")
         .insert({
           odontograma_id: odontogramaId,
@@ -156,7 +156,7 @@ const Odontograma = () => {
         .single();
       if (error) throw error;
       if (p.procedimiento) {
-        const { error: e2 } = await supabase.from("tratamientos_dentales").insert({
+        const { error: e2 } = await db.from("tratamientos_dentales").insert({
           hallazgo_id: h.id,
           procedimiento: p.procedimiento,
           costo_estimado: Number(costo) || 0,

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,7 +79,7 @@ export function ModoRecepcionAgil() {
     const desde = startOfDay(hoy).toISOString();
     const hasta = endOfDay(hoy).toISOString();
 
-    let query = supabase
+    let query = db
       .from("control_visitas")
       .select(`
         id,
@@ -112,7 +112,7 @@ export function ModoRecepcionAgil() {
     cargarCitasHoy();
     // Cargar profesionales para asignación rápida
     const fetchProfesionales = async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("personal_salud")
         .select("id, nombre, apellido")
         .order("nombre", { ascending: true });
@@ -141,7 +141,7 @@ export function ModoRecepcionAgil() {
           setCitas((prev) =>
             prev.map((c) => (c.id === citaId ? { ...c, estado: estadoPrevio } : c))
           );
-          await supabase
+          await db
             .from("control_visitas")
             .update({ estado: estadoPrevio, notas_visita: null } as any)
             .eq("id", citaId);
@@ -151,7 +151,7 @@ export function ModoRecepcionAgil() {
     });
 
     // 3. Sincronización en segundo plano con la base de datos
-    const { error } = await supabase
+    const { error } = await db
       .from("control_visitas")
       .update({
         estado: "en_sala",
@@ -186,7 +186,7 @@ export function ModoRecepcionAgil() {
           setCitas((prev) =>
             prev.map((c) => (c.id === citaId ? { ...c, estado: estadoPrevio } : c))
           );
-          await supabase
+          await db
             .from("control_visitas")
             .update({ estado: estadoPrevio } as any)
             .eq("id", citaId);
@@ -196,7 +196,7 @@ export function ModoRecepcionAgil() {
     });
 
     // 3. Sincronización en segundo plano
-    const { error } = await supabase
+    const { error } = await db
       .from("control_visitas")
       .update({
         estado: "realizada",
@@ -236,7 +236,7 @@ export function ModoRecepcionAgil() {
     try {
       const numeroFactura = `REC-${Date.now().toString().slice(-6)}`;
       // 1. Insertar factura pagada
-      const { data: factura, error: errFac } = await supabase
+      const { data: factura, error: errFac } = await db
         .from("facturas")
         .insert({
           paciente_id: citaCobro.paciente_id,
@@ -258,7 +258,7 @@ export function ModoRecepcionAgil() {
 
       // 2. Registrar en tabla de pagos
       if (factura) {
-        await supabase.from("pagos").insert({
+        await db.from("pagos").insert({
           factura_id: factura.id,
           monto,
           metodo: metodoPago,
@@ -293,7 +293,7 @@ export function ModoRecepcionAgil() {
     setGuardandoRegistro(true);
     try {
       // 1. Crear paciente rápido
-      const { data: px, error: pxErr } = await supabase
+      const { data: px, error: pxErr } = await db
         .from("pacientes")
         .insert({
           nombre: regNombre.trim(),
@@ -310,7 +310,7 @@ export function ModoRecepcionAgil() {
       if (pxErr) throw pxErr;
 
       // 2. Crear cita inmediata de hoy con estado "en_sala"
-      const { error: visErr } = await supabase
+      const { error: visErr } = await db
         .from("control_visitas")
         .insert({
           paciente_id: px.id,

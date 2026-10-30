@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MapPin, Navigation, Users, Route, ExternalLink, Calendar, AlertCircle, Edit2, Check, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -74,7 +74,7 @@ export function GeolocationMap({ profesionalId, fecha: initialFecha }: Geolocati
     const endOfDay = new Date(fecha);
     endOfDay.setHours(23, 59, 59, 999);
 
-    let query = supabase
+    let query = db
       .from("control_visitas")
       .select(`
         id,
@@ -170,7 +170,7 @@ export function GeolocationMap({ profesionalId, fecha: initialFecha }: Geolocati
     }
 
     // Save to database
-    const { error } = await supabase
+    const { error } = await db
       .from("pacientes")
       .update({ 
         latitud: coordsForm.lat ? lat : null, 

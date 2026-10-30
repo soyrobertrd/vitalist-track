@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { normalizePhoneNumber } from "@/lib/validaciones";
 
 interface DuplicadoEncontrado {
@@ -36,7 +36,7 @@ export function useDetectarDuplicados(
   // Fetch existing exceptions
   useEffect(() => {
     const fetchExcepciones = async () => {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("excepciones_duplicados")
         .select("paciente_existente_id, campo_duplicado, valor_duplicado");
       
@@ -48,7 +48,7 @@ export function useDetectarDuplicados(
   }, []);
 
   const refetchExcepciones = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("excepciones_duplicados")
       .select("paciente_existente_id, campo_duplicado, valor_duplicado");
     
@@ -63,9 +63,9 @@ export function useDetectarDuplicados(
     valor: string,
     notas?: string
   ) => {
-    const { data: userData } = await supabase.auth.getUser();
+    const { data: userData } = await db.auth.getUser();
     
-    const { error } = await supabase
+    const { error } = await db
       .from("excepciones_duplicados")
       .upsert({
         paciente_existente_id: pacienteExistenteId,
@@ -130,7 +130,7 @@ export function useDetectarDuplicados(
 
       setLoading(true);
       try {
-        let query = supabase
+        let query = db
           .from("pacientes")
           .select("*")
           .eq("status_px", "activo");

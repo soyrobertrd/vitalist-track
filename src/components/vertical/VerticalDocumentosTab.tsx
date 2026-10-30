@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ export default function VerticalDocumentosTab({ verticalTipo }: Props) {
     queryKey: ["documentos_clinicos_v", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("documentos_clinicos") as any)
+      const { data } = await (db.from("documentos_clinicos") as any)
         .select("*")
         .eq("workspace_id", wsId!)
         .order("created_at", { ascending: false })
@@ -55,7 +55,7 @@ export default function VerticalDocumentosTab({ verticalTipo }: Props) {
     queryKey: ["firmas_electronicas", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("firmas_electronicas") as any)
+      const { data } = await (db.from("firmas_electronicas") as any)
         .select("*")
         .eq("workspace_id", wsId!)
         .order("created_at", { ascending: false })
@@ -68,7 +68,7 @@ export default function VerticalDocumentosTab({ verticalTipo }: Props) {
     queryKey: ["escaneos_ocr", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("escaneos_ocr") as any)
+      const { data } = await (db.from("escaneos_ocr") as any)
         .select("*")
         .eq("workspace_id", wsId!)
         .order("created_at", { ascending: false })
@@ -79,8 +79,8 @@ export default function VerticalDocumentosTab({ verticalTipo }: Props) {
 
   const crearDocumento = useMutation({
     mutationFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await (supabase.from("documentos_clinicos") as any).insert({
+      const { data: { user } } = await db.auth.getUser();
+      const { error } = await (db.from("documentos_clinicos") as any).insert({
         workspace_id: wsId,
         titulo,
         descripcion: descripcion || null,

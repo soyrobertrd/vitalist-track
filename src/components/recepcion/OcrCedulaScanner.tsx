@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Camera, Loader2, ScanText } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 
 interface Props {
@@ -27,7 +27,7 @@ export function OcrCedulaScanner({ onCedulaDetectada }: Props) {
       setPreview(base64);
       setLoading(true);
       try {
-        const { data, error } = await supabase.functions.invoke("ocr-cedula", {
+        const { data, error } = await db.functions.invoke("ocr-cedula", {
           body: { imageBase64: base64 },
         });
         if (error) throw error;

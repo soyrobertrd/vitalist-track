@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,8 +76,8 @@ export default function ARAging() {
     if (!wsId) return;
     setLoading(true);
     const [{ data: a }, { data: b }] = await Promise.all([
-      (supabase as any).rpc("calcular_ar_aging", { _workspace_id: wsId }),
-      (supabase as any)
+      (db as any).rpc("calcular_ar_aging", { _workspace_id: wsId }),
+      (db as any)
         .from("ar_aging_snapshots")
         .select("*")
         .eq("workspace_id", wsId)
@@ -98,7 +98,7 @@ export default function ARAging() {
     const map: any = { "0-30": 0, "31-60": 0, "61-90": 0, "90+": 0 };
     aging.forEach((a) => (map[a.rango] = Number(a.monto || 0)));
     const total = Object.values(map).reduce((s: number, v: any) => s + v, 0);
-    const { error } = await (supabase as any).from("ar_aging_snapshots").insert({
+    const { error } = await (db as any).from("ar_aging_snapshots").insert({
       workspace_id: wsId,
       fecha_corte: new Date().toISOString().slice(0, 10),
       rango_0_30: map["0-30"],

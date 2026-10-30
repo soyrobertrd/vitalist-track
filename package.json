@@ -15,7 +15,16 @@
     "verify:auth": "node scripts/verify-local-user-auth.mjs",
     "export:turso": "node scripts/export-supabase-to-turso.mjs",
     "export:turso:dry": "node scripts/export-supabase-to-turso.mjs --dry-run",
-    "ci": "tsc --noEmit -p tsconfig.app.json && vite build"
+    "ci": "tsc --noEmit -p tsconfig.app.json && vite build",
+    "db:esquema": "node scripts/generar-esquema-sqlite.mjs",
+    "db:migrar": "tsx scripts/migrar-a-turso.ts",
+    "db:clave": "tsx scripts/asignar-clave.ts",
+    "test:db": "tsx scripts/test-mock-client.ts",
+    "test:api": "tsx scripts/test-api-turso.ts",
+    "db:migrar:demo": "tsx scripts/migrar-a-turso.ts --demo",
+    "db:migrar:supabase": "tsx scripts/migrar-a-turso.ts --supabase",
+    "db:migrar:todo": "tsx scripts/migrar-a-turso.ts --supabase --demo",
+    "db:migrar:local": "tsx scripts/migrar-a-turso.ts --local --demo"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
@@ -99,6 +108,7 @@
     "globals": "^15.15.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.15",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^5.4.19"

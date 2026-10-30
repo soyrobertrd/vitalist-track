@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -44,7 +44,7 @@ export function EscalasEnfermeriaManager({ pacienteId, visitaId }: { pacienteId:
   const [obs, setObs] = useState("");
 
   const load = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("escalas_enfermeria")
       .select("id, tipo, puntaje, riesgo, observaciones, fecha")
       .eq("paciente_id", pacienteId)
@@ -57,9 +57,9 @@ export function EscalasEnfermeriaManager({ pacienteId, visitaId }: { pacienteId:
   const guardar = async () => {
     const score = parseFloat(puntaje);
     if (isNaN(score)) { toast.error("Puntaje requerido"); return; }
-    const { data: u } = await supabase.auth.getUser();
+    const { data: u } = await db.auth.getUser();
     const riesgo = calcularRiesgo(tipo, score);
-    const { error } = await supabase.from("escalas_enfermeria").insert({
+    const { error } = await db.from("escalas_enfermeria").insert({
       paciente_id: pacienteId,
       visita_id: visitaId || null,
       tipo, puntaje: score, riesgo,
@@ -73,7 +73,7 @@ export function EscalasEnfermeriaManager({ pacienteId, visitaId }: { pacienteId:
   };
 
   const eliminar = async (id: string) => {
-    const { error } = await supabase.from("escalas_enfermeria").delete().eq("id", id);
+    const { error } = await db.from("escalas_enfermeria").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     load();
   };

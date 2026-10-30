@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useTabParam } from "@/hooks/useTabParam";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -102,7 +102,7 @@ function DentalCareProContent() {
     queryKey: ["planes_tratamiento_dental", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase.from("planes_tratamiento_dental" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100);
+      const { data } = await db.from("planes_tratamiento_dental" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100);
       return (data || []) as any[];
     },
   });
@@ -111,7 +111,7 @@ function DentalCareProContent() {
     queryKey: ["controles_ortodoncia", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase.from("controles_ortodoncia" as any).select("*").eq("workspace_id", wsId!).order("fecha", { ascending: false }).limit(100);
+      const { data } = await db.from("controles_ortodoncia" as any).select("*").eq("workspace_id", wsId!).order("fecha", { ascending: false }).limit(100);
       return (data || []) as any[];
     },
   });
@@ -120,7 +120,7 @@ function DentalCareProContent() {
     queryKey: ["ordenes_laboratorio_dental", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase.from("ordenes_laboratorio_dental" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100);
+      const { data } = await db.from("ordenes_laboratorio_dental" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100);
       return (data || []) as any[];
     },
   });
@@ -129,7 +129,7 @@ function DentalCareProContent() {
     queryKey: ["sillones_dentales", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase.from("sillones_dentales" as any).select("*").eq("workspace_id", wsId!).order("nombre");
+      const { data } = await db.from("sillones_dentales" as any).select("*").eq("workspace_id", wsId!).order("nombre");
       return (data || []) as any[];
     },
   });
@@ -138,7 +138,7 @@ function DentalCareProContent() {
     queryKey: ["comisiones_profesional", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("comisiones_profesional") as any).select("*, personal_salud(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false });
+      const { data } = await (db.from("comisiones_profesional") as any).select("*, personal_salud(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false });
       return (data || []) as any[];
     },
   });
@@ -147,7 +147,7 @@ function DentalCareProContent() {
     queryKey: ["presupuestos_sonrisa", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("presupuestos_sonrisa") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100);
+      const { data } = await (db.from("presupuestos_sonrisa") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100);
       return (data || []) as any[];
     },
   });
@@ -156,7 +156,7 @@ function DentalCareProContent() {
     queryKey: ["recordatorios_fidelizacion_dental", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("recordatorios_fidelizacion") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("proxima_fecha").limit(200);
+      const { data } = await (db.from("recordatorios_fidelizacion") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("proxima_fecha").limit(200);
       return (data || []) as any[];
     },
   });
@@ -166,7 +166,7 @@ function DentalCareProContent() {
 
   const crearSillon = async () => {
     if (!wsId || !sillonForm.nombre) return;
-    const { error } = await supabase.from("sillones_dentales" as any).insert({ workspace_id: wsId, ...sillonForm });
+    const { error } = await db.from("sillones_dentales" as any).insert({ workspace_id: wsId, ...sillonForm });
     if (error) { toast.error(error.message); return; }
     toast.success("Sillón agregado");
     setOpenSillon(false);
@@ -181,14 +181,14 @@ function DentalCareProContent() {
     queryKey: ["pacientes_dental_combo", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("pacientes") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).eq("status_px", "activo").order("nombre").limit(500);
+      const { data } = await (db.from("pacientes") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).eq("status_px", "activo").order("nombre").limit(500);
       return (data || []) as any[];
     },
   });
 
   const crearPresupuesto = async () => {
     if (!wsId || !presupForm.monto_total) return;
-    const { error } = await supabase.from("presupuestos_sonrisa" as any).insert({
+    const { error } = await db.from("presupuestos_sonrisa" as any).insert({
       workspace_id: wsId,
       paciente_id: presupForm.paciente_id || null,
       monto_total: presupForm.monto_total,

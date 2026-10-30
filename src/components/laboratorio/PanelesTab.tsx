@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ export function PanelesTab({ workspaceId, paneles, queryClient }: PanelesTabProp
         const parts = l.split("|").map((s) => s.trim());
         return { nombre: parts[0], categoria: parts[1] || "", rango: parts[2] || "" };
       });
-      const { error } = await supabase.from("paneles_laboratorio").insert({
+      const { error } = await db.from("paneles_laboratorio").insert({
         workspace_id: workspaceId,
         nombre,
         codigo: codigo || null,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ export default function CentroComando() {
   const cargar = async () => {
     if (!currentWorkspace) return;
     setLoading(true);
-    const { data, error } = await supabase.rpc("centro_comando_metricas", {
+    const { data, error } = await db.rpc("centro_comando_metricas", {
       _workspace_id: currentWorkspace.id,
     });
     if (!error && data) setData(data as unknown as Metricas);

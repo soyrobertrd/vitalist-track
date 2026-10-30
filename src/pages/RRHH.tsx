@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -57,11 +57,11 @@ export default function RRHH() {
   const fetch = async () => {
     if (!wsId) return;
     const [d, p, e, v, emp] = await Promise.all([
-      supabase.from("departamentos_rrhh").select("*").eq("workspace_id", wsId).order("nombre"),
-      supabase.from("puestos_rrhh").select("*").eq("workspace_id", wsId).order("nombre"),
-      supabase.from("expedientes_empleado").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
-      supabase.from("vacaciones_permisos").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
-      supabase.from("empleados_nomina").select("id, nombre, apellido").eq("workspace_id", wsId).eq("activo", true).order("nombre"),
+      db.from("departamentos_rrhh").select("*").eq("workspace_id", wsId).order("nombre"),
+      db.from("puestos_rrhh").select("*").eq("workspace_id", wsId).order("nombre"),
+      db.from("expedientes_empleado").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
+      db.from("vacaciones_permisos").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
+      db.from("empleados_nomina").select("id, nombre, apellido").eq("workspace_id", wsId).eq("activo", true).order("nombre"),
     ]);
     if (d.data) setDepartamentos(d.data);
     if (p.data) setPuestos(p.data);
@@ -81,7 +81,7 @@ export default function RRHH() {
 
   const crearDept = async () => {
     if (!wsId || !deptForm.nombre) return;
-    const { error } = await supabase.from("departamentos_rrhh").insert({ ...deptForm, workspace_id: wsId } as any);
+    const { error } = await db.from("departamentos_rrhh").insert({ ...deptForm, workspace_id: wsId } as any);
     if (error) { toast.error(error.message); return; }
     toast.success("Departamento creado");
     setOpenDept(false);
@@ -91,7 +91,7 @@ export default function RRHH() {
 
   const crearPuesto = async () => {
     if (!wsId || !puestoForm.nombre) return;
-    const { error } = await supabase.from("puestos_rrhh").insert({
+    const { error } = await db.from("puestos_rrhh").insert({
       ...puestoForm,
       workspace_id: wsId,
       departamento_id: puestoForm.departamento_id || null,
@@ -105,7 +105,7 @@ export default function RRHH() {
 
   const crearExpediente = async () => {
     if (!wsId || !expForm.empleado_id) return;
-    const { error } = await supabase.from("expedientes_empleado").insert({
+    const { error } = await db.from("expedientes_empleado").insert({
       ...expForm,
       workspace_id: wsId,
       puesto_id: expForm.puesto_id || null,
@@ -120,7 +120,7 @@ export default function RRHH() {
 
   const crearPermiso = async () => {
     if (!wsId || !permForm.empleado_id || !permForm.fecha_inicio || !permForm.fecha_fin) return;
-    const { error } = await supabase.from("vacaciones_permisos").insert({ ...permForm, workspace_id: wsId } as any);
+    const { error } = await db.from("vacaciones_permisos").insert({ ...permForm, workspace_id: wsId } as any);
     if (error) { toast.error(error.message); return; }
     toast.success("Solicitud creada");
     setOpenPermiso(false);
@@ -129,7 +129,7 @@ export default function RRHH() {
   };
 
   const cambiarEstadoPermiso = async (id: string, estado: string) => {
-    await supabase.from("vacaciones_permisos").update({ estado } as any).eq("id", id);
+    await db.from("vacaciones_permisos").update({ estado } as any).eq("id", id);
     toast.success(`Solicitud ${estado}`);
     fetch();
   };

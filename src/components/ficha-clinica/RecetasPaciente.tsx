@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -70,7 +70,7 @@ export function RecetasPaciente({ pacienteId }: Props) {
 
   const fetchRecetas = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("recetas")
       .select("*, personal_salud:profesional_id(nombre, apellido)")
       .eq("paciente_id", pacienteId)
@@ -80,7 +80,7 @@ export function RecetasPaciente({ pacienteId }: Props) {
       // Fetch items for each receta
       const ids = data.map((r: any) => r.id);
       const { data: allItems } = ids.length > 0
-        ? await supabase.from("recetas_items").select("*").in("receta_id", ids).order("orden")
+        ? await db.from("recetas_items").select("*").in("receta_id", ids).order("orden")
         : { data: [] };
 
       const recetasWithItems = data.map((r: any) => ({
@@ -98,7 +98,7 @@ export function RecetasPaciente({ pacienteId }: Props) {
 
   useEffect(() => {
     const fetchProf = async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("personal_salud")
         .select("id, nombre, apellido")
         .order("nombre");
@@ -152,12 +152,12 @@ export function RecetasPaciente({ pacienteId }: Props) {
       let recetaId = editingReceta.id;
 
       if (recetaId) {
-        const { error } = await supabase.from("recetas").update(payload).eq("id", recetaId);
+        const { error } = await db.from("recetas").update(payload).eq("id", recetaId);
         if (error) throw error;
         // Delete old items, re-insert
-        await supabase.from("recetas_items").delete().eq("receta_id", recetaId);
+        await db.from("recetas_items").delete().eq("receta_id", recetaId);
       } else {
-        const { data, error } = await supabase.from("recetas").insert(payload).select("id").single();
+        const { data, error } = await db.from("recetas").insert(payload).select("id").single();
         if (error) throw error;
         recetaId = data.id;
       }
@@ -175,7 +175,7 @@ export function RecetasPaciente({ pacienteId }: Props) {
         orden: idx,
       }));
 
-      const { error: itemsError } = await supabase.from("recetas_items").insert(itemsPayload);
+      const { error: itemsError } = await db.from("recetas_items").insert(itemsPayload);
       if (itemsError) throw itemsError;
 
       toast.success("Receta guardada");
@@ -190,7 +190,7 @@ export function RecetasPaciente({ pacienteId }: Props) {
 
   const deleteReceta = async (id: string) => {
     if (!confirm("¿Eliminar esta receta?")) return;
-    const { error } = await supabase.from("recetas").delete().eq("id", id);
+    const { error } = await db.from("recetas").delete().eq("id", id);
     if (error) {
       toast.error("Error al eliminar");
       return;

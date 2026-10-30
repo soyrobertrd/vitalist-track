@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -84,7 +84,7 @@ export default function Laboratorio() {
     queryKey: ["ordenes_laboratorio", workspaceId],
     queryFn: async () => {
       if (!workspaceId) return [];
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("ordenes_laboratorio")
         .select("*, pacientes(id, nombre, apellido, cedula, fecha_nacimiento, genero), personal_salud!ordenes_laboratorio_medico_solicitante_id_fkey(id, nombre, apellido, especialidad)")
         .eq("workspace_id", workspaceId)
@@ -100,7 +100,7 @@ export default function Laboratorio() {
     queryKey: ["pacientes_lab", workspaceId],
     queryFn: async () => {
       if (!workspaceId) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("pacientes")
         .select("id, nombre, apellido, cedula, fecha_nacimiento, genero")
         .eq("workspace_id", workspaceId)
@@ -116,7 +116,7 @@ export default function Laboratorio() {
     queryKey: ["medicos_lab", workspaceId],
     queryFn: async () => {
       if (!workspaceId) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("personal_salud")
         .select("id, nombre, apellido, especialidad")
         .eq("workspace_id", workspaceId)
@@ -131,7 +131,7 @@ export default function Laboratorio() {
     queryKey: ["pruebas_laboratorio", selectedOrder?.id],
     queryFn: async () => {
       if (!selectedOrder) return [];
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("pruebas_laboratorio")
         .select("*")
         .eq("orden_id", selectedOrder.id)
@@ -146,7 +146,7 @@ export default function Laboratorio() {
     queryKey: ["paneles_laboratorio", workspaceId],
     queryFn: async () => {
       if (!workspaceId) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("paneles_laboratorio")
         .select("*")
         .eq("workspace_id", workspaceId)
@@ -161,7 +161,7 @@ export default function Laboratorio() {
   const createOrder = useMutation({
     mutationFn: async () => {
       if (!workspaceId || !newOrder.paciente_id) throw new Error("Seleccione el paciente");
-      const { data: orden, error } = await supabase
+      const { data: orden, error } = await db
         .from("ordenes_laboratorio")
         .insert({
           workspace_id: workspaceId,
@@ -178,7 +178,7 @@ export default function Laboratorio() {
 
       const validTests = newTests.filter((t) => t.nombre_prueba.trim());
       if (validTests.length > 0) {
-        const { error: testErr } = await supabase.from("pruebas_laboratorio").insert(
+        const { error: testErr } = await db.from("pruebas_laboratorio").insert(
           validTests.map((t) => ({
             orden_id: orden.id,
             nombre_prueba: t.nombre_prueba,
@@ -205,7 +205,7 @@ export default function Laboratorio() {
       const updates: any = { estado };
       if (estado === "en_proceso") updates.fecha_recepcion_muestra = new Date().toISOString();
       if (estado === "completada") updates.fecha_resultado = new Date().toISOString();
-      const { error } = await supabase.from("ordenes_laboratorio").update(updates).eq("id", id);
+      const { error } = await db.from("ordenes_laboratorio").update(updates).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -216,7 +216,7 @@ export default function Laboratorio() {
 
   const saveTestResult = useMutation({
     mutationFn: async ({ id, resultado, anormal, critico }: { id: string; resultado: string; anormal: boolean; critico: boolean }) => {
-      const { error } = await supabase
+      const { error } = await db
         .from("pruebas_laboratorio")
         .update({ resultado, anormal, critico, estado: "completada" as any, fecha_resultado: new Date().toISOString() })
         .eq("id", id);

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,7 +100,7 @@ export default function Mantenimiento() {
     queryKey: ["equipos_hospitalarios", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("equipos_hospitalarios" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -113,7 +113,7 @@ export default function Mantenimiento() {
     queryKey: ["ordenes_mantenimiento", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("ordenes_mantenimiento" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -128,7 +128,7 @@ export default function Mantenimiento() {
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const num = `OT-${Date.now().toString().slice(-6)}`;
-      const { error } = await supabase.from("ordenes_mantenimiento" as any).insert({
+      const { error } = await db.from("ordenes_mantenimiento" as any).insert({
         workspace_id: currentWorkspace.id,
         numero: num,
         equipo_id: formDataOrden.equipo_id || null,
@@ -159,7 +159,7 @@ export default function Mantenimiento() {
   const crearEquipo = useMutation({
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
-      const { error } = await supabase.from("equipos_hospitalarios" as any).insert({
+      const { error } = await db.from("equipos_hospitalarios" as any).insert({
         workspace_id: currentWorkspace.id,
         nombre: formDataEquipo.nombre,
         marca: formDataEquipo.marca || null,

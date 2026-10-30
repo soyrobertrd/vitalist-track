@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useVerticalFilter } from "@/hooks/useVerticalFilter";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,7 +30,7 @@ export default function VerticalPacientesTab({ pacienteLabel = "Pacientes" }: Pr
     queryKey: ["pacientes_vertical", wsId, verticalActiva],
     enabled: !!wsId,
     queryFn: async () => {
-      let q: any = (supabase.from("pacientes") as any)
+      let q: any = (db.from("pacientes") as any)
         .select("*")
         .eq("workspace_id", wsId!)
         .eq("status_px", "activo");
@@ -44,7 +44,7 @@ export default function VerticalPacientesTab({ pacienteLabel = "Pacientes" }: Pr
 
   const crear = async () => {
     if (!wsId || !form.nombre) return;
-    const { error } = await supabase.from("pacientes").insert({
+    const { error } = await db.from("pacientes").insert({
       workspace_id: wsId,
       vertical: verticalParaInsert,
       nombre: form.nombre,

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
@@ -84,7 +84,7 @@ export function AusenciasProfesionalDialog({
   }, [open, profesionalId]);
 
   const fetchAusencias = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("ausencias_profesionales")
       .select("*")
       .eq("profesional_id", profesionalId)
@@ -98,7 +98,7 @@ export function AusenciasProfesionalDialog({
   };
 
   const fetchProfesionales = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("personal_salud")
       .select("*")
       .eq("activo", true)
@@ -111,7 +111,7 @@ export function AusenciasProfesionalDialog({
     const conflictosList: CitaConflicto[] = [];
 
     // Check calls
-    const { data: llamadas } = await supabase
+    const { data: llamadas } = await db
       .from("registro_llamadas")
       .select(`
         id,
@@ -138,7 +138,7 @@ export function AusenciasProfesionalDialog({
     }
 
     // Check visits
-    const { data: visitas } = await supabase
+    const { data: visitas } = await db
       .from("control_visitas")
       .select(`
         id,
@@ -193,7 +193,7 @@ export function AusenciasProfesionalDialog({
 
   const saveAusencia = async (data: typeof formData) => {
     setLoading(true);
-    const { error } = await supabase.from("ausencias_profesionales").insert([
+    const { error } = await db.from("ausencias_profesionales").insert([
       {
         profesional_id: profesionalId,
         fecha_inicio: data.fecha_inicio,
@@ -221,7 +221,7 @@ export function AusenciasProfesionalDialog({
   };
 
   const handleDeleteAusencia = async (id: string) => {
-    const { error } = await supabase.from("ausencias_profesionales").delete().eq("id", id);
+    const { error } = await db.from("ausencias_profesionales").delete().eq("id", id);
 
     if (error) {
       toast.error("Error al eliminar ausencia");
@@ -240,7 +240,7 @@ export function AusenciasProfesionalDialog({
       // Reassign to another professional
       for (const conflicto of conflictos) {
         if (conflicto.tipo === "llamada") {
-          await supabase
+          await db
             .from("registro_llamadas")
             .update({ 
               profesional_id: selectedProfesionalReasignar,
@@ -248,7 +248,7 @@ export function AusenciasProfesionalDialog({
             })
             .eq("id", conflicto.id);
         } else {
-          await supabase
+          await db
             .from("control_visitas")
             .update({ 
               profesional_id: selectedProfesionalReasignar,
@@ -263,12 +263,12 @@ export function AusenciasProfesionalDialog({
       // Mark for rescheduling
       for (const conflicto of conflictos) {
         if (conflicto.tipo === "llamada") {
-          await supabase
+          await db
             .from("registro_llamadas")
             .update({ estado: "reagendada", notas_adicionales: `Reagendada por ausencia del profesional` })
             .eq("id", conflicto.id);
         } else {
-          await supabase
+          await db
             .from("control_visitas")
             .update({ estado: "postpuesta", notas_visita: `Pospuesta por ausencia del profesional` })
             .eq("id", conflicto.id);

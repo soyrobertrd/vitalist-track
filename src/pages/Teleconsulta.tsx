@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Video, VideoOff, Mic, MicOff, PhoneOff, Plus, Copy } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -42,7 +42,7 @@ export default function Teleconsulta() {
     queryKey: ["teleconsulta-sesiones", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("teleconsulta_sesiones")
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -55,10 +55,10 @@ export default function Teleconsulta() {
 
   async function crearSesion() {
     if (!currentWorkspace?.id) return;
-    const { data: pers } = await supabase
-      .from("personal_salud").select("id").eq("user_id", (await supabase.auth.getUser()).data.user?.id).maybeSingle();
+    const { data: pers } = await db
+      .from("personal_salud").select("id").eq("user_id", (await db.auth.getUser()).data.user?.id).maybeSingle();
     if (!pers) { toast.error(tr("only_professionals")); return; }
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("teleconsulta_sesiones")
       .insert({ workspace_id: currentWorkspace.id, profesional_id: pers.id })
       .select().single();
@@ -70,7 +70,7 @@ export default function Teleconsulta() {
 
   async function unirsePorCodigo() {
     if (!joinCode.trim()) return;
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("teleconsulta_sesiones").select("*").eq("sala_codigo", joinCode.trim()).maybeSingle();
     if (error || !data) { toast.error(tr("room_not_found")); return; }
     setActiveSala(data as Sesion);
@@ -89,17 +89,17 @@ export default function Teleconsulta() {
 
       pc.ontrack = (e) => { if (remoteVideo.current) remoteVideo.current.srcObject = e.streams[0]; };
 
-      const user = (await supabase.auth.getUser()).data.user;
+      const user = (await db.auth.getUser()).data.user;
       pc.onicecandidate = async (e) => {
         if (e.candidate) {
-          await supabase.from("teleconsulta_signaling").insert({
+          await db.from("teleconsulta_signaling").insert({
             sesion_id: activeSala.id, emisor_user_id: user!.id,
             tipo: "ice", payload: e.candidate.toJSON() as any,
           });
         }
       };
 
-      const channel = supabase
+      const channel = db
         .channel(`tc-${activeSala.id}`)
         .on("postgres_changes",
           { event: "INSERT", schema: "public", table: "teleconsulta_signaling", filter: `sesion_id=eq.${activeSala.id}` },
@@ -110,7 +110,7 @@ export default function Teleconsulta() {
               await pc.setRemoteDescription(new RTCSessionDescription(msg.payload));
               const answer = await pc.createAnswer();
               await pc.setLocalDescription(answer);
-              await supabase.from("teleconsulta_signaling").insert({
+              await db.from("teleconsulta_signaling").insert({
                 sesion_id: activeSala.id, emisor_user_id: user!.id, tipo: "answer", payload: answer as any,
               });
             } else if (msg.tipo === "answer") {
@@ -125,11 +125,11 @@ export default function Teleconsulta() {
       // Quien inicia envía offer
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      await supabase.from("teleconsulta_signaling").insert({
+      await db.from("teleconsulta_signaling").insert({
         sesion_id: activeSala.id, emisor_user_id: user!.id, tipo: "offer", payload: offer as any,
       });
 
-      await supabase.from("teleconsulta_sesiones").update({
+      await db.from("teleconsulta_sesiones").update({
         estado: "en_curso", iniciada_at: new Date().toISOString(),
       }).eq("id", activeSala.id);
 
@@ -142,9 +142,9 @@ export default function Teleconsulta() {
   async function colgar() {
     pcRef.current?.close();
     localStream.current?.getTracks().forEach((t) => t.stop());
-    if (channelRef.current) supabase.removeChannel(channelRef.current);
+    if (channelRef.current) db.removeChannel(channelRef.current);
     if (activeSala) {
-      await supabase.from("teleconsulta_sesiones").update({
+      await db.from("teleconsulta_sesiones").update({
         estado: "finalizada", finalizada_at: new Date().toISOString(),
       }).eq("id", activeSala.id);
     }

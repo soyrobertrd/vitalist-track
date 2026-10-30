@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { MobilePageHeader } from "@/components/MobilePageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -57,15 +57,15 @@ export default function CRM() {
   const fetchAll = async () => {
     if (!wsId) return;
     const [l, c] = await Promise.all([
-      supabase.from("leads_crm").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
-      supabase.from("campanas_marketing").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
+      db.from("leads_crm").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
+      db.from("campanas_marketing").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
     ]);
     if (l.data) setLeads(l.data);
     if (c.data) setCampanas(c.data);
   };
 
   const fetchInteracciones = async (leadId: string) => {
-    const { data } = await supabase.from("interacciones_crm").select("*").eq("lead_id", leadId).order("fecha", { ascending: false });
+    const { data } = await db.from("interacciones_crm").select("*").eq("lead_id", leadId).order("fecha", { ascending: false });
     if (data) setInteracciones(data);
   };
 
@@ -74,7 +74,7 @@ export default function CRM() {
 
   const crearLead = async () => {
     if (!wsId || !leadForm.nombre) return;
-    const { error } = await supabase.from("leads_crm").insert({ ...leadForm, workspace_id: wsId } as any);
+    const { error } = await db.from("leads_crm").insert({ ...leadForm, workspace_id: wsId } as any);
     if (error) { toast.error(error.message); return; }
     toast.success("Lead creado");
     setOpenLead(false);
@@ -84,7 +84,7 @@ export default function CRM() {
 
   const crearCampana = async () => {
     if (!wsId || !campForm.nombre) return;
-    const { error } = await supabase.from("campanas_marketing").insert({
+    const { error } = await db.from("campanas_marketing").insert({
       ...campForm, workspace_id: wsId,
       fecha_inicio: campForm.fecha_inicio || null,
       fecha_fin: campForm.fecha_fin || null,
@@ -98,7 +98,7 @@ export default function CRM() {
 
   const crearInteraccion = async () => {
     if (!selectedLead || !intForm.descripcion) return;
-    const { error } = await supabase.from("interacciones_crm").insert({
+    const { error } = await db.from("interacciones_crm").insert({
       lead_id: selectedLead,
       ...intForm,
       siguiente_fecha: intForm.siguiente_fecha || null,
@@ -111,7 +111,7 @@ export default function CRM() {
   };
 
   const cambiarEstadoLead = async (id: string, estado: string) => {
-    await supabase.from("leads_crm").update({ estado } as any).eq("id", id);
+    await db.from("leads_crm").update({ estado } as any).eq("id", id);
     toast.success(`Lead → ${estado}`);
     fetchAll();
   };

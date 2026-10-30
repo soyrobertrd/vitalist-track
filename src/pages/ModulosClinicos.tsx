@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,14 +31,14 @@ export default function ModulosClinicos() {
   const load = async () => {
     if (!wsId) return;
     const [p, v, vc, pc, ec, pr, pd, oc] = await Promise.all([
-      supabase.from("pacientes").select("id,nombre,apellido").eq("workspace_id", wsId).order("nombre").limit(500),
-      supabase.from("vacunas_paciente").select("*, pacientes(nombre,apellido)").eq("workspace_id", wsId).order("fecha_aplicacion", { ascending: false }).limit(100),
-      supabase.from("vacunas_catalogo").select("*").eq("activo", true).order("nombre"),
-      supabase.from("programas_cronicos").select("*").eq("workspace_id", wsId).order("nombre"),
-      supabase.from("enrolamientos_cronicos").select("*, pacientes(nombre,apellido), programas_cronicos(nombre)").eq("workspace_id", wsId).limit(100),
-      supabase.from("controles_prenatales").select("*, pacientes(nombre,apellido)").eq("workspace_id", wsId).order("fecha_control", { ascending: false }).limit(100),
-      supabase.from("controles_pediatricos").select("*, pacientes(nombre,apellido)").eq("workspace_id", wsId).order("fecha", { ascending: false }).limit(100),
-      supabase.from("salud_ocupacional").select("*, pacientes(nombre,apellido)").eq("workspace_id", wsId).order("fecha", { ascending: false }).limit(100),
+      db.from("pacientes").select("id,nombre,apellido").eq("workspace_id", wsId).order("nombre").limit(500),
+      db.from("vacunas_paciente").select("*, pacientes(nombre,apellido)").eq("workspace_id", wsId).order("fecha_aplicacion", { ascending: false }).limit(100),
+      db.from("vacunas_catalogo").select("*").eq("activo", true).order("nombre"),
+      db.from("programas_cronicos").select("*").eq("workspace_id", wsId).order("nombre"),
+      db.from("enrolamientos_cronicos").select("*, pacientes(nombre,apellido), programas_cronicos(nombre)").eq("workspace_id", wsId).limit(100),
+      db.from("controles_prenatales").select("*, pacientes(nombre,apellido)").eq("workspace_id", wsId).order("fecha_control", { ascending: false }).limit(100),
+      db.from("controles_pediatricos").select("*, pacientes(nombre,apellido)").eq("workspace_id", wsId).order("fecha", { ascending: false }).limit(100),
+      db.from("salud_ocupacional").select("*, pacientes(nombre,apellido)").eq("workspace_id", wsId).order("fecha", { ascending: false }).limit(100),
     ]);
     setPacientes(p.data || []); setVacunas(v.data || []); setVacCat(vc.data || []);
     setCronicos(pc.data || []); setEnr(ec.data || []); setPrenatal(pr.data || []);
@@ -50,7 +50,7 @@ export default function ModulosClinicos() {
     if (!wsId || !vacForm.paciente_id) return toast.error("Seleccione paciente");
     const nombre = vacForm.vacuna_id ? vacCat.find(v => v.id === vacForm.vacuna_id)?.nombre : vacForm.vacuna_nombre;
     if (!nombre) return toast.error("Seleccione vacuna");
-    const { error } = await supabase.from("vacunas_paciente").insert({ ...vacForm, vacuna_nombre: nombre, workspace_id: wsId, vacuna_id: vacForm.vacuna_id || null });
+    const { error } = await db.from("vacunas_paciente").insert({ ...vacForm, vacuna_nombre: nombre, workspace_id: wsId, vacuna_id: vacForm.vacuna_id || null });
     if (error) return toast.error(error.message);
     toast.success("Vacuna registrada"); setVacOpen(false); load();
     setVacForm({ paciente_id: "", vacuna_id: "", vacuna_nombre: "", dosis: 1, fecha_aplicacion: new Date().toISOString().slice(0, 10), lote: "" });

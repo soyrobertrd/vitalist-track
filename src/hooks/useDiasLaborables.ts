@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { addDays, format, isWeekend, getMonth, getDate } from "date-fns";
 
 interface DiaNoLaborable {
@@ -18,7 +18,7 @@ export function useDiasLaborables() {
 
   const fetchDiasNoLaborables = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await db
       .from("dias_no_laborables")
       .select("fecha, descripcion, es_ciclico");
 

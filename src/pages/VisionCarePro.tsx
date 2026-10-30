@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useTabParam } from "@/hooks/useTabParam";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +50,8 @@ import VerticalReportesRegulatoriosTab from "@/components/vertical/VerticalRepor
 import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFidelizacionTab";
 import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
 import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import GabineteRefraccionReceta from "@/components/vision/GabineteRefraccionReceta";
+import TallerBiseladoLaboratorio from "@/components/vision/TallerBiseladoLaboratorio";
 
 const estadoOrdenColor: Record<string, string> = {
   solicitada: "bg-primary/10 text-primary border-primary/20",
@@ -79,27 +81,27 @@ function VisionCareProContent() {
 
   const { data: recetas = [] } = useQuery({
     queryKey: ["recetas_oftalmicas", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("recetas_oftalmicas" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("recetas_oftalmicas" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
   const { data: inventario = [] } = useQuery({
     queryKey: ["inventario_optica", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("inventario_optica" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("tipo"); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("inventario_optica" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("tipo"); return (data || []) as any[]; },
   });
   const { data: ordenes = [] } = useQuery({
     queryKey: ["ordenes_trabajo_optica", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("ordenes_trabajo_optica" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("ordenes_trabajo_optica" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
   const { data: combos = [], refetch: refetchCombos } = useQuery({
     queryKey: ["combos_optica", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("combos_optica" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre"); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("combos_optica" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre"); return (data || []) as any[]; },
   });
   const { data: garantias = [] } = useQuery({
     queryKey: ["garantias_optica", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await (supabase.from("garantias_optica") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await (db.from("garantias_optica") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
   const { data: recordatorios = [] } = useQuery({
     queryKey: ["recordatorios_fidelizacion_optica", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await (supabase.from("recordatorios_fidelizacion") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("proxima_fecha").limit(200); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await (db.from("recordatorios_fidelizacion") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("proxima_fecha").limit(200); return (data || []) as any[]; },
   });
 
   // Combo form
@@ -107,7 +109,7 @@ function VisionCareProContent() {
   const [comboForm, setComboForm] = useState({ nombre: "", precio_regular: 0, precio_combo: 0 });
   const crearCombo = async () => {
     if (!wsId || !comboForm.nombre) return;
-    const { error } = await supabase.from("combos_optica" as any).insert({ workspace_id: wsId, ...comboForm });
+    const { error } = await db.from("combos_optica" as any).insert({ workspace_id: wsId, ...comboForm });
     if (error) { toast.error(error.message); return; }
     toast.success("Combo creado");
     setOpenCombo(false);
@@ -147,8 +149,10 @@ function VisionCareProContent() {
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="hidden">
           <TabsTrigger value="recetas">Recetas</TabsTrigger>
+          <TabsTrigger value="gabinete_refraccion">Gabinete & Refracción</TabsTrigger>
           <TabsTrigger value="inventario">Inventario</TabsTrigger>
           <TabsTrigger value="ordenes">Órdenes Lab</TabsTrigger>
+          <TabsTrigger value="taller_biselado">Taller & Biselado</TabsTrigger>
           <TabsTrigger value="combos">Combos</TabsTrigger>
           <TabsTrigger value="garantias">Garantías</TabsTrigger>
           <TabsTrigger value="marketing">Marketing</TabsTrigger>
@@ -188,18 +192,30 @@ function VisionCareProContent() {
           <TabsTrigger value="api_gateway">API Gateway</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="recetas" className="space-y-3">
-          {recetas.length === 0 ? <Card><CardContent className="py-8 text-center text-muted-foreground">No hay recetas</CardContent></Card> : recetas.map((r: any) => (
-            <Card key={r.id}><CardContent className="py-4">
-              <p className="font-medium">{r.numero}</p>
-              <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
-                <div><p className="font-medium text-xs text-muted-foreground">OD (Derecho)</p><p>Esf: {r.od_esfera ?? "—"} Cil: {r.od_cilindro ?? "—"} Eje: {r.od_eje ?? "—"}</p>{r.od_add && <p>ADD: {r.od_add}</p>}</div>
-                <div><p className="font-medium text-xs text-muted-foreground">OI (Izquierdo)</p><p>Esf: {r.oi_esfera ?? "—"} Cil: {r.oi_cilindro ?? "—"} Eje: {r.oi_eje ?? "—"}</p>{r.oi_add && <p>ADD: {r.oi_add}</p>}</div>
+        <TabsContent value="recetas" className="space-y-6">
+          <GabineteRefraccionReceta />
+          {recetas.length > 0 && (
+            <div className="space-y-3 pt-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Historial de Recetas Guardadas</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {recetas.map((r: any) => (
+                  <Card key={r.id}><CardContent className="py-4">
+                    <p className="font-medium">{r.numero}</p>
+                    <div className="grid grid-cols-2 gap-4 mt-2 text-sm">
+                      <div><p className="font-medium text-xs text-muted-foreground">OD (Derecho)</p><p>Esf: {r.od_esfera ?? "—"} Cil: {r.od_cilindro ?? "—"} Eje: {r.od_eje ?? "—"}</p>{r.od_add && <p>ADD: {r.od_add}</p>}</div>
+                      <div><p className="font-medium text-xs text-muted-foreground">OI (Izquierdo)</p><p>Esf: {r.oi_esfera ?? "—"} Cil: {r.oi_cilindro ?? "—"} Eje: {r.oi_eje ?? "—"}</p>{r.oi_add && <p>ADD: {r.oi_add}</p>}</div>
+                    </div>
+                    {r.distancia_pupilar && <p className="text-xs text-muted-foreground mt-1">DP: {r.distancia_pupilar}mm</p>}
+                    {r.tipo_lente_recomendado && <Badge variant="outline" className="mt-2">{r.tipo_lente_recomendado}</Badge>}
+                  </CardContent></Card>
+                ))}
               </div>
-              {r.distancia_pupilar && <p className="text-xs text-muted-foreground mt-1">DP: {r.distancia_pupilar}mm</p>}
-              {r.tipo_lente_recomendado && <Badge variant="outline" className="mt-2">{r.tipo_lente_recomendado}</Badge>}
-            </CardContent></Card>
-          ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="gabinete_refraccion" className="space-y-6">
+          <GabineteRefraccionReceta />
         </TabsContent>
 
         <TabsContent value="inventario" className="space-y-3">
@@ -215,17 +231,27 @@ function VisionCareProContent() {
           ))}
         </TabsContent>
 
-        <TabsContent value="ordenes" className="space-y-3">
-          {ordenes.length === 0 ? <Card><CardContent className="py-8 text-center text-muted-foreground">No hay órdenes</CardContent></Card> : ordenes.map((o: any) => (
-            <Card key={o.id}><CardContent className="py-4 flex items-center justify-between">
-              <div>
-                <p className="font-medium">{o.numero}</p>
-                <p className="text-sm text-muted-foreground">{o.tipo_lente || ""} · {o.laboratorio || ""} {o.tratamientos?.length > 0 ? ` · ${(o.tratamientos as string[]).join(", ")}` : ""}</p>
-                {o.precio_total && <p className="text-sm font-medium">{fmt(o.precio_total)}</p>}
-              </div>
-              <Badge className={estadoOrdenColor[o.estado] || ""}>{o.estado?.replace(/_/g, " ")}</Badge>
-            </CardContent></Card>
-          ))}
+        <TabsContent value="ordenes" className="space-y-6">
+          <TallerBiseladoLaboratorio />
+          {ordenes.length > 0 && (
+            <div className="space-y-3 pt-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Historial de Órdenes Anteriores</h3>
+              {ordenes.map((o: any) => (
+                <Card key={o.id}><CardContent className="py-4 flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{o.numero}</p>
+                    <p className="text-sm text-muted-foreground">{o.tipo_lente || ""} · {o.laboratorio || ""} {o.tratamientos?.length > 0 ? ` · ${(o.tratamientos as string[]).join(", ")}` : ""}</p>
+                    {o.precio_total && <p className="text-sm font-medium">{fmt(o.precio_total)}</p>}
+                  </div>
+                  <Badge className={estadoOrdenColor[o.estado] || ""}>{o.estado?.replace(/_/g, " ")}</Badge>
+                </CardContent></Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="taller_biselado" className="space-y-6">
+          <TallerBiseladoLaboratorio />
         </TabsContent>
 
         <TabsContent value="combos" className="mt-4 space-y-4">

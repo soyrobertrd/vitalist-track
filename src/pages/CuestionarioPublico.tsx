@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ export default function CuestionarioPublico() {
   useEffect(() => {
     if (!token) return;
     (async () => {
-      const { data, error } = await (supabase.rpc as any)("leer_cuestionario_por_token", { _token: token });
+      const { data, error } = await (db.rpc as any)("leer_cuestionario_por_token", { _token: token });
       if (error) toast.error(error.message);
       else setData(data);
       setLoading(false);
@@ -38,7 +38,7 @@ export default function CuestionarioPublico() {
         if (typeof p.max === "number" && v >= p.max * 0.8) alerta = true;
       }
     });
-    const { error } = await (supabase.rpc as any)("responder_cuestionario_publico", {
+    const { error } = await (db.rpc as any)("responder_cuestionario_publico", {
       _token: token, _respuestas: respuestas, _puntaje: puntaje, _alerta: alerta,
     });
     if (error) return toast.error(error.message);

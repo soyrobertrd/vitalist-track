@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,12 +39,12 @@ export default function GestionCalidad() {
     if (!currentWorkspace) return;
     const ws = currentWorkspace.id;
     const [i, m, e, c, a, n] = await Promise.all([
-      supabase.from("indicadores_calidad").select("*").eq("workspace_id", ws).order("nombre"),
-      supabase.from("mediciones_indicadores").select("*, indicadores_calidad(nombre, unidad, meta)").eq("workspace_id", ws).order("periodo_inicio", { ascending: false }).limit(50),
-      supabase.from("eventos_adversos").select("*").eq("workspace_id", ws).order("fecha_evento", { ascending: false }).limit(50),
-      supabase.from("comites_calidad").select("*").eq("workspace_id", ws),
-      supabase.from("auditorias_calidad").select("*").eq("workspace_id", ws).order("fecha_inicio", { ascending: false }),
-      supabase.from("no_conformidades").select("*").eq("workspace_id", ws).order("fecha_deteccion", { ascending: false }).limit(50),
+      db.from("indicadores_calidad").select("*").eq("workspace_id", ws).order("nombre"),
+      db.from("mediciones_indicadores").select("*, indicadores_calidad(nombre, unidad, meta)").eq("workspace_id", ws).order("periodo_inicio", { ascending: false }).limit(50),
+      db.from("eventos_adversos").select("*").eq("workspace_id", ws).order("fecha_evento", { ascending: false }).limit(50),
+      db.from("comites_calidad").select("*").eq("workspace_id", ws),
+      db.from("auditorias_calidad").select("*").eq("workspace_id", ws).order("fecha_inicio", { ascending: false }),
+      db.from("no_conformidades").select("*").eq("workspace_id", ws).order("fecha_deteccion", { ascending: false }).limit(50),
     ]);
     setIndicadores(i.data || []);
     setMediciones(m.data || []);
@@ -58,7 +58,7 @@ export default function GestionCalidad() {
 
   const crearIndicador = async () => {
     if (!currentWorkspace) return;
-    const { error } = await supabase.from("indicadores_calidad").insert({
+    const { error } = await db.from("indicadores_calidad").insert({
       workspace_id: currentWorkspace.id,
       codigo: indForm.codigo,
       nombre: indForm.nombre,
@@ -81,7 +81,7 @@ export default function GestionCalidad() {
     const resultado = den > 0 ? +(num / den * 100).toFixed(2) : 0;
     const ind = indicadores.find(i => i.id === medForm.indicador_id);
     const cumple = ind?.meta ? resultado >= ind.meta : null;
-    const { error } = await supabase.from("mediciones_indicadores").insert({
+    const { error } = await db.from("mediciones_indicadores").insert({
       workspace_id: currentWorkspace.id,
       indicador_id: medForm.indicador_id,
       periodo_inicio: medForm.periodo_inicio,
@@ -99,7 +99,7 @@ export default function GestionCalidad() {
 
   const reportarEvento = async () => {
     if (!currentWorkspace) return;
-    const { error } = await supabase.from("eventos_adversos").insert({
+    const { error } = await db.from("eventos_adversos").insert({
       workspace_id: currentWorkspace.id,
       tipo: evForm.tipo,
       severidad: evForm.severidad,
@@ -115,7 +115,7 @@ export default function GestionCalidad() {
 
   const crearComite = async () => {
     if (!currentWorkspace) return;
-    const { error } = await supabase.from("comites_calidad").insert({ ...comForm, workspace_id: currentWorkspace.id });
+    const { error } = await db.from("comites_calidad").insert({ ...comForm, workspace_id: currentWorkspace.id });
     if (error) { toast.error(error.message); return; }
     toast.success("Comité creado");
     setOpenCom(false);
@@ -124,7 +124,7 @@ export default function GestionCalidad() {
 
   const crearAuditoria = async () => {
     if (!currentWorkspace) return;
-    const { error } = await supabase.from("auditorias_calidad").insert({ ...audForm, workspace_id: currentWorkspace.id });
+    const { error } = await db.from("auditorias_calidad").insert({ ...audForm, workspace_id: currentWorkspace.id });
     if (error) { toast.error(error.message); return; }
     toast.success("Auditoría planificada");
     setOpenAud(false);

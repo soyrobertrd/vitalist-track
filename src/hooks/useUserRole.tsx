@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 
 type UserRole = "admin" | "moderator" | "user";
 
@@ -10,13 +10,13 @@ export const useUserRole = () => {
   useEffect(() => {
     const fetchRole = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await db.auth.getUser();
         if (!user) {
           setLoading(false);
           return;
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from("user_roles")
           .select("role")
           .eq("user_id", user.id)

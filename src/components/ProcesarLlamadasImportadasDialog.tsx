@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Calendar } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { addDays, format } from "date-fns";
 
 interface ProcesarLlamadasImportadasDialogProps {
@@ -19,7 +19,7 @@ export const ProcesarLlamadasImportadasDialog = ({ onSuccess }: ProcesarLlamadas
     setLoading(true);
     try {
       // Obtener todas las llamadas que tienen frecuencia en las notas
-      const { data: llamadasConFrecuencia, error: fetchError } = await supabase
+      const { data: llamadasConFrecuencia, error: fetchError } = await db
         .from("registro_llamadas")
         .select("*")
         .like("notas_adicionales", "%Frecuencia programada:%")
@@ -79,7 +79,7 @@ export const ProcesarLlamadasImportadasDialog = ({ onSuccess }: ProcesarLlamadas
       }
 
       // Insertar las nuevas llamadas agendadas
-      const { error: insertError } = await supabase
+      const { error: insertError } = await db
         .from("registro_llamadas")
         .insert(llamadasNuevas);
 

@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useTabParam } from "@/hooks/useTabParam";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -59,7 +59,7 @@ function PsicologiaProContent() {
     queryKey: ["pacientes_psico_combo", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("pacientes") as any)
+      const { data } = await (db.from("pacientes") as any)
         .select("id, nombre, apellido").eq("workspace_id", wsId!).eq("status_px", "activo").order("nombre").limit(500);
       return (data || []) as any[];
     },
@@ -69,7 +69,7 @@ function PsicologiaProContent() {
     queryKey: ["pacientes_psicologia", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("pacientes_psicologia" as any) as any)
+      const { data } = await (db.from("pacientes_psicologia" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(200);
       return (data || []) as any[];
     },
@@ -79,7 +79,7 @@ function PsicologiaProContent() {
     queryKey: ["sesiones_psicologia", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("sesiones_psicologia" as any) as any)
+      const { data } = await (db.from("sesiones_psicologia" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("fecha_hora", { ascending: false }).limit(200);
       return (data || []) as any[];
     },
@@ -89,7 +89,7 @@ function PsicologiaProContent() {
     queryKey: ["notas_psicologia", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("notas_psicologia" as any) as any)
+      const { data } = await (db.from("notas_psicologia" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(200);
       return (data || []) as any[];
     },
@@ -99,7 +99,7 @@ function PsicologiaProContent() {
     queryKey: ["evaluaciones_psicometricas", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("evaluaciones_psicometricas" as any) as any)
+      const { data } = await (db.from("evaluaciones_psicometricas" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("fecha_aplicacion", { ascending: false }).limit(200);
       return (data || []) as any[];
     },
@@ -109,7 +109,7 @@ function PsicologiaProContent() {
     queryKey: ["tareas_terapeuticas", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("tareas_terapeuticas" as any) as any)
+      const { data } = await (db.from("tareas_terapeuticas" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("fecha_asignacion", { ascending: false }).limit(200);
       return (data || []) as any[];
     },
@@ -119,7 +119,7 @@ function PsicologiaProContent() {
     queryKey: ["seguimiento_emocional", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("seguimiento_emocional" as any) as any)
+      const { data } = await (db.from("seguimiento_emocional" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("fecha", { ascending: false }).limit(200);
       return (data || []) as any[];
     },
@@ -129,7 +129,7 @@ function PsicologiaProContent() {
     queryKey: ["prescripciones_psiquiatricas", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("prescripciones_psiquiatricas" as any) as any)
+      const { data } = await (db.from("prescripciones_psiquiatricas" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(200);
       return (data || []) as any[];
     },
@@ -139,7 +139,7 @@ function PsicologiaProContent() {
     queryKey: ["paquetes_sesiones", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("paquetes_sesiones" as any) as any)
+      const { data } = await (db.from("paquetes_sesiones" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(200);
       return (data || []) as any[];
     },
@@ -150,7 +150,7 @@ function PsicologiaProContent() {
   const [sesForm, setSesForm] = useState<any>({ paciente_id: "", fecha_hora: "", tipo_sesion: "psicoterapia_individual", modalidad: "presencial", motivo: "" });
   const crearSesion = async () => {
     if (!wsId || !sesForm.paciente_id || !sesForm.fecha_hora) { toast.error("Paciente y fecha requeridos"); return; }
-    const { error } = await (supabase.from("sesiones_psicologia" as any) as any).insert({ workspace_id: wsId, ...sesForm });
+    const { error } = await (db.from("sesiones_psicologia" as any) as any).insert({ workspace_id: wsId, ...sesForm });
     if (error) { toast.error(error.message); return; }
     toast.success("Sesión agendada"); setOpenSes(false); refSes();
     setSesForm({ paciente_id: "", fecha_hora: "", tipo_sesion: "psicoterapia_individual", modalidad: "presencial", motivo: "" });
@@ -161,8 +161,8 @@ function PsicologiaProContent() {
   const [notForm, setNotForm] = useState<any>({ paciente_id: "", tipo_nota: "soap", contenido: "", es_privada: true });
   const crearNota = async () => {
     if (!wsId || !notForm.paciente_id) { toast.error("Paciente requerido"); return; }
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await (supabase.from("notas_psicologia" as any) as any).insert({
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await (db.from("notas_psicologia" as any) as any).insert({
       workspace_id: wsId, ...notForm, terapeuta_id: user?.id, created_by: user?.id,
     });
     if (error) { toast.error(error.message); return; }
@@ -178,7 +178,7 @@ function PsicologiaProContent() {
     const info = ESCALAS_INFO[evalForm.escala];
     const cortesOrd = [...info.cortes].sort((a,b)=>b.min-a.min);
     const sev = cortesOrd.find(c => evalForm.puntaje_total >= c.min)?.label || null;
-    const { error } = await (supabase.from("evaluaciones_psicometricas" as any) as any).insert({
+    const { error } = await (db.from("evaluaciones_psicometricas" as any) as any).insert({
       workspace_id: wsId, ...evalForm,
       severidad: ["mínima","leve","moderada","moderada_severa","severa","critica"].includes(sev||"") ? sev : null,
     });
@@ -192,7 +192,7 @@ function PsicologiaProContent() {
   const [segForm, setSegForm] = useState<any>({ paciente_id: "", animo: 5, ansiedad: 5, sueno: 5, estres: 5, disparadores: "", crisis_reciente: false, notas: "" });
   const crearSeg = async () => {
     if (!wsId || !segForm.paciente_id) { toast.error("Paciente requerido"); return; }
-    const { error } = await (supabase.from("seguimiento_emocional" as any) as any).insert({ workspace_id: wsId, ...segForm });
+    const { error } = await (db.from("seguimiento_emocional" as any) as any).insert({ workspace_id: wsId, ...segForm });
     if (error) { toast.error(error.message); return; }
     toast.success("Registro emocional guardado"); setOpenSeg(false); refSeg();
   };
@@ -202,7 +202,7 @@ function PsicologiaProContent() {
   const [presForm, setPresForm] = useState<any>({ paciente_id: "", medicamento: "", dosis: "", frecuencia: "", adherencia: 100, notas: "" });
   const crearPres = async () => {
     if (!wsId || !presForm.paciente_id || !presForm.medicamento) { toast.error("Paciente y medicamento requeridos"); return; }
-    const { error } = await (supabase.from("prescripciones_psiquiatricas" as any) as any).insert({ workspace_id: wsId, ...presForm });
+    const { error } = await (db.from("prescripciones_psiquiatricas" as any) as any).insert({ workspace_id: wsId, ...presForm });
     if (error) { toast.error(error.message); return; }
     toast.success("Prescripción registrada"); setOpenPres(false); refPres();
   };
@@ -212,7 +212,7 @@ function PsicologiaProContent() {
   const [paqForm, setPaqForm] = useState<any>({ paciente_id: "", nombre: "Bono 4 sesiones", tipo: "bono_4", total_sesiones: 4, precio: 0, cobro_automatico: false });
   const crearPaq = async () => {
     if (!wsId || !paqForm.nombre) return;
-    const { error } = await (supabase.from("paquetes_sesiones" as any) as any).insert({ workspace_id: wsId, ...paqForm });
+    const { error } = await (db.from("paquetes_sesiones" as any) as any).insert({ workspace_id: wsId, ...paqForm });
     if (error) { toast.error(error.message); return; }
     toast.success("Paquete creado"); setOpenPaq(false); refPaq();
   };
@@ -223,7 +223,7 @@ function PsicologiaProContent() {
   const crearPp = async () => {
     if (!wsId || !ppForm.paciente_id) return;
     const alerta = ["alto","critico"].includes(ppForm.riesgo_suicida) || ["alto","critico"].includes(ppForm.riesgo_autolesion);
-    const { error } = await (supabase.from("pacientes_psicologia" as any) as any).insert({ workspace_id: wsId, ...ppForm, alerta_interna_activa: alerta });
+    const { error } = await (db.from("pacientes_psicologia" as any) as any).insert({ workspace_id: wsId, ...ppForm, alerta_interna_activa: alerta });
     if (error) { toast.error(error.message); return; }
     toast.success("Ficha psico creada"); setOpenPp(false); refPP();
   };

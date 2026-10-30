@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,7 @@ export default function VerticalCamasTab({ verticalTipo }: Props) {
     queryKey: ["camas_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("camas_vertical")
         .select("*, pacientes(nombre, apellido)")
         .eq("workspace_id", wsId!)
@@ -34,7 +34,7 @@ export default function VerticalCamasTab({ verticalTipo }: Props) {
     queryKey: ["ocupacion_camas_log", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("ocupacion_camas_log")
         .select("*, camas_vertical(nombre, piso, sala), pacientes(nombre, apellido)")
         .eq("workspace_id", wsId!)

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +23,7 @@ export default function VerticalMarketplaceTab({ verticalTipo }: Props) {
     queryKey: ["marketplace_servicios", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("marketplace_servicios")
         .select("*")
         .eq("workspace_id", wsId!)
@@ -37,7 +37,7 @@ export default function VerticalMarketplaceTab({ verticalTipo }: Props) {
     queryKey: ["marketplace_bookings", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("marketplace_bookings")
         .select("*, marketplace_servicios(nombre)")
         .eq("workspace_id", wsId!)

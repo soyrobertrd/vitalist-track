@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,9 +15,9 @@ export default function CentroAlertasNotificaciones() {
   const [items, setItems] = useState<Notif[]>([]);
 
   const cargar = async () => {
-    const { data: u } = await supabase.auth.getUser();
+    const { data: u } = await db.auth.getUser();
     if (!u.user) return;
-    const { data } = await (supabase.from("alertas_notificaciones") as any)
+    const { data } = await (db.from("alertas_notificaciones") as any)
       .select("id, titulo, cuerpo, severidad, leido, created_at, alerta_id")
       .eq("destinatario_user_id", u.user.id)
       .order("created_at", { ascending: false })
@@ -28,14 +28,14 @@ export default function CentroAlertasNotificaciones() {
   useEffect(() => { cargar(); }, []);
 
   const marcarLeido = async (id: string) => {
-    await (supabase.from("alertas_notificaciones") as any).update({ leido: true }).eq("id", id);
+    await (db.from("alertas_notificaciones") as any).update({ leido: true }).eq("id", id);
     setItems((prev) => prev.map((n) => n.id === id ? { ...n, leido: true } : n));
   };
 
   const marcarTodos = async () => {
-    const { data: u } = await supabase.auth.getUser();
+    const { data: u } = await db.auth.getUser();
     if (!u.user) return;
-    await (supabase.from("alertas_notificaciones") as any).update({ leido: true }).eq("destinatario_user_id", u.user.id).eq("leido", false);
+    await (db.from("alertas_notificaciones") as any).update({ leido: true }).eq("destinatario_user_id", u.user.id).eq("leido", false);
     cargar();
   };
 

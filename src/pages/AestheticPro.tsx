@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useTabParam } from "@/hooks/useTabParam";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +57,8 @@ import MapaFacialInyectables from "@/components/aesthetic/MapaFacialInyectables"
 import MembresiasGiftCardsSpa from "@/components/aesthetic/MembresiasGiftCardsSpa";
 import ComparadorAntesDespues from "@/components/aesthetic/ComparadorAntesDespues";
 import ProtocoloCosmeceuticoPostTratamiento from "@/components/aesthetic/ProtocoloCosmeceuticoPostTratamiento";
+import AparatologiaPulsosSpa from "@/components/aesthetic/AparatologiaPulsosSpa";
+import LiquidacionComisionesSpa from "@/components/aesthetic/LiquidacionComisionesSpa";
 
 const estadoLeadColor: Record<string, string> = {
   nuevo: "bg-primary/10 text-primary border-primary/20",
@@ -102,41 +104,41 @@ function AestheticProContent() {
   // Existing queries
   const { data: leads = [] } = useQuery({
     queryKey: ["leads_estetica", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("leads_estetica" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("leads_estetica" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
   const { data: evaluaciones = [] } = useQuery({
     queryKey: ["evaluaciones_esteticas", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("evaluaciones_esteticas" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("evaluaciones_esteticas" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
   const { data: procedimientos = [] } = useQuery({
     queryKey: ["procedimientos_esteticos", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("procedimientos_esteticos" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre"); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("procedimientos_esteticos" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre"); return (data || []) as any[]; },
   });
   const { data: paquetes = [] } = useQuery({
     queryKey: ["paquetes_esteticos", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("paquetes_esteticos" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre"); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("paquetes_esteticos" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre"); return (data || []) as any[]; },
   });
   const { data: financiamientos = [] } = useQuery({
     queryKey: ["financiamiento_estetico", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("financiamiento_estetico" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(50); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("financiamiento_estetico" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(50); return (data || []) as any[]; },
   });
 
   // New queries
   const { data: cabinas = [], refetch: refetchCabinas } = useQuery({
     queryKey: ["cabinas_estetica", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("cabinas_estetica" as any).select("*").eq("workspace_id", wsId!).order("nombre"); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("cabinas_estetica" as any).select("*").eq("workspace_id", wsId!).order("nombre"); return (data || []) as any[]; },
   });
   const { data: membresias = [], refetch: refetchMembresias } = useQuery({
     queryKey: ["membresias_estetica", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await (supabase.from("membresias_estetica") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await (db.from("membresias_estetica") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
   const { data: fotosEvol = [] } = useQuery({
     queryKey: ["fotos_evolucion", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await (supabase.from("fotos_evolucion") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("fecha_foto", { ascending: false }).limit(100); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await (db.from("fotos_evolucion") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("fecha_foto", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
   const { data: promos = [], refetch: refetchPromos } = useQuery({
     queryKey: ["promociones_estetica", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("promociones_estetica" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("promociones_estetica" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }); return (data || []) as any[]; },
   });
 
   // Cabina form
@@ -144,7 +146,7 @@ function AestheticProContent() {
   const [cabinaForm, setCabinaForm] = useState({ nombre: "", tipo: "" });
   const crearCabina = async () => {
     if (!wsId || !cabinaForm.nombre) return;
-    const { error } = await supabase.from("cabinas_estetica" as any).insert({ workspace_id: wsId, nombre: cabinaForm.nombre, tipo: cabinaForm.tipo || null });
+    const { error } = await db.from("cabinas_estetica" as any).insert({ workspace_id: wsId, nombre: cabinaForm.nombre, tipo: cabinaForm.tipo || null });
     if (error) { toast.error(error.message); return; }
     toast.success("Cabina creada");
     setOpenCabina(false);
@@ -157,7 +159,7 @@ function AestheticProContent() {
   const [promoForm, setPromoForm] = useState({ nombre: "", tipo_descuento: "porcentaje", valor_descuento: 0, codigo: "", vigencia_inicio: "", vigencia_fin: "" });
   const crearPromo = async () => {
     if (!wsId || !promoForm.nombre) return;
-    const { error } = await supabase.from("promociones_estetica" as any).insert({
+    const { error } = await db.from("promociones_estetica" as any).insert({
       workspace_id: wsId, ...promoForm,
       vigencia_inicio: promoForm.vigencia_inicio || null,
       vigencia_fin: promoForm.vigencia_fin || null,
@@ -216,11 +218,13 @@ function AestheticProContent() {
           <TabsTrigger value="paquetes">Paquetes</TabsTrigger>
           <TabsTrigger value="cabinas">Cabinas & Spa</TabsTrigger>
           <TabsTrigger value="viales">Trazabilidad Viales</TabsTrigger>
+          <TabsTrigger value="aparatologia">Aparatología & Pulsos</TabsTrigger>
           <TabsTrigger value="gift_cards">Gift Cards & Membresías</TabsTrigger>
           <TabsTrigger value="membresias">Membresías</TabsTrigger>
           <TabsTrigger value="fotos">Fotos Evolución</TabsTrigger>
           <TabsTrigger value="cuidados_post">Cuidados & Rutina</TabsTrigger>
           <TabsTrigger value="promos">Promociones</TabsTrigger>
+          <TabsTrigger value="comisiones_terapeutas">Liquidación Comisiones</TabsTrigger>
           <TabsTrigger value="financiamiento">Financiamiento</TabsTrigger>
           <TabsTrigger value="pacientes"><Users className="h-3.5 w-3.5 mr-1" />Clientes</TabsTrigger>
           <TabsTrigger value="citas"><CalendarDays className="h-3.5 w-3.5 mr-1" />Citas</TabsTrigger>
@@ -378,6 +382,11 @@ function AestheticProContent() {
           <CabinasSpaTrazabilidadViales />
         </TabsContent>
 
+        {/* APARATOLOGÍA & CONTADOR DE PULSOS */}
+        <TabsContent value="aparatologia" className="space-y-6 mt-4">
+          <AparatologiaPulsosSpa />
+        </TabsContent>
+
         {/* MAPA FACIAL & INYECTABLES */}
         <TabsContent value="mapa_facial" className="space-y-4 mt-4">
           <MapaFacialInyectables />
@@ -512,6 +521,11 @@ function AestheticProContent() {
             </CardContent></Card>
           ))}
           {!financiamientos.length && <Card><CardContent className="py-8 text-center text-muted-foreground">Sin financiamientos</CardContent></Card>}
+        </TabsContent>
+
+        {/* LIQUIDACIÓN DE COMISIONES & SPLITS */}
+        <TabsContent value="comisiones_terapeutas" className="space-y-6 mt-4">
+          <LiquidacionComisionesSpa />
         </TabsContent>
 
         {/* SHARED CLINIC TABS */}

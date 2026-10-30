@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 
 const urlBase64ToUint8Array = (base64String: string) => {
@@ -49,10 +49,10 @@ export function usePushNotifications() {
       }
 
       if (sub) {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await db.auth.getUser();
         if (user) {
           const json = sub.toJSON() as any;
-          await supabase.from("push_subscriptions").upsert({
+          await db.from("push_subscriptions").upsert({
             user_id: user.id,
             endpoint: sub.endpoint,
             p256dh: json.keys?.p256dh ?? "",

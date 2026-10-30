@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import { differenceInYears } from "date-fns";
@@ -169,7 +169,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
   }, [paciente, open]);
 
   const fetchPersonal = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("personal_salud")
       .select("*")
       .eq("activo", true)
@@ -180,7 +180,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
 
   const fetchParametrosSeguimiento = async () => {
     if (!paciente?.id) return;
-    const { data } = await supabase
+    const { data } = await db
       .from("parametros_seguimiento")
       .select("*")
       .eq("paciente_id", paciente.id)
@@ -201,7 +201,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
     
     setLoadingCedula(true);
     try {
-      const { data, error } = await supabase.functions.invoke('consultar-cedula', {
+      const { data, error } = await db.functions.invoke('consultar-cedula', {
         body: { cedula: cedulaLimpia }
       });
 
@@ -321,7 +321,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
       clinica_origen: clinicaOrigen.trim() || null,
     };
 
-    const { error } = await supabase
+    const { error } = await db
       .from("pacientes")
       .update(updateData)
       .eq("id", paciente.id);
@@ -333,14 +333,14 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
     }
 
     // Update parametros_seguimiento
-    const { data: existingParams } = await supabase
+    const { data: existingParams } = await db
       .from("parametros_seguimiento")
       .select("id")
       .eq("paciente_id", paciente.id)
       .maybeSingle();
 
     if (existingParams) {
-      await supabase
+      await db
         .from("parametros_seguimiento")
         .update({
           periodo_llamada_ciclico: periodoLlamada,
@@ -348,7 +348,7 @@ export function EditPacienteDialog({ paciente, open, onOpenChange, onSuccess }: 
         })
         .eq("id", existingParams.id);
     } else {
-      await supabase
+      await db
         .from("parametros_seguimiento")
         .insert({
           paciente_id: paciente.id,

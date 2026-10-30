@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,10 +32,10 @@ export default function VerticalesAdmin() {
     if (!wsId) return;
     setLoading(true);
     const [vw, mm] = await Promise.all([
-      (supabase.from("workspace_verticales") as any)
+      (db.from("workspace_verticales") as any)
         .select("vertical, activa")
         .eq("workspace_id", wsId),
-      (supabase.from("workspace_members") as any)
+      (db.from("workspace_members") as any)
         .select("user_id, role, profiles!inner(nombre, apellido, vertical_asignada)")
         .eq("workspace_id", wsId),
     ]);
@@ -53,7 +53,7 @@ export default function VerticalesAdmin() {
   }, [wsId]);
 
   const toggle = async (v: VerticalTipo, value: boolean) => {
-    const { error } = await (supabase.from("workspace_verticales") as any).upsert(
+    const { error } = await (db.from("workspace_verticales") as any).upsert(
       { workspace_id: wsId, vertical: v, activa: value },
       { onConflict: "workspace_id,vertical" }
     );
@@ -67,7 +67,7 @@ export default function VerticalesAdmin() {
   };
 
   const asignarMiembro = async (userId: string, vertical: VerticalTipo | "ninguna") => {
-    const { error } = await (supabase.from("profiles") as any)
+    const { error } = await (db.from("profiles") as any)
       .update({ vertical_asignada: vertical === "ninguna" ? null : vertical })
       .eq("id", userId);
     if (error) {

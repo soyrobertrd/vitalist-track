@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +36,7 @@ export const RecordatoriosDiariosWhatsApp = () => {
     const hasta = endOfDay(manana).toISOString();
 
     const [visitasRes, llamadasRes] = await Promise.all([
-      supabase
+      db
         .from("control_visitas")
         .select(
           "id, fecha_hora_visita, tipo_visita, pacientes(id, nombre, apellido, numero_principal, contacto_px, contacto_cuidador), personal_salud(id, nombre, apellido)"
@@ -44,7 +44,7 @@ export const RecordatoriosDiariosWhatsApp = () => {
         .gte("fecha_hora_visita", desde)
         .lte("fecha_hora_visita", hasta)
         .eq("estado", "pendiente"),
-      supabase
+      db
         .from("registro_llamadas")
         .select(
           "id, fecha_agendada, pacientes(id, nombre, apellido, numero_principal, contacto_px, contacto_cuidador), personal_salud(id, nombre, apellido)"

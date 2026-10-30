@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -81,14 +81,14 @@ export function AutorizacionesManager() {
   const cargar = async () => {
     if (!wsId) return;
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await db
       .from("autorizaciones_medicas")
       .select("*, aseguradoras(nombre), pacientes(nombre, apellido)")
       .eq("workspace_id", wsId)
       .order("created_at", { ascending: false });
     setItems((data as any[]) || []);
 
-    const { data: asegs } = await supabase
+    const { data: asegs } = await db
       .from("aseguradoras")
       .select("id, nombre")
       .eq("workspace_id", wsId)
@@ -104,7 +104,7 @@ export function AutorizacionesManager() {
     if (!form.paciente_id || !form.aseguradora_id || !form.procedimiento.trim()) {
       toast({ title: "Paciente, aseguradora y procedimiento requeridos", variant: "destructive" }); return;
     }
-    const { error } = await supabase.from("autorizaciones_medicas").insert({
+    const { error } = await db.from("autorizaciones_medicas").insert({
       workspace_id: wsId,
       paciente_id: form.paciente_id,
       aseguradora_id: form.aseguradora_id,
@@ -125,7 +125,7 @@ export function AutorizacionesManager() {
   const actualizarEstado = async (id: string, estado: string, extra?: Record<string, any>) => {
     const payload: any = { estado, ...extra };
     if (estado === "aprobada" || estado === "rechazada") payload.fecha_respuesta = new Date().toISOString().split("T")[0];
-    await supabase.from("autorizaciones_medicas").update(payload).eq("id", id);
+    await db.from("autorizaciones_medicas").update(payload).eq("id", id);
     toast({ title: `Autorización ${estado}` });
     cargar();
   };

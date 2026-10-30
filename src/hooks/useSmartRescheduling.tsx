@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { format, addDays, isSameDay, parseISO, setHours, setMinutes } from "date-fns";
 
 interface TimeSlot {
@@ -43,14 +43,14 @@ export function useSmartRescheduling() {
 
       try {
         const [llamadasRes, visitasRes] = await Promise.all([
-          supabase
+          db
             .from("registro_llamadas")
             .select("*, personal_salud(nombre, apellido), pacientes(nombre, apellido)")
             .eq("profesional_id", profesionalId)
             .eq("estado", "agendada")
             .gte("fecha_agendada", `${fechaStr}T00:00:00`)
             .lt("fecha_agendada", `${fechaStr}T23:59:59`),
-          supabase
+          db
             .from("control_visitas")
             .select("*, personal_salud(nombre, apellido), pacientes(nombre, apellido)")
             .eq("profesional_id", profesionalId)
@@ -137,21 +137,21 @@ export function useSmartRescheduling() {
 
       try {
         // Get professional info
-        const { data: profesional } = await supabase
+        const { data: profesional } = await db
           .from("personal_salud")
           .select("nombre, apellido")
           .eq("id", profesionalId)
           .single();
 
         // Get work schedule
-        const { data: horarios } = await supabase
+        const { data: horarios } = await db
           .from("horarios_profesionales")
           .select("*")
           .eq("profesional_id", profesionalId)
           .eq("activo", true);
 
         // Get holidays
-        const { data: feriados } = await supabase
+        const { data: feriados } = await db
           .from("dias_no_laborables")
           .select("fecha");
 
@@ -170,7 +170,7 @@ export function useSmartRescheduling() {
           if (!horarioDia) continue;
 
           // Check absences
-          const { data: ausencias } = await supabase
+          const { data: ausencias } = await db
             .from("ausencias_profesionales")
             .select("id")
             .eq("profesional_id", profesionalId)
@@ -181,14 +181,14 @@ export function useSmartRescheduling() {
 
           // Get existing appointments
           const [llamadasRes, visitasRes] = await Promise.all([
-            supabase
+            db
               .from("registro_llamadas")
               .select("fecha_agendada, duracion_estimada")
               .eq("profesional_id", profesionalId)
               .eq("estado", "agendada")
               .gte("fecha_agendada", `${fechaStr}T00:00:00`)
               .lt("fecha_agendada", `${fechaStr}T23:59:59`),
-            supabase
+            db
               .from("control_visitas")
               .select("fecha_hora_visita")
               .eq("profesional_id", profesionalId)
@@ -314,14 +314,14 @@ export function useSmartRescheduling() {
 
         // Get affected appointments
         const [llamadasRes, visitasRes] = await Promise.all([
-          supabase
+          db
             .from("registro_llamadas")
             .select("*, pacientes(nombre, apellido, zona, barrio)")
             .eq("profesional_id", profesionalId)
             .eq("estado", "agendada")
             .gte("fecha_agendada", `${fechaInicioStr}T00:00:00`)
             .lte("fecha_agendada", `${fechaFinStr}T23:59:59`),
-          supabase
+          db
             .from("control_visitas")
             .select("*, pacientes(nombre, apellido, zona, barrio)")
             .eq("profesional_id", profesionalId)
@@ -331,7 +331,7 @@ export function useSmartRescheduling() {
         ]);
 
         // Get other available professionals
-        const { data: otrosProfesionales } = await supabase
+        const { data: otrosProfesionales } = await db
           .from("personal_salud")
           .select("id, nombre, apellido, zona")
           .eq("activo", true)

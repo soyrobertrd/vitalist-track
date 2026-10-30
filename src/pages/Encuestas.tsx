@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,7 +76,7 @@ const Encuestas = () => {
 
   const fetchEncuestas = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("encuestas")
       .select("*")
       .order("created_at", { ascending: false });
@@ -92,7 +92,7 @@ const Encuestas = () => {
   const handleSubmit = async () => {
     if (selectedEncuesta) {
       // Update existing survey
-      const { error } = await supabase
+      const { error } = await db
         .from("encuestas")
         .update({
           nombre: formData.nombre,
@@ -120,10 +120,10 @@ const Encuestas = () => {
       }
     } else {
       // Create new survey
-      const { error } = await supabase.from("encuestas").insert([
+      const { error } = await db.from("encuestas").insert([
         {
           ...formData,
-          created_by: (await supabase.auth.getUser()).data.user?.id,
+          created_by: (await db.auth.getUser()).data.user?.id,
         },
       ]);
 
@@ -145,7 +145,7 @@ const Encuestas = () => {
   };
 
   const toggleEncuesta = async (id: string, activo: boolean) => {
-    const { error } = await supabase.from("encuestas").update({ activo }).eq("id", id);
+    const { error } = await db.from("encuestas").update({ activo }).eq("id", id);
 
     if (error) {
       toast({ title: "Error al actualizar encuesta", variant: "destructive" });
@@ -156,7 +156,7 @@ const Encuestas = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("encuestas").delete().eq("id", id);
+    const { error } = await db.from("encuestas").delete().eq("id", id);
 
     if (error) {
       toast({ title: "Error al eliminar encuesta", variant: "destructive" });

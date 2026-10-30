@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,10 +27,10 @@ export default function Enfermeria() {
 
   useEffect(() => {
     Promise.all([
-      (supabase.from("signos_vitales_turno" as any) as any).select("id", { count: "exact", head: true }),
-      (supabase.from("plan_cuidados_enfermeria" as any) as any).select("id", { count: "exact", head: true }).eq("estado", "activo"),
-      (supabase.from("administracion_medicamentos" as any) as any).select("id", { count: "exact", head: true }).eq("estado", "programada"),
-      (supabase.from("procedimientos_enfermeria" as any) as any).select("id", { count: "exact", head: true }),
+      (db.from("signos_vitales_turno" as any) as any).select("id", { count: "exact", head: true }),
+      (db.from("plan_cuidados_enfermeria" as any) as any).select("id", { count: "exact", head: true }).eq("estado", "activo"),
+      (db.from("administracion_medicamentos" as any) as any).select("id", { count: "exact", head: true }).eq("estado", "programada"),
+      (db.from("procedimientos_enfermeria" as any) as any).select("id", { count: "exact", head: true }),
     ]).then(([s, pl, m, pr]) => {
       setCounts({
         signos: s.count || 0,
@@ -129,7 +129,7 @@ export default function Enfermeria() {
 function PacienteSelect({ value, onChange }: { value: string; onChange: (v: string, pid: string) => void }) {
   const [admisiones, setAdmisiones] = useState<any[]>([]);
   useEffect(() => {
-    supabase.from("admisiones" as any).select("id,paciente_id,pacientes(nombre,apellido)").eq("estado","activa").then(({ data }: any) => setAdmisiones(data ?? []));
+    db.from("admisiones" as any).select("id,paciente_id,pacientes(nombre,apellido)").eq("estado","activa").then(({ data }: any) => setAdmisiones(data ?? []));
   }, []);
   return (
     <Select value={value} onValueChange={(v) => { const a = admisiones.find(x => x.id === v); onChange(v, a?.paciente_id); }}>
@@ -146,12 +146,12 @@ function SignosVitalesTab() {
 
   useEffect(() => { load(); }, []);
   async function load() {
-    const { data } = await (supabase.from("signos_vitales_turno" as any) as any).select("*, pacientes(nombre,apellido)").order("fecha_registro",{ ascending:false }).limit(50);
+    const { data } = await (db.from("signos_vitales_turno" as any) as any).select("*, pacientes(nombre,apellido)").order("fecha_registro",{ ascending:false }).limit(50);
     setItems(data ?? []);
   }
   async function save() {
     if (!form.admision_id) return toast.error("Paciente requerido");
-    const { error } = await (supabase.from("signos_vitales_turno" as any) as any).insert({
+    const { error } = await (db.from("signos_vitales_turno" as any) as any).insert({
       admision_id: form.admision_id, paciente_id: form.paciente_id, turno: form.turno,
       ta_sistolica: form.ta_sis ? parseInt(form.ta_sis) : null,
       ta_diastolica: form.ta_dia ? parseInt(form.ta_dia) : null,
@@ -233,12 +233,12 @@ function PlanCuidadosTab() {
 
   useEffect(() => { load(); }, []);
   async function load() {
-    const { data } = await (supabase.from("plan_cuidados_enfermeria" as any) as any).select("*, pacientes(nombre,apellido)").eq("estado","activo").order("created_at",{ ascending:false });
+    const { data } = await (db.from("plan_cuidados_enfermeria" as any) as any).select("*, pacientes(nombre,apellido)").eq("estado","activo").order("created_at",{ ascending:false });
     setItems(data ?? []);
   }
   async function save() {
     if (!form.diagnostico_nanda || !form.admision_id) return toast.error("Faltan datos");
-    const { error } = await (supabase.from("plan_cuidados_enfermeria" as any) as any).insert({
+    const { error } = await (db.from("plan_cuidados_enfermeria" as any) as any).insert({
       admision_id: form.admision_id, paciente_id: form.paciente_id,
       diagnostico_nanda: form.diagnostico_nanda, resultado_noc: form.resultado_noc,
       intervencion_nic: form.intervencion_nic, prioridad: form.prioridad,
@@ -296,12 +296,12 @@ function AdminMedicamentosTab() {
 
   useEffect(() => { load(); }, []);
   async function load() {
-    const { data } = await (supabase.from("administracion_medicamentos" as any) as any).select("*, pacientes(nombre,apellido)").order("hora_programada",{ ascending:false }).limit(50);
+    const { data } = await (db.from("administracion_medicamentos" as any) as any).select("*, pacientes(nombre,apellido)").order("hora_programada",{ ascending:false }).limit(50);
     setItems(data ?? []);
   }
   async function save() {
     if (!form.admision_id || !form.medicamento) return toast.error("Faltan datos");
-    const { error } = await (supabase.from("administracion_medicamentos" as any) as any).insert({
+    const { error } = await (db.from("administracion_medicamentos" as any) as any).insert({
       admision_id: form.admision_id, paciente_id: form.paciente_id,
       medicamento: form.medicamento, dosis: form.dosis, via: form.via,
       hora_programada: form.hora_programada, estado: "programada",
@@ -310,7 +310,7 @@ function AdminMedicamentosTab() {
     toast.success("Programado"); setOpen(false); setForm({}); load();
   }
   async function marcar(id: string, estado: string) {
-    const { error } = await (supabase.from("administracion_medicamentos" as any) as any).update({ estado, hora_administrada: estado === "administrada" ? new Date().toISOString() : null }).eq("id", id);
+    const { error } = await (db.from("administracion_medicamentos" as any) as any).update({ estado, hora_administrada: estado === "administrada" ? new Date().toISOString() : null }).eq("id", id);
     if (error) return toast.error(error.message);
     load();
   }
@@ -364,12 +364,12 @@ function ProcedimientosTab() {
   const [form, setForm] = useState<any>({});
   useEffect(() => { load(); }, []);
   async function load() {
-    const { data } = await (supabase.from("procedimientos_enfermeria" as any) as any).select("*, pacientes(nombre,apellido)").order("fecha_hora",{ ascending:false }).limit(50);
+    const { data } = await (db.from("procedimientos_enfermeria" as any) as any).select("*, pacientes(nombre,apellido)").order("fecha_hora",{ ascending:false }).limit(50);
     setItems(data ?? []);
   }
   async function save() {
     if (!form.admision_id || !form.tipo) return toast.error("Faltan datos");
-    const { error } = await (supabase.from("procedimientos_enfermeria" as any) as any).insert({
+    const { error } = await (db.from("procedimientos_enfermeria" as any) as any).insert({
       admision_id: form.admision_id, paciente_id: form.paciente_id,
       tipo: form.tipo, descripcion: form.descripcion, resultado: form.resultado,
     });

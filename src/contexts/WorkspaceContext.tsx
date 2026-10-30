@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { DEMO_MODE, DEMO_WORKSPACES, DEMO_PLANES } from "@/lib/mock-live-seed";
 
 export interface Workspace {
@@ -51,7 +51,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
   const loadWorkspaces = useCallback(async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (!user) {
         // En modo preview o sin sesión activa de Supabase, proveer los 6 centros de prueba con sus 4 planes
         if (DEMO_MODE) {
@@ -69,7 +69,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       }
 
       // Get memberships
-      const { data: memberships } = await supabase
+      const { data: memberships } = await db
         .from("workspace_members")
         .select("workspace_id, role")
         .eq("user_id", user.id);
@@ -91,7 +91,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       }
 
       const ids = memberships.map((m) => m.workspace_id);
-      const { data: ws } = await supabase
+      const { data: ws } = await db
         .from("workspaces")
         .select("*")
         .in("id", ids);
@@ -120,7 +120,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         if (demoPlan) {
           setCurrentPlan(demoPlan);
         } else {
-          const { data: plan } = await supabase
+          const { data: plan } = await db
             .from("planes")
             .select("*")
             .eq("codigo", selected.plan_codigo)
@@ -145,7 +145,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     loadWorkspaces();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+    const { data: sub } = db.auth.onAuthStateChange(() => {
       loadWorkspaces();
     });
     return () => sub.subscription.unsubscribe();
@@ -169,7 +169,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    supabase.from("planes").select("*").eq("codigo", ws.plan_codigo).maybeSingle()
+    db.from("planes").select("*").eq("codigo", ws.plan_codigo).maybeSingle()
       .then(({ data }) => setCurrentPlan(data as Plan | null));
   }, [workspaces]);
 

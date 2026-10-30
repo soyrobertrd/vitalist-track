@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Calendar, Clock, User, Home, Building, Mail, Pill, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -55,7 +55,7 @@ export function VisitaDetailDialog({
     if (!candidatoEspera) return;
     setReasignando(true);
     try {
-      const { error: insErr } = await supabase.from("control_visitas").insert({
+      const { error: insErr } = await db.from("control_visitas").insert({
         paciente_id: candidatoEspera.paciente_id,
         profesional_id: visita.profesional_id,
         fecha_hora_visita: visita.fecha_hora_visita,
@@ -68,7 +68,7 @@ export function VisitaDetailDialog({
 
       if (insErr) throw insErr;
 
-      await supabase
+      await db
         .from("lista_espera")
         .update({
           estado: "asignada",
@@ -95,7 +95,7 @@ export function VisitaDetailDialog({
   const handleCancelar = async () => {
     setLoading(true);
     const anteriorEstado = visita.estado || "pendiente";
-    const { error } = await supabase
+    const { error } = await db
       .from("control_visitas")
       .update({ estado: "cancelada" })
       .eq("id", visita.id);
@@ -111,7 +111,7 @@ export function VisitaDetailDialog({
 
     // Buscar si hay pacientes en lista de espera para ofrecer reasignación inmediata
     try {
-      const { data: listaEsperaCandidates } = await supabase
+      const { data: listaEsperaCandidates } = await db
         .from("lista_espera")
         .select("id, paciente_id, prioridad, motivo, pacientes:paciente_id(id, nombre, apellido, numero_principal, contacto_px)")
         .eq("estado", "esperando")
@@ -134,7 +134,7 @@ export function VisitaDetailDialog({
       action: {
         label: "Deshacer",
         onClick: async () => {
-          await supabase
+          await db
             .from("control_visitas")
             .update({ estado: anteriorEstado })
             .eq("id", visita.id);
@@ -187,7 +187,7 @@ export function VisitaDetailDialog({
     // para que Postgres no lo interprete como UTC y desplace la hora
     const fechaHoraISO = fechaHoraVisita ? new Date(fechaHoraVisita).toISOString() : fechaHoraVisita;
 
-    const { error } = await supabase
+    const { error } = await db
       .from("control_visitas")
       .update({
         fecha_hora_visita: fechaHoraISO,
@@ -212,7 +212,7 @@ export function VisitaDetailDialog({
     const nuevaFecha = new Date(visita.fecha_hora_visita);
     nuevaFecha.setDate(nuevaFecha.getDate() + dias);
 
-    const { error } = await supabase
+    const { error } = await db
       .from("control_visitas")
       .update({ 
         fecha_hora_visita: nuevaFecha.toISOString(),
@@ -236,7 +236,7 @@ export function VisitaDetailDialog({
     const fechaLlamada = new Date();
     fechaLlamada.setDate(fechaLlamada.getDate() + diasDespues);
 
-    await supabase.from("registro_llamadas").insert({
+    await db.from("registro_llamadas").insert({
       paciente_id: visita.paciente_id,
       profesional_id: visita.profesional_id,
       fecha_agendada: fechaLlamada.toISOString(),
@@ -257,7 +257,7 @@ export function VisitaDetailDialog({
       notas_visita: formData.get("notas_visita") as string,
     };
 
-    const { error } = await supabase
+    const { error } = await db
       .from("control_visitas")
       .update(updateData)
       .eq("id", visita.id);

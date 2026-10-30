@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 
 interface Props {
@@ -62,7 +62,7 @@ export default function ConsentimientoTeleconsulta({ open, onOpenChange, workspa
     const dataUrl = canvasRef.current?.toDataURL("image/png");
     if (!dataUrl || dataUrl.length < 200) { toast.error("Firma requerida"); return; }
     setSaving(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("consentimientos_teleconsulta")
       .insert({
         workspace_id: workspaceId,

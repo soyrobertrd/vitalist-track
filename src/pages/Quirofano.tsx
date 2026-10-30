@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -104,7 +104,7 @@ export default function Quirofano() {
     const wsId = currentWorkspace!.id;
     const [cRes, sRes, pxRes, psRes] = await Promise.all([
       (() => {
-        let q = supabase
+        let q = db
           .from("cirugias")
           .select("*, pacientes(id, nombre, apellido, cedula), personal_salud(id, nombre, apellido, especialidad), salas_operacion(id, nombre)")
           .eq("workspace_id", wsId)
@@ -112,9 +112,9 @@ export default function Quirofano() {
         if (activeSucursalId) q = q.eq("sucursal_id", activeSucursalId);
         return q;
       })(),
-      supabase.from("salas_operacion").select("*").eq("workspace_id", wsId).eq("activa", true),
-      supabase.from("pacientes").select("*").eq("workspace_id", wsId).limit(500),
-      supabase.from("personal_salud").select("*").eq("workspace_id", wsId).eq("activo", true),
+      db.from("salas_operacion").select("*").eq("workspace_id", wsId).eq("activa", true),
+      db.from("pacientes").select("*").eq("workspace_id", wsId).limit(500),
+      db.from("personal_salud").select("*").eq("workspace_id", wsId).eq("activo", true),
     ]);
     setCirugias(cRes.data || []);
     setSalas(sRes.data || []);
@@ -128,7 +128,7 @@ export default function Quirofano() {
       toast.error("Paciente, tipo de cirugía y fecha son obligatorios");
       return;
     }
-    const { error } = await supabase.from("cirugias").insert({
+    const { error } = await db.from("cirugias").insert({
       workspace_id: currentWorkspace!.id,
       sucursal_id: activeSucursalId || null,
       paciente_id: form.paciente_id,
@@ -176,7 +176,7 @@ export default function Quirofano() {
       toast.error("El nombre de la sala es obligatorio");
       return;
     }
-    const { error } = await supabase.from("salas_operacion").insert({
+    const { error } = await db.from("salas_operacion").insert({
       workspace_id: currentWorkspace!.id,
       sucursal_id: activeSucursalId || null,
       ...salaForm,
@@ -195,7 +195,7 @@ export default function Quirofano() {
     const updates: any = { estado };
     if (estado === "en_curso") updates.hora_inicio = format(new Date(), "HH:mm");
     if (estado === "completada") updates.hora_fin = format(new Date(), "HH:mm");
-    const { error } = await supabase.from("cirugias").update(updates).eq("id", id);
+    const { error } = await db.from("cirugias").update(updates).eq("id", id);
     if (error) {
       toast.error(error.message);
       return;

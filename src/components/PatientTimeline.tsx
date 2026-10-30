@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Phone, Calendar, FileText, Pill, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
@@ -39,7 +39,7 @@ export function PatientTimeline({ pacienteId, maxItems = 20 }: PatientTimelinePr
 
     try {
       // Fetch visitas
-      const { data: visitas } = await supabase
+      const { data: visitas } = await db
         .from("control_visitas")
         .select("id, fecha_hora_visita, tipo_visita, estado, notas_visita, personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)")
         .eq("paciente_id", pacienteId)
@@ -62,7 +62,7 @@ export function PatientTimeline({ pacienteId, maxItems = 20 }: PatientTimelinePr
       }
 
       // Fetch llamadas
-      const { data: llamadas } = await supabase
+      const { data: llamadas } = await db
         .from("registro_llamadas")
         .select("id, fecha_agendada, fecha_hora_realizada, estado, resultado_seguimiento, personal_salud!fk_registro_llamadas_profesional(nombre, apellido)")
         .eq("paciente_id", pacienteId)
@@ -85,7 +85,7 @@ export function PatientTimeline({ pacienteId, maxItems = 20 }: PatientTimelinePr
       }
 
       // Fetch atenciones
-      const { data: atenciones } = await supabase
+      const { data: atenciones } = await db
         .from("atencion_paciente")
         .select("id, tipo, descripcion, fecha_realizada, estado")
         .eq("paciente_id", pacienteId)

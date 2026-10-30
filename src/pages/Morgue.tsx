@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,7 +74,7 @@ export default function Morgue() {
     queryKey: ["registros_morgue", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("registros_morgue" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -88,7 +88,7 @@ export default function Morgue() {
     queryKey: ["estudios_patologia", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("estudios_patologia" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -103,7 +103,7 @@ export default function Morgue() {
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const num = `OB-${Date.now().toString().slice(-6)}`;
-      const { error } = await supabase.from("registros_morgue" as any).insert({
+      const { error } = await db.from("registros_morgue" as any).insert({
         workspace_id: currentWorkspace.id,
         numero: num,
         nombre_fallecido: formDataMorgue.nombre_fallecido,
@@ -137,7 +137,7 @@ export default function Morgue() {
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const num = `PAT-${Date.now().toString().slice(-6)}`;
-      const { error } = await supabase.from("estudios_patologia" as any).insert({
+      const { error } = await db.from("estudios_patologia" as any).insert({
         workspace_id: currentWorkspace.id,
         numero: num,
         tipo: formDataPat.tipo,

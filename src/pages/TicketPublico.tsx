@@ -8,7 +8,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { Calendar, Clock, MapPin, Phone, Globe, Loader2, AlertCircle, Printer, Video } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { enlaceSeguro } from "@/lib/videoLinks";
 
 export default function TicketPublico() {
@@ -27,7 +27,7 @@ export default function TicketPublico() {
       }
       try {
         // Llamar edge function pública (no requiere auth)
-        const { data: result, error: fnError } = await supabase.functions.invoke("ticket-publico", {
+        const { data: result, error: fnError } = await db.functions.invoke("ticket-publico", {
           body: { token },
         });
         if (fnError) throw fnError;

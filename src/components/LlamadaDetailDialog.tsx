@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Calendar, Clock, User, Phone, FileText, Mail } from "lucide-react";
 import { format, addDays } from "date-fns";
 import { es } from "date-fns/locale";
@@ -60,7 +60,7 @@ export function LlamadaDetailDialog({
     const profesionalId = formData.get("profesional_id") as string;
     const fechaHoraAgendada = `${fechaAgendada}T${horaAgendada}:00`;
 
-    const { error } = await supabase
+    const { error } = await db
       .from("registro_llamadas")
       .update({
         fecha_agendada: fechaHoraAgendada,
@@ -82,7 +82,7 @@ export function LlamadaDetailDialog({
   const handleCancelar = async () => {
     setLoading(true);
 
-    const { error } = await supabase
+    const { error } = await db
       .from("registro_llamadas")
       .update({ estado: "cancelada" })
       .eq("id", llamada.id);
@@ -112,7 +112,7 @@ export function LlamadaDetailDialog({
         const minutosEspera = parseInt(intentarEnTiempo);
         const nuevaFecha = new Date(Date.now() + minutosEspera * 60 * 1000);
         
-        await supabase.from("registro_llamadas").insert({
+        await db.from("registro_llamadas").insert({
           paciente_id: llamada.paciente_id,
           profesional_id: llamada.profesional_id,
           fecha_agendada: nuevaFecha.toISOString(),
@@ -133,7 +133,7 @@ export function LlamadaDetailDialog({
       requiere_seguimiento: formData.get("requiere_seguimiento") === "true",
     };
 
-    const { error } = await supabase
+    const { error } = await db
       .from("registro_llamadas")
       .update(updateData)
       .eq("id", llamada.id);
@@ -158,7 +158,7 @@ export function LlamadaDetailDialog({
   const renovarAgendaLlamada = async (pacienteId: string, profesionalId: string) => {
     try {
       // Obtener los parámetros de seguimiento del paciente
-      const { data: parametros, error: parametrosError } = await supabase
+      const { data: parametros, error: parametrosError } = await db
         .from("parametros_seguimiento")
         .select("periodo_llamada_ciclico")
         .eq("paciente_id", pacienteId)
@@ -174,7 +174,7 @@ export function LlamadaDetailDialog({
       const fechaProximaLlamada = addDays(new Date(), periodo);
 
       // Crear nueva llamada agendada
-      const { error: nuevaLlamadaError } = await supabase
+      const { error: nuevaLlamadaError } = await db
         .from("registro_llamadas")
         .insert({
           paciente_id: pacienteId,

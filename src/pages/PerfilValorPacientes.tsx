@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, AlertTriangle, Star, Users } from "lucide-react";
@@ -12,7 +12,7 @@ export default function PerfilValorPacientes() {
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("perfil_valor_paciente" as any)
         .select("*")
         .order("ltv_total", { ascending: false })

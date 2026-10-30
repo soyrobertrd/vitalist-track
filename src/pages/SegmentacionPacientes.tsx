@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Target } from "lucide-react";
@@ -12,7 +12,7 @@ export default function SegmentacionPacientes() {
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase.from("segmentos_pacientes" as any).select("*").order("created_at", { ascending: false });
+      const { data, error } = await db.from("segmentos_pacientes" as any).select("*").order("created_at", { ascending: false });
       if (error) toast.error(error.message);
       setData((data as any[]) || []);
       setLoading(false);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ export function EvolucionesSOAP({ pacienteId }: { pacienteId: string }) {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await db
       .from("evoluciones_soap")
       .select("*, personal_salud:profesional_id(nombre, apellido)")
       .eq("paciente_id", pacienteId)
@@ -61,8 +61,8 @@ export function EvolucionesSOAP({ pacienteId }: { pacienteId: string }) {
       fecha_evolucion: d.fecha_evolucion || new Date().toISOString(),
     };
     const { error } = d.id
-      ? await supabase.from("evoluciones_soap").update(payload).eq("id", d.id)
-      : await supabase.from("evoluciones_soap").insert(payload);
+      ? await db.from("evoluciones_soap").update(payload).eq("id", d.id)
+      : await db.from("evoluciones_soap").insert(payload);
     if (error) {
       toast.error("Error al guardar evolución");
       return;
@@ -74,7 +74,7 @@ export function EvolucionesSOAP({ pacienteId }: { pacienteId: string }) {
 
   const remove = async (id: string) => {
     if (!confirm("¿Eliminar esta evolución?")) return;
-    const { error } = await supabase.from("evoluciones_soap").delete().eq("id", id);
+    const { error } = await db.from("evoluciones_soap").delete().eq("id", id);
     if (error) {
       toast.error("Error al eliminar");
       return;

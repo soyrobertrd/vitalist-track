@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -25,7 +25,7 @@ export default function DocumentosCompartidos({ teleconsultaId, workspaceId, pac
   const [uploading, setUploading] = useState(false);
 
   const cargar = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("documentos_compartidos_psico")
       .select("*")
       .eq("teleconsulta_id", teleconsultaId)
@@ -40,9 +40,9 @@ export default function DocumentosCompartidos({ teleconsultaId, workspaceId, pac
     if (!f) return;
     setUploading(true);
     const path = `${pacienteId}/${Date.now()}-${f.name}`;
-    const { error: upErr } = await supabase.storage.from("teleconsulta-docs").upload(path, f);
+    const { error: upErr } = await db.storage.from("teleconsulta-docs").upload(path, f);
     if (upErr) { toast.error(upErr.message); setUploading(false); return; }
-    const { error } = await supabase.from("documentos_compartidos_psico").insert({
+    const { error } = await db.from("documentos_compartidos_psico").insert({
       workspace_id: workspaceId,
       teleconsulta_id: teleconsultaId,
       paciente_id: pacienteId,
@@ -60,7 +60,7 @@ export default function DocumentosCompartidos({ teleconsultaId, workspaceId, pac
   };
 
   const descargar = async (d: Doc) => {
-    const { data, error } = await supabase.storage
+    const { data, error } = await db.storage
       .from("teleconsulta-docs")
       .createSignedUrl(d.storage_path, 3600);
     if (error) { toast.error(error.message); return; }
@@ -68,8 +68,8 @@ export default function DocumentosCompartidos({ teleconsultaId, workspaceId, pac
   };
 
   const eliminar = async (d: Doc) => {
-    await supabase.storage.from("teleconsulta-docs").remove([d.storage_path]);
-    await supabase.from("documentos_compartidos_psico").delete().eq("id", d.id);
+    await db.storage.from("teleconsulta-docs").remove([d.storage_path]);
+    await db.from("documentos_compartidos_psico").delete().eq("id", d.id);
     cargar();
   };
 

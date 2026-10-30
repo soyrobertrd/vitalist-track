@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
@@ -113,7 +113,7 @@ const Visitas = () => {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     const wsId = currentWorkspace?.id;
-    let visitasQuery = supabase
+    let visitasQuery = db
       .from("control_visitas")
       .select(`
         *,
@@ -129,8 +129,8 @@ const Visitas = () => {
         personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)
       `)
       .order("fecha_hora_visita", { ascending: false });
-    let pacientesQuery = supabase.from("pacientes").select("*").eq("status_px", "activo");
-    let personalQuery = supabase.from("personal_salud").select("*").eq("activo", true);
+    let pacientesQuery = db.from("pacientes").select("*").eq("status_px", "activo");
+    let personalQuery = db.from("personal_salud").select("*").eq("activo", true);
     if (wsId) {
       visitasQuery = visitasQuery.eq("workspace_id", wsId);
       pacientesQuery = pacientesQuery.eq("workspace_id", wsId);
@@ -153,7 +153,7 @@ const Visitas = () => {
       // Fetch additional professionals for each visit
       citasFinales = await Promise.all(
         visitasRes.data.map(async (visita: any) => {
-          const { data: profesionales } = await supabase
+          const { data: profesionales } = await db
             .from("visitas_profesionales")
             .select("profesional_id, personal_salud!visitas_profesionales_profesional_id_fkey(nombre, apellido)")
             .eq("visita_id", visita.id);
@@ -238,7 +238,7 @@ const Visitas = () => {
     }
     
     // Validar si ya existe una visita pendiente para este paciente
-    const { data: existingVisitas } = await supabase
+    const { data: existingVisitas } = await db
       .from("control_visitas")
       .select("id, fecha_hora_visita, personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)")
       .eq("paciente_id", pacienteId)
@@ -284,7 +284,7 @@ const Visitas = () => {
       return;
     }
 
-    const { data: visitaData, error } = await supabase
+    const { data: visitaData, error } = await db
       .from("control_visitas")
       .insert([data])
       .select()
@@ -300,7 +300,7 @@ const Visitas = () => {
           profesional_id: profId
         }));
         
-        await supabase.from("visitas_profesionales").insert(profesionalesData);
+        await db.from("visitas_profesionales").insert(profesionalesData);
       }
       
       toast.success("Visita programada exitosamente");
@@ -334,7 +334,7 @@ const Visitas = () => {
 
   const handlePatientChange = async (pacienteId: string) => {
     setSelectedPatientId(pacienteId);
-    const { data } = await supabase
+    const { data } = await db
       .from("pacientes")
       .select("zona, barrio, dias_no_visita, nombre, apellido")
       .eq("id", pacienteId)
@@ -360,7 +360,7 @@ const Visitas = () => {
       sucursal_id: sucursalIdUnscheduled ?? sucursales.find(s => s.es_principal)?.id ?? null,
     };
 
-    const { error } = await supabase.from("control_visitas").insert([data]);
+    const { error } = await db.from("control_visitas").insert([data]);
 
     if (error) {
       toast.error(error.message);
@@ -415,14 +415,14 @@ const Visitas = () => {
     const selectedIds = Array.from(bulkSelection.selectedIds);
     try {
       if (action === "assign_professional" && value) {
-        const { error } = await supabase
+        const { error } = await db
           .from("control_visitas")
           .update({ profesional_id: value })
           .in("id", selectedIds);
         if (error) throw error;
         toast.success(`${selectedIds.length} visita(s) reasignadas`);
       } else if (action === "change_status" && value) {
-        const { error } = await supabase
+        const { error } = await db
           .from("control_visitas")
           .update({ estado: value as any })
           .in("id", selectedIds);

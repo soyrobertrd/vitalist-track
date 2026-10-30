@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -60,7 +60,7 @@ export const AuditoriaCambiosViewer = () => {
   const fetchAudit = async () => {
     setLoading(true);
     try {
-      let query = supabase
+      let query = db
         .from("auditoria_cambios")
         .select("*")
         .order("created_at", { ascending: false })
@@ -78,7 +78,7 @@ export const AuditoriaCambiosViewer = () => {
       const userIds = Array.from(new Set(rows.map(r => r.usuario_id).filter(Boolean))) as string[];
       let usuariosMap: Record<string, string> = {};
       if (userIds.length) {
-        const { data: profiles } = await supabase
+        const { data: profiles } = await db
           .from("profiles")
           .select("id, nombre, apellido, email")
           .in("id", userIds);

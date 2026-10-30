@@ -8,7 +8,7 @@
  */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +50,7 @@ export default function SalaVirtual() {
     let cancel = false;
     (async () => {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("control_visitas")
         .select(
           `id, fecha_hora_visita, video_enlace, video_proveedor, video_notas,
@@ -93,7 +93,7 @@ export default function SalaVirtual() {
     // Marca inicio si aún no se ha marcado (best-effort, no bloquea)
     if (!sala.video_iniciado_at) {
       try {
-        await supabase
+        await db
           .from("control_visitas")
           .update({
             video_iniciado_at: new Date().toISOString(),

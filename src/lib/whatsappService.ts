@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 
 export type WhatsAppCategoria =
   | "recordatorio_cita"
@@ -76,7 +76,7 @@ export async function abrirWhatsApp(params: {
   // Registrar envío en historial_recordatorios (best effort, no bloquea)
   if (params.citaId && params.tipoCita) {
     try {
-      await supabase.from("historial_recordatorios").insert({
+      await db.from("historial_recordatorios").insert({
         cita_id: params.citaId,
         tipo_cita: params.tipoCita,
         paciente_id: params.pacienteId ?? null,
@@ -106,7 +106,7 @@ export async function abrirWhatsApp(params: {
 export async function getPlantillaPorCategoria(
   categoria: WhatsAppCategoria
 ): Promise<PlantillaWhatsApp | null> {
-  const { data } = await supabase
+  const { data } = await db
     .from("plantillas_whatsapp")
     .select("*")
     .eq("categoria", categoria)

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,7 +92,7 @@ export default function Docencia() {
     queryKey: ["programas_docencia", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("programas_docencia" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -105,7 +105,7 @@ export default function Docencia() {
     queryKey: ["residentes_rotaciones", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("residentes_rotaciones" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -119,7 +119,7 @@ export default function Docencia() {
     queryKey: ["protocolos_investigacion", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("protocolos_investigacion" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -133,7 +133,7 @@ export default function Docencia() {
   const crearRotacion = useMutation({
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
-      const { error } = await supabase.from("residentes_rotaciones" as any).insert({
+      const { error } = await db.from("residentes_rotaciones" as any).insert({
         workspace_id: currentWorkspace.id,
         nombre_residente: formDataRot.nombre_residente,
         universidad: formDataRot.universidad,
@@ -166,7 +166,7 @@ export default function Docencia() {
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const num = `INV-${Date.now().toString().slice(-5)}`;
-      const { error } = await supabase.from("protocolos_investigacion" as any).insert({
+      const { error } = await db.from("protocolos_investigacion" as any).insert({
         workspace_id: currentWorkspace.id,
         numero: num,
         titulo: formDataProt.titulo,

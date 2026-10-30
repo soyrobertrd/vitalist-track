@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,7 +24,7 @@ export default function ExportarHistoriaPsico({ pacientes }: { pacientes: any[] 
     queryKey: ["exp_hc_psico", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("exportaciones_historia_clinica" as any) as any)
+      const { data } = await (db.from("exportaciones_historia_clinica" as any) as any)
         .select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100);
       return (data || []) as any[];
     },
@@ -33,7 +33,7 @@ export default function ExportarHistoriaPsico({ pacientes }: { pacientes: any[] 
   const exportar = async () => {
     if (!pacienteId || !motivo) { toast.error("Paciente y motivo requeridos"); return; }
     setLoading(true);
-    const { data, error } = await (supabase as any).rpc("exportar_historia_clinica_psico", {
+    const { data, error } = await (db as any).rpc("exportar_historia_clinica_psico", {
       _paciente_id: pacienteId, _motivo: motivo, _destinatario: destinatario || null, _formato: "json",
     });
     setLoading(false);

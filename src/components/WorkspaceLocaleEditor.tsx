@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,7 +25,7 @@ export function WorkspaceLocaleEditor() {
   useEffect(() => {
     if (!currentWorkspace) return;
     (async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("workspaces")
         .select("country_code, timezone, currency_code")
         .eq("id", currentWorkspace.id)
@@ -50,7 +50,7 @@ export function WorkspaceLocaleEditor() {
   const handleSave = async () => {
     if (!currentWorkspace) return;
     setSaving(true);
-    const { error } = await supabase
+    const { error } = await db
       .from("workspaces")
       .update({
         country_code: country || null,

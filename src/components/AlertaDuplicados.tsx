@@ -13,7 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "@/hooks/use-toast";
 
 interface MotivoCampo {
@@ -94,7 +94,7 @@ export function AlertaDuplicados({
         await onEliminarPaciente(deletingPaciente.id);
       } else {
         // Default: mark as inactive
-        const { error } = await supabase
+        const { error } = await db
           .from("pacientes")
           .update({ status_px: "inactivo" })
           .eq("id", deletingPaciente.id);

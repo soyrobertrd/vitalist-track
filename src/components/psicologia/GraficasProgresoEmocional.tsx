@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -19,7 +19,7 @@ export default function GraficasProgresoEmocional({ pacientes }: { pacientes: Pa
     queryKey: ["seg_emo_chart", wsId, pacienteId],
     enabled: !!wsId && !!pacienteId,
     queryFn: async () => {
-      const { data } = await (supabase.from("seguimiento_emocional" as any) as any)
+      const { data } = await (db.from("seguimiento_emocional" as any) as any)
         .select("fecha,animo,ansiedad,sueno,estres,crisis_reciente")
         .eq("workspace_id", wsId!).eq("paciente_id", pacienteId)
         .order("fecha", { ascending: true }).limit(180);
@@ -31,7 +31,7 @@ export default function GraficasProgresoEmocional({ pacientes }: { pacientes: Pa
     queryKey: ["escalas_chart", wsId, pacienteId],
     enabled: !!wsId && !!pacienteId,
     queryFn: async () => {
-      const { data } = await (supabase.from("evaluaciones_psicometricas" as any) as any)
+      const { data } = await (db.from("evaluaciones_psicometricas" as any) as any)
         .select("fecha_aplicacion,escala,puntaje_total,severidad")
         .eq("workspace_id", wsId!).eq("paciente_id", pacienteId)
         .order("fecha_aplicacion", { ascending: true }).limit(180);

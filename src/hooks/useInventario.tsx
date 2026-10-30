@@ -3,7 +3,7 @@
  * Filtra por workspace activo automáticamente.
  */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { toast } from "sonner";
 
@@ -50,7 +50,7 @@ export function useInventarioItems(filters?: { categoria?: InventarioCategoria; 
     queryKey: ["inventario_items", currentWorkspace?.id, filters],
     enabled: !!currentWorkspace?.id,
     queryFn: async (): Promise<InventarioItem[]> => {
-      let q = (supabase as any)
+      let q = (db as any)
         .from("inventario_items")
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -78,7 +78,7 @@ export function useLotesItem(itemId: string | null) {
     queryKey: ["inventario_lotes", itemId],
     enabled: !!itemId,
     queryFn: async (): Promise<InventarioLote[]> => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await (db as any)
         .from("inventario_lotes")
         .select("*")
         .eq("item_id", itemId)
@@ -97,7 +97,7 @@ export function useLotesProximosVencer(diasAviso = 60) {
     queryFn: async () => {
       const limite = new Date();
       limite.setDate(limite.getDate() + diasAviso);
-      const { data, error } = await (supabase as any)
+      const { data, error } = await (db as any)
         .from("inventario_lotes")
         .select("*, inventario_items!inner(nombre,workspace_id,sucursal_id,categoria)")
         .lte("fecha_vencimiento", limite.toISOString().slice(0, 10))
@@ -116,7 +116,7 @@ export function useCrearItem() {
   return useMutation({
     mutationFn: async (payload: Partial<InventarioItem> & { nombre: string; categoria: InventarioCategoria }) => {
       if (!currentWorkspace?.id) throw new Error("Sin workspace activo");
-      const { data, error } = await (supabase as any)
+      const { data, error } = await (db as any)
         .from("inventario_items")
         .insert({
           workspace_id: currentWorkspace.id,
@@ -148,8 +148,8 @@ export function useRegistrarMovimiento() {
       motivo?: string;
       notas?: string;
     }) => {
-      const { data: userData } = await supabase.auth.getUser();
-      const { data, error } = await (supabase as any)
+      const { data: userData } = await db.auth.getUser();
+      const { data, error } = await (db as any)
         .from("inventario_movimientos")
         .insert({
           ...payload,

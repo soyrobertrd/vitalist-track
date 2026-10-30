@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { format, subDays, startOfDay, endOfDay, eachDayOfInterval } from "date-fns";
 import { es } from "date-fns/locale";
@@ -40,12 +40,12 @@ export default function ReporteVerticalBase({ vertical, titulo, descripcion, ace
       setLoading(true);
       const wsId = currentWorkspace.id;
       const [p, c, f] = await Promise.all([
-        supabase.from("pacientes").select("id, sexo, fecha_nacimiento, status_px, created_at")
+        db.from("pacientes").select("id, sexo, fecha_nacimiento, status_px, created_at")
           .eq("workspace_id", wsId).eq("vertical", vertical as any),
-        supabase.from("citas_universales").select("id, fecha_inicio, estado, profesional_id")
+        db.from("citas_universales").select("id, fecha_inicio, estado, profesional_id")
           .eq("workspace_id", wsId).eq("vertical", vertical as any)
           .gte("fecha_inicio", desde.toISOString()).lte("fecha_inicio", hasta.toISOString()),
-        supabase.from("facturas").select("id, monto_total, estado, fecha_emision, vertical")
+        db.from("facturas").select("id, monto_total, estado, fecha_emision, vertical")
           .eq("workspace_id", wsId).eq("vertical", vertical as any)
           .gte("fecha_emision", desde.toISOString().slice(0, 10)),
       ]);

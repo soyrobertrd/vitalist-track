@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,7 @@ export function NearbyPatientsRecommendation({
         const tenDaysFromNow = new Date();
         tenDaysFromNow.setDate(today.getDate() + 10);
 
-        let query = supabase
+        let query = db
           .from("pacientes")
           .select(`
             id,

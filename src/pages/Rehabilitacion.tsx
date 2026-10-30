@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -91,7 +91,7 @@ export default function Rehabilitacion() {
     queryKey: ["pacientes-lista-rehab", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("pacientes")
         .select("id, nombre, apellido, cedula")
         .eq("workspace_id", currentWorkspace.id)
@@ -106,7 +106,7 @@ export default function Rehabilitacion() {
     queryKey: ["planes-rehab", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("planes_rehabilitacion")
         .select("*, pacientes(nombre, apellido, cedula)")
         .eq("workspace_id", currentWorkspace.id)
@@ -121,7 +121,7 @@ export default function Rehabilitacion() {
     queryKey: ["sesiones-rehab", selectedPlanId],
     queryFn: async () => {
       if (!selectedPlanId) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("sesiones_rehabilitacion")
         .select("*")
         .eq("plan_id", selectedPlanId)
@@ -143,7 +143,7 @@ export default function Rehabilitacion() {
         throw new Error("Seleccione un paciente.");
       }
       const numPlan = `RH-${Date.now().toString().slice(-6)}`;
-      const { error } = await supabase.from("planes_rehabilitacion").insert({
+      const { error } = await db.from("planes_rehabilitacion").insert({
         workspace_id: currentWorkspace.id,
         numero: numPlan,
         paciente_id: formDataPlan.paciente_id,
@@ -172,7 +172,7 @@ export default function Rehabilitacion() {
     mutationFn: async () => {
       if (!selectedPlanId) throw new Error("Seleccione un plan de rehabilitación.");
       const nextNum = sesiones.length + 1;
-      const { error } = await supabase.from("sesiones_rehabilitacion").insert({
+      const { error } = await db.from("sesiones_rehabilitacion").insert({
         plan_id: selectedPlanId,
         numero_sesion: nextNum,
         fecha: formDataSesion.fecha,

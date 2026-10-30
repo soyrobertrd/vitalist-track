@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 
 export interface CedulaData {
@@ -21,7 +21,7 @@ export function useCedulaLookup() {
     
     setLoading(true);
     try {
-      const { data: response, error } = await supabase.functions.invoke('consultar-cedula', {
+      const { data: response, error } = await db.functions.invoke('consultar-cedula', {
         body: { cedula: cedulaLimpia }
       });
 

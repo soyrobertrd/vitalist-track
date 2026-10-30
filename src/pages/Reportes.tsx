@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -63,13 +63,13 @@ const Reportes = () => {
     const fromDate = dateRange.from ? startOfDay(dateRange.from).toISOString() : null;
     const toDate = dateRange.to ? endOfDay(dateRange.to).toISOString() : null;
 
-    let llamadasQuery = supabase
+    let llamadasQuery = db
       .from("registro_llamadas")
       .select(
         "*, personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido), pacientes!registro_llamadas_paciente_id_fkey(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)"
       );
 
-    let visitasQuery = supabase
+    let visitasQuery = db
       .from("control_visitas")
       .select(
         "*, personal_salud!control_visitas_profesional_id_fkey(nombre, apellido), pacientes!control_visitas_paciente_id_fkey(nombre, apellido, sexo, fecha_nacimiento, grado_dificultad)"
@@ -99,8 +99,8 @@ const Reportes = () => {
       visitasQuery = visitasQuery.lte("created_at", toDate);
     }
 
-    let personalQuery = supabase.from("personal_salud").select("*").eq("activo", true);
-    let pacientesQuery = supabase.from("pacientes").select("*");
+    let personalQuery = db.from("personal_salud").select("*").eq("activo", true);
+    let pacientesQuery = db.from("pacientes").select("*");
     if (currentWorkspace?.id) {
       personalQuery = personalQuery.eq("workspace_id", currentWorkspace.id);
       pacientesQuery = pacientesQuery.eq("workspace_id", currentWorkspace.id);

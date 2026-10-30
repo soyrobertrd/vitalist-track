@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +28,7 @@ export function NewPatientsWidget() {
     async function fetchRecentPatients() {
       if (!currentWorkspace?.id) return;
       try {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from("pacientes")
           .select("id, nombre, apellido, created_at, historia_medica_basica, status_px")
           .eq("workspace_id", currentWorkspace.id)

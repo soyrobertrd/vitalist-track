@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -33,11 +33,11 @@ export default function MaternidadNeonatologia() {
   useEffect(() => {
     (async () => {
       const [pr, pg, pa, r, v] = await Promise.all([
-        supabase.from("control_prenatal").select("*").order("fecha", { ascending: false }).limit(30),
-        supabase.from("partogramas").select("*").eq("estado", "activo").order("fecha_inicio_trabajo", { ascending: false }),
-        supabase.from("registros_parto").select("*").order("fecha_parto", { ascending: false }).limit(30),
-        supabase.from("recien_nacidos").select("*").order("fecha_nacimiento", { ascending: false }).limit(30),
-        supabase.from("vacunacion_neonatal").select("*").order("fecha", { ascending: false }).limit(20),
+        db.from("control_prenatal").select("*").order("fecha", { ascending: false }).limit(30),
+        db.from("partogramas").select("*").eq("estado", "activo").order("fecha_inicio_trabajo", { ascending: false }),
+        db.from("registros_parto").select("*").order("fecha_parto", { ascending: false }).limit(30),
+        db.from("recien_nacidos").select("*").order("fecha_nacimiento", { ascending: false }).limit(30),
+        db.from("vacunacion_neonatal").select("*").order("fecha", { ascending: false }).limit(20),
       ]);
       setPrenatal(pr.data || []);
       setPartogramas(pg.data || []);

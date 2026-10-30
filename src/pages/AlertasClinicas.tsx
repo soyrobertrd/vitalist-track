@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -94,7 +94,7 @@ export default function AlertasClinicas() {
     queryKey: ["pacientes-lista-alertas", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("pacientes")
         .select("id, nombre, apellido, cedula")
         .eq("workspace_id", currentWorkspace.id)
@@ -107,7 +107,7 @@ export default function AlertasClinicas() {
   const { data: alertas = [], isLoading: loadingAlertas } = useQuery({
     queryKey: ["alertas_clinicas", filtroEstado, currentWorkspace?.id],
     queryFn: async () => {
-      let query = supabase
+      let query = db
         .from("alertas_clinicas")
         .select("*, pacientes(nombre, apellido, cedula)")
         .order("severidad", { ascending: false })
@@ -130,7 +130,7 @@ export default function AlertasClinicas() {
       const now = new Date().toISOString();
       if (estado === "reconocida") updates.reconocida_at = now;
       if (estado === "atendida") updates.atendida_at = now;
-      const { error } = await supabase.from("alertas_clinicas").update(updates).eq("id", id);
+      const { error } = await db.from("alertas_clinicas").update(updates).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -144,7 +144,7 @@ export default function AlertasClinicas() {
   const crearAlerta = useMutation({
     mutationFn: async () => {
       if (!formData.titulo) throw new Error("Ingrese el título de la alerta");
-      const { error } = await supabase.from("alertas_clinicas").insert({
+      const { error } = await db.from("alertas_clinicas").insert({
         paciente_id: formData.paciente_id || null,
         titulo: formData.titulo,
         descripcion: formData.descripcion || null,

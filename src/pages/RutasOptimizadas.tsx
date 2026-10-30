@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ const RutasOptimizadas = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase
+    db
       .from("personal_salud")
       .select("id, nombre, apellido")
       .eq("activo", true)
@@ -45,7 +45,7 @@ const RutasOptimizadas = () => {
 
   const cargarVisitas = async () => {
     setLoading(true);
-    let query = supabase
+    let query = db
       .from("control_visitas")
       .select(
         "id, fecha_hora_visita, motivo_visita, tipo_visita, estado, pacientes(nombre, apellido, zona, barrio, direccion_domicilio, latitud, longitud)"

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 
@@ -37,7 +37,7 @@ export function useCitaTickets() {
       setLoading(true);
       try {
         const filterCol = tipo === "visita" ? "visita_id" : "llamada_id";
-        const { data: existente } = await supabase
+        const { data: existente } = await db
           .from("cita_tickets")
           .select("*")
           .eq(filterCol, citaId)
@@ -48,7 +48,7 @@ export function useCitaTickets() {
           return existente as CitaTicket;
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from("cita_tickets")
           .insert({
             tipo_cita: tipo,
@@ -76,7 +76,7 @@ export function useCitaTickets() {
 
   const buscarPorCodigo = useCallback(async (codigo: string) => {
     const codigoLimpio = codigo.trim().toUpperCase();
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("cita_tickets")
       .select(`
         *,
@@ -95,7 +95,7 @@ export function useCitaTickets() {
   }, []);
 
   const buscarPorToken = useCallback(async (token: string) => {
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("cita_tickets")
       .select(`
         *,
@@ -111,8 +111,8 @@ export function useCitaTickets() {
   }, []);
 
   const marcarLlegada = useCallback(async (ticketId: string, notas?: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await db
       .from("cita_tickets")
       .update({
         estado_checkin: "llegado",
@@ -131,7 +131,7 @@ export function useCitaTickets() {
   }, []);
 
   const marcarAtendido = useCallback(async (ticketId: string) => {
-    const { error } = await supabase
+    const { error } = await db
       .from("cita_tickets")
       .update({
         estado_checkin: "atendido",
@@ -148,7 +148,7 @@ export function useCitaTickets() {
   }, []);
 
   const marcarNoShow = useCallback(async (ticketId: string) => {
-    const { error } = await supabase
+    const { error } = await db
       .from("cita_tickets")
       .update({ estado_checkin: "no_show" })
       .eq("id", ticketId);
@@ -166,7 +166,7 @@ export function useCitaTickets() {
     if (canal === "whatsapp") update.enviado_whatsapp = true;
     if (canal === "email") update.enviado_email = true;
     if (canal === "impreso") update.impreso = true;
-    await supabase.from("cita_tickets").update(update).eq("id", ticketId);
+    await db.from("cita_tickets").update(update).eq("id", ticketId);
   }, []);
 
   return {

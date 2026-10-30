@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -85,9 +85,9 @@ export default function FirmasDigitales() {
   const cargar = async () => {
     if (!wsId) return;
     const [f, p] = await Promise.all([
-      (supabase.from("firmas_digitales") as any).select("*, pacientes(nombre, apellido)")
+      (db.from("firmas_digitales") as any).select("*, pacientes(nombre, apellido)")
         .eq("workspace_id", wsId).order("firmado_at", { ascending: false }).limit(100),
-      supabase.from("pacientes").select("id, nombre, apellido, cedula").eq("workspace_id", wsId).order("nombre"),
+      db.from("pacientes").select("id, nombre, apellido, cedula").eq("workspace_id", wsId).order("nombre"),
     ]);
     setFirmas(f.data || []);
     setPacientes(p.data || []);
@@ -98,8 +98,8 @@ export default function FirmasDigitales() {
   const guardar = async () => {
     if (!form.firmante_nombre) { toast.error("Nombre del firmante requerido"); return; }
     if (!firmaImg) { toast.error("Falta la firma"); return; }
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await (supabase.from("firmas_digitales") as any).insert({
+    const { data: { user } } = await db.auth.getUser();
+    const { error } = await (db.from("firmas_digitales") as any).insert({
       workspace_id: wsId,
       tipo_documento: form.tipo_documento,
       paciente_id: form.paciente_id || null,
@@ -123,7 +123,7 @@ export default function FirmasDigitales() {
   const anular = async (id: string) => {
     const motivo = prompt("Motivo de anulación:");
     if (!motivo) return;
-    await (supabase.from("firmas_digitales") as any).update({
+    await (db.from("firmas_digitales") as any).update({
       estado: "anulada", motivo_anulacion: motivo,
     }).eq("id", id);
     cargar();

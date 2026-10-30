@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ export default function VerticalWorkflowsTab({ verticalTipo }: Props) {
     queryKey: ["workflow_reglas", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("workflow_reglas") as any)
+      const { data } = await (db.from("workflow_reglas") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("prioridad", { ascending: false });
       return data || [];
     },
@@ -74,7 +74,7 @@ export default function VerticalWorkflowsTab({ verticalTipo }: Props) {
     queryKey: ["workflow_ejecuciones", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("workflow_ejecuciones") as any)
+      const { data } = await (db.from("workflow_ejecuciones") as any)
         .select("*, workflow_reglas(nombre)").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(30);
       return data || [];
     },
@@ -84,7 +84,7 @@ export default function VerticalWorkflowsTab({ verticalTipo }: Props) {
     queryKey: ["workflow_cadenas", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("workflow_cadenas") as any)
+      const { data } = await (db.from("workflow_cadenas") as any)
         .select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(20);
       return data || [];
     },
@@ -92,8 +92,8 @@ export default function VerticalWorkflowsTab({ verticalTipo }: Props) {
 
   const crearRegla = useMutation({
     mutationFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await (supabase.from("workflow_reglas") as any).insert({
+      const { data: { user } } = await db.auth.getUser();
+      const { error } = await (db.from("workflow_reglas") as any).insert({
         workspace_id: wsId, vertical_tipo: verticalTipo, nombre, descripcion: descripcion || null,
         evento_trigger: evento, acciones: accionesSeleccionadas.map(a => ({ tipo: a })),
         created_by: user?.id,
@@ -111,7 +111,7 @@ export default function VerticalWorkflowsTab({ verticalTipo }: Props) {
 
   const toggleActivo = useMutation({
     mutationFn: async ({ id, activo }: { id: string; activo: boolean }) => {
-      const { error } = await (supabase.from("workflow_reglas") as any).update({ activo }).eq("id", id);
+      const { error } = await (db.from("workflow_reglas") as any).update({ activo }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["workflow_reglas"] }),

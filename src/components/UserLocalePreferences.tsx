@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CountryTimezoneSelector } from "@/components/CountryTimezoneSelector";
@@ -15,9 +15,9 @@ export function UserLocalePreferences() {
 
   useEffect(() => {
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (!user) { setLoading(false); return; }
-      const { data } = await supabase
+      const { data } = await db
         .from("profiles")
         .select("country_code, timezone")
         .eq("id", user.id)
@@ -30,9 +30,9 @@ export function UserLocalePreferences() {
 
   const handleSave = async () => {
     setSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     if (!user) { setSaving(false); return; }
-    const { error } = await supabase
+    const { error } = await db
       .from("profiles")
       .update({ country_code: country || null, timezone: timezone || null })
       .eq("id", user.id);

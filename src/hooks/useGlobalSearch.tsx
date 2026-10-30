@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useDebounce } from "./useDebounce";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -66,21 +66,21 @@ export function useGlobalSearch() {
     try {
       // 2. Búsqueda en Supabase con fallback inteligente a datos canónicos
       const [pacientesRes, profesionalesRes, visitasRes, llamadasRes] = await Promise.all([
-        supabase
+        db
           .from("pacientes")
           .select("id, nombre, apellido, cedula, contacto_px, barrio, zona")
           .or(`nombre.ilike.%${searchQuery}%,apellido.ilike.%${searchQuery}%,cedula.ilike.%${searchQuery}%,contacto_px.ilike.%${searchQuery}%`)
           .eq("status_px", "activo")
           .limit(8),
 
-        supabase
+        db
           .from("personal_salud")
           .select("id, nombre, apellido, especialidad, contacto")
           .or(`nombre.ilike.%${searchQuery}%,apellido.ilike.%${searchQuery}%,cedula.ilike.%${searchQuery}%`)
           .eq("activo", true)
           .limit(5),
 
-        supabase
+        db
           .from("control_visitas")
           .select(`
             id, 
@@ -95,7 +95,7 @@ export function useGlobalSearch() {
           .order("fecha_hora_visita", { ascending: false })
           .limit(5),
 
-        supabase
+        db
           .from("registro_llamadas")
           .select(`
             id, 

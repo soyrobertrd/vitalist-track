@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield } from "lucide-react";
 import { format } from "date-fns";
@@ -8,7 +8,7 @@ export default function AuditoriaNotasPsico() {
   const { data: rows = [] } = useQuery({
     queryKey: ["notas_psico_audit"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("notas_psicologia_accesos")
         .select("*, notas_psicologia(paciente_id, tipo_nota)")
         .order("created_at", { ascending: false })

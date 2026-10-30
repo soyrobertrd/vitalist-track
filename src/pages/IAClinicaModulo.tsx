@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,8 +29,8 @@ export default function IAClinicaModulo() {
   const load = async () => {
     if (!wsId) return;
     const [c, s] = await Promise.all([
-      supabase.from("ia_configuracion").select("*").eq("workspace_id", wsId).maybeSingle(),
-      supabase.from("ia_solicitudes").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }).limit(50),
+      db.from("ia_configuracion").select("*").eq("workspace_id", wsId).maybeSingle(),
+      db.from("ia_solicitudes").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }).limit(50),
     ]);
     if (c.data) setCfg(c.data);
     setSols(s.data || []);
@@ -40,7 +40,7 @@ export default function IAClinicaModulo() {
   const saveCfg = async () => {
     if (!wsId) return;
     const payload = { ...cfg, workspace_id: wsId };
-    const { error } = await supabase.from("ia_configuracion").upsert(payload, { onConflict: "workspace_id" });
+    const { error } = await db.from("ia_configuracion").upsert(payload, { onConflict: "workspace_id" });
     if (error) return toast.error(error.message);
     toast.success("Configuración guardada");
   };

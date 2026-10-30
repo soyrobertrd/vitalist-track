@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -57,7 +57,7 @@ export function AseguradorasManager() {
   const cargar = async () => {
     if (!wsId) return;
     setLoading(true);
-    const { data: asegs } = await supabase
+    const { data: asegs } = await db
       .from("aseguradoras")
       .select("*")
       .eq("workspace_id", wsId)
@@ -65,7 +65,7 @@ export function AseguradorasManager() {
     setAseguradoras((asegs as any[]) || []);
 
     if (asegs?.length) {
-      const { data: pls } = await supabase
+      const { data: pls } = await db
         .from("planes_seguro")
         .select("*")
         .eq("workspace_id", wsId)
@@ -95,11 +95,11 @@ export function AseguradorasManager() {
       notas: form.notas || null,
     };
     if (editAseg) {
-      const { error } = await supabase.from("aseguradoras").update(payload as any).eq("id", editAseg.id);
+      const { error } = await db.from("aseguradoras").update(payload as any).eq("id", editAseg.id);
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       toast({ title: "Aseguradora actualizada" });
     } else {
-      const { error } = await supabase.from("aseguradoras").insert(payload as any);
+      const { error } = await db.from("aseguradoras").insert(payload as any);
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       toast({ title: "Aseguradora creada" });
     }
@@ -110,13 +110,13 @@ export function AseguradorasManager() {
   };
 
   const toggleActiva = async (a: Aseguradora) => {
-    await supabase.from("aseguradoras").update({ activa: !a.activa } as any).eq("id", a.id);
+    await db.from("aseguradoras").update({ activa: !a.activa } as any).eq("id", a.id);
     cargar();
   };
 
   const guardarPlan = async (asegId: string) => {
     if (!planForm.nombre.trim()) { toast({ title: "Nombre requerido", variant: "destructive" }); return; }
-    const { error } = await supabase.from("planes_seguro").insert({
+    const { error } = await db.from("planes_seguro").insert({
       aseguradora_id: asegId,
       workspace_id: wsId,
       nombre: planForm.nombre,

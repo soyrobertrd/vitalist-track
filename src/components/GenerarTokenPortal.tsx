@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -22,8 +22,8 @@ export function GenerarTokenPortal({ pacienteId, pacienteNombre }: Props) {
   const generar = async () => {
     if (!currentWorkspace?.id) return;
     setLoading(true);
-    const { data: user } = await supabase.auth.getUser();
-    const { data, error } = await supabase.from("portal_paciente_tokens").insert({
+    const { data: user } = await db.auth.getUser();
+    const { data, error } = await db.from("portal_paciente_tokens").insert({
       workspace_id: currentWorkspace.id,
       paciente_id: pacienteId,
       created_by: user.user?.id,

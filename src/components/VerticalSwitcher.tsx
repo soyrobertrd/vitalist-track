@@ -9,7 +9,7 @@ import {
 import { useVertical, VerticalTipo } from "@/contexts/VerticalContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 
 const META: Record<VerticalTipo, { label: string; icon: any; color: string }> = {
@@ -41,7 +41,7 @@ export function VerticalSwitcher({ collapsed = false }: Props) {
   // Activa la vertical en el centro con un clic (antes solo llevaba a /verticales).
   const activar = async (v: VerticalTipo) => {
     if (!currentWorkspace) return;
-    const { error } = await (supabase.from("workspace_verticales") as any).upsert(
+    const { error } = await (db.from("workspace_verticales") as any).upsert(
       { workspace_id: currentWorkspace.id, vertical: v, activa: true },
       { onConflict: "workspace_id,vertical" }
     );

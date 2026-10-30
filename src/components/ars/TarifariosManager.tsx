@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -57,14 +57,14 @@ export function TarifariosManager() {
   const cargar = async () => {
     if (!wsId) return;
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await db
       .from("tarifarios_ars")
       .select("*, aseguradoras(nombre)")
       .eq("workspace_id", wsId)
       .order("descripcion");
     setItems((data as any[]) || []);
 
-    const { data: asegs } = await supabase
+    const { data: asegs } = await db
       .from("aseguradoras")
       .select("id, nombre")
       .eq("workspace_id", wsId)
@@ -80,7 +80,7 @@ export function TarifariosManager() {
     if (!form.aseguradora_id || !form.descripcion.trim() || !form.codigo_procedimiento.trim()) {
       toast({ title: "Aseguradora, código y descripción requeridos", variant: "destructive" }); return;
     }
-    const { error } = await supabase.from("tarifarios_ars").insert({
+    const { error } = await db.from("tarifarios_ars").insert({
       workspace_id: wsId,
       aseguradora_id: form.aseguradora_id,
       codigo_procedimiento: form.codigo_procedimiento,

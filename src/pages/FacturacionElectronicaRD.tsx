@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -64,8 +64,8 @@ export default function FacturacionElectronicaRD() {
   const load = async () => {
     if (!wsId) return;
     const [s, c] = await Promise.all([
-      (supabase as any).from("ncf_secuencias").select("*").eq("workspace_id", wsId).order("tipo_ncf"),
-      (supabase as any)
+      (db as any).from("ncf_secuencias").select("*").eq("workspace_id", wsId).order("tipo_ncf"),
+      (db as any)
         .from("comprobantes_fiscales")
         .select("*")
         .eq("workspace_id", wsId)
@@ -84,7 +84,7 @@ export default function FacturacionElectronicaRD() {
     if (!wsId) return;
     const payload: any = { ...form, workspace_id: wsId, actual: form.inicio };
     if (!payload.fecha_vencimiento) delete payload.fecha_vencimiento;
-    const { error } = await (supabase as any).from("ncf_secuencias").insert(payload);
+    const { error } = await (db as any).from("ncf_secuencias").insert(payload);
     if (error) return toast.error(error.message);
     toast.success("Secuencia de NCF registrada");
     setOpen(false);
@@ -95,14 +95,14 @@ export default function FacturacionElectronicaRD() {
     if (!wsId) return;
     setEmitting(true);
     try {
-      const { data: ncf, error: rpcErr } = await (supabase.rpc as any)("generar_ncf", {
+      const { data: ncf, error: rpcErr } = await (db.rpc as any)("generar_ncf", {
         _workspace_id: wsId,
         _tipo: emitForm.tipo_ncf,
       });
       if (rpcErr) throw rpcErr;
       const itbis = +(emitForm.subtotal * 0.18).toFixed(2);
       const total = +(emitForm.subtotal + itbis).toFixed(2);
-      const { error } = await (supabase as any).from("comprobantes_fiscales").insert({
+      const { error } = await (db as any).from("comprobantes_fiscales").insert({
         workspace_id: wsId,
         ncf: ncf as string,
         tipo_ncf: emitForm.tipo_ncf,

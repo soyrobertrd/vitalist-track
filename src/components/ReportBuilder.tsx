@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -126,7 +126,7 @@ export function ReportBuilder() {
   }, [data, config.groupBy]);
 
   const fetchProfesionales = async () => {
-    const { data } = await supabase
+    const { data } = await db
       .from("personal_salud")
       .select("id, nombre, apellido")
       .eq("activo", true);
@@ -142,7 +142,7 @@ export function ReportBuilder() {
 
     switch (config.dataSource) {
       case "llamadas":
-        query = supabase
+        query = db
           .from("registro_llamadas")
           .select("*, personal_salud(nombre, apellido), pacientes(nombre, apellido)");
         if (fromDate) query = query.gte("created_at", fromDate);
@@ -155,7 +155,7 @@ export function ReportBuilder() {
         }
         break;
       case "visitas":
-        query = supabase
+        query = db
           .from("control_visitas")
           .select("*, personal_salud(nombre, apellido), pacientes(nombre, apellido)");
         if (fromDate) query = query.gte("created_at", fromDate);
@@ -168,7 +168,7 @@ export function ReportBuilder() {
         }
         break;
       case "pacientes":
-        query = supabase
+        query = db
           .from("pacientes")
           .select("*, personal_salud:profesional_asignado_id(nombre, apellido)");
         if (config.statusFilter !== "todos") {

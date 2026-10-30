@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserX, Search, AlertTriangle, Users, Edit, Trash2, Merge } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EditPacienteDialog } from "./EditPacienteDialog";
@@ -40,7 +40,7 @@ export const DetectarDuplicadosDialog = ({ open: openProp, onOpenChange }: Detec
   const detectarAutomatico = async () => {
     setLoading(true);
     try {
-      const { data: pacientes, error } = await supabase
+      const { data: pacientes, error } = await db
         .from("pacientes")
         .select("*")
         .eq("status_px", "activo");
@@ -138,7 +138,7 @@ export const DetectarDuplicadosDialog = ({ open: openProp, onOpenChange }: Detec
     setLoading(true);
     try {
       const searchTerm = `%${manualSearch.trim()}%`;
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("pacientes")
         .select("*")
         .eq("status_px", "activo")
@@ -165,7 +165,7 @@ export const DetectarDuplicadosDialog = ({ open: openProp, onOpenChange }: Detec
 
   const handleEliminarPaciente = async (pacienteId: string) => {
     try {
-      const { error } = await supabase
+      const { error } = await db
         .from("pacientes")
         .update({ status_px: "inactivo" })
         .eq("id", pacienteId);

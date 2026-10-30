@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -48,7 +48,7 @@ export function HorariosProfesionalEditor({ profesionalId, readOnly = false }: H
 
   const fetchHorarios = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("horarios_profesionales")
       .select("*")
       .eq("profesional_id", profesionalId)
@@ -116,14 +116,14 @@ export function HorariosProfesionalEditor({ profesionalId, readOnly = false }: H
     setSaving(true);
     try {
       // Delete existing horarios
-      await supabase
+      await db
         .from("horarios_profesionales")
         .delete()
         .eq("profesional_id", profesionalId)
         .is("fecha_especifica", null);
 
       // Insert new horarios
-      const { error } = await supabase
+      const { error } = await db
         .from("horarios_profesionales")
         .insert(
           horarios.map(h => ({

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,8 +32,8 @@ export default function MetasIncentivos() {
   const cargar = async () => {
     if (!wsId) return;
     const [{ data: a }, { data: b }] = await Promise.all([
-      (supabase as any).from("metas_incentivos").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
-      supabase.from("personal_salud").select("id, nombre, apellido").eq("activo", true).order("nombre"),
+      (db as any).from("metas_incentivos").select("*").eq("workspace_id", wsId).order("created_at", { ascending: false }),
+      db.from("personal_salud").select("id, nombre, apellido").eq("activo", true).order("nombre"),
     ]);
     setMetas(a || []);
     setPersonal(b || []);
@@ -48,7 +48,7 @@ export default function MetasIncentivos() {
 
   const guardar = async () => {
     if (!wsId || !form.empleado_id || !form.titulo) return;
-    const { error } = await (supabase as any).from("metas_incentivos").insert({
+    const { error } = await (db as any).from("metas_incentivos").insert({
       workspace_id: wsId,
       empleado_id: form.empleado_id,
       titulo: form.titulo,
@@ -70,7 +70,7 @@ export default function MetasIncentivos() {
   const actualizarValor = async (id: string, valor: string) => {
     const v = parseFloat(valor);
     if (isNaN(v)) return;
-    const { error } = await (supabase as any).from("metas_incentivos").update({ valor_actual: v }).eq("id", id);
+    const { error } = await (db as any).from("metas_incentivos").update({ valor_actual: v }).eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success("Avance actualizado");
     cargar();

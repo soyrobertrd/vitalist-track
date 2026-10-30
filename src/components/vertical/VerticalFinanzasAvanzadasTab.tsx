@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ export default function VerticalFinanzasAvanzadasTab({ verticalTipo }: Props) {
     queryKey: ["reportes_financieros_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("reportes_financieros_vertical") as any)
+      const { data } = await (db.from("reportes_financieros_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("created_at", { ascending: false }).limit(20);
       return data || [];
     },
@@ -47,7 +47,7 @@ export default function VerticalFinanzasAvanzadasTab({ verticalTipo }: Props) {
     queryKey: ["proyecciones_financieras", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("proyecciones_financieras") as any)
+      const { data } = await (db.from("proyecciones_financieras") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("created_at", { ascending: false }).limit(20);
       return data || [];
     },
@@ -63,8 +63,8 @@ export default function VerticalFinanzasAvanzadasTab({ verticalTipo }: Props) {
       const startYear = new Date(now.getFullYear(), 0, 1).toISOString();
 
       const [mesQ, anoQ] = await Promise.all([
-        (supabase as any).from("pagos_online_vertical").select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startMonth),
-        (supabase as any).from("pagos_online_vertical").select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startYear),
+        (db as any).from("pagos_online_vertical").select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startMonth),
+        (db as any).from("pagos_online_vertical").select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startYear),
       ]);
 
       const ingresosMes = (mesQ.data || []).reduce((s: number, p: any) => s + (p.monto || 0), 0);
@@ -75,8 +75,8 @@ export default function VerticalFinanzasAvanzadasTab({ verticalTipo }: Props) {
 
   const generarReporte = useMutation({
     mutationFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await (supabase.from("reportes_financieros_vertical") as any).insert({
+      const { data: { user } } = await db.auth.getUser();
+      const { error } = await (db.from("reportes_financieros_vertical") as any).insert({
         workspace_id: wsId, vertical_tipo: verticalTipo, tipo_reporte: tipoReporte,
         periodo_inicio: periodoInicio, periodo_fin: periodoFin,
         datos: { generado: new Date().toISOString() },

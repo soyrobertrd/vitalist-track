@@ -3,7 +3,7 @@
  * Se monta dentro de FichaClinicaPaciente o PacienteDetailDialog.
  */
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Badge } from "@/components/ui/badge";
 import { Video, Loader2, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
@@ -23,7 +23,7 @@ export function HistorialVideoConsultas({ pacienteId }: Props) {
     let cancel = false;
     (async () => {
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await db
         .from("control_visitas")
         .select(
           "id, fecha_hora_visita, video_proveedor, video_enlace, video_estado, video_iniciado_at, video_finalizado_at, video_token, estado, personal_salud(nombre, apellido)"

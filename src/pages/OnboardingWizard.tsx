@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useSucursales } from "@/hooks/useSucursales";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,7 +44,7 @@ export default function OnboardingWizard() {
     }
     setSaving(true);
     if (wsName.trim() !== currentWorkspace.nombre) {
-      const { error } = await supabase
+      const { error } = await db
         .from("workspaces")
         .update({ nombre: wsName.trim() })
         .eq("id", currentWorkspace.id);
@@ -66,7 +66,7 @@ export default function OnboardingWizard() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase.from("sucursales" as any).insert({
+    const { error } = await db.from("sucursales" as any).insert({
       workspace_id: currentWorkspace.id,
       nombre: sucursal.nombre.trim(),
       ciudad: sucursal.ciudad.trim() || null,
@@ -93,7 +93,7 @@ export default function OnboardingWizard() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase.from("personal_salud").insert({
+    const { error } = await db.from("personal_salud").insert({
       workspace_id: currentWorkspace.id,
       nombre: profesional.nombre.trim(),
       apellido: profesional.apellido.trim(),
@@ -112,7 +112,7 @@ export default function OnboardingWizard() {
   const handleFinish = async () => {
     if (!currentWorkspace) return;
     setSaving(true);
-    await supabase
+    await db
       .from("workspaces")
       .update({
         configuracion: { ...(currentWorkspace.configuracion || {}), onboarding_completed: true },

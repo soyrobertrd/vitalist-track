@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +37,7 @@ export default function Triaje() {
   async function load() {
     setLoading(true);
     const desde = new Date(); desde.setHours(0,0,0,0);
-    const { data, error } = await supabase.from("triaje_eventos" as any)
+    const { data, error } = await db.from("triaje_eventos" as any)
       .select("*, pacientes(nombre,apellido)")
       .gte("fecha_triaje", desde.toISOString())
       .order("nivel", { ascending: true })
@@ -99,13 +99,13 @@ function NuevoTriajeDialog({ onCreated }: { onCreated: () => void }) {
   const [pacientes, setPacientes] = useState<any[]>([]);
 
   useEffect(() => {
-    if (open) supabase.from("pacientes").select("id,nombre,apellido,cedula").order("nombre").limit(200).then(({ data }) => setPacientes(data ?? []));
+    if (open) db.from("pacientes").select("id,nombre,apellido,cedula").order("nombre").limit(200).then(({ data }) => setPacientes(data ?? []));
   }, [open]);
 
   async function submit() {
     if (!form.paciente_id || !form.motivo_consulta) return toast.error("Paciente y motivo requeridos");
     const n = NIVELES.find(x => x.nivel === parseInt(form.nivel))!;
-    const { error } = await supabase.from("triaje_eventos" as any).insert({
+    const { error } = await db.from("triaje_eventos" as any).insert({
       paciente_id: form.paciente_id,
       nivel: n.nivel,
       color: n.color,

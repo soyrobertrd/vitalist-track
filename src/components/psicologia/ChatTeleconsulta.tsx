@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
@@ -25,7 +25,7 @@ export default function ChatTeleconsulta({ teleconsultaId, autorTipo, autorUserI
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("chat_teleconsulta")
         .select("*")
         .eq("teleconsulta_id", teleconsultaId)
@@ -33,7 +33,7 @@ export default function ChatTeleconsulta({ teleconsultaId, autorTipo, autorUserI
       if (mounted) setMsgs((data as any) || []);
     })();
 
-    const ch = supabase
+    const ch = db
       .channel(`chat-tc-${teleconsultaId}`)
       .on("postgres_changes", {
         event: "INSERT", schema: "public", table: "chat_teleconsulta",
@@ -43,7 +43,7 @@ export default function ChatTeleconsulta({ teleconsultaId, autorTipo, autorUserI
       })
       .subscribe();
 
-    return () => { mounted = false; supabase.removeChannel(ch); };
+    return () => { mounted = false; db.removeChannel(ch); };
   }, [teleconsultaId]);
 
   useEffect(() => { bottom.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs]);
@@ -52,7 +52,7 @@ export default function ChatTeleconsulta({ teleconsultaId, autorTipo, autorUserI
     if (!txt.trim()) return;
     const m = txt.trim();
     setTxt("");
-    await supabase.from("chat_teleconsulta").insert({
+    await db.from("chat_teleconsulta").insert({
       teleconsulta_id: teleconsultaId,
       autor_tipo: autorTipo,
       autor_user_id: autorUserId,

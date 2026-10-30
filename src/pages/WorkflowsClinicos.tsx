@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -290,7 +290,7 @@ export default function WorkflowsClinicos() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await supabase
+        const { data } = await db
           .from("workflow_plantillas")
           .select("*")
           .eq("activo", true);
@@ -326,7 +326,7 @@ export default function WorkflowsClinicos() {
     // Cargar pacientes
     (async () => {
       try {
-        const { data } = await (supabase as any)
+        const { data } = await (db as any)
           .from("pacientes")
           .select("id, nombre, apellido, documento_identidad")
           .order("nombre")
@@ -384,7 +384,7 @@ export default function WorkflowsClinicos() {
     const pxNombre = px ? px.nombre : "Paciente seleccionado";
 
     try {
-      const { data, error } = await supabase.rpc("workflow_ejecutar_plantilla", {
+      const { data, error } = await db.rpc("workflow_ejecutar_plantilla", {
         _plantilla_id: selPlantilla.id,
         _paciente_id: pacienteSeleccionado,
         _contexto: { ejecutado_por: "Usuario Clínico Activo", fecha: new Date().toISOString() },

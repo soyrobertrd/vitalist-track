@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -53,8 +53,8 @@ export default function HubPaciente360() {
       let tData: any[] = [];
       try {
         const [p, t] = await Promise.all([
-          supabase.from("pacientes").select("*").eq("id", id).maybeSingle(),
-          supabase.rpc("paciente_timeline_360", { _paciente_id: id, _limite: 300 }),
+          db.from("pacientes").select("*").eq("id", id).maybeSingle(),
+          db.rpc("paciente_timeline_360", { _paciente_id: id, _limite: 300 }),
         ]);
         pData = p.data;
         tData = Array.isArray(t.data) ? t.data : [];

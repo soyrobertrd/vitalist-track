@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -94,7 +94,7 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
 
     try {
       // Fetch visitas
-      let visitasQuery = supabase
+      let visitasQuery = db
         .from("control_visitas")
         .select(`
           id,
@@ -108,7 +108,7 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
         .lte("fecha_hora_visita", endDate.toISOString());
 
       // Fetch llamadas
-      let llamadasQuery = supabase
+      let llamadasQuery = db
         .from("registro_llamadas")
         .select(`
           id,

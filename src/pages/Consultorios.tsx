@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,18 +40,18 @@ export default function Consultorios() {
 
   async function load() {
     const [{ data: e }, { data: c }] = await Promise.all([
-      supabase.from("edificios" as any).select("*").eq("sucursal_id", sucursalId).order("nombre"),
-      supabase.from("consultorios" as any).select("*").eq("sucursal_id", sucursalId).order("nombre"),
+      db.from("edificios" as any).select("*").eq("sucursal_id", sucursalId).order("nombre"),
+      db.from("consultorios" as any).select("*").eq("sucursal_id", sucursalId).order("nombre"),
     ]);
     setEdificios((e as any) ?? []);
     setConsultorios((c as any) ?? []);
     const eIds = ((e as any) ?? []).map((x: any) => x.id);
     if (eIds.length) {
-      const { data: p } = await supabase.from("pisos" as any).select("*").in("edificio_id", eIds).order("numero");
+      const { data: p } = await db.from("pisos" as any).select("*").in("edificio_id", eIds).order("numero");
       setPisos((p as any) ?? []);
       const pIds = ((p as any) ?? []).map((x: any) => x.id);
       if (pIds.length) {
-        const { data: a } = await supabase.from("alas" as any).select("*").in("piso_id", pIds).order("nombre");
+        const { data: a } = await db.from("alas" as any).select("*").in("piso_id", pIds).order("nombre");
         setAlas((a as any) ?? []);
       } else setAlas([]);
     } else { setPisos([]); setAlas([]); }
@@ -81,7 +81,7 @@ export default function Consultorios() {
             items={edificios}
             renderItem={(e: Edificio) => <span><strong>{e.nombre}</strong> {e.codigo && <Badge variant="outline">{e.codigo}</Badge>}</span>}
             onCreate={async (form) => {
-              const { error } = await supabase.from("edificios" as any).insert({ sucursal_id: sucursalId, nombre: form.nombre, codigo: form.codigo || null });
+              const { error } = await db.from("edificios" as any).insert({ sucursal_id: sucursalId, nombre: form.nombre, codigo: form.codigo || null });
               if (error) toast.error(error.message); else { toast.success("Edificio creado"); load(); }
             }}
             fields={[{ name: "nombre", label: "Nombre", required: true }, { name: "codigo", label: "Código" }]}
@@ -94,7 +94,7 @@ export default function Consultorios() {
             items={pisos.map(p => ({ ...p, _label: `Piso ${p.numero} ${p.nombre ?? ""} — ${edificios.find(e=>e.id===p.edificio_id)?.nombre ?? ""}` }))}
             renderItem={(p: any) => <span>{p._label}</span>}
             onCreate={async (form) => {
-              const { error } = await supabase.from("pisos" as any).insert({ edificio_id: form.edificio_id, numero: parseInt(form.numero), nombre: form.nombre || null });
+              const { error } = await db.from("pisos" as any).insert({ edificio_id: form.edificio_id, numero: parseInt(form.numero), nombre: form.nombre || null });
               if (error) toast.error(error.message); else { toast.success("Piso creado"); load(); }
             }}
             fields={[
@@ -111,7 +111,7 @@ export default function Consultorios() {
             items={alas.map(a => ({ ...a, _label: `${a.nombre} (${a.tipo})` }))}
             renderItem={(a: any) => <span>{a._label}</span>}
             onCreate={async (form) => {
-              const { error } = await supabase.from("alas" as any).insert({ piso_id: form.piso_id, nombre: form.nombre, tipo: form.tipo });
+              const { error } = await db.from("alas" as any).insert({ piso_id: form.piso_id, nombre: form.nombre, tipo: form.tipo });
               if (error) toast.error(error.message); else { toast.success("Ala creada"); load(); }
             }}
             fields={[
@@ -134,7 +134,7 @@ export default function Consultorios() {
             items={consultorios.map(c => ({ ...c, _label: `${c.nombre} (${c.tipo})` }))}
             renderItem={(c: any) => <span>{c._label}</span>}
             onCreate={async (form) => {
-              const { error } = await supabase.from("consultorios" as any).insert({
+              const { error } = await db.from("consultorios" as any).insert({
                 sucursal_id: sucursalId,
                 nombre: form.nombre,
                 codigo: form.codigo || null,

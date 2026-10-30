@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -88,7 +88,7 @@ export default function AtencionPaciente() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("atencion_paciente")
         .select(`
           *,
@@ -154,8 +154,8 @@ export default function AtencionPaciente() {
 
       // Cargar pacientes y personal
       const [pacData, profData] = await Promise.all([
-        supabase.from("pacientes").select("id, nombre, apellido").order("nombre"),
-        supabase.from("personal_salud").select("id, nombre, apellido").order("nombre"),
+        db.from("pacientes").select("id, nombre, apellido").order("nombre"),
+        db.from("personal_salud").select("id, nombre, apellido").order("nombre"),
       ]);
 
       setPacientes(pacData.data || []);

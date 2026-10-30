@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -83,19 +83,19 @@ export default function DashboardBI() {
 
     // Parallel data fetching
     const [pacRes, llamRes, visRes, facRes, sucRes, profRes] = await Promise.all([
-      scope(supabase.from("pacientes").select("id, status_px, zona, created_at, sucursal_id")),
-      scope(supabase.from("registro_llamadas").select("id, estado, resultado_seguimiento, profesional_id, created_at, sucursal_id")
+      scope(db.from("pacientes").select("id, status_px, zona, created_at, sucursal_id")),
+      scope(db.from("registro_llamadas").select("id, estado, resultado_seguimiento, profesional_id, created_at, sucursal_id")
         .gte("created_at", from || "2000-01-01").lte("created_at", to || "2099-12-31")),
-      scope(supabase.from("control_visitas").select("id, estado, profesional_id, created_at, sucursal_id, fecha_hora_visita")
+      scope(db.from("control_visitas").select("id, estado, profesional_id, created_at, sucursal_id, fecha_hora_visita")
         .gte("created_at", from || "2000-01-01").lte("created_at", to || "2099-12-31")),
       // facturas no tiene sucursal_id: se toma de la visita y se filtra abajo.
       (() => {
-        const q = supabase.from("facturas").select("id, monto_total, monto_pagado, estado, created_at, control_visitas(sucursal_id)");
+        const q = db.from("facturas").select("id, monto_total, monto_pagado, estado, created_at, control_visitas(sucursal_id)");
         return wsId ? q.eq("workspace_id", wsId) : q;
       })()
         .gte("created_at", from || "2000-01-01").lte("created_at", to || "2099-12-31"),
-      supabase.from("sucursales").select("id, nombre").eq("workspace_id", wsId),
-      supabase.from("personal_salud").select("id, nombre, apellido").eq("workspace_id", wsId).eq("activo", true),
+      db.from("sucursales").select("id, nombre").eq("workspace_id", wsId),
+      db.from("personal_salud").select("id, nombre, apellido").eq("workspace_id", wsId).eq("activo", true),
     ]);
 
     const pacientes = pacRes.data || [];
@@ -177,7 +177,7 @@ export default function DashboardBI() {
     setZonalData(Object.entries(zonas).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value));
 
     // Saved reports
-    const { data: reports } = await supabase
+    const { data: reports } = await db
       .from("reportes_bi_guardados")
       .select("*")
       .eq("workspace_id", wsId)

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,9 +27,9 @@ export default function ServiciosProfesionales() {
   const load = async () => {
     if (!wsId) return;
     const [s, p, a] = await Promise.all([
-      supabase.from("servicios_catalogo").select("*").eq("workspace_id", wsId).order("nombre"),
-      supabase.from("personal_salud").select("id,nombre,apellido,especialidad").eq("workspace_id", wsId).eq("activo", true),
-      supabase.from("profesional_servicios").select("*, servicios_catalogo(nombre), personal_salud(nombre,apellido)").eq("workspace_id", wsId),
+      db.from("servicios_catalogo").select("*").eq("workspace_id", wsId).order("nombre"),
+      db.from("personal_salud").select("id,nombre,apellido,especialidad").eq("workspace_id", wsId).eq("activo", true),
+      db.from("profesional_servicios").select("*, servicios_catalogo(nombre), personal_salud(nombre,apellido)").eq("workspace_id", wsId),
     ]);
     setServicios(s.data || []); setProfesionales(p.data || []); setAsignaciones(a.data || []);
   };
@@ -37,7 +37,7 @@ export default function ServiciosProfesionales() {
 
   const saveSrv = async () => {
     if (!wsId || !srvForm.nombre) return;
-    const { error } = await supabase.from("servicios_catalogo").insert({ ...srvForm, workspace_id: wsId });
+    const { error } = await db.from("servicios_catalogo").insert({ ...srvForm, workspace_id: wsId });
     if (error) return toast.error(error.message);
     toast.success("Servicio creado"); setOpenSrv(false); load();
     setSrvForm({ nombre: "", codigo: "", modalidad: "consulta", duracion_min: 30, precio_referencia: 0 });
@@ -45,7 +45,7 @@ export default function ServiciosProfesionales() {
 
   const saveAsig = async () => {
     if (!wsId || !asigForm.profesional_id || !asigForm.servicio_id) return;
-    const { error } = await supabase.from("profesional_servicios").insert({ ...asigForm, workspace_id: wsId });
+    const { error } = await db.from("profesional_servicios").insert({ ...asigForm, workspace_id: wsId });
     if (error) return toast.error(error.message);
     toast.success("Asignado"); setOpenAsig(false); load();
     setAsigForm({ profesional_id: "", servicio_id: "", precio: 0, comision_pct: 0 });

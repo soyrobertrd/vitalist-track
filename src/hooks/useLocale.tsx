@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import type { CountryCode } from "libphonenumber-js";
 
@@ -51,12 +51,12 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     (async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await db.auth.getUser();
         if (!user) {
           if (!cancelled) setLoadingUser(false);
           return;
         }
-        const { data } = await supabase
+        const { data } = await db
           .from("profiles")
           .select("country_code, timezone")
           .eq("id", user.id)

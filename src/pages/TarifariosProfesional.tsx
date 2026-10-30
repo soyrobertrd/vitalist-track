@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,10 +25,10 @@ export default function TarifariosProfesional() {
   const load = async () => {
     if (!wsId) return;
     const [t, p, s, a] = await Promise.all([
-      supabase.from("tarifas_profesional_ars").select("*, personal_salud(nombre,apellido), servicios_catalogo(nombre)").eq("workspace_id", wsId),
-      supabase.from("personal_salud").select("id,nombre,apellido").eq("workspace_id", wsId).eq("activo", true),
-      supabase.from("servicios_catalogo").select("id,nombre").eq("workspace_id", wsId).eq("activo", true),
-      supabase.from("aseguradoras").select("id,nombre").eq("workspace_id", wsId).limit(200) as any,
+      db.from("tarifas_profesional_ars").select("*, personal_salud(nombre,apellido), servicios_catalogo(nombre)").eq("workspace_id", wsId),
+      db.from("personal_salud").select("id,nombre,apellido").eq("workspace_id", wsId).eq("activo", true),
+      db.from("servicios_catalogo").select("id,nombre").eq("workspace_id", wsId).eq("activo", true),
+      db.from("aseguradoras").select("id,nombre").eq("workspace_id", wsId).limit(200) as any,
     ]);
     setList(t.data || []); setPros(p.data || []); setSrvs(s.data || []); setAseguradoras((a as any).data || []);
   };
@@ -38,7 +38,7 @@ export default function TarifariosProfesional() {
     if (!wsId) return;
     const payload: any = { ...form, workspace_id: wsId };
     if (!payload.aseguradora_id) payload.aseguradora_id = null;
-    const { error } = await supabase.from("tarifas_profesional_ars").insert(payload);
+    const { error } = await db.from("tarifas_profesional_ars").insert(payload);
     if (error) return toast.error(error.message);
     toast.success("Tarifa guardada"); setOpen(false); load();
     setForm({ profesional_id: "", servicio_id: "", aseguradora_id: "", precio: 0, comision_pct: 0 });

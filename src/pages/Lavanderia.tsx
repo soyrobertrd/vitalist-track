@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,7 +86,7 @@ export default function Lavanderia() {
     queryKey: ["ordenes_lavanderia", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("ordenes_lavanderia" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -100,7 +100,7 @@ export default function Lavanderia() {
     queryKey: ["inventario_ropa", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("inventario_ropa" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -114,7 +114,7 @@ export default function Lavanderia() {
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const num = `LAV-${Date.now().toString().slice(-6)}`;
-      const { error } = await supabase.from("ordenes_lavanderia" as any).insert({
+      const { error } = await db.from("ordenes_lavanderia" as any).insert({
         workspace_id: currentWorkspace.id,
         numero: num,
         servicio_solicitante: formDataOrden.servicio_solicitante,
@@ -147,7 +147,7 @@ export default function Lavanderia() {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const total = parseInt(formDataPrenda.cantidad_total) || 0;
       const disp = parseInt(formDataPrenda.cantidad_disponible) || total;
-      const { error } = await supabase.from("inventario_ropa" as any).insert({
+      const { error } = await db.from("inventario_ropa" as any).insert({
         workspace_id: currentWorkspace.id,
         tipo: formDataPrenda.tipo,
         cantidad_total: total,
@@ -173,7 +173,7 @@ export default function Lavanderia() {
   // Mutación: Avanzar Estado de Orden
   const avanzarEstado = useMutation({
     mutationFn: async ({ id, nuevoEstado }: { id: string; nuevoEstado: string }) => {
-      const { error } = await supabase
+      const { error } = await db
         .from("ordenes_lavanderia" as any)
         .update({ estado: nuevoEstado })
         .eq("id", id);

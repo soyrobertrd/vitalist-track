@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import { addDays, format, isWeekend, differenceInYears } from "date-fns";
@@ -268,7 +268,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       vertical: verticalParaInsert,
     };
 
-    const { data: paciente, error: pacienteError } = await supabase
+    const { data: paciente, error: pacienteError } = await db
       .from("pacientes")
       .insert([dataPaciente])
       .select()
@@ -282,8 +282,8 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
 
     // Insert informed consent (required by law before storing PHI)
     if (paciente) {
-      const { data: { user } } = await supabase.auth.getUser();
-      await supabase.from("consentimientos_paciente").insert({
+      const { data: { user } } = await db.auth.getUser();
+      await db.from("consentimientos_paciente").insert({
         paciente_id: paciente.id,
         tipo: "tratamiento_datos",
         version_documento: consent.version_documento,
@@ -297,7 +297,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
 
     const medicamentosValidos = medicamentos.filter(m => m.nombre.trim() !== "");
     if (medicamentosValidos.length > 0 && paciente) {
-      await supabase.from("medicamentos_paciente").insert(
+      await db.from("medicamentos_paciente").insert(
         medicamentosValidos.map(med => ({
           paciente_id: paciente.id,
           nombre_medicamento: med.nombre.trim(),
@@ -312,7 +312,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
     const periodoVisita = parseInt(formDataObj.get("periodo_visita") as string) || 90;
     
     if (paciente) {
-      await supabase.from("parametros_seguimiento").insert([{
+      await db.from("parametros_seguimiento").insert([{
         paciente_id: paciente.id,
         periodo_llamada_ciclico: periodoLlamada,
         periodo_visita_ciclico: periodoVisita,
@@ -321,7 +321,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       }]);
 
       // Schedule initial call
-      await supabase.from("registro_llamadas").insert([{
+      await db.from("registro_llamadas").insert([{
         paciente_id: paciente.id,
         profesional_id: "b00bbfd7-6854-478f-a082-cf4b23ada61e", // Juana Reyes Feliz
         fecha_agendada: calcularFechaLlamada(new Date()).toISOString(),

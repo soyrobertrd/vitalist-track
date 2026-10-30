@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +66,7 @@ export default function Hospitalizacion() {
 
   async function load() {
     setLoading(true);
-    const q = (supabase as any)
+    const q = (db as any)
       .from("admisiones")
       .select("*, pacientes(nombre,apellido,cedula), camas(identificador,tipo)")
       .order("fecha_ingreso", { ascending: false });
@@ -336,14 +336,14 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
 
   useEffect(() => {
     if (open) {
-      (supabase as any)
+      (db as any)
         .from("pacientes")
         .select("id,nombre,apellido,cedula")
         .order("nombre")
         .limit(200)
         .then(({ data }: any) => setPacientes(data ?? []));
 
-      (supabase as any)
+      (db as any)
         .from("camas")
         .select("id,identificador,tipo,estado")
         .eq("estado", "disponible")
@@ -356,7 +356,7 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
       return toast.error("Debe seleccionar un paciente e indicar el motivo de ingreso");
     }
 
-    const { error } = await (supabase as any).from("admisiones").insert({
+    const { error } = await (db as any).from("admisiones").insert({
       paciente_id: form.paciente_id,
       tipo: form.tipo,
       motivo_ingreso: form.motivo_ingreso,
@@ -368,7 +368,7 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
 
     // Si se asignó cama, actualizar estado a 'ocupada'
     if (form.cama_id) {
-      await (supabase as any).from("camas").update({ estado: "ocupada" }).eq("id", form.cama_id);
+      await (db as any).from("camas").update({ estado: "ocupada" }).eq("id", form.cama_id);
     }
 
     toast.success("Admisión clínica registrada con éxito");
@@ -498,7 +498,7 @@ function DarAltaDialog({ admisionId, onDone }: { admisionId: string; onDone: () 
 
   const procesarAlta = async () => {
     setLoading(true);
-    const { error } = await (supabase as any)
+    const { error } = await (db as any)
       .from("admisiones")
       .update({
         estado: "alta",
@@ -581,7 +581,7 @@ function UciNotaDialog({ admisionId, pacienteId }: { admisionId: string; pacient
   const [form, setForm] = useState<any>({});
 
   async function save() {
-    const { error } = await (supabase as any).from("uci_notas").insert({
+    const { error } = await (db as any).from("uci_notas").insert({
       admision_id: admisionId,
       paciente_id: pacienteId,
       sofa_score: form.sofa ? parseInt(form.sofa) : null,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 /**
@@ -21,7 +21,7 @@ export function useEffectiveModules() {
         return;
       }
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (!user) {
         if (!cancel) {
           setAllowed(new Set());
@@ -29,7 +29,7 @@ export function useEffectiveModules() {
         }
         return;
       }
-      const { data, error } = await (supabase.rpc as any)("get_modulos_efectivos", {
+      const { data, error } = await (db.rpc as any)("get_modulos_efectivos", {
         _user_id: user.id,
         _workspace_id: currentWorkspace.id,
       });

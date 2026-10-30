@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +25,7 @@ const ResetPassword = () => {
 
   useEffect(() => {
     // Verificar si hay una sesión válida para reset
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    db.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         toast.error("Enlace de restablecimiento inválido o expirado");
         navigate("/auth");
@@ -42,7 +42,7 @@ const ResetPassword = () => {
       passwordSchema.parse({ password, confirmPassword });
 
       // Actualizar contraseña
-      const { error } = await supabase.auth.updateUser({
+      const { error } = await db.auth.updateUser({
         password: password,
       });
 

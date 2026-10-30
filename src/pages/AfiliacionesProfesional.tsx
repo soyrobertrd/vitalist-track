@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,24 +32,24 @@ export default function AfiliacionesProfesional() {
 
   useEffect(() => {
     (async () => {
-      const { data: u } = await supabase.auth.getUser();
+      const { data: u } = await db.auth.getUser();
       if (!u.user) return;
       setUserId(u.user.id);
 
-      const { data: limite } = await supabase.rpc("limite_centros_profesional", { _user_id: u.user.id });
+      const { data: limite } = await db.rpc("limite_centros_profesional", { _user_id: u.user.id });
       setMaxCentros(limite || 1);
 
-      const { data: ws } = await (supabase.from("workspaces") as any).select("id, nombre, plan_codigo").eq("owner_id", u.user.id).maybeSingle();
+      const { data: ws } = await (db.from("workspaces") as any).select("id, nombre, plan_codigo").eq("owner_id", u.user.id).maybeSingle();
       if (ws?.plan_codigo) setPlanCodigo(ws.plan_codigo);
 
-      const { data: afs } = await (supabase
+      const { data: afs } = await (db
         .from("afiliaciones_profesional") as any)
         .select("id, workspace_id, tipo, estado, created_at")
         .eq("user_id", u.user.id)
         .order("created_at", { ascending: false });
 
       // Map workspace name from workspaces list
-      const { data: allWs } = await (supabase.from("workspaces") as any).select("id, nombre");
+      const { data: allWs } = await (db.from("workspaces") as any).select("id, nombre");
       setWorkspaces((allWs as any) || []);
       const wsMap = new Map((allWs || []).map((w: any) => [w.id, w.nombre]));
       const enriched = (afs || []).map((a: any) => ({
@@ -70,10 +70,10 @@ export default function AfiliacionesProfesional() {
   const agregar = async () => {
     if (!selWs || !userId) return;
     // lookup profesional_id from personal_salud
-    const { data: prof } = await (supabase.from("personal_salud") as any)
+    const { data: prof } = await (db.from("personal_salud") as any)
       .select("id").eq("user_id", userId).maybeSingle();
     if (!prof?.id) { toast.error("No se encontró tu perfil profesional"); return; }
-    const { error } = await (supabase.from("afiliaciones_profesional") as any).insert({
+    const { error } = await (db.from("afiliaciones_profesional") as any).insert({
       user_id: userId,
       profesional_id: prof.id,
       workspace_id: selWs,
@@ -87,7 +87,7 @@ export default function AfiliacionesProfesional() {
   };
 
   const eliminar = async (id: string) => {
-    const { error } = await supabase.from("afiliaciones_profesional").update({ estado: "inactiva" }).eq("id", id);
+    const { error } = await db.from("afiliaciones_profesional").update({ estado: "inactiva" }).eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success("Afiliación desactivada");
     setAfiliaciones((p) => p.map((a) => a.id === id ? { ...a, estado: "inactiva" } : a));

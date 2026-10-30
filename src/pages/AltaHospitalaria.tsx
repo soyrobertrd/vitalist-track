@@ -1,6 +1,6 @@
 import { DEMO_MODE } from "@/lib/mock-live-seed";
 import { useEffect, useState, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -110,13 +110,13 @@ export default function AltaHospitalaria() {
     if (!wsId) return;
     setLoading(true);
     const [a, p, m] = await Promise.all([
-      (supabase.from("altas_hospitalarias") as any)
+      (db.from("altas_hospitalarias") as any)
         .select("*, pacientes(nombre, apellido, cedula, fecha_nacimiento), personal_salud!medico_alta_id(nombre, apellido)")
         .eq("workspace_id", wsId)
         .order("fecha_alta", { ascending: false })
         .limit(100),
-      supabase.from("pacientes").select("id, nombre, apellido, cedula").eq("workspace_id", wsId).order("nombre"),
-      supabase.from("personal_salud").select("id, nombre, apellido").eq("workspace_id", wsId).eq("activo", true),
+      db.from("pacientes").select("id, nombre, apellido, cedula").eq("workspace_id", wsId).order("nombre"),
+      db.from("personal_salud").select("id, nombre, apellido").eq("workspace_id", wsId).eq("activo", true),
     ]);
 
     if (a.data && a.data.length > 0) {
@@ -171,7 +171,7 @@ export default function AltaHospitalaria() {
       toast.error("Seleccione el paciente para el alta.");
       return;
     }
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     const meds = form.medicamentos_alta_texto
       ? form.medicamentos_alta_texto.split("\n").filter(Boolean).map((l: string) => ({ descripcion: l.trim() }))
       : [];
@@ -197,7 +197,7 @@ export default function AltaHospitalaria() {
       fecha_alta: new Date().toISOString(),
     };
 
-    const { error } = await (supabase.from("altas_hospitalarias") as any).insert(nuevoObj);
+    const { error } = await (db.from("altas_hospitalarias") as any).insert(nuevoObj);
     if (error) {
       toast.error(error.message);
       return;
@@ -218,7 +218,7 @@ export default function AltaHospitalaria() {
   };
 
   const cambiarEstado = async (id: string, estado: string) => {
-    const { error } = await (supabase.from("altas_hospitalarias") as any).update({ estado }).eq("id", id);
+    const { error } = await (db.from("altas_hospitalarias") as any).update({ estado }).eq("id", id);
     if (error) {
       toast.error(error.message);
       return;

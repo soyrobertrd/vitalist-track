@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveKPI } from "@/components/InteractiveKPI";
 import { RecordatoriosDiariosWhatsApp } from "@/components/RecordatoriosDiariosWhatsApp";
@@ -78,10 +78,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getCurrentUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (user) {
         setCurrentUserId(user.id);
-        const { data: perfil } = await supabase.from("profiles").select("nombre").eq("id", user.id).maybeSingle();
+        const { data: perfil } = await db.from("profiles").select("nombre").eq("id", user.id).maybeSingle();
         setNombreUsuario((perfil as any)?.nombre ?? "");
       }
     };
@@ -99,7 +99,7 @@ const Dashboard = () => {
       const todayEnd = endOfDay(now).toISOString();
 
       // Determinar el id de personal_salud relacionado al usuario actual (para filtros de citas)
-      const { data: personalRow } = await supabase
+      const { data: personalRow } = await db
         .from("personal_salud")
         .select("id")
         .eq("user_id", currentUserId)
@@ -116,9 +116,9 @@ const Dashboard = () => {
       };
 
       const [pacientesRes, llamadas, visitas] = await Promise.all([
-        applyScope(supabase.from("pacientes").select("id, status_px") as any),
-        applyScope(supabase.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]).eq("profesional_id", profesionalId).gte("fecha_agendada", thirtyDaysAgo).lte("fecha_agendada", `${today}T23:59:59`) as any),
-        applyScope(supabase.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").eq("profesional_id", profesionalId).gte("fecha_hora_visita", todayStart).lte("fecha_hora_visita", todayEnd) as any),
+        applyScope(db.from("pacientes").select("id, status_px") as any),
+        applyScope(db.from("registro_llamadas").select("id", { count: "exact", head: true }).in("estado", ["agendada", "pendiente"]).eq("profesional_id", profesionalId).gte("fecha_agendada", thirtyDaysAgo).lte("fecha_agendada", `${today}T23:59:59`) as any),
+        applyScope(db.from("control_visitas").select("id", { count: "exact", head: true }).eq("estado", "pendiente").eq("profesional_id", profesionalId).gte("fecha_hora_visita", todayStart).lte("fecha_hora_visita", todayEnd) as any),
       ]);
 
       const pacientesAll = pacientesRes.data || [];
@@ -138,39 +138,39 @@ const Dashboard = () => {
 
       const [callsRes, visitsRes, weekCallsRes, weekVisitsRes, altoRiesgoRes, monthlyPacientesRes] = await Promise.all([
         applyScope(
-          supabase
+          db
             .from("registro_llamadas")
             .select("estado, resultado_seguimiento, duracion_minutos, fecha_hora_realizada")
             .gte("created_at", `${thirtyDaysAgo}T00:00:00`) as any
         ),
         applyScope(
-          supabase
+          db
             .from("control_visitas")
             .select("estado, fecha_hora_visita")
             .gte("fecha_hora_visita", `${thirtyDaysAgo}T00:00:00`) as any
         ),
         applyScope(
-          supabase
+          db
             .from("registro_llamadas")
             .select("fecha_agendada")
             .gte("fecha_agendada", sevenDaysAgo.toISOString())
             .lte("fecha_agendada", todayEnd) as any
         ),
         applyScope(
-          supabase
+          db
             .from("control_visitas")
             .select("fecha_hora_visita")
             .gte("fecha_hora_visita", sevenDaysAgo.toISOString())
             .lte("fecha_hora_visita", todayEnd) as any
         ),
         applyScope(
-          supabase
+          db
             .from("pacientes")
             .select("id", { count: "exact", head: true })
             .eq("grado_dificultad", "alto") as any
         ),
         applyScope(
-          supabase
+          db
             .from("pacientes")
             .select("created_at")
             .gte("created_at", sixMonthsAgo.toISOString()) as any

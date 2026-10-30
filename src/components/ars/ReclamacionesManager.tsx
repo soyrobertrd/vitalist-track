@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,7 +101,7 @@ export function ReclamacionesManager() {
   const cargar = async () => {
     if (!wsId) return;
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await db
       .from("reclamaciones_ars")
       .select("*, aseguradoras(nombre)")
       .eq("workspace_id", wsId)
@@ -151,7 +151,7 @@ export function ReclamacionesManager() {
       ]);
     }
 
-    const { data: asegs } = await supabase
+    const { data: asegs } = await db
       .from("aseguradoras")
       .select("id, nombre")
       .eq("workspace_id", wsId)
@@ -170,7 +170,7 @@ export function ReclamacionesManager() {
       toast.error("Seleccione la aseguradora (ARS).");
       return;
     }
-    const { error } = await supabase.from("reclamaciones_ars").insert({
+    const { error } = await db.from("reclamaciones_ars").insert({
       workspace_id: wsId,
       aseguradora_id: form.aseguradora_id,
       numero_lote: form.numero_lote || null,
@@ -195,7 +195,7 @@ export function ReclamacionesManager() {
     const payload: any = { estado, ...extra };
     if (estado === "enviada") payload.fecha_envio = new Date().toISOString().split("T")[0];
     if (["pagada", "rechazada", "parcial"].includes(estado)) payload.fecha_respuesta = new Date().toISOString().split("T")[0];
-    await supabase.from("reclamaciones_ars").update(payload).eq("id", id);
+    await db.from("reclamaciones_ars").update(payload).eq("id", id);
     toast.success(`Reclamación actualizada: ${estado}`);
     cargar();
   };

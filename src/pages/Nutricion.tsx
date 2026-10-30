@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -110,7 +110,7 @@ export default function Nutricion() {
     queryKey: ["pacientes-lista-nutri", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("pacientes")
         .select("id, nombre, apellido, cedula")
         .eq("workspace_id", currentWorkspace.id)
@@ -124,7 +124,7 @@ export default function Nutricion() {
     queryKey: ["eval-nutri", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("evaluaciones_nutricionales")
         .select("*, pacientes(nombre, apellido, cedula)")
         .eq("workspace_id", currentWorkspace.id)
@@ -139,7 +139,7 @@ export default function Nutricion() {
     queryKey: ["dietas-hosp", currentWorkspace?.id],
     queryFn: async () => {
       if (!currentWorkspace?.id) return [];
-      const { data } = await supabase
+      const { data } = await db
         .from("dietas_hospitalarias")
         .select("*, pacientes(nombre, apellido, cedula)")
         .eq("workspace_id", currentWorkspace.id)
@@ -160,7 +160,7 @@ export default function Nutricion() {
       const t = parseFloat(formDataEval.talla_cm) || 0;
       const imc = t > 0 ? +(p / ((t / 100) * (t / 100))).toFixed(1) : null;
 
-      const { error } = await supabase.from("evaluaciones_nutricionales").insert({
+      const { error } = await db.from("evaluaciones_nutricionales").insert({
         workspace_id: currentWorkspace.id,
         paciente_id: formDataEval.paciente_id,
         fecha: new Date().toISOString().split("T")[0],
@@ -187,7 +187,7 @@ export default function Nutricion() {
       if (!currentWorkspace?.id || !formDataDieta.paciente_id) {
         throw new Error("Seleccione un paciente.");
       }
-      const { error } = await supabase.from("dietas_hospitalarias").insert({
+      const { error } = await db.from("dietas_hospitalarias").insert({
         workspace_id: currentWorkspace.id,
         paciente_id: formDataDieta.paciente_id,
         tipo_dieta: formDataDieta.tipo_dieta,

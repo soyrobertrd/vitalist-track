@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { MobilePageHeader } from "@/components/MobilePageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -95,16 +95,16 @@ export default function Nomina() {
   /* ---- fetch ---- */
   const fetchEmpleados = async () => {
     if (!wsId) return;
-    const { data } = await supabase.from("empleados_nomina").select("*").eq("workspace_id", wsId).order("nombre");
+    const { data } = await db.from("empleados_nomina").select("*").eq("workspace_id", wsId).order("nombre");
     if (data) setEmpleados(data as any);
   };
   const fetchPeriodos = async () => {
     if (!wsId) return;
-    const { data } = await supabase.from("periodos_nomina").select("*").eq("workspace_id", wsId).order("fecha_inicio", { ascending: false });
+    const { data } = await db.from("periodos_nomina").select("*").eq("workspace_id", wsId).order("fecha_inicio", { ascending: false });
     if (data) setPeriodos(data as any);
   };
   const fetchDetalles = async (periodoId: string) => {
-    const { data } = await supabase.from("detalle_nomina").select("*").eq("periodo_id", periodoId);
+    const { data } = await db.from("detalle_nomina").select("*").eq("periodo_id", periodoId);
     if (data) setDetalles(data as any);
   };
 
@@ -114,7 +114,7 @@ export default function Nomina() {
   /* ---- create empleado ---- */
   const crearEmpleado = async () => {
     if (!wsId || !empForm.nombre) return;
-    const { error } = await supabase.from("empleados_nomina").insert({ ...empForm, workspace_id: wsId } as any);
+    const { error } = await db.from("empleados_nomina").insert({ ...empForm, workspace_id: wsId } as any);
     if (error) { toast.error(error.message); return; }
     toast.success("Empleado agregado");
     setOpenEmpleado(false);
@@ -125,7 +125,7 @@ export default function Nomina() {
   /* ---- create periodo ---- */
   const crearPeriodo = async () => {
     if (!wsId || !perForm.fecha_inicio || !perForm.fecha_fin) return;
-    const { error } = await supabase.from("periodos_nomina").insert({ ...perForm, workspace_id: wsId } as any);
+    const { error } = await db.from("periodos_nomina").insert({ ...perForm, workspace_id: wsId } as any);
     if (error) { toast.error(error.message); return; }
     toast.success("Período creado");
     setOpenPeriodo(false);
@@ -140,7 +140,7 @@ export default function Nomina() {
     if (!activos.length) { toast.error("No hay empleados activos"); return; }
 
     // Delete existing details and recalculate
-    await supabase.from("detalle_nomina").delete().eq("periodo_id", selectedPeriodo);
+    await db.from("detalle_nomina").delete().eq("periodo_id", selectedPeriodo);
 
     const rows = activos.map((e) => {
       const bruto = e.salario_base;
@@ -164,10 +164,10 @@ export default function Nomina() {
       };
     });
 
-    const { error } = await supabase.from("detalle_nomina").insert(rows as any);
+    const { error } = await db.from("detalle_nomina").insert(rows as any);
     if (error) { toast.error(error.message); return; }
 
-    await supabase.from("periodos_nomina").update({ estado: "calculado" } as any).eq("id", selectedPeriodo);
+    await db.from("periodos_nomina").update({ estado: "calculado" } as any).eq("id", selectedPeriodo);
     toast.success("Nómina calculada");
     fetchPeriodos();
     fetchDetalles(selectedPeriodo);
@@ -176,7 +176,7 @@ export default function Nomina() {
   /* ---- aprobar / pagar ---- */
   const cambiarEstadoPeriodo = async (estado: string) => {
     if (!selectedPeriodo) return;
-    await supabase.from("periodos_nomina").update({ estado } as any).eq("id", selectedPeriodo);
+    await db.from("periodos_nomina").update({ estado } as any).eq("id", selectedPeriodo);
     toast.success(`Período ${estado}`);
     fetchPeriodos();
   };

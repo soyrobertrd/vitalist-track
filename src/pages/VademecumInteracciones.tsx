@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -63,13 +63,13 @@ export default function VademecumInteracciones() {
     (async () => {
       setLoading(true);
       const [{ data: a }, { data: b }] = await Promise.all([
-        (supabase as any)
+        (db as any)
           .from("catalogo_medicamentos")
           .select("*")
           .eq("activo", true)
           .order("nombre_comercial")
           .limit(500),
-        (supabase as any)
+        (db as any)
           .from("interacciones_farmacologicas")
           .select("*")
           .order("severidad", { ascending: false }),

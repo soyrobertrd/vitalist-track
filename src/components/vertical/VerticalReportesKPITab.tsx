@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +29,7 @@ export default function VerticalReportesKPITab({ verticalTipo }: Props) {
     queryKey: ["reportes_kpi_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("reportes_kpi_vertical") as any)
+      const { data } = await (db.from("reportes_kpi_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo)
         .order("created_at", { ascending: false }).limit(100);
       return data || [];
@@ -46,9 +46,9 @@ export default function VerticalReportesKPITab({ verticalTipo }: Props) {
 
       // Las citas viven en control_visitas; el enum de vertical usa "aesthetic" donde estas pestañas dicen "estetica".
       const vertical = verticalTipo === "estetica" ? "aesthetic" : verticalTipo;
-      const citasQ = supabase.from("control_visitas").select("id, estado", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical", vertical).gte("created_at", startOfMonth);
-      const leadsQ = (supabase as any).from("leads_vertical").select("id", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).gte("created_at", startOfMonth);
-      const pagosQ = (supabase as any).from("pagos_online_vertical").select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startOfMonth);
+      const citasQ = db.from("control_visitas").select("id, estado", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical", vertical).gte("created_at", startOfMonth);
+      const leadsQ = (db as any).from("leads_vertical").select("id", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).gte("created_at", startOfMonth);
+      const pagosQ = (db as any).from("pagos_online_vertical").select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startOfMonth);
       const [citas, leads, pagos] = await Promise.all([citasQ, leadsQ, pagosQ] as any[]);
 
       const totalCitas = citas.count || 0;

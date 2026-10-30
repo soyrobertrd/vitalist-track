@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { AlertTriangle, Check, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -79,7 +79,7 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
       }
 
       // Transferir llamadas
-      const { error: llamadasError } = await supabase
+      const { error: llamadasError } = await db
         .from("registro_llamadas")
         .update({ paciente_id: pacienteAMantener })
         .in("paciente_id", pacientesAEliminar);
@@ -87,7 +87,7 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
       if (llamadasError) throw llamadasError;
 
       // Transferir visitas
-      const { error: visitasError } = await supabase
+      const { error: visitasError } = await db
         .from("control_visitas")
         .update({ paciente_id: pacienteAMantener })
         .in("paciente_id", pacientesAEliminar);
@@ -95,7 +95,7 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
       if (visitasError) throw visitasError;
 
       // Transferir medicamentos
-      const { error: medicamentosError } = await supabase
+      const { error: medicamentosError } = await db
         .from("medicamentos_paciente")
         .update({ paciente_id: pacienteAMantener })
         .in("paciente_id", pacientesAEliminar);
@@ -103,7 +103,7 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
       if (medicamentosError) throw medicamentosError;
 
       // Transferir parámetros de seguimiento
-      const { error: parametrosError } = await supabase
+      const { error: parametrosError } = await db
         .from("parametros_seguimiento")
         .update({ paciente_id: pacienteAMantener })
         .in("paciente_id", pacientesAEliminar);
@@ -111,7 +111,7 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
       if (parametrosError) throw parametrosError;
 
       // Transferir atención
-      const { error: atencionError } = await supabase
+      const { error: atencionError } = await db
         .from("atencion_paciente")
         .update({ paciente_id: pacienteAMantener })
         .in("paciente_id", pacientesAEliminar);
@@ -120,7 +120,7 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
 
       // Update phone numbers if selected
       if (Object.keys(phoneUpdates).length > 0) {
-        const { error: phoneUpdateError } = await supabase
+        const { error: phoneUpdateError } = await db
           .from("pacientes")
           .update(phoneUpdates)
           .eq("id", pacienteAMantener);
@@ -129,7 +129,7 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
       }
 
       // Marcar como inactivos los pacientes duplicados (no eliminar)
-      const { error: updateError } = await supabase
+      const { error: updateError } = await db
         .from("pacientes")
         .update({ status_px: "inactivo" })
         .in("id", pacientesAEliminar);
@@ -137,10 +137,10 @@ export const UnificarPacientesDialog = ({ pacientes, open, onOpenChange, onSucce
       if (updateError) throw updateError;
 
       // Obtener el ID del usuario actual
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
 
       // Registrar en auditoría
-      const { error: auditError } = await supabase
+      const { error: auditError } = await db
         .from("auditoria_unificaciones")
         .insert({
           paciente_principal_id: pacienteAMantener,

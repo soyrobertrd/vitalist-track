@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -90,7 +90,7 @@ const Configuracion = () => {
       const fileName = `${profile.id}.${fileExt}`;
       const filePath = `avatars/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await db.storage
         .from("avatars")
         .upload(filePath, file, { upsert: true });
 
@@ -98,7 +98,7 @@ const Configuracion = () => {
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from("avatars").getPublicUrl(filePath);
+      } = db.storage.from("avatars").getPublicUrl(filePath);
 
       await updateProfile({ avatar_url: publicUrl });
       toast.success("Foto de perfil actualizada");
@@ -135,7 +135,7 @@ const Configuracion = () => {
 
     setChangingPassword(true);
     try {
-      const { error } = await supabase.auth.updateUser({
+      const { error } = await db.auth.updateUser({
         password: passwordData.newPassword,
       });
 
@@ -158,7 +158,7 @@ const Configuracion = () => {
   useEffect(() => {
     const fetchProfesionalId = async () => {
       if (!profile?.id) return;
-      const { data } = await supabase
+      const { data } = await db
         .from("personal_salud")
         .select("id")
         .eq("user_id", profile.id)
@@ -185,7 +185,7 @@ const Configuracion = () => {
       const finMes = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
 
       try {
-        const { count: llamadasMes } = await supabase
+        const { count: llamadasMes } = await db
           .from("registro_llamadas")
           .select("*", { count: "exact", head: true })
           .eq("profesional_id", profesionalId)
@@ -193,13 +193,13 @@ const Configuracion = () => {
           .gte("fecha_hora_realizada", inicioMes)
           .lte("fecha_hora_realizada", finMes);
 
-        const { count: llamadasTotal } = await supabase
+        const { count: llamadasTotal } = await db
           .from("registro_llamadas")
           .select("*", { count: "exact", head: true })
           .eq("profesional_id", profesionalId)
           .eq("estado", "realizada");
 
-        const { count: visitasMes } = await supabase
+        const { count: visitasMes } = await db
           .from("control_visitas")
           .select("*", { count: "exact", head: true })
           .eq("profesional_id", profesionalId)
@@ -207,31 +207,31 @@ const Configuracion = () => {
           .gte("fecha_hora_visita", inicioMes)
           .lte("fecha_hora_visita", finMes);
 
-        const { count: visitasTotal } = await supabase
+        const { count: visitasTotal } = await db
           .from("control_visitas")
           .select("*", { count: "exact", head: true })
           .eq("profesional_id", profesionalId)
           .eq("estado", "realizada");
 
-        const { count: pacientes } = await supabase
+        const { count: pacientes } = await db
           .from("pacientes")
           .select("*", { count: "exact", head: true })
           .eq("profesional_asignado_id", profesionalId)
           .eq("status_px", "activo");
 
-        const { count: llamadasPend } = await supabase
+        const { count: llamadasPend } = await db
           .from("registro_llamadas")
           .select("*", { count: "exact", head: true })
           .eq("profesional_id", profesionalId)
           .in("estado", ["agendada", "pendiente"]);
 
-        const { count: visitasPend } = await supabase
+        const { count: visitasPend } = await db
           .from("control_visitas")
           .select("*", { count: "exact", head: true })
           .eq("profesional_id", profesionalId)
           .eq("estado", "pendiente");
 
-        const { count: tareasCompletadas } = await supabase
+        const { count: tareasCompletadas } = await db
           .from("atencion_paciente")
           .select("*", { count: "exact", head: true })
           .eq("profesional_id", profesionalId)
@@ -239,7 +239,7 @@ const Configuracion = () => {
           .gte("fecha_realizada", inicioMes)
           .lte("fecha_realizada", finMes);
 
-        const { count: llamadasContactadas } = await supabase
+        const { count: llamadasContactadas } = await db
           .from("registro_llamadas")
           .select("*", { count: "exact", head: true })
           .eq("profesional_id", profesionalId)
@@ -250,7 +250,7 @@ const Configuracion = () => {
             ? Math.round(((llamadasContactadas || 0) / (llamadasTotal || 1)) * 100)
             : 0;
 
-        const { data: duracionData } = await supabase
+        const { data: duracionData } = await db
           .from("registro_llamadas")
           .select("duracion_minutos")
           .eq("profesional_id", profesionalId)
@@ -299,7 +299,7 @@ const Configuracion = () => {
       const hoy = new Date().toISOString();
 
       try {
-        const { data: llamadas } = await supabase
+        const { data: llamadas } = await db
           .from("registro_llamadas")
           .select("id, fecha_agendada, estado, paciente:pacientes(nombre, apellido)")
           .eq("profesional_id", profesionalId)
@@ -308,7 +308,7 @@ const Configuracion = () => {
           .order("fecha_agendada", { ascending: true })
           .limit(5);
 
-        const { data: visitas } = await supabase
+        const { data: visitas } = await db
           .from("control_visitas")
           .select("id, fecha_hora_visita, estado, paciente:pacientes(nombre, apellido)")
           .eq("profesional_id", profesionalId)
@@ -317,7 +317,7 @@ const Configuracion = () => {
           .order("fecha_hora_visita", { ascending: true })
           .limit(5);
 
-        const { data: tareas } = await supabase
+        const { data: tareas } = await db
           .from("atencion_paciente")
           .select("id, tipo, descripcion, fecha_programada, paciente:pacientes(nombre, apellido)")
           .eq("profesional_id", profesionalId)

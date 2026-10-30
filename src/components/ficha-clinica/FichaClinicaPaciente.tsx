@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -94,9 +94,9 @@ export function FichaClinicaPaciente({ pacienteId, conCabecera = false }: Props)
   const fetchAll = async () => {
     setLoading(true);
     const [a, b, c] = await Promise.all([
-      supabase.from("alergias_paciente").select("*").eq("paciente_id", pacienteId).order("created_at", { ascending: false }),
-      supabase.from("antecedentes_medicos").select("*").eq("paciente_id", pacienteId).order("created_at", { ascending: false }),
-      supabase.from("seguros_paciente").select("*").eq("paciente_id", pacienteId).order("activo", { ascending: false }),
+      db.from("alergias_paciente").select("*").eq("paciente_id", pacienteId).order("created_at", { ascending: false }),
+      db.from("antecedentes_medicos").select("*").eq("paciente_id", pacienteId).order("created_at", { ascending: false }),
+      db.from("seguros_paciente").select("*").eq("paciente_id", pacienteId).order("activo", { ascending: false }),
     ]);
     if (a.data) setAlergias(a.data as Alergia[]);
     if (b.data) setAntecedentes(b.data as Antecedente[]);
@@ -124,8 +124,8 @@ export function FichaClinicaPaciente({ pacienteId, conCabecera = false }: Props)
       notas: d.notas || null,
     };
     const { error } = d.id
-      ? await supabase.from("alergias_paciente").update(payload).eq("id", d.id)
-      : await supabase.from("alergias_paciente").insert(payload);
+      ? await db.from("alergias_paciente").update(payload).eq("id", d.id)
+      : await db.from("alergias_paciente").insert(payload);
     if (error) {
       toast.error("Error al guardar alergia");
       return;
@@ -151,8 +151,8 @@ export function FichaClinicaPaciente({ pacienteId, conCabecera = false }: Props)
       notas: d.notas || null,
     };
     const { error } = d.id
-      ? await supabase.from("antecedentes_medicos").update(payload).eq("id", d.id)
-      : await supabase.from("antecedentes_medicos").insert(payload);
+      ? await db.from("antecedentes_medicos").update(payload).eq("id", d.id)
+      : await db.from("antecedentes_medicos").insert(payload);
     if (error) {
       toast.error("Error al guardar antecedente");
       return;
@@ -182,8 +182,8 @@ export function FichaClinicaPaciente({ pacienteId, conCabecera = false }: Props)
       notas: d.notas || null,
     };
     const { error } = d.id
-      ? await supabase.from("seguros_paciente").update(payload).eq("id", d.id)
-      : await supabase.from("seguros_paciente").insert(payload);
+      ? await db.from("seguros_paciente").update(payload).eq("id", d.id)
+      : await db.from("seguros_paciente").insert(payload);
     if (error) {
       toast.error("Error al guardar seguro");
       return;
@@ -196,7 +196,7 @@ export function FichaClinicaPaciente({ pacienteId, conCabecera = false }: Props)
   // ---- Delete handlers ----
   const deleteItem = async (table: "alergias_paciente" | "antecedentes_medicos" | "seguros_paciente", id: string) => {
     if (!confirm("¿Eliminar este registro?")) return;
-    const { error } = await supabase.from(table).delete().eq("id", id);
+    const { error } = await db.from(table).delete().eq("id", id);
     if (error) {
       toast.error("Error al eliminar");
       return;

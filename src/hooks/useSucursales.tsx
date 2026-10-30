@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 export interface Sucursal {
@@ -34,7 +34,7 @@ export function useSucursales() {
       return;
     }
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("sucursales" as any)
       .select("*")
       .eq("workspace_id", currentWorkspace.id)

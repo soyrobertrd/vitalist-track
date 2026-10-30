@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
   BarChart,
@@ -40,7 +40,7 @@ export default function DashboardGeografico() {
   const { data: distribucionPacientes, isLoading: loadingPacientes } = useQuery({
     queryKey: ["distribucion-pacientes"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("pacientes")
         .select("zona, status_px")
         .eq("status_px", "activo");
@@ -67,7 +67,7 @@ export default function DashboardGeografico() {
   const { data: distribucionProfesionales, isLoading: loadingProfesionales } = useQuery({
     queryKey: ["distribucion-profesionales"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("personal_salud")
         .select("zona, especialidad")
         .eq("activo", true);
@@ -94,7 +94,7 @@ export default function DashboardGeografico() {
   const { data: asignaciones, isLoading: loadingAsignaciones } = useQuery({
     queryKey: ["asignaciones-por-zona"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("pacientes")
         .select(`
           zona,
@@ -115,7 +115,7 @@ export default function DashboardGeografico() {
         const cantPx = pacientesZona.length;
 
         return {
-          zona: zonaData?.label || zona?.replace(/_/g, " ") || "Sin zona",
+          zona: zonaData?.label || String(zona ?? "").replace(/_/g, " ") || "Sin zona",
           pacientes: cantPx,
           profesionales: cantProf,
           ratio: Number((cantPx / cantProf).toFixed(1)),
@@ -127,17 +127,17 @@ export default function DashboardGeografico() {
   const { data: stats } = useQuery({
     queryKey: ["stats-geograficas"],
     queryFn: async () => {
-      const { count: totalPacientes } = await supabase
+      const { count: totalPacientes } = await db
         .from("pacientes")
         .select("*", { count: "exact", head: true })
         .eq("status_px", "activo");
 
-      const { count: totalProfesionales } = await supabase
+      const { count: totalProfesionales } = await db
         .from("personal_salud")
         .select("*", { count: "exact", head: true })
         .eq("activo", true);
 
-      const { data: zonasData } = await supabase
+      const { data: zonasData } = await db
         .from("pacientes")
         .select("zona")
         .eq("status_px", "activo");

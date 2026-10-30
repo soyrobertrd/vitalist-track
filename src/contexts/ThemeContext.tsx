@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useToast } from "@/hooks/use-toast";
 
 type Theme = "light" | "dark" | "standard";
@@ -21,10 +21,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const loadSettings = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await db.auth.getUser();
       if (!user) return;
 
-      const { data: settings } = await supabase
+      const { data: settings } = await db
         .from("user_settings")
         .select("*")
         .eq("user_id", user.id)
@@ -36,7 +36,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         applyTheme(settings.theme as Theme);
       } else {
         // Create default settings
-        await supabase.from("user_settings").insert([{
+        await db.from("user_settings").insert([{
           user_id: user.id,
           theme: "standard",
           sidebar_collapsed: false
@@ -71,9 +71,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setThemeState(newTheme);
     applyTheme(newTheme);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     if (user) {
-      const { error } = await supabase
+      const { error } = await db
         .from("user_settings")
         .update({ theme: newTheme })
         .eq("user_id", user.id);
@@ -91,9 +91,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setSidebarCollapsed = async (collapsed: boolean) => {
     setSidebarCollapsedState(collapsed);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await db.auth.getUser();
     if (user) {
-      await supabase
+      await db
         .from("user_settings")
         .update({ sidebar_collapsed: collapsed })
         .eq("user_id", user.id);

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, User, FileText, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FichaClinicaPaciente } from "@/components/ficha-clinica/FichaClinicaPaciente";
@@ -27,7 +27,7 @@ export function BuscarPacienteRecepcion({ cedulaInicial = "" }: Props) {
     }
     setLoading(true);
     const cleaned = term.replace(/\D/g, "");
-    let qb = supabase
+    let qb = db
       .from("pacientes")
       .select("id, nombre, apellido, cedula, fecha_nacimiento, numero_principal, contacto_px")
       .limit(10);

@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -41,7 +41,7 @@ export default function FirmaPrescripcion({ prescripcion, onSigned }: { prescrip
       frecuencia: prescripcion.frecuencia, notas: prescripcion.notas, paciente_id: prescripcion.paciente_id,
     });
     const hash = await sha256Hex(contenido);
-    const { error } = await (supabase as any).rpc("firmar_prescripcion_psiquiatrica", {
+    const { error } = await (db as any).rpc("firmar_prescripcion_psiquiatrica", {
       _prescripcion_id: prescripcion.id,
       _firma_base64: firma,
       _hash_contenido: hash,

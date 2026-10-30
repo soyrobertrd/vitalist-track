@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, Gift, Star, Users } from "lucide-react";
@@ -12,7 +12,7 @@ export default function BeneficiosUsuarios() {
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase.from("beneficios_usuarios" as any).select("*").order("fecha_otorgado", { ascending: false });
+      const { data, error } = await db.from("beneficios_usuarios" as any).select("*").order("fecha_otorgado", { ascending: false });
       if (error) toast.error(error.message);
       setData((data as any[]) || []);
       setLoading(false);

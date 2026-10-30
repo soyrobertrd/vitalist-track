@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -54,13 +54,13 @@ const Contabilidad = () => {
 
   const fetchCuentas = async () => {
     if (!currentWorkspace) return;
-    const { data } = await supabase.from("cuentas_contables").select("*").eq("workspace_id", currentWorkspace.id).order("codigo");
+    const { data } = await db.from("cuentas_contables").select("*").eq("workspace_id", currentWorkspace.id).order("codigo");
     setCuentas(data || []);
   };
 
   const fetchAsientos = async () => {
     if (!currentWorkspace) return;
-    const { data } = await supabase.from("asientos_contables").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(200);
+    const { data } = await db.from("asientos_contables").select("*").eq("workspace_id", currentWorkspace.id).order("created_at", { ascending: false }).limit(200);
     setAsientos(data || []);
   };
 
@@ -68,7 +68,7 @@ const Contabilidad = () => {
 
   const handleCreateCuenta = async () => {
     if (!currentWorkspace || !cuentaForm.codigo || !cuentaForm.nombre) { toast.error("Código y nombre requeridos"); return; }
-    const { error } = await supabase.from("cuentas_contables").insert({
+    const { error } = await db.from("cuentas_contables").insert({
       workspace_id: currentWorkspace.id,
       codigo: cuentaForm.codigo,
       nombre: cuentaForm.nombre,
@@ -87,7 +87,7 @@ const Contabilidad = () => {
     const totalHaber = lineas.reduce((s, l) => s + l.haber, 0);
     if (Math.abs(totalDebe - totalHaber) > 0.01) { toast.error(`Asiento descuadrado: Debe ${totalDebe.toFixed(2)} ≠ Haber ${totalHaber.toFixed(2)}`); return; }
 
-    const { data, error } = await supabase.from("asientos_contables").insert({
+    const { data, error } = await db.from("asientos_contables").insert({
       workspace_id: currentWorkspace.id,
       fecha: asientoForm.fecha,
       descripcion: asientoForm.descripcion,
@@ -99,20 +99,20 @@ const Contabilidad = () => {
     if (error) { toast.error(error.message); return; }
 
     const lineasInsert = lineas.map(l => ({ asiento_id: data.id, cuenta_id: l.cuenta_id, descripcion: l.descripcion || null, debe: l.debe, haber: l.haber }));
-    const { error: e2 } = await supabase.from("lineas_asiento").insert(lineasInsert);
+    const { error: e2 } = await db.from("lineas_asiento").insert(lineasInsert);
     if (e2) toast.error(e2.message);
     else { toast.success("Asiento creado"); setAsientoDialog(false); setLineas([]); setAsientoForm({ fecha: new Date().toISOString().split("T")[0], descripcion: "", referencia: "", notas: "" }); fetchAsientos(); }
   };
 
   const updateEstadoAsiento = async (id: string, estado: "borrador" | "aprobado" | "anulado") => {
-    const { error } = await supabase.from("asientos_contables").update({ estado }).eq("id", id);
+    const { error } = await db.from("asientos_contables").update({ estado }).eq("id", id);
     if (error) toast.error(error.message);
     else { toast.success("Estado actualizado"); fetchAsientos(); if (detalleAsiento?.id === id) setDetalleAsiento({ ...detalleAsiento, estado }); }
   };
 
   const openDetalle = async (asiento: any) => {
     setDetalleAsiento(asiento);
-    const { data } = await supabase.from("lineas_asiento").select("*, cuentas_contables(codigo, nombre)").eq("asiento_id", asiento.id);
+    const { data } = await db.from("lineas_asiento").select("*, cuentas_contables(codigo, nombre)").eq("asiento_id", asiento.id);
     setDetalleLineas(data || []);
   };
 

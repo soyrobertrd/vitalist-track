@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Plus, User } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { DataTable, ColumnDef, FilterChipConfig } from "@/components/common/DataTable";
 
@@ -32,14 +32,14 @@ export function AdminUsuariosTab({
   const handleRoleChange = async (userId: string, newRole: string) => {
     setLoading(true);
     try {
-      const { data: existing } = await supabase
+      const { data: existing } = await db
         .from("user_roles")
         .select("id")
         .eq("user_id", userId)
         .maybeSingle();
       const { error } = existing
-        ? await supabase.from("user_roles").update({ role: newRole as any }).eq("user_id", userId)
-        : await supabase.from("user_roles").insert([{ user_id: userId, role: newRole as any }]);
+        ? await db.from("user_roles").update({ role: newRole as any }).eq("user_id", userId)
+        : await db.from("user_roles").insert([{ user_id: userId, role: newRole as any }]);
       if (error) throw error;
       toast.success("Rol actualizado");
       onRefreshUsuarios();
@@ -53,7 +53,7 @@ export function AdminUsuariosTab({
   const handleToggleUserStatus = async (userId: string, currentStatus: boolean) => {
     setLoading(true);
     try {
-      const { error } = await supabase
+      const { error } = await db
         .from("profiles")
         .update({ activo: !currentStatus })
         .eq("id", userId);
@@ -79,7 +79,7 @@ export function AdminUsuariosTab({
     const role = form.get("role") as string;
 
     try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await db.auth.signUp({
         email,
         password,
         options: {
@@ -97,7 +97,7 @@ export function AdminUsuariosTab({
       if (authError) throw authError;
 
       if (authData.user && currentWorkspace?.id) {
-        await supabase.from("workspace_members").insert({
+        await db.from("workspace_members").insert({
           workspace_id: currentWorkspace.id,
           user_id: authData.user.id,
           role: role === "admin" ? "admin" : "member",

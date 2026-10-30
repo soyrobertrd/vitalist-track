@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/popover";
 import { Bell, Calendar, AlertTriangle, Sparkles, Check, Clock, DollarSign } from "lucide-react";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { format, startOfDay, endOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -49,14 +49,14 @@ export function NotificationBell() {
 
       try {
         const [citasRes, facturasRes] = await Promise.all([
-          supabase
+          db
             .from("control_visitas")
             .select("id, fecha_hora_visita, estado, pacientes(nombre, apellido)")
             .gte("fecha_hora_visita", desde)
             .lte("fecha_hora_visita", hasta)
             .eq("estado", "pendiente")
             .limit(4),
-          supabase
+          db
             .from("facturas")
             .select("id, monto_total, descripcion, pacientes(nombre, apellido)")
             .eq("estado", "pendiente")

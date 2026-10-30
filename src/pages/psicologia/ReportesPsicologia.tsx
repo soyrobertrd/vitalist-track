@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -46,7 +46,7 @@ export default function ReportesPsicologia() {
   const { data: pacientes = [] } = useQuery({
     queryKey: ["pac_psico_list", wsId],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("pacientes_psicologia")
         .select("paciente_id, pacientes:paciente_id(id, nombre, apellido)")
         .eq("workspace_id", wsId);
@@ -61,7 +61,7 @@ export default function ReportesPsicologia() {
   const { data: asistencia = [] } = useQuery({
     queryKey: ["rep_asistencia", wsId, desde, hasta],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("reporte_asistencia_psicologia" as any, {
+      const { data, error } = await db.rpc("reporte_asistencia_psicologia" as any, {
         _workspace_id: wsId, _desde: desde, _hasta: hasta,
       });
       if (error) throw error;
@@ -73,7 +73,7 @@ export default function ReportesPsicologia() {
   const { data: evolucion = [] } = useQuery({
     queryKey: ["rep_evolucion", pacienteSel],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("reporte_evolucion_escalas" as any, {
+      const { data, error } = await db.rpc("reporte_evolucion_escalas" as any, {
         _paciente_id: pacienteSel,
       });
       if (error) throw error;
@@ -85,7 +85,7 @@ export default function ReportesPsicologia() {
   const { data: inactivos = [] } = useQuery({
     queryKey: ["rep_inactivos", wsId],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("reporte_pacientes_inactivos_psico" as any, {
+      const { data, error } = await db.rpc("reporte_pacientes_inactivos_psico" as any, {
         _workspace_id: wsId, _meses: 3,
       });
       if (error) throw error;
@@ -97,7 +97,7 @@ export default function ReportesPsicologia() {
   const { data: cancelaciones = [] } = useQuery({
     queryKey: ["rep_cancel", wsId, desde, hasta],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("reporte_cancelaciones_psico" as any, {
+      const { data, error } = await db.rpc("reporte_cancelaciones_psico" as any, {
         _workspace_id: wsId, _desde: desde, _hasta: hasta,
       });
       if (error) throw error;
@@ -109,7 +109,7 @@ export default function ReportesPsicologia() {
   const { data: retencion = [] } = useQuery({
     queryKey: ["rep_retencion", wsId],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("reporte_retencion_terapeutica" as any, {
+      const { data, error } = await db.rpc("reporte_retencion_terapeutica" as any, {
         _workspace_id: wsId, _desde: days(365),
       });
       if (error) throw error;

@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useTabParam } from "@/hooks/useTabParam";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -100,31 +100,31 @@ function RecoveryCareContent() {
 
   const { data: pacientesRec = [] } = useQuery({
     queryKey: ["pacientes_recovery", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("pacientes_recovery" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("pacientes_recovery" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
   const { data: habitaciones = [] } = useQuery({
     queryKey: ["habitaciones_recovery", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("habitaciones_recovery" as any).select("*").eq("workspace_id", wsId!).order("nombre"); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("habitaciones_recovery" as any).select("*").eq("workspace_id", wsId!).order("nombre"); return (data || []) as any[]; },
   });
   const { data: planes = [] } = useQuery({
     queryKey: ["planes_recovery", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("planes_recovery" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre"); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("planes_recovery" as any).select("*").eq("workspace_id", wsId!).eq("activo", true).order("nombre"); return (data || []) as any[]; },
   });
   const { data: seguimientos = [] } = useQuery({
     queryKey: ["seguimiento_diario_recovery", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("seguimiento_diario_recovery" as any).select("*").eq("workspace_id", wsId!).order("fecha", { ascending: false }).limit(50); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("seguimiento_diario_recovery" as any).select("*").eq("workspace_id", wsId!).order("fecha", { ascending: false }).limit(50); return (data || []) as any[]; },
   });
   const { data: reservas = [] } = useQuery({
     queryKey: ["reservas_recovery", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await (supabase.from("reservas_recovery") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("check_in", { ascending: false }).limit(100); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await (db.from("reservas_recovery") as any).select("*, pacientes(nombre, apellido)").eq("workspace_id", wsId!).order("check_in", { ascending: false }).limit(100); return (data || []) as any[]; },
   });
   const { data: alertas = [] } = useQuery({
     queryKey: ["alertas_emergencia_recovery", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("alertas_emergencia_recovery" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(50); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("alertas_emergencia_recovery" as any).select("*").eq("workspace_id", wsId!).order("created_at", { ascending: false }).limit(50); return (data || []) as any[]; },
   });
   const { data: conciergeServ = [] } = useQuery({
     queryKey: ["servicios_concierge", wsId], enabled: !!wsId,
-    queryFn: async () => { const { data } = await supabase.from("servicios_concierge" as any).select("*").eq("workspace_id", wsId!).order("fecha", { ascending: false }).limit(50); return (data || []) as any[]; },
+    queryFn: async () => { const { data } = await db.from("servicios_concierge" as any).select("*").eq("workspace_id", wsId!).order("fecha", { ascending: false }).limit(50); return (data || []) as any[]; },
   });
 
   const activos = pacientesRec.filter((p: any) => p.estado === "en_recuperacion" || p.estado === "ingresado").length;

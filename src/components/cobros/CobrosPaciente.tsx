@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -90,7 +90,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
 
   const cargar = async () => {
     setLoading(true);
-    const { data: facs } = await supabase
+    const { data: facs } = await db
       .from("facturas")
       .select("*")
       .eq("paciente_id", pacienteId)
@@ -98,7 +98,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
     setFacturas((facs as Factura[]) || []);
 
     if (facs && facs.length > 0) {
-      const { data: pgs } = await supabase
+      const { data: pgs } = await db
         .from("pagos")
         .select("*")
         .in("factura_id", facs.map((f: any) => f.id))
@@ -115,7 +115,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
 
   useEffect(() => {
     cargar();
-    supabase
+    db
       .from("pacientes")
       .select("nombre, apellido, numero_principal, contacto_px, contacto_cuidador")
       .eq("id", pacienteId)
@@ -128,7 +128,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
       toast({ title: "Monto inválido", variant: "destructive" });
       return;
     }
-    const { error } = await supabase.from("facturas").insert({
+    const { error } = await db.from("facturas").insert({
       paciente_id: pacienteId,
       monto_total: parseFloat(nuevaFactura.monto_total),
       fecha_vencimiento: nuevaFactura.fecha_vencimiento || null,
@@ -153,7 +153,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
       toast({ title: "Monto inválido", variant: "destructive" });
       return;
     }
-    const { error } = await supabase.from("pagos").insert({
+    const { error } = await db.from("pagos").insert({
       factura_id: facturaId,
       monto: parseFloat(nuevoPago.monto),
       metodo: nuevoPago.metodo,
@@ -172,7 +172,7 @@ export const CobrosPaciente = ({ pacienteId }: { pacienteId: string }) => {
 
   const anularFactura = async (id: string) => {
     if (!confirm("¿Anular esta factura?")) return;
-    await supabase.from("facturas").update({ estado: "anulada" } as any).eq("id", id);
+    await db.from("facturas").update({ estado: "anulada" } as any).eq("id", id);
     toast({ title: "Factura anulada" });
     cargar();
   };

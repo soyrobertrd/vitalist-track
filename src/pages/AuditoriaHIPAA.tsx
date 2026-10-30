@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Shield, Eye, Download, FileText, Save, AlertTriangle, FileDown, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { format } from "date-fns";
@@ -91,13 +91,13 @@ export default function AuditoriaHIPAA() {
     setLoading(true);
     try {
       const [logsRes, polRes] = await Promise.all([
-        (supabase as any)
+        (db as any)
           .from("acceso_fichas_log")
           .select("*")
           .eq("workspace_id", currentWorkspace!.id)
           .order("created_at", { ascending: false })
           .limit(1000),
-        (supabase as any)
+        (db as any)
           .from("politicas_retencion")
           .select("*")
           .eq("workspace_id", currentWorkspace!.id)
@@ -112,7 +112,7 @@ export default function AuditoriaHIPAA() {
       const pacIds = [...new Set(logsData.map((l) => l.paciente_id))];
 
       if (userIds.length > 0) {
-        const { data: profs } = await supabase.from("profiles").select("id,nombre,apellido,email").in("id", userIds);
+        const { data: profs } = await db.from("profiles").select("id,nombre,apellido,email").in("id", userIds);
         setUsuarios(
           Object.fromEntries(
             (profs ?? []).map((p: any) => [p.id, `${p.nombre ?? ""} ${p.apellido ?? ""}`.trim() || p.email])
@@ -120,7 +120,7 @@ export default function AuditoriaHIPAA() {
         );
       }
       if (pacIds.length > 0) {
-        const { data: pacs } = await supabase.from("pacientes").select("id,nombre,apellido").in("id", pacIds);
+        const { data: pacs } = await db.from("pacientes").select("id,nombre,apellido").in("id", pacIds);
         setPacientes(Object.fromEntries((pacs ?? []).map((p: any) => [p.id, `${p.nombre} ${p.apellido}`])));
       }
 
@@ -144,7 +144,7 @@ export default function AuditoriaHIPAA() {
         activo: politica.activo,
         notas: politica.notas,
       };
-      const { error } = await (supabase as any)
+      const { error } = await (db as any)
         .from("politicas_retencion")
         .upsert(payload, { onConflict: "workspace_id" });
       if (error) throw error;
@@ -194,7 +194,7 @@ export default function AuditoriaHIPAA() {
     if (!currentWorkspace?.id) return;
     setGenerandoPdf(true);
     try {
-      const { data, error } = await supabase.functions.invoke("exportar-auditoria-pdf", {
+      const { data, error } = await db.functions.invoke("exportar-auditoria-pdf", {
         body: {
           workspace_id: currentWorkspace.id,
           fecha_inicio: filterDesde || null,

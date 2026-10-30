@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -46,9 +46,9 @@ const Farmacia = () => {
   const fetchData = async () => {
     setLoading(true);
     const [r, s, m] = await Promise.all([
-      supabase.from("recetas_farmacia").select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)").order("created_at", { ascending: false }).limit(200),
-      supabase.from("stock_farmacia").select("*").order("medicamento").limit(500),
-      supabase.from("movimientos_stock_farmacia").select("*, stock_farmacia(medicamento)").order("created_at", { ascending: false }).limit(100),
+      db.from("recetas_farmacia").select("*, pacientes(nombre, apellido), personal_salud(nombre, apellido)").order("created_at", { ascending: false }).limit(200),
+      db.from("stock_farmacia").select("*").order("medicamento").limit(500),
+      db.from("movimientos_stock_farmacia").select("*, stock_farmacia(medicamento)").order("created_at", { ascending: false }).limit(100),
     ]);
     if (r.data) setRecetas(r.data);
     if (s.data) setStock(s.data);
@@ -61,7 +61,7 @@ const Farmacia = () => {
   }, []);
 
   const handleAddStock = async () => {
-    const { error } = await supabase.from("stock_farmacia").insert({
+    const { error } = await db.from("stock_farmacia").insert({
       medicamento: newStockForm.medicamento,
       presentacion: newStockForm.presentacion || null,
       lote: newStockForm.lote || null,

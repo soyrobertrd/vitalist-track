@@ -7,7 +7,7 @@ import { Calendar, Phone, MapPin, Heart, Pill, Mail, History, Printer, ExternalL
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { printFichaClinica360 } from "@/lib/clinical-print-service";
 import { NotificacionPlanAccion } from "@/components/NotificacionPlanAccion";
@@ -44,21 +44,21 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
     if (!pacienteId) return;
 
     const [pacienteRes, medicamentosRes, llamadasRes, visitasRes, parametrosRes] = await Promise.all([
-      supabase.from("pacientes").select("*").eq("id", pacienteId).single(),
-      supabase.from("medicamentos_paciente").select("*").eq("paciente_id", pacienteId),
-      supabase.from("registro_llamadas")
+      db.from("pacientes").select("*").eq("id", pacienteId).single(),
+      db.from("medicamentos_paciente").select("*").eq("paciente_id", pacienteId),
+      db.from("registro_llamadas")
         .select("*, personal_salud!registro_llamadas_profesional_id_fkey(nombre, apellido)")
         .eq("paciente_id", pacienteId)
         .in("estado", ["agendada", "pendiente"])
         .order("fecha_agendada", { ascending: true })
         .limit(5),
-      supabase.from("control_visitas")
+      db.from("control_visitas")
         .select("*, personal_salud!control_visitas_profesional_id_fkey(nombre, apellido)")
         .eq("paciente_id", pacienteId)
         .eq("estado", "pendiente")
         .order("fecha_hora_visita", { ascending: true })
         .limit(5),
-      supabase.from("parametros_seguimiento").select("*").eq("paciente_id", pacienteId).maybeSingle(),
+      db.from("parametros_seguimiento").select("*").eq("paciente_id", pacienteId).maybeSingle(),
     ]);
 
     if (pacienteRes.data) setPaciente(pacienteRes.data);

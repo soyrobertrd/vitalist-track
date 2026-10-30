@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,7 +62,7 @@ const Personal = () => {
   const { canCreate } = useEnforcePlanLimit();
 
   const fetchPersonal = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("personal_salud")
       .select("*")
       .order("created_at", { ascending: false });
@@ -85,7 +85,7 @@ const Personal = () => {
     
     setLoadingCedula(true);
     try {
-      const { data, error } = await supabase.functions.invoke('consultar-cedula', {
+      const { data, error } = await db.functions.invoke('consultar-cedula', {
         body: { cedula: cedulaLimpia }
       });
 
@@ -135,7 +135,7 @@ const Personal = () => {
         }
         
         // Create user account first
-        const { data: authData, error: authError } = await supabase.auth.signUp({
+        const { data: authData, error: authError } = await db.auth.signUp({
           email: email,
           password: password,
           options: {
@@ -153,7 +153,7 @@ const Personal = () => {
       }
 
       // Add to personal_salud table
-      const { error: personalError } = await supabase
+      const { error: personalError } = await db
         .from("personal_salud")
         .insert([{ ...data, user_id: userId }]);
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ type Paciente = { id: string; nombre: string; apellido: string };
 export default function CuestionariosPreSesion({ pacientes }: { pacientes: Paciente[] }) {
   const { currentWorkspace } = useWorkspace();
   const wsId = currentWorkspace?.id;
-  const sb = supabase as any;
+  const sb = db as any;
 
   const { data: plantillas = [], refetch: refPl } = useQuery({
     queryKey: ["cuest_plantillas", wsId], enabled: !!wsId,

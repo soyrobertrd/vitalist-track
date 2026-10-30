@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ export default function VerticalAgendaIATab({ verticalTipo }: Props) {
     queryKey: ["agenda_ia_predicciones", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("agenda_ia_predicciones") as any)
+      const { data } = await (db.from("agenda_ia_predicciones") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("created_at", { ascending: false }).limit(50);
       return data || [];
     },
@@ -31,7 +31,7 @@ export default function VerticalAgendaIATab({ verticalTipo }: Props) {
     queryKey: ["agenda_ia_sugerencias", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("agenda_ia_sugerencias") as any)
+      const { data } = await (db.from("agenda_ia_sugerencias") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "pendiente").order("created_at", { ascending: false }).limit(20);
       return data || [];
     },
@@ -39,8 +39,8 @@ export default function VerticalAgendaIATab({ verticalTipo }: Props) {
 
   const aplicarSugerencia = useMutation({
     mutationFn: async (id: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await (supabase.from("agenda_ia_sugerencias") as any)
+      const { data: { user } } = await db.auth.getUser();
+      const { error } = await (db.from("agenda_ia_sugerencias") as any)
         .update({ estado: "aplicada", aplicada_por: user?.id, aplicada_at: new Date().toISOString() }).eq("id", id);
       if (error) throw error;
     },
@@ -50,7 +50,7 @@ export default function VerticalAgendaIATab({ verticalTipo }: Props) {
 
   const descartarSugerencia = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await (supabase.from("agenda_ia_sugerencias") as any).update({ estado: "descartada" }).eq("id", id);
+      const { error } = await (db.from("agenda_ia_sugerencias") as any).update({ estado: "descartada" }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => { toast.success("Sugerencia descartada"); qc.invalidateQueries({ queryKey: ["agenda_ia_sugerencias"] }); },

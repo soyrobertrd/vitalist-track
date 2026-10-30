@@ -9,7 +9,7 @@ import { useVertical } from "@/contexts/VerticalContext";
  *
  * Uso:
  *   const { applyVerticalFilter, verticalActiva } = useVerticalFilter();
- *   let q = supabase.from("pacientes").select("*").eq("workspace_id", wsId);
+ *   let q = db.from("pacientes").select("*").eq("workspace_id", wsId);
  *   q = applyVerticalFilter(q);
  */
 export function useVerticalFilter() {

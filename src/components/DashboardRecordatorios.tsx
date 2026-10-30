@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Check, X, Clock, RefreshCw, TrendingUp, MessageCircle, Calendar, Phone } from "lucide-react";
@@ -73,7 +73,7 @@ export function DashboardRecordatorios() {
     const thirtyDaysAgo = subDays(new Date(), 30).toISOString();
 
     // Obtener historial de recordatorios
-    const { data: historialData, error: historialError } = await supabase
+    const { data: historialData, error: historialError } = await db
       .from("historial_recordatorios")
       .select(`
         *,
@@ -88,13 +88,13 @@ export function DashboardRecordatorios() {
     }
 
     // Obtener citas confirmadas tras recordatorio
-    const { data: llamadasConfirmadas } = await supabase
+    const { data: llamadasConfirmadas } = await db
       .from("registro_llamadas")
       .select("id")
       .eq("confirmado_por_recordatorio", true)
       .gte("created_at", thirtyDaysAgo);
 
-    const { data: visitasConfirmadas } = await supabase
+    const { data: visitasConfirmadas } = await db
       .from("control_visitas")
       .select("id")
       .eq("confirmado_por_recordatorio", true)

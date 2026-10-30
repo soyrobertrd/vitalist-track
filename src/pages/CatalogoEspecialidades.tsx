@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,7 @@ export default function CatalogoEspecialidades() {
   const [form, setForm] = useState({ nombre: "", categoria: "medica", descripcion: "", requiere_exequatur: false, requiere_colegiatura: false, activo: true });
 
   const load = async () => {
-    const { data } = await supabase.from("especialidades_catalogo").select("*").order("categoria").order("nombre");
+    const { data } = await db.from("especialidades_catalogo").select("*").order("categoria").order("nombre");
     setItems(data || []);
   };
   useEffect(() => { load(); }, []);
@@ -41,11 +41,11 @@ export default function CatalogoEspecialidades() {
   const save = async () => {
     if (!form.nombre.trim()) { toast.error("Nombre requerido"); return; }
     if (editing) {
-      const { error } = await supabase.from("especialidades_catalogo").update(form).eq("id", editing.id);
+      const { error } = await db.from("especialidades_catalogo").update(form).eq("id", editing.id);
       if (error) return toast.error(error.message);
     } else {
       const payload: any = { ...form, workspace_id: currentWorkspace?.id || null, global: false };
-      const { error } = await supabase.from("especialidades_catalogo").insert(payload);
+      const { error } = await db.from("especialidades_catalogo").insert(payload);
       if (error) return toast.error(error.message);
     }
     toast.success("Guardado");

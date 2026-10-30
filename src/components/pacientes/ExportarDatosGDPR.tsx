@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 
@@ -12,7 +12,7 @@ export function ExportarDatosGDPR({ pacienteId, pacienteNombre }: Props) {
   const exportar = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("exportar-datos-paciente-gdpr", {
+      const { data, error } = await db.functions.invoke("exportar-datos-paciente-gdpr", {
         body: { paciente_id: pacienteId },
       });
       if (error) throw error;

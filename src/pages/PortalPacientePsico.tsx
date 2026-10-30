@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Calendar, Activity } from "lucide-react";
@@ -14,7 +14,7 @@ export default function PortalPacientePsico() {
   useEffect(() => {
     (async () => {
       if (!token) return;
-      const { data, error } = await supabase.rpc("leer_portal_paciente_por_token", { _token: token });
+      const { data, error } = await db.rpc("leer_portal_paciente_por_token", { _token: token });
       if (error) setError(error.message);
       else setData(data);
       setLoading(false);

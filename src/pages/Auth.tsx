@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,13 +23,13 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    db.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate("/app");
       }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = db.auth.onAuthStateChange((event, session) => {
       if (session) {
         navigate("/app");
       }
@@ -46,7 +46,7 @@ const Auth = () => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await db.auth.signInWithPassword({ email, password });
 
     if (error) {
       toast.error(error.message);
@@ -72,7 +72,7 @@ const Auth = () => {
     try {
       signupSchema.parse(data);
 
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      const { data: authData, error: signUpError } = await db.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
@@ -88,7 +88,7 @@ const Auth = () => {
       if (signUpError) throw signUpError;
 
       if (authData.user) {
-        const { error: profileError } = await supabase.from("profiles").insert({
+        const { error: profileError } = await db.from("profiles").insert({
           id: authData.user.id,
           cedula: data.cedula,
           nombre: data.nombre,

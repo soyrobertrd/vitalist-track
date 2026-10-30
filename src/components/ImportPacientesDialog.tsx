@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Upload, FileJson, FileSpreadsheet, AlertCircle } from "lucide-react";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -99,7 +99,7 @@ export function ImportPacientesDialog({ open, onOpenChange, onSuccess }: ImportP
         status_px: 'activo' as const
       }));
 
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("pacientes")
         .insert(pacientesData)
         .select();

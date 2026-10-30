@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { supabase as sb } from "@/integrations/supabase/client";
-const supabase: any = sb;
+import { db as sb } from "@/integrations/db/client";
+const db: any = sb;
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +32,7 @@ export function DisponibilidadDiaTanda() {
   const [ausencias, setAusencias] = useState<any[]>([]);
 
   useEffect(() => {
-    supabase
+    db
       .from("personal_salud")
       .select("id, nombre, apellido, especialidad")
       .eq("activo", true)
@@ -46,19 +46,19 @@ export function DisponibilidadDiaTanda() {
     const inicio = `${fecha}T00:00:00`;
     const fin = `${fecha}T23:59:59`;
 
-    const visitasRes = await supabase
+    const visitasRes = await db
       .from("control_visitas")
       .select("id, fecha_hora_visita, estado, motivo_visita, pacientes(nombre, apellido)")
       .eq("profesional_id", profId)
       .gte("fecha_hora_visita", inicio)
       .lte("fecha_hora_visita", fin);
-    const llamadasRes = await supabase
+    const llamadasRes = await db
       .from("registro_llamadas")
       .select("id, fecha_agendada, estado, motivo, pacientes(nombre, apellido)")
       .eq("profesional_id", profId)
       .gte("fecha_agendada", inicio)
       .lte("fecha_agendada", fin);
-    const ausRes = await supabase
+    const ausRes = await db
       .from("ausencias_profesionales")
       .select("fecha_inicio, fecha_fin, descripcion, tipo")
       .eq("profesional_id", profId)

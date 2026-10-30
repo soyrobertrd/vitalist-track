@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ export default function VerticalIAPredictivaTab({ verticalTipo }: Props) {
     queryKey: ["ia_modelos_predictivos", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("ia_modelos_predictivos")
         .select("*")
         .eq("workspace_id", wsId!)
@@ -31,7 +31,7 @@ export default function VerticalIAPredictivaTab({ verticalTipo }: Props) {
     queryKey: ["ia_alertas_tempranas", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("ia_alertas_tempranas")
         .select("*, pacientes(nombre, apellido), ia_modelos_predictivos(nombre)")
         .eq("workspace_id", wsId!)

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -66,7 +66,7 @@ export default function ConfiguracionAuditoria() {
   useEffect(() => {
     if (!wsId) return;
     (async () => {
-      const { data: c } = await (supabase.from("auditoria_config") as any)
+      const { data: c } = await (db.from("auditoria_config") as any)
         .select("*").eq("workspace_id", wsId).maybeSingle();
       if (c) {
         setCfgId(c.id);
@@ -82,7 +82,7 @@ export default function ConfiguracionAuditoria() {
         });
       }
 
-      const { data: rs } = await (supabase.from("alertas_ruteo") as any)
+      const { data: rs } = await (db.from("alertas_ruteo") as any)
         .select("*").eq("workspace_id", wsId);
       const map: Record<string, Ruteo> = {};
       SEVERIDADES.forEach((s) => {
@@ -107,8 +107,8 @@ export default function ConfiguracionAuditoria() {
     setSaving(true);
     const payload: any = { workspace_id: wsId, ...cfg };
     const { error } = cfgId
-      ? await (supabase.from("auditoria_config") as any).update(payload).eq("id", cfgId)
-      : await (supabase.from("auditoria_config") as any).insert(payload);
+      ? await (db.from("auditoria_config") as any).update(payload).eq("id", cfgId)
+      : await (db.from("auditoria_config") as any).insert(payload);
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Umbrales guardados");
@@ -136,9 +136,9 @@ export default function ConfiguracionAuditoria() {
         activo: r.activo,
       };
       if (r.id) {
-        await (supabase.from("alertas_ruteo") as any).update(payload).eq("id", r.id);
+        await (db.from("alertas_ruteo") as any).update(payload).eq("id", r.id);
       } else {
-        await (supabase.from("alertas_ruteo") as any).insert(payload);
+        await (db.from("alertas_ruteo") as any).insert(payload);
       }
     }
     setSaving(false);

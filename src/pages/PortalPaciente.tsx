@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -71,7 +71,7 @@ export default function PortalPaciente() {
       return;
     }
     (async () => {
-      const { data: result, error } = await supabase.rpc("portal_paciente_datos", { _token: token });
+      const { data: result, error } = await db.rpc("portal_paciente_datos", { _token: token });
       if (error) setData({ valid: false, error: error.message });
       else setData(result as unknown as PortalData);
       setLoading(false);
@@ -89,7 +89,7 @@ export default function PortalPaciente() {
   const submitAction = async () => {
     if (!token) return;
     setSubmitting(true);
-    const { data: res, error } = await supabase.rpc("portal_paciente_solicitar_accion", {
+    const { data: res, error } = await db.rpc("portal_paciente_solicitar_accion", {
       _token: token,
       _tipo: actionType,
       _cita_id: actionCitaId || null,

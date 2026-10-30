@@ -19,7 +19,7 @@ import { AgendarCitaButton } from "@/components/AgendarCitaButton";
 import { useVertical } from "@/contexts/VerticalContext";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { startOfDay, endOfDay } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { DoctorScheduleWidget } from "@/components/dashboard/DoctorScheduleWidget";
@@ -48,7 +48,7 @@ export default function Calendario() {
       const todayEnd = endOfDay(now).toISOString();
 
       try {
-        let query = supabase
+        let query = db
           .from("control_visitas")
           .select("id, estado", { count: "exact" })
           .gte("fecha_hora_visita", todayStart)

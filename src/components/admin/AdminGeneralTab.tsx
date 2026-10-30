@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { WorkspaceLocaleEditor } from "@/components/WorkspaceLocaleEditor";
 import { Sparkles, Building2, Plus, X, Copy } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
 import { CANONICAL_PLANES } from "@/config/planes";
 
@@ -98,7 +98,7 @@ export function AdminGeneralTab({
         clinicas_asociadas: clinicasAsociadas,
       };
 
-      const { error } = await supabase
+      const { error } = await db
         .from("workspaces")
         .update({
           configuracion: updatedConfig,

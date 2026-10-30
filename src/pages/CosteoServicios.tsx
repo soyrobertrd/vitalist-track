@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -55,13 +55,13 @@ export default function CosteoServicios() {
   const cargar = async () => {
     if (!wsId) return;
     const [{ data: a }, { data: b }] = await Promise.all([
-      (supabase as any)
+      (db as any)
         .from("centros_costo")
         .select("*")
         .eq("workspace_id", wsId)
         .eq("activo", true)
         .order("codigo"),
-      (supabase as any)
+      (db as any)
         .from("costeo_servicios")
         .select("*, centros_costo(nombre)")
         .eq("workspace_id", wsId)
@@ -82,7 +82,7 @@ export default function CosteoServicios() {
       toast.error("Código y nombre del centro son obligatorios");
       return;
     }
-    const { error } = await (supabase as any).from("centros_costo").insert({
+    const { error } = await (db as any).from("centros_costo").insert({
       workspace_id: wsId,
       codigo: formCC.codigo,
       nombre: formCC.nombre,
@@ -110,7 +110,7 @@ export default function CosteoServicios() {
     const total = directo + indirecto;
     const margen = venta > 0 ? ((venta - total) / venta) * 100 : 0;
 
-    const { error } = await (supabase as any).from("costeo_servicios").insert({
+    const { error } = await (db as any).from("costeo_servicios").insert({
       workspace_id: wsId,
       codigo_servicio: formCS.codigo_servicio || `SRV-${Date.now().toString().slice(-4)}`,
       nombre_servicio: formCS.nombre_servicio,

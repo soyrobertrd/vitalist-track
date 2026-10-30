@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
-// auth user fetched directly from supabase below
+// auth user fetched directly from db below
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ export default function SalaTeleconsulta() {
   const nav = useNavigate();
   const { currentWorkspace } = useWorkspace();
   const [user, setUser] = useState<any>(null);
-  useEffect(() => { supabase.auth.getUser().then(({ data }) => setUser(data.user)); }, []);
+  useEffect(() => { db.auth.getUser().then(({ data }) => setUser(data.user)); }, []);
   const [tc, setTc] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [consentOpen, setConsentOpen] = useState(false);
@@ -25,7 +25,7 @@ export default function SalaTeleconsulta() {
 
   const cargar = async () => {
     if (!id) return;
-    const { data, error } = await supabase.from("teleconsultas").select("*").eq("id", id).maybeSingle();
+    const { data, error } = await db.from("teleconsultas").select("*").eq("id", id).maybeSingle();
     if (error) { toast.error(error.message); return; }
     setTc(data);
     setLoading(false);
@@ -44,7 +44,7 @@ export default function SalaTeleconsulta() {
       setConsentOpen(true);
       return;
     }
-    await supabase.from("teleconsultas").update({
+    await db.from("teleconsultas").update({
       estado: "en_curso", inicio_at: new Date().toISOString(),
     }).eq("id", id);
     setEnSala(true);
@@ -54,7 +54,7 @@ export default function SalaTeleconsulta() {
   const finalizar = async () => {
     const fin = new Date();
     const dur = tc.inicio_at ? Math.round((fin.getTime() - new Date(tc.inicio_at).getTime()) / 60000) : null;
-    await supabase.from("teleconsultas").update({
+    await db.from("teleconsultas").update({
       estado: "finalizada", fin_at: fin.toISOString(), duracion_min: dur,
     }).eq("id", id);
     toast.success("Teleconsulta finalizada");
@@ -141,7 +141,7 @@ export default function SalaTeleconsulta() {
         workspaceId={tc.workspace_id}
         pacienteId={tc.paciente_id}
         onSigned={async (consentId) => {
-          await supabase.from("teleconsultas").update({ consentimiento_id: consentId }).eq("id", id);
+          await db.from("teleconsultas").update({ consentimiento_id: consentId }).eq("id", id);
           cargar();
         }}
       />

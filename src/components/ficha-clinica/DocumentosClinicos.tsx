@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -61,7 +61,7 @@ export function DocumentosClinicos({ pacienteId }: { pacienteId: string }) {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await db
       .from("documentos_clinicos")
       .select("*")
       .eq("paciente_id", pacienteId)
@@ -92,10 +92,10 @@ export function DocumentosClinicos({ pacienteId }: { pacienteId: string }) {
     try {
       const ext = file.name.split(".").pop() || "bin";
       const path = `${pacienteId}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("documentos-clinicos").upload(path, file, { contentType: file.type });
+      const { error: upErr } = await db.storage.from("documentos-clinicos").upload(path, file, { contentType: file.type });
       if (upErr) throw upErr;
 
-      const { error: insErr } = await supabase.from("documentos_clinicos").insert({
+      const { error: insErr } = await db.from("documentos_clinicos").insert({
         paciente_id: pacienteId,
         categoria,
         titulo,
@@ -118,7 +118,7 @@ export function DocumentosClinicos({ pacienteId }: { pacienteId: string }) {
   };
 
   const download = async (doc: Documento) => {
-    const { data, error } = await supabase.storage.from("documentos-clinicos").createSignedUrl(doc.storage_path, 60);
+    const { data, error } = await db.storage.from("documentos-clinicos").createSignedUrl(doc.storage_path, 60);
     if (error || !data) {
       toast.error("No se pudo generar enlace");
       return;
@@ -128,8 +128,8 @@ export function DocumentosClinicos({ pacienteId }: { pacienteId: string }) {
 
   const remove = async (doc: Documento) => {
     if (!confirm(`¿Eliminar "${doc.titulo}"?`)) return;
-    await supabase.storage.from("documentos-clinicos").remove([doc.storage_path]);
-    const { error } = await supabase.from("documentos_clinicos").delete().eq("id", doc.id);
+    await db.storage.from("documentos-clinicos").remove([doc.storage_path]);
+    const { error } = await db.from("documentos_clinicos").delete().eq("id", doc.id);
     if (error) {
       toast.error("Error al eliminar");
       return;

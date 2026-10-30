@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,10 +45,10 @@ export function ReportePacientesSinCitas() {
     setLoading(true);
     try {
       const [pacientesRes, llamadasRes, visitasRes, personalRes] = await Promise.all([
-        supabase.from("pacientes").select("*").eq("status_px", "activo"),
-        supabase.from("registro_llamadas").select("paciente_id").in("estado", ["agendada", "pendiente"]),
-        supabase.from("control_visitas").select("paciente_id").eq("estado", "pendiente"),
-        supabase.from("personal_salud").select("*").eq("activo", true),
+        db.from("pacientes").select("*").eq("status_px", "activo"),
+        db.from("registro_llamadas").select("paciente_id").in("estado", ["agendada", "pendiente"]),
+        db.from("control_visitas").select("paciente_id").eq("estado", "pendiente"),
+        db.from("personal_salud").select("*").eq("activo", true),
       ]);
 
       if (pacientesRes.data && llamadasRes.data && visitasRes.data) {
@@ -105,7 +105,7 @@ export function ReportePacientesSinCitas() {
       estado: "pendiente" as any,
     };
 
-    const { error } = await supabase.from("control_visitas").insert([data]);
+    const { error } = await db.from("control_visitas").insert([data]);
 
     if (error) {
       toast.error(error.message);
@@ -320,7 +320,7 @@ export function ReportePacientesSinCitas() {
               estado: "agendada" as any,
             };
 
-            const { error } = await supabase.from("registro_llamadas").insert([data]);
+            const { error } = await db.from("registro_llamadas").insert([data]);
 
             if (error) {
               toast.error(error.message);

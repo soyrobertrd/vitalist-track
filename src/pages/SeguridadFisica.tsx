@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,7 +89,7 @@ export default function SeguridadFisica() {
     queryKey: ["areas_seguridad", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("areas_seguridad" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -102,7 +102,7 @@ export default function SeguridadFisica() {
     queryKey: ["bitacora_accesos", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("bitacora_accesos" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -116,7 +116,7 @@ export default function SeguridadFisica() {
     queryKey: ["credenciales_acceso", currentWorkspace?.id],
     enabled: !!currentWorkspace?.id,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await db
         .from("credenciales_acceso" as any)
         .select("*")
         .eq("workspace_id", currentWorkspace!.id)
@@ -130,7 +130,7 @@ export default function SeguridadFisica() {
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
       const num = `ACC-${Date.now().toString().slice(-6)}`;
-      const { error } = await supabase.from("bitacora_accesos" as any).insert({
+      const { error } = await db.from("bitacora_accesos" as any).insert({
         workspace_id: currentWorkspace.id,
         numero: num,
         persona_nombre: formDataAcceso.persona_nombre,
@@ -162,7 +162,7 @@ export default function SeguridadFisica() {
   const crearCredencial = useMutation({
     mutationFn: async () => {
       if (!currentWorkspace?.id) throw new Error("Workspace no activo");
-      const { error } = await supabase.from("credenciales_acceso" as any).insert({
+      const { error } = await db.from("credenciales_acceso" as any).insert({
         workspace_id: currentWorkspace.id,
         persona_nombre: formDataCred.persona_nombre,
         codigo_credencial: formDataCred.codigo_credencial,

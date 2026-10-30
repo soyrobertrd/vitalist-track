@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -212,7 +212,7 @@ export default function ReglasClinicas() {
   const cargarReglas = async () => {
     setLoading(true);
     try {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await (db as any)
         .from("reglas_clinicas")
         .select("*")
         .order("severidad", { ascending: false });
@@ -248,7 +248,7 @@ export default function ReglasClinicas() {
       prev.map((r) => (r.id === regla.id ? { ...r, activo: nuevoEstado } : r))
     );
     try {
-      await (supabase as any)
+      await (db as any)
         .from("reglas_clinicas")
         .update({ activo: nuevoEstado })
         .eq("id", regla.id);

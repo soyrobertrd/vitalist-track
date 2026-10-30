@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ export default function VerticalRolesPermisosTab({ verticalTipo }: Props) {
     queryKey: ["roles_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("roles_vertical") as any)
+      const { data } = await (db.from("roles_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).order("nombre");
       return data || [];
     },
@@ -47,7 +47,7 @@ export default function VerticalRolesPermisosTab({ verticalTipo }: Props) {
     queryKey: ["delegaciones_acceso_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("delegaciones_acceso_vertical") as any)
+      const { data } = await (db.from("delegaciones_acceso_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("activo", true).order("created_at", { ascending: false });
       return data || [];
     },
@@ -55,7 +55,7 @@ export default function VerticalRolesPermisosTab({ verticalTipo }: Props) {
 
   const crearRol = useMutation({
     mutationFn: async () => {
-      const { error } = await (supabase.from("roles_vertical") as any).insert({
+      const { error } = await (db.from("roles_vertical") as any).insert({
         workspace_id: wsId, vertical_tipo: verticalTipo, nombre, descripcion: descripcion || null, permisos,
       });
       if (error) throw error;

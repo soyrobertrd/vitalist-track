@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -122,7 +122,7 @@ const Plantillas = () => {
   // ============ LOAD ============
   const cargarWA = async () => {
     setLoadingWA(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("plantillas_whatsapp")
       .select("*")
       .order("categoria")
@@ -134,7 +134,7 @@ const Plantillas = () => {
 
   const cargarEmails = async () => {
     setLoadingEmail(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("plantillas_correo")
       .select("*")
       .order("created_at", { ascending: false });
@@ -192,14 +192,14 @@ const Plantillas = () => {
       variables,
     };
     if (editingWA) {
-      const { error } = await supabase
+      const { error } = await db
         .from("plantillas_whatsapp")
         .update({ ...payload, version: editingWA.version + 1 })
         .eq("id", editingWA.id);
       if (error) return toast.error("Error al actualizar");
       toast.success("Plantilla actualizada");
     } else {
-      const { error } = await supabase.from("plantillas_whatsapp").insert(payload);
+      const { error } = await db.from("plantillas_whatsapp").insert(payload);
       if (error) return toast.error("Error al crear");
       toast.success("Plantilla creada");
     }
@@ -210,7 +210,7 @@ const Plantillas = () => {
 
   const eliminarWA = async (id: string) => {
     if (!confirm("¿Eliminar esta plantilla?")) return;
-    const { error } = await supabase.from("plantillas_whatsapp").delete().eq("id", id);
+    const { error } = await db.from("plantillas_whatsapp").delete().eq("id", id);
     if (error) return toast.error("Error al eliminar");
     toast.success("Plantilla eliminada");
     cargarWA();
@@ -248,15 +248,15 @@ const Plantillas = () => {
       return;
     }
     if (editingEmail) {
-      const { error } = await supabase
+      const { error } = await db
         .from("plantillas_correo")
         .update({ ...formEmail, version: (editingEmail.version || 1) + 1 })
         .eq("id", editingEmail.id);
       if (error) return toast.error("Error al actualizar");
       toast.success("Plantilla actualizada");
     } else {
-      const user = (await supabase.auth.getUser()).data.user;
-      const { error } = await supabase.from("plantillas_correo").insert({
+      const user = (await db.auth.getUser()).data.user;
+      const { error } = await db.from("plantillas_correo").insert({
         ...formEmail,
         created_by: user?.id,
       });
@@ -270,7 +270,7 @@ const Plantillas = () => {
 
   const eliminarEmail = async (id: string) => {
     if (!confirm("¿Eliminar esta plantilla?")) return;
-    const { error } = await supabase.from("plantillas_correo").delete().eq("id", id);
+    const { error } = await db.from("plantillas_correo").delete().eq("id", id);
     if (error) return toast.error("Error al eliminar");
     toast.success("Plantilla eliminada");
     cargarEmails();

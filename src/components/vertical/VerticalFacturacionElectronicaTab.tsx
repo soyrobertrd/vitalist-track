@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ export default function VerticalFacturacionElectronicaTab({ verticalTipo }: Prop
     queryKey: ["facturas_electronicas_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("facturas_electronicas_vertical") as any)
+      const { data } = await (db.from("facturas_electronicas_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo)
         .order("created_at", { ascending: false }).limit(200);
       return data || [];
@@ -47,7 +47,7 @@ export default function VerticalFacturacionElectronicaTab({ verticalTipo }: Prop
     queryKey: ["reportes_fiscales_vertical", wsId, verticalTipo],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("reportes_fiscales_vertical") as any)
+      const { data } = await (db.from("reportes_fiscales_vertical") as any)
         .select("*").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo)
         .order("created_at", { ascending: false }).limit(50);
       return data || [];
@@ -62,7 +62,7 @@ export default function VerticalFacturacionElectronicaTab({ verticalTipo }: Prop
 
   const crear = async () => {
     if (!wsId || !form.subtotal) return;
-    const { error } = await (supabase.from("facturas_electronicas_vertical") as any).insert({
+    const { error } = await (db.from("facturas_electronicas_vertical") as any).insert({
       workspace_id: wsId, vertical_tipo: verticalTipo,
       tipo_comprobante: form.tipo_comprobante,
       rnc_cedula_cliente: form.rnc_cedula_cliente || null,
