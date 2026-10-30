@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { Plus, Edit, Trash2, MessageCircle, Mail, Eye } from "lucide-react";
 import { renderPlantilla, type PlantillaWhatsApp } from "@/lib/whatsappService";
 import { useUserRole } from "@/hooks/useUserRole";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const CATEGORIAS_WA = [
   { value: "recordatorio_cita", label: "Recordatorio de cita" },
@@ -294,12 +295,7 @@ const Plantillas = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Plantillas de mensajes</h1>
-        <p className="text-muted-foreground mt-1">
-          Gestiona los mensajes que el sistema envía por WhatsApp y correo electrónico.
-        </p>
-      </div>
+      <ClinicalPageHeader title="Plantillas de mensajes" subtitle="Gestiona los mensajes que el sistema envía por WhatsApp y correo electrónico." />
 
       <Tabs defaultValue="whatsapp" className="space-y-4">
         <TabsList>

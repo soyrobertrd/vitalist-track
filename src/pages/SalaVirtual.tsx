@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Video, Clock, ExternalLink, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { format, formatDistanceToNowStrict, differenceInMinutes } from "date-fns";
 import { es } from "date-fns/locale";
-import { etiquetaProveedor } from "@/lib/videoLinks";
+import { etiquetaProveedor, enlaceSeguro } from "@/lib/videoLinks";
 
 interface SalaInfo {
   id: string;
@@ -104,7 +104,8 @@ export default function SalaVirtual() {
         /* ignore */
       }
     }
-    window.open(sala.video_enlace, "_blank", "noopener,noreferrer");
+    const url = enlaceSeguro(sala.video_enlace);
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
   };
 
   if (loading) {

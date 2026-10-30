@@ -1,16 +1,39 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
+import { varianteDeRuta } from "@/lib/categoriaColor";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LucideIcon } from "lucide-react";
 
-export type KpiVariant = "primary" | "emerald" | "purple" | "amber" | "rose" | "blue" | "teal";
+export type KpiVariant = "primary" | "emerald" | "purple" | "amber" | "rose" | "blue" | "teal" | "indigo";
+
+/** Acepta un componente de icono (Heart) o un elemento ya creado (<Heart />). */
+export type IconoProp = LucideIcon | React.ReactElement;
+
+export function renderIcono(Icon: IconoProp | undefined, className: string) {
+  if (!Icon) return null;
+  if (React.isValidElement(Icon)) return Icon;
+  const Componente = Icon as LucideIcon;
+  return <Componente className={className} aria-hidden="true" />;
+}
+
+/** Variante explícita (variant o color); si no hay, el color de la categoría del menú de la ruta actual. */
+export function useVarianteCategoria(variant?: string, color?: string): KpiVariant {
+  const { pathname } = useLocation();
+  const v = variant ?? color;
+  return v && v in VARIANT_STYLES ? (v as KpiVariant) : varianteDeRuta(pathname);
+}
 
 export interface ClinicalKpiCardProps {
-  title: string;
+  title?: string;
+  /** Alias de title. */
+  label?: string;
   value: string | number;
   subtitle?: string;
-  icon: LucideIcon;
+  icon: IconoProp;
   variant?: KpiVariant;
+  /** Alias de variant. */
+  color?: string;
   alert?: boolean;
   trend?: {
     value: string;
@@ -56,20 +79,27 @@ const VARIANT_STYLES: Record<KpiVariant, { iconBg: string; text: string; hoverBo
     text: "text-foreground",
     hoverBorder: "hover:border-teal-500/40",
   },
+  indigo: {
+    iconBg: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
+    text: "text-foreground",
+    hoverBorder: "hover:border-indigo-500/40",
+  },
 };
 
 export const ClinicalKpiCard: React.FC<ClinicalKpiCardProps> = ({
   title,
+  label,
   value,
   subtitle,
-  icon: Icon,
-  variant = "primary",
+  icon,
+  variant,
+  color,
   alert = false,
   trend,
   onClick,
   className = "",
 }) => {
-  const styles = VARIANT_STYLES[variant];
+  const styles = VARIANT_STYLES[useVarianteCategoria(variant, color)];
 
   return (
     <Card
@@ -86,7 +116,7 @@ export const ClinicalKpiCard: React.FC<ClinicalKpiCardProps> = ({
             alert ? "bg-rose-500/20 text-rose-600 dark:text-rose-400" : styles.iconBg
           }`}
         >
-          <Icon className="h-5 w-5" aria-hidden="true" />
+          {renderIcono(icon, "h-5 w-5")}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
@@ -107,7 +137,7 @@ export const ClinicalKpiCard: React.FC<ClinicalKpiCardProps> = ({
               </span>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-1 truncate">{title}</p>
+          <p className="text-xs text-muted-foreground mt-1 truncate">{title ?? label}</p>
           {subtitle && (
             <p className="text-[11px] text-muted-foreground/80 truncate">{subtitle}</p>
           )}

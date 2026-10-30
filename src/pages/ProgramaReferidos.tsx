@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UserPlus, TrendingUp, Users } from "lucide-react";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 export default function ProgramaReferidos() {
   const [data, setData] = useState<any[]>([]);
@@ -37,10 +38,7 @@ export default function ProgramaReferidos() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><UserPlus className="h-7 w-7 text-primary" /> Programa de referidos</h1>
-        <p className="text-muted-foreground">Empleados ganan comisión, pacientes ganan beneficios.</p>
-      </div>
+      <ClinicalPageHeader title="Programa de referidos" subtitle="Empleados ganan comisión, pacientes ganan beneficios." icon={UserPlus} />
 
       <div className="grid md:grid-cols-4 gap-4">
         <Card className="p-4"><div className="flex items-center gap-3"><Users className="h-8 w-8 text-primary" /><div><div className="text-sm text-muted-foreground">Total</div><div className="text-2xl font-bold">{stats.total}</div></div></div></Card>

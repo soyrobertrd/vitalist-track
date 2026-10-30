@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Activity, AlertTriangle, Award, ClipboardCheck, Users, Plus } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 export default function GestionCalidad() {
   const { currentWorkspace } = useWorkspace();
@@ -143,10 +144,7 @@ export default function GestionCalidad() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Gestión de Calidad</h1>
-        <p className="text-muted-foreground">Indicadores clínicos, eventos adversos, comités y acreditación JCI/ISO</p>
-      </div>
+      <ClinicalPageHeader title="Gestión de Calidad" subtitle="Indicadores clínicos, eventos adversos, comités y acreditación JCI/ISO" />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{indicadores.length}</div><p className="text-xs text-muted-foreground">Indicadores activos</p></CardContent></Card>

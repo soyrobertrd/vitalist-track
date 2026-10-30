@@ -84,7 +84,7 @@ export default function AgendaUniversal() {
     let pq: any = (supabase.from("pacientes") as any)
       .select("id,nombre,apellido")
       .eq("workspace_id", currentWorkspace!.id)
-      .eq("activo", true);
+      .eq("status_px", "activo");
     let prq: any = (supabase.from("personal_salud") as any)
       .select("id,nombre,apellido")
       .eq("workspace_id", currentWorkspace!.id);
@@ -153,7 +153,6 @@ export default function AgendaUniversal() {
         title="Agendamiento Universal Clínico"
         subtitle="Control unificado de turnos, salas de procedimientos, consultas especializadas y telemedicina"
         icon={CalendarRange}
-        variant="blue"
         badge="Multi-Recurso Activo"
         action={
           <div className="flex items-center gap-2">

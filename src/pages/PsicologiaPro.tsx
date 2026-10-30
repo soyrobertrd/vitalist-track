@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock, Layers, LineChart, ClipboardList, Receipt, FileDown, Bell, Plug, Link2 } from "lucide-react";
+import { Brain, AlertTriangle, ClipboardCheck, ListChecks, Activity, Pill, Heart, Users, Plus, Lock, Layers, LineChart, ClipboardList, Receipt, FileDown, Bell, Plug, Link2, DoorOpen, Shield } from "lucide-react";
 import SubmodulosNicho from "@/components/psicologia/SubmodulosNicho";
 import GraficasProgresoEmocional from "@/components/psicologia/GraficasProgresoEmocional";
 import CuestionariosPreSesion from "@/components/psicologia/CuestionariosPreSesion";
@@ -25,8 +25,11 @@ import RecordatoriosSesionesPsico from "@/components/psicologia/RecordatoriosSes
 import IntegracionesExternasPsico from "@/components/psicologia/IntegracionesExternasPsico";
 import PortalPacienteAdmin from "@/components/psicologia/PortalPacienteAdmin";
 import FirmaPrescripcion from "@/components/psicologia/FirmaPrescripcion";
+import SalasConsultoriosPsico from "@/components/psicologia/SalasConsultoriosPsico";
+import ConsentimientoPsico from "@/components/psicologia/ConsentimientoPsico";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const ESCALAS_INFO: Record<string, { label: string; max: number; cortes: { label: string; min: number }[] }> = {
   phq9:  { label: "PHQ-9 (Depresión)",  max: 27, cortes: [{label:"mínima",min:0},{label:"leve",min:5},{label:"moderada",min:10},{label:"moderada_severa",min:15},{label:"severa",min:20}] },
@@ -57,7 +60,7 @@ function PsicologiaProContent() {
     enabled: !!wsId,
     queryFn: async () => {
       const { data } = await (supabase.from("pacientes") as any)
-        .select("id, nombre, apellido").eq("workspace_id", wsId!).eq("activo", true).order("nombre").limit(500);
+        .select("id, nombre, apellido").eq("workspace_id", wsId!).eq("status_px", "activo").order("nombre").limit(500);
       return (data || []) as any[];
     },
   });
@@ -236,12 +239,7 @@ function PsicologiaProContent() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Brain className="h-6 w-6 text-purple-600 dark:text-purple-400" /> Psicología & Psiquiatría Pro
-          </h1>
-          <p className="text-sm text-muted-foreground">Salud mental integral — sesiones, notas privadas, escalas, seguimiento emocional, psiquiatría y paquetes.</p>
-        </div>
+        <ClinicalPageHeader title="Psicología & Psiquiatría Pro" subtitle="Salud mental integral — sesiones, notas privadas, escalas, seguimiento emocional, psiquiatría y paquetes." icon={Brain} />
         <div className="flex items-center gap-2.5">
           <Button variant="outline" className="rounded-xl border-border/80 gap-2 shadow-none" onClick={() => setOpenPp(true)}>
             <Plus className="h-4 w-4" /> Nueva Ficha
@@ -343,6 +341,8 @@ function PsicologiaProContent() {
           <TabsTrigger value="facturacion" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Receipt className="h-3.5 w-3.5 mr-1" />Facturación</TabsTrigger>
           <TabsTrigger value="exportar" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><FileDown className="h-3.5 w-3.5 mr-1" />Exportar HC</TabsTrigger>
           <TabsTrigger value="recordatorios" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Bell className="h-3.5 w-3.5 mr-1" />Recordatorios</TabsTrigger>
+          <TabsTrigger value="salas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><DoorOpen className="h-3.5 w-3.5 mr-1" />Consultorios/Salas</TabsTrigger>
+          <TabsTrigger value="consentimiento" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Shield className="h-3.5 w-3.5 mr-1" />Consentimiento</TabsTrigger>
           <TabsTrigger value="integraciones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Plug className="h-3.5 w-3.5 mr-1" />Integraciones</TabsTrigger>
           <TabsTrigger value="portal" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Link2 className="h-3.5 w-3.5 mr-1" />Portal paciente</TabsTrigger>
         </TabsList>
@@ -752,6 +752,14 @@ function PsicologiaProContent() {
 
         <TabsContent value="integraciones">
           {wsId && <IntegracionesExternasPsico workspaceId={wsId} />}
+        </TabsContent>
+
+        <TabsContent value="salas">
+          <SalasConsultoriosPsico />
+        </TabsContent>
+
+        <TabsContent value="consentimiento">
+          <ConsentimientoPsico />
         </TabsContent>
 
         <TabsContent value="portal">

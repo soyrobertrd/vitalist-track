@@ -44,13 +44,15 @@ export default function VerticalReportesKPITab({ verticalTipo }: Props) {
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
-      const citasQ = (supabase as any).from("citas_vertical").select("id, estado", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).gte("created_at", startOfMonth);
+      // Las citas viven en control_visitas; el enum de vertical usa "aesthetic" donde estas pestañas dicen "estetica".
+      const vertical = verticalTipo === "estetica" ? "aesthetic" : verticalTipo;
+      const citasQ = supabase.from("control_visitas").select("id, estado", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical", vertical).gte("created_at", startOfMonth);
       const leadsQ = (supabase as any).from("leads_vertical").select("id", { count: "exact" }).eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).gte("created_at", startOfMonth);
       const pagosQ = (supabase as any).from("pagos_online_vertical").select("monto").eq("workspace_id", wsId!).eq("vertical_tipo", verticalTipo).eq("estado", "completado").gte("created_at", startOfMonth);
       const [citas, leads, pagos] = await Promise.all([citasQ, leadsQ, pagosQ] as any[]);
 
       const totalCitas = citas.count || 0;
-      const completadas = (citas.data || []).filter((c: any) => c.estado === "completada").length;
+      const completadas = (citas.data || []).filter((c: any) => c.estado === "realizada").length;
       const canceladas = (citas.data || []).filter((c: any) => c.estado === "cancelada").length;
       const ingresos = (pagos.data || []).reduce((s: number, p: any) => s + (p.monto || 0), 0);
 

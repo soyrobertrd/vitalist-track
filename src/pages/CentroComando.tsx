@@ -9,6 +9,7 @@ import {
   Network, CloudOff, RefreshCw,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface Metricas {
   alertas: Record<string, number>;
@@ -86,14 +87,7 @@ export default function CentroComando() {
   return (
     <div className="p-4 md:p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Activity className="h-7 w-7 text-primary" /> Centro de Comando Clínico
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Vista unificada en tiempo real · actualiza cada 30s
-          </p>
-        </div>
+        <ClinicalPageHeader title="Centro de Comando Clínico" subtitle="Vista unificada en tiempo real · actualiza cada 30s" icon={Activity} />
         <Button variant="outline" size="sm" onClick={cargar}>
           <RefreshCw className="h-4 w-4 mr-2" /> Refrescar
         </Button>

@@ -90,7 +90,6 @@ export default function Calendario() {
         title="Agenda & Citas Médicas"
         subtitle="Control de turnos clínicos, citas ambulatorias, teleconsultas y visitas domiciliarias en tiempo real"
         icon={CalendarIcon}
-        variant="blue"
         badge="En Vivo"
         action={<AgendarCitaButton />}
       />

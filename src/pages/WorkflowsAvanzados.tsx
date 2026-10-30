@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Workflow, Plus, Zap, Activity, CheckCircle2, XCircle, Clock, BarChart3 } from "lucide-react";
 import { format } from "date-fns";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const EVENTOS = [
   { v: "cita_no_confirmada",  l: "Paciente no confirma cita" },
@@ -105,12 +106,7 @@ export default function WorkflowsAvanzados() {
   return (
     <div className="space-y-6 p-4 md:p-6">
       <div className="flex items-start justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Workflow className="h-7 w-7 text-primary" /> Motor de Workflows
-          </h1>
-          <p className="text-muted-foreground">Automatiza procesos: si A entonces B. Reduce trabajo administrativo.</p>
-        </div>
+        <ClinicalPageHeader title="Motor de Workflows" subtitle="Automatiza procesos: si A entonces B. Reduce trabajo administrativo." icon={Workflow} />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> Nueva regla</Button></DialogTrigger>
           <DialogContent className="max-w-lg">

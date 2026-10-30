@@ -34,7 +34,7 @@ export default function VerticalCRMFidelizacionTab({ verticalTipo }: Props) {
     queryFn: async () => {
       // @ts-ignore - deep type instantiation
       const { data } = await supabase
-        .from("campanas_marketing")
+        .from("campanas_marketing_vertical" as any)
         .select("*")
         .eq("workspace_id", wsId!)
         .eq("vertical_tipo", verticalTipo)
@@ -118,10 +118,10 @@ export default function VerticalCRMFidelizacionTab({ verticalTipo }: Props) {
             {campanas.map((c: any) => (
               <TableRow key={c.id}>
                 <TableCell className="font-medium">{c.nombre}</TableCell>
-                <TableCell><Badge variant="outline">{c.tipo}</Badge></TableCell>
+                <TableCell><Badge variant="outline">{c.canal}</Badge></TableCell>
                 <TableCell>{c.enviados}</TableCell>
                 <TableCell>{c.abiertos}</TableCell>
-                <TableCell>{c.clicks}</TableCell>
+                <TableCell>{c.clics}</TableCell>
                 <TableCell><Badge className={campanaEstado[c.estado] || ""}>{c.estado}</Badge></TableCell>
               </TableRow>
             ))}

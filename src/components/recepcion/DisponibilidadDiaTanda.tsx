@@ -47,8 +47,8 @@ export function DisponibilidadDiaTanda() {
     const fin = `${fecha}T23:59:59`;
 
     const visitasRes = await supabase
-      .from("visitas")
-      .select("id, fecha_hora_visita, duracion_minutos, estado, motivo_visita, pacientes(nombre, apellido)")
+      .from("control_visitas")
+      .select("id, fecha_hora_visita, estado, motivo_visita, pacientes(nombre, apellido)")
       .eq("profesional_id", profId)
       .gte("fecha_hora_visita", inicio)
       .lte("fecha_hora_visita", fin);
@@ -60,7 +60,7 @@ export function DisponibilidadDiaTanda() {
       .lte("fecha_agendada", fin);
     const ausRes = await supabase
       .from("ausencias_profesionales")
-      .select("fecha_inicio, fecha_fin, motivo, tipo")
+      .select("fecha_inicio, fecha_fin, descripcion, tipo")
       .eq("profesional_id", profId)
       .lte("fecha_inicio", fin)
       .gte("fecha_fin", inicio);
@@ -129,7 +129,7 @@ export function DisponibilidadDiaTanda() {
             <p className="font-semibold text-destructive">⚠ Profesional con ausencia/licencia este día</p>
             {ausencias.map((a, i) => (
               <p key={i} className="text-xs text-muted-foreground">
-                {a.tipo}: {a.motivo || "Sin motivo"}
+                {a.tipo}: {a.descripcion || "Sin motivo"}
               </p>
             ))}
           </div>

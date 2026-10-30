@@ -29,6 +29,7 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 
 import type { Paciente, Personal } from "@/types/db";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface Llamada {
   id: string;
@@ -363,10 +364,7 @@ const Llamadas = () => {
   return (
     <div className="space-y-6">
       {/* Header - Solo título y descripción */}
-      <div>
-        <h1 className="text-3xl font-bold">Gestión de Llamadas</h1>
-        <p className="text-muted-foreground">Agendamiento y seguimiento telefónico</p>
-      </div>
+      <ClinicalPageHeader title="Gestión de Llamadas" subtitle="Agendamiento y seguimiento telefónico" />
 
       {/* Botón principal de acción */}
       <div className="flex flex-wrap gap-2">

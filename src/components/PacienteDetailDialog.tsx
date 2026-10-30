@@ -1,8 +1,9 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Phone, MapPin, Heart, Pill, Mail, History, Printer } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Calendar, Phone, MapPin, Heart, Pill, Mail, History, Printer, ExternalLink } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ interface PacienteDetailDialogProps {
 }
 
 export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: PacienteDetailDialogProps) {
+  const navigate = useNavigate();
   const { currentWorkspace } = useWorkspace();
   const [paciente, setPaciente] = useState<any>(null);
   const [medicamentos, setMedicamentos] = useState<any[]>([]);
@@ -121,6 +123,18 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              variant="default"
+              className="rounded-xl bg-primary text-primary-foreground font-semibold shadow-sm hover:bg-primary/90"
+              onClick={() => {
+                onOpenChange(false);
+                navigate(`/hub-paciente/${paciente.id}`);
+              }}
+            >
+              <ExternalLink className="mr-1.5 h-4 w-4" aria-hidden="true" />
+              Expediente Hub 360°
+            </Button>
             {telefono && (
               <Button asChild size="sm" variant="outline" className="rounded-xl">
                 <a href={`tel:${telefono.replace(/\D/g, "")}`}>

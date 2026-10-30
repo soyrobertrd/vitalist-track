@@ -1,7 +1,7 @@
 // Edge function: genera el contenido de un reporte (CSV) según tipo y filtros.
 // Soporta envío por email opcional via Resend.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { safeEqual } from "../_shared/cron-auth.ts";
+import { puedeActuarEnWorkspace } from "../_shared/caller-auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,7 +27,8 @@ function toCsv(rows: Record<string, any>[]): string {
   );
   const escape = (v: any) => {
     if (v === null || v === undefined) return "";
-    const s = typeof v === "object" ? JSON.stringify(v) : String(v);
+    let s = typeof v === "object" ? JSON.stringify(v) : String(v);
+    if (typeof v === "string" && /^[=+\-@\t\r]/.test(s)) s = `'${s}`; // evita inyección de fórmulas en Excel
     if (s.includes(",") || s.includes('"') || s.includes("\n")) {
       return `"${s.replace(/"/g, '""')}"`;
     }
@@ -62,7 +63,7 @@ async function obtenerDatos(
     case "llamadas_resumen": {
       const { data } = await supabase
         .from("registro_llamadas")
-        .select("id,fecha_llamada,estado,resultado_seguimiento,duracion_minutos,profesional_id,paciente_id")
+        .select("id,fecha_agendada,estado,resultado_seguimiento,duracion_minutos,profesional_id,paciente_id")
         .eq("workspace_id", workspaceId)
         .gte("created_at", desde)
         .lte("created_at", hasta)
@@ -210,18 +211,9 @@ Deno.serve(async (req) => {
     }
 
     // process-reportes-programados llama con la service key; cualquier otro caller debe ser miembro del workspace.
-    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
-    const esInterno = token.length > 0 && safeEqual(token, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    if (!esInterno) {
-      const { data: { user } } = await supabase.auth.getUser(token);
-      const { data: member } = user
-        ? await supabase.from("workspace_members").select("user_id")
-            .eq("workspace_id", workspace_id).eq("user_id", user.id).maybeSingle()
-        : { data: null };
-      if (!member) {
-        return new Response(JSON.stringify({ ok: false, error: "No autorizado" }),
-          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
+    if (!(await puedeActuarEnWorkspace(req, supabase, workspace_id)).ok) {
+      return new Response(JSON.stringify({ ok: false, error: "No autorizado" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const rows = await obtenerDatos(supabase, workspace_id, tipo_reporte, filtros);

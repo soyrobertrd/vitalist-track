@@ -225,19 +225,46 @@ export default function HubPaciente360() {
       {/* Panel derecho: información general + notas importantes */}
       <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
         {/* Acciones Clínicas Rápidas */}
-        <section className="rounded-2xl border bg-card p-5 space-y-3">
-          <h2 className="text-base font-semibold">Acciones Clínicas</h2>
+        <section className="rounded-2xl border border-border/80 bg-card p-5 space-y-3 shadow-sm">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-semibold text-foreground">Acciones Clínicas</h2>
+            <Sparkles className="h-4 w-4 text-primary" />
+          </div>
           <div className="flex flex-col gap-2">
-            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9">
-              <Link to="/escalas-medicas">
-                <HeartPulse className="h-4 w-4 text-purple-600" />
-                Evaluar Escala Médica
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9">
+            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9 border-border/70 hover:border-primary/50">
               <Link to="/notas-medicas">
                 <FileText className="h-4 w-4 text-emerald-600" />
                 Nueva Nota SOAP / Junta
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9 border-border/70 hover:border-primary/50">
+              <Link to="/ordenes-medicas">
+                <Workflow className="h-4 w-4 text-blue-600" />
+                Órdenes Médicas (CPOE)
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9 border-border/70 hover:border-primary/50">
+              <Link to="/consentimientos-informados">
+                <ShieldCheck className="h-4 w-4 text-teal-600" />
+                Consentimiento Informado
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9 border-border/70 hover:border-primary/50">
+              <Link to="/escalas-medicas">
+                <HeartPulse className="h-4 w-4 text-purple-600" />
+                Escalas Médicas & Scores
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9 border-border/70 hover:border-primary/50">
+              <Link to="/laboratorio">
+                <FlaskConical className="h-4 w-4 text-teal-600" />
+                Laboratorio Clínico (LIS)
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full justify-start rounded-xl text-xs gap-2 h-9 border-border/70 hover:border-primary/50">
+              <Link to="/imagenologia">
+                <ImageIcon className="h-4 w-4 text-indigo-600" />
+                Imagenología & PACS
               </Link>
             </Button>
           </div>

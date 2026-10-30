@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const Soporte = () => {
   const [loading, setLoading] = useState(false);
@@ -27,10 +28,7 @@ const Soporte = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Centro de Soporte</h1>
-        <p className="text-muted-foreground">Estamos aquí para ayudarte</p>
-      </div>
+      <ClinicalPageHeader title="Centro de Soporte" subtitle="Estamos aquí para ayudarte" />
 
       <div className="grid gap-6 md:grid-cols-2">
         <GlassCard className="p-6">

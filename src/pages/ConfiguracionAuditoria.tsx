@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Shield, Bell, Save, AlertTriangle } from "lucide-react";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { MobilePageHeader } from "@/components/MobilePageHeader";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const SEVERIDADES = [
   { key: "baja", label: "Baja", color: "bg-blue-500/10 text-blue-700 border-blue-500/30" },
@@ -149,12 +150,7 @@ export default function ConfiguracionAuditoria() {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       <MobilePageHeader title="Configuración de Auditoría" description="Umbrales y ruteo de alertas" />
-      <div className="hidden md:block">
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <Shield className="h-7 w-7" /> Configuración de Auditoría
-        </h1>
-        <p className="text-muted-foreground">Define umbrales de detección y a quién enrutar las alertas según su severidad.</p>
-      </div>
+      <ClinicalPageHeader title="Configuración de Auditoría" subtitle="Define umbrales de detección y a quién enrutar las alertas según su severidad." icon={Shield} />
 
       <Card>
         <CardHeader>

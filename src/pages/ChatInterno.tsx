@@ -42,9 +42,9 @@ export default function ChatInterno() {
     const faltan = userIds.filter(id => !perfiles[id as string]);
     if (faltan.length) {
       const { data: prof } = await (supabase.from("profiles") as any)
-        .select("user_id, nombre, apellido, avatar_url").in("user_id", faltan);
+        .select("id, nombre, apellido, avatar_url").in("id", faltan);
       const map = { ...perfiles };
-      (prof || []).forEach((p: any) => { map[p.user_id] = p; });
+      (prof || []).forEach((p: any) => { map[p.id] = p; });
       setPerfiles(map);
     }
     setTimeout(() => fin.current?.scrollIntoView({ behavior: "smooth" }), 100);

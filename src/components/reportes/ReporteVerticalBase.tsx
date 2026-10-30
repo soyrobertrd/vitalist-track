@@ -40,12 +40,12 @@ export default function ReporteVerticalBase({ vertical, titulo, descripcion, ace
       setLoading(true);
       const wsId = currentWorkspace.id;
       const [p, c, f] = await Promise.all([
-        supabase.from("pacientes").select("id, sexo, fecha_nacimiento, activo, created_at")
+        supabase.from("pacientes").select("id, sexo, fecha_nacimiento, status_px, created_at")
           .eq("workspace_id", wsId).eq("vertical", vertical as any),
         supabase.from("citas_universales").select("id, fecha_inicio, estado, profesional_id")
           .eq("workspace_id", wsId).eq("vertical", vertical as any)
           .gte("fecha_inicio", desde.toISOString()).lte("fecha_inicio", hasta.toISOString()),
-        supabase.from("facturas").select("id, total, estado, fecha_emision, vertical")
+        supabase.from("facturas").select("id, monto_total, estado, fecha_emision, vertical")
           .eq("workspace_id", wsId).eq("vertical", vertical as any)
           .gte("fecha_emision", desde.toISOString().slice(0, 10)),
       ]);
@@ -57,13 +57,13 @@ export default function ReporteVerticalBase({ vertical, titulo, descripcion, ace
   }, [currentWorkspace?.id, vertical, dias]);
 
   const kpis = useMemo(() => {
-    const pacActivos = pacientes.filter((x) => x.activo !== false).length;
+    const pacActivos = pacientes.filter((x) => x.status_px === "activo").length;
     const pacNuevos = pacientes.filter((x) => new Date(x.created_at) >= desde).length;
     const completadas = citas.filter((x) => ["completada", "asistida", "finalizada"].includes(String(x.estado))).length;
     const noShow = citas.filter((x) => ["no_asistio", "no_show"].includes(String(x.estado))).length;
     const ingresos = facturas
       .filter((x) => ["pagada", "cobrada", "emitida"].includes(String(x.estado)))
-      .reduce((s, f) => s + Number(f.total || 0), 0);
+      .reduce((s, f) => s + Number(f.monto_total || 0), 0);
     const tasaAsis = citas.length ? (completadas / citas.length) * 100 : 0;
     return { pacActivos, pacNuevos, completadas, noShow, ingresos, tasaAsis, totalCitas: citas.length };
   }, [pacientes, citas, facturas, desde]);

@@ -146,7 +146,6 @@ const Contabilidad = () => {
         title="Contabilidad & Finanzas Clínicas"
         subtitle="Gestión del libro diario, catálogo de cuentas maestras y control de asientos contables"
         icon={BookOpen}
-        variant="emerald"
         badge="Libro Diario & Mayor"
         action={
           <div className="flex items-center gap-2">

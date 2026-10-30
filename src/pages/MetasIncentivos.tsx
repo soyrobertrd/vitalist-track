@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Target, Plus, DollarSign, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const estadoColor: Record<string, string> = {
   activa: "bg-blue-500/10 text-blue-700",
@@ -81,12 +82,7 @@ export default function MetasIncentivos() {
   return (
     <div className="p-4 md:p-6 space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Target className="h-7 w-7 text-primary" /> Metas e Incentivos
-          </h1>
-          <p className="text-sm text-muted-foreground">Objetivos cuantificables con bonos por cumplimiento</p>
-        </div>
+        <ClinicalPageHeader title="Metas e Incentivos" subtitle="Objetivos cuantificables con bonos por cumplimiento" icon={Target} />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> Nueva meta</Button></DialogTrigger>
           <DialogContent className="max-w-lg">

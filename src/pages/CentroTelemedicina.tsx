@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Video, MessageSquare, FileText, Plus, ExternalLink, Calendar } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 export default function CentroTelemedicina() {
   const { currentWorkspace } = useWorkspace();
@@ -107,10 +108,7 @@ export default function CentroTelemedicina() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Centro de Telemedicina</h1>
-          <p className="text-muted-foreground">Videoconsultas, chat seguro y recetas digitales</p>
-        </div>
+        <ClinicalPageHeader title="Centro de Telemedicina" subtitle="Videoconsultas, chat seguro y recetas digitales" />
         <Dialog open={openNew} onOpenChange={setOpenNew}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" />Programar sesión</Button></DialogTrigger>
           <DialogContent>

@@ -57,6 +57,17 @@ export function validarEnlaceVideo(proveedor: VideoProveedor, enlace: string): s
   return null;
 }
 
+/** Devuelve el enlace solo si es http(s); cualquier otro esquema (javascript:, data:) se descarta al renderizar. */
+export function enlaceSeguro(enlace?: string | null): string | undefined {
+  if (!enlace) return undefined;
+  try {
+    const { protocol } = new URL(enlace);
+    return protocol === "https:" || protocol === "http:" ? enlace : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function etiquetaProveedor(p?: string | null): string {
   if (!p) return "Videoconsulta";
   const found = VIDEO_PROVEEDORES.find((x) => x.value === p);

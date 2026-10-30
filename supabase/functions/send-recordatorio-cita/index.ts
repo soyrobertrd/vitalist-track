@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
-import { safeEqual } from "../_shared/cron-auth.ts";
+import { puedeActuarEnWorkspace, escapeHtml } from "../_shared/caller-auth.ts";
 import { resolveWorkspaceLocale, formatDateInTz, formatTimeInTz } from "../_shared/locale.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
@@ -87,18 +87,10 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Crons llaman con la service key; un usuario solo puede actuar sobre citas de su clínica.
-    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
-    const esInterno = token.length > 0 && safeEqual(token, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "");
-    if (!esInterno) {
-      const { data: { user } } = await supabaseClient.auth.getUser(token);
-      const { data: member } = user && cita?.workspace_id
-        ? await supabaseClient.from("workspace_members").select("user_id")
-            .eq("workspace_id", cita.workspace_id).eq("user_id", user.id).maybeSingle()
-        : { data: null };
-      if (!member) {
-        return new Response(JSON.stringify({ error: "No autorizado" }),
-          { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
-      }
+    const { ok, esInterno } = await puedeActuarEnWorkspace(req, supabaseClient, cita?.workspace_id);
+    if (!ok) {
+      return new Response(JSON.stringify({ error: "No autorizado" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
     // El historial de reintentos solo lo gestionan los crons.
     const historialSeguro = esInterno ? historialId : undefined;
@@ -229,9 +221,10 @@ const handler = async (req: Request): Promise<Response> => {
     let contenidoHtml = plantilla.contenido_html;
     let asunto = plantilla.asunto;
 
+    // Los valores vienen de datos editables (incluso de reservas anónimas): se escapan en el HTML.
     Object.entries(variables).forEach(([key, value]) => {
-      contenidoHtml = contenidoHtml.replace(new RegExp(key.replace(/[{}]/g, "\\$&"), "g"), value);
-      asunto = asunto.replace(new RegExp(key.replace(/[{}]/g, "\\$&"), "g"), value);
+      contenidoHtml = contenidoHtml.replaceAll(key, () => escapeHtml(value));
+      asunto = asunto.replaceAll(key, () => String(value));
     });
 
     // Recopilar emails de destinatarios

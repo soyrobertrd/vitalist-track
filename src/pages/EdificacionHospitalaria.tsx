@@ -101,7 +101,6 @@ export default function EdificacionHospitalaria() {
         title="Edificación Hospitalaria & Censo de Camas"
         subtitle="Infraestructura intrahospitalaria por torres, pisos y servicios; censo visual en vivo y traslados"
         icon={Building2}
-        variant="blue"
         badge="Gestión de Infraestructura Hospitalaria"
       />
 

@@ -18,7 +18,8 @@ function jres(body: unknown, status = 200) {
 }
 
 async function authToken(req: Request) {
-  const apiKey = req.headers.get("x-api-key") ?? new URL(req.url).searchParams.get("api_key");
+  // Solo por header: en la query la key acaba en logs, historial y Referer.
+  const apiKey = req.headers.get("x-api-key");
   if (!apiKey) return { error: "Missing x-api-key header", status: 401 };
   const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
   const { data, error } = await admin
@@ -213,13 +214,12 @@ Deno.serve(async (req) => {
             nombre: paciente.nombre ?? "Sin nombre",
             apellido: paciente.apellido ?? "",
             contacto_px: paciente.telefono ?? null,
-            email: paciente.email ?? null,
+            email_px: paciente.email ?? null,
             tipo_atencion: "ambulatorio",
-            origen_registro: "portal_publico",
           })
           .select("id")
           .single();
-        if (errPac) return jres({ error: errPac.message }, 400);
+        if (errPac) { console.error("agendar paciente", errPac); return jres({ error: "No se pudo registrar el paciente" }, 400); }
         pac = nuevo;
       }
 
@@ -238,7 +238,7 @@ Deno.serve(async (req) => {
         })
         .select("id")
         .single();
-      if (errV) return jres({ error: errV.message }, 400);
+      if (errV) { console.error("agendar visita", errV); return jres({ error: "No se pudo agendar la cita" }, 400); }
 
       return jres({ ok: true, visita_id: visita.id, paciente_id: pac.id });
     }
@@ -284,6 +284,7 @@ Deno.serve(async (req) => {
 
     return jres({ error: "Ruta no encontrada", available: ["/profesionales", "/disponibilidad", "/agendar", "/mis-citas", "/cancelar"] }, 404);
   } catch (e: any) {
-    return jres({ error: e.message ?? "Error interno" }, 500);
+    console.error("api-citas-publicas", e);
+    return jres({ error: "Error interno" }, 500);
   }
 });

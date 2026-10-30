@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Building2, AlertTriangle, Crown, Plus, Trash2 } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface Afiliacion {
   id: string;
@@ -38,7 +39,7 @@ export default function AfiliacionesProfesional() {
       const { data: limite } = await supabase.rpc("limite_centros_profesional", { _user_id: u.user.id });
       setMaxCentros(limite || 1);
 
-      const { data: ws } = await (supabase.from("workspaces") as any).select("id, nombre, plan_codigo").eq("owner_user_id", u.user.id).maybeSingle();
+      const { data: ws } = await (supabase.from("workspaces") as any).select("id, nombre, plan_codigo").eq("owner_id", u.user.id).maybeSingle();
       if (ws?.plan_codigo) setPlanCodigo(ws.plan_codigo);
 
       const { data: afs } = await (supabase
@@ -96,10 +97,7 @@ export default function AfiliacionesProfesional() {
 
   return (
     <div className="container mx-auto p-4 lg:p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Mis afiliaciones</h1>
-        <p className="text-muted-foreground">Centros donde puedes agendar pacientes según tu plan</p>
-      </div>
+      <ClinicalPageHeader title="Mis afiliaciones" subtitle="Centros donde puedes agendar pacientes según tu plan" />
 
       <Card>
         <CardHeader>

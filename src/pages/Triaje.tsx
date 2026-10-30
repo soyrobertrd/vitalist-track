@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { AlertTriangle, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const NIVELES = [
   { nivel: 1, color: "rojo", label: "Rojo — Inmediato", className: "bg-red-600 text-white", tiempo: 0 },
@@ -49,10 +50,7 @@ export default function Triaje() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2"><AlertTriangle className="h-6 w-6"/>Triaje (Manchester)</h1>
-          <p className="text-sm text-muted-foreground">Clasificación de pacientes en emergencia</p>
-        </div>
+        <ClinicalPageHeader title="Triaje (Manchester)" subtitle="Clasificación de pacientes en emergencia" icon={AlertTriangle} />
         <NuevoTriajeDialog onCreated={load} />
       </div>
 

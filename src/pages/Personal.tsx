@@ -19,6 +19,7 @@ import { BarrioCombobox } from "@/components/BarrioCombobox";
 import { IntlPhoneInput } from "@/components/IntlPhoneInput";
 import { Switch } from "@/components/ui/switch";
 import { useEnforcePlanLimit } from "@/hooks/useEnforcePlanLimit";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface Personal {
   id: string;
@@ -177,10 +178,7 @@ const Personal = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Personal de Salud</h1>
-          <p className="text-muted-foreground">Gestión del equipo médico</p>
-        </div>
+        <ClinicalPageHeader title="Personal de Salud" subtitle="Gestión del equipo médico" />
         <Dialog
           open={open}
           onOpenChange={(next) => {

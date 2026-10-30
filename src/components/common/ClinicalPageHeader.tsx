@@ -1,15 +1,22 @@
 import React from "react";
-import { LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { KpiVariant } from "./ClinicalKpiCard";
+import { IconoProp, KpiVariant, renderIcono, useVarianteCategoria } from "./ClinicalKpiCard";
 
 export interface ClinicalPageHeaderProps {
   title: string;
   subtitle?: string;
-  icon?: LucideIcon;
+  /** Alias de subtitle. */
+  description?: string;
+  icon?: IconoProp;
   variant?: KpiVariant;
+  /** Alias de variant. */
+  color?: string;
   badge?: string;
+  /** Alias de badge. */
+  badgeText?: string;
   action?: React.ReactNode;
+  /** Alias de action. */
+  actions?: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
 }
@@ -22,40 +29,48 @@ const ICON_VARIANTS: Record<KpiVariant, string> = {
   rose: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
   blue: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
   teal: "bg-teal-500/10 text-teal-600 dark:text-teal-400",
+  indigo: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
 };
 
 export const ClinicalPageHeader: React.FC<ClinicalPageHeaderProps> = ({
   title,
   subtitle,
-  icon: Icon,
-  variant = "primary",
+  description,
+  icon,
+  variant,
+  color,
   badge,
+  badgeText,
   action,
+  actions,
   children,
   className = "",
 }) => {
-  const contentActions = action || children;
+  const contentActions = action ?? actions ?? children;
+  const v = useVarianteCategoria(variant, color);
+  const sub = subtitle ?? description;
+  const etiqueta = badge ?? badgeText;
   return (
     <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${className}`}>
       <div className="flex items-center gap-3">
-        {Icon && (
+        {icon && (
           <div
-            className={`flex h-11 w-11 items-center justify-center rounded-2xl shrink-0 ${ICON_VARIANTS[variant]}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-2xl shrink-0 ${ICON_VARIANTS[v]}`}
           >
-            <Icon className="h-6 w-6" aria-hidden="true" />
+            {renderIcono(icon, "h-6 w-6")}
           </div>
         )}
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-foreground tracking-tight">{title}</h1>
-            {badge && (
+            {etiqueta && (
               <Badge variant="outline" className="rounded-full text-xs font-normal">
-                {badge}
+                {etiqueta}
               </Badge>
             )}
           </div>
-          {subtitle && (
-            <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
+          {sub && (
+            <p className="text-sm text-muted-foreground mt-0.5">{sub}</p>
           )}
         </div>
       </div>

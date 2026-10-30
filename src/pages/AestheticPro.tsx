@@ -50,6 +50,9 @@ import VerticalCamasTab from "@/components/vertical/VerticalCamasTab";
 import VerticalReportesRegulatoriosTab from "@/components/vertical/VerticalReportesRegulatoriosTab";
 import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFidelizacionTab";
 import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import FichaBiotipoConsentimiento from "@/components/aesthetic/FichaBiotipoConsentimiento";
+import CabinasSpaTrazabilidadViales from "@/components/aesthetic/CabinasSpaTrazabilidadViales";
 
 const estadoLeadColor: Record<string, string> = {
   nuevo: "bg-primary/10 text-primary border-primary/20",
@@ -175,12 +178,7 @@ function AestheticProContent() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Sparkles className="h-6 w-6" /> Aesthetic Pro
-        </h1>
-        <p className="text-muted-foreground">Cirugía estética, medicina estética, spa médico, depilación láser, centros corporales y faciales</p>
-      </div>
+      <ClinicalPageHeader title="Aesthetic Pro" subtitle="Cirugía estética, medicina estética, spa médico, depilación láser, centros corporales y faciales" icon={Sparkles} />
 
       {isResumen && (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
@@ -208,9 +206,11 @@ function AestheticProContent() {
         <TabsList className="hidden">
           <TabsTrigger value="leads">Leads CRM</TabsTrigger>
           <TabsTrigger value="evaluaciones">Evaluaciones</TabsTrigger>
+          <TabsTrigger value="ficha_biotipo">Ficha Cutánea & Bonos</TabsTrigger>
           <TabsTrigger value="procedimientos">Procedimientos</TabsTrigger>
           <TabsTrigger value="paquetes">Paquetes</TabsTrigger>
-          <TabsTrigger value="cabinas">Cabinas</TabsTrigger>
+          <TabsTrigger value="cabinas">Cabinas & Spa</TabsTrigger>
+          <TabsTrigger value="viales">Trazabilidad Viales</TabsTrigger>
           <TabsTrigger value="membresias">Membresías</TabsTrigger>
           <TabsTrigger value="fotos">Fotos Evolución</TabsTrigger>
           <TabsTrigger value="promos">Promociones</TabsTrigger>
@@ -274,18 +274,27 @@ function AestheticProContent() {
           ))}
         </TabsContent>
 
-        {/* EVALUACIONES */}
-        <TabsContent value="evaluaciones" className="space-y-3">
-          {evaluaciones.map((e: any) => (
-            <Card key={e.id}><CardContent className="py-4 flex items-center justify-between">
-              <div>
-                <p className="font-medium">{e.numero}</p>
-                <p className="text-sm text-muted-foreground">{e.procedimiento_recomendado || ""} · IMC: {e.imc || "—"} {e.presupuesto ? ` · ${fmt(e.presupuesto)}` : ""}</p>
-              </div>
-              <Badge variant={e.estado === "aprobada" ? "default" : "secondary"}>{e.estado}</Badge>
-            </CardContent></Card>
-          ))}
-          {!evaluaciones.length && <Card><CardContent className="py-8 text-center text-muted-foreground">Sin evaluaciones</CardContent></Card>}
+        {/* EVALUACIONES & FICHA BIOTIPO */}
+        <TabsContent value="evaluaciones" className="space-y-6">
+          <FichaBiotipoConsentimiento />
+          {evaluaciones.length > 0 && (
+            <div className="space-y-3 pt-2">
+              <h3 className="text-sm font-semibold text-foreground">Historial de Evaluaciones Clínicas</h3>
+              {evaluaciones.map((e: any) => (
+                <Card key={e.id}><CardContent className="py-4 flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{e.numero}</p>
+                    <p className="text-sm text-muted-foreground">{e.procedimiento_recomendado || ""} · IMC: {e.imc || "—"} {e.presupuesto ? ` · ${fmt(e.presupuesto)}` : ""}</p>
+                  </div>
+                  <Badge variant={e.estado === "aprobada" ? "default" : "secondary"}>{e.estado}</Badge>
+                </CardContent></Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="ficha_biotipo" className="space-y-4">
+          <FichaBiotipoConsentimiento />
         </TabsContent>
 
         {/* PROCEDIMIENTOS */}
@@ -314,9 +323,10 @@ function AestheticProContent() {
           ))}
         </TabsContent>
 
-        {/* CABINAS */}
-        <TabsContent value="cabinas" className="mt-4 space-y-4">
-          <div className="flex justify-end">
+        {/* CABINAS & SPA */}
+        <TabsContent value="cabinas" className="space-y-6 mt-4">
+          <CabinasSpaTrazabilidadViales />
+          <div className="flex justify-end pt-2">
             <Dialog open={openCabina} onOpenChange={setOpenCabina}>
               <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" /> Nueva cabina</Button></DialogTrigger>
               <DialogContent>
@@ -341,19 +351,24 @@ function AestheticProContent() {
               </DialogContent>
             </Dialog>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {cabinas.map((c: any) => (
-              <Card key={c.id}><CardContent className="pt-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2"><Sofa className="h-5 w-5 text-primary" /><p className="font-medium">{c.nombre}</p></div>
-                  <Badge className={cabinaEstadoColor[c.estado] || ""}>{c.estado}</Badge>
-                </div>
-                {c.tipo && <Badge variant="outline" className="mt-2">{c.tipo}</Badge>}
-                {c.equipos?.length > 0 && <p className="text-xs text-muted-foreground mt-1">{c.equipos.join(", ")}</p>}
-              </CardContent></Card>
-            ))}
-            {!cabinas.length && <Card className="col-span-3"><CardContent className="py-8 text-center text-muted-foreground">Sin cabinas</CardContent></Card>}
-          </div>
+          {cabinas.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {cabinas.map((c: any) => (
+                <Card key={c.id}><CardContent className="pt-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2"><Sofa className="h-5 w-5 text-primary" /><p className="font-medium">{c.nombre}</p></div>
+                    <Badge className={cabinaEstadoColor[c.estado] || ""}>{c.estado}</Badge>
+                  </div>
+                  {c.tipo && <Badge variant="outline" className="mt-2">{c.tipo}</Badge>}
+                  {c.equipos?.length > 0 && <p className="text-xs text-muted-foreground mt-1">{c.equipos.join(", ")}</p>}
+                </CardContent></Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="viales" className="space-y-4">
+          <CabinasSpaTrazabilidadViales />
         </TabsContent>
 
         {/* MEMBRESÍAS */}

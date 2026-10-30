@@ -16,6 +16,7 @@ import {
   Activity,
   Heart,
   AlertTriangle,
+  ShieldAlert,
 } from "lucide-react";
 import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
@@ -40,6 +41,7 @@ import { ConsultaClinicaVetTab } from "@/components/vet/ConsultaClinicaVetTab";
 import { HospitalizacionCirugiaTab } from "@/components/vet/HospitalizacionCirugiaTab";
 import { GroomingPeluqueriaTab } from "@/components/vet/GroomingPeluqueriaTab";
 import { CalculadoraDosisVetTab } from "@/components/vet/CalculadoraDosisVetTab";
+import { BoxesAislamientoVetTab } from "@/components/vet/BoxesAislamientoVetTab";
 import { CarnetDigitalModal } from "@/components/vet/CarnetDigitalModal";
 import { NuevaMascotaModal } from "@/components/vet/NuevaMascotaModal";
 import { NuevaVacunaVetModal } from "@/components/vet/NuevaVacunaVetModal";
@@ -161,7 +163,6 @@ export default function VetCarePro() {
         title="VetCare Pro — Sistema Clínico Veterinario"
         subtitle="Expediente clínico integral de mascotas, inmunizaciones, quirófano, hospitalización y posología"
         icon={PawPrint}
-        variant="emerald"
         badge="Centro Hospitalario Veterinario"
         action={
           <div className="flex flex-wrap items-center gap-2">
@@ -251,6 +252,10 @@ export default function VetCarePro() {
             <Calculator className="h-4 w-4 text-teal-600" />
             Calculadora Dosis Ponderal
           </TabsTrigger>
+          <TabsTrigger value="boxes" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+            <ShieldAlert className="h-4 w-4 text-rose-600" />
+            Boxes & Aislamiento Bioseguro
+          </TabsTrigger>
         </TabsList>
 
         {/* 1. Directorio de Mascotas */}
@@ -314,6 +319,11 @@ export default function VetCarePro() {
         {/* 6. Calculadora de Dosis */}
         <TabsContent value="calculadora" className="space-y-4">
           <CalculadoraDosisVetTab mascotas={mascotas} />
+        </TabsContent>
+
+        {/* 7. Boxes y Aislamiento Bioseguro */}
+        <TabsContent value="boxes" className="space-y-4">
+          <BoxesAislamientoVetTab />
         </TabsContent>
       </Tabs>
 

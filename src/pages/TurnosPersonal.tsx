@@ -160,7 +160,6 @@ export default function TurnosPersonal() {
         title="Gestión de Turnos & Guardias Médicas"
         subtitle="Cuadrante rotativo hospitalario 24/7 (Mañana, Tarde, Noche, Guardias 24h), descansos legales y cobertura mínima"
         icon={Calendar}
-        variant="purple"
         badge="Planificación Asistencial"
         action={
           <Button

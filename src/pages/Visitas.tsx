@@ -46,6 +46,7 @@ import type { VideoProveedor } from "@/lib/videoLinks";
 
 import type { Paciente, Personal } from "@/types/db";
 import { DEMO_MODE, DEMO_CITAS, DEMO_PACIENTES, DEMO_DOCTORES } from "@/lib/mock-live-seed";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface Visita {
   id: string;
@@ -474,12 +475,7 @@ const Visitas = () => {
   return (
     <div className="space-y-6">
       {/* Header - Citas y Consultas */}
-      <div>
-        <h1 className="text-3xl font-bold">Gestión de Citas y Consultas</h1>
-        <p className="text-muted-foreground">
-          Optimización de agenda, control de asistencia y reducción de inasistencias/cancelaciones (Ambulatorias por defecto y Domiciliarias).
-        </p>
-      </div>
+      <ClinicalPageHeader title="Gestión de Citas y Consultas" subtitle="Optimización de agenda, control de asistencia y reducción de inasistencias/cancelaciones (Ambulatorias por defecto y Domiciliarias)." />
 
       {/* Botones de acción principales */}
       <div className="flex flex-wrap gap-2">

@@ -47,7 +47,6 @@ export default function RondasMedicas() {
         title="Rondas Médicas & Pase de Visita"
         subtitle="Pase de visita multidisciplinar por servicio, checklist FAST-HUGS-BID y plan diario de cuidados"
         icon={Stethoscope}
-        variant="teal"
         action={<NuevaRondaDialog onCreated={load} />}
       />
 

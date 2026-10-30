@@ -17,6 +17,7 @@ import {
 import { Building2, Users, ArrowLeft } from "lucide-react";
 import { VERTICALES_CATALOGO } from "@/config/verticales";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 export default function VerticalesAdmin() {
   const navigate = useNavigate();
@@ -86,14 +87,7 @@ export default function VerticalesAdmin() {
         <Button variant="ghost" size="icon" onClick={() => navigate("/app/admin")} aria-label="Volver">
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-primary" /> Verticales del Centro
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Habilita los tipos de servicio clínico que ofreces. El menú lateral y la paleta de colores se adaptan a cada especialidad.
-          </p>
-        </div>
+        <ClinicalPageHeader title="Verticales del Centro" subtitle="Habilita los tipos de servicio clínico que ofreces. El menú lateral y la paleta de colores se adaptan a cada especialidad." icon={Building2} />
       </div>
 
       {/* Grid de Verticales con muestra de color temático */}

@@ -22,6 +22,7 @@ import {
 import { useUserRole } from "@/hooks/useUserRole";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const CATEGORIAS: { value: InventarioCategoria; label: string }[] = [
   { value: "muestra_medica", label: "Muestra médica" },
@@ -99,15 +100,7 @@ export default function Inventario() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Boxes className="h-7 w-7 text-primary" />
-            Inventario
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Stock de muestras médicas, insumos y materiales con control de lotes y vencimientos.
-          </p>
-        </div>
+        <ClinicalPageHeader title="Inventario" subtitle="Stock de muestras médicas, insumos y materiales con control de lotes y vencimientos." icon={Boxes} />
         {isAdmin && (
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>

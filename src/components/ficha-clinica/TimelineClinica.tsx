@@ -42,10 +42,10 @@ export function TimelineClinica({ pacienteId }: { pacienteId: string }) {
           supabase.from("evoluciones_soap").select("id, fecha_evolucion, motivo_consulta, subjetivo, analisis").eq("paciente_id", pacienteId),
           supabase.from("diagnosticos_paciente").select("id, fecha_diagnostico, descripcion, codigo_cie10, estado, tipo").eq("paciente_id", pacienteId),
           supabase.from("control_visitas").select("id, fecha_hora_visita, motivo_visita, tipo_visita, estado, notas_visita").eq("paciente_id", pacienteId),
-          supabase.from("registro_llamadas").select("id, created_at, fecha_programada, motivo_llamada, estado, resultado_seguimiento").eq("paciente_id", pacienteId),
+          supabase.from("registro_llamadas").select("id, created_at, fecha_agendada, motivo, estado, resultado_seguimiento").eq("paciente_id", pacienteId),
           supabase.from("documentos_clinicos").select("id, fecha_documento, created_at, titulo, categoria").eq("paciente_id", pacienteId),
-          (supabase as any).from("recetas_paciente").select("id, created_at, folio, diagnostico, items").eq("paciente_id", pacienteId),
-          (supabase as any).from("facturas").select("id, fecha_emision, numero_factura, monto_total, estado").eq("paciente_id", pacienteId),
+          supabase.from("recetas").select("id, fecha_emision, diagnostico_texto, recetas_items(id)").eq("paciente_id", pacienteId),
+          supabase.from("facturas").select("id, fecha_emision, numero_factura, monto_total, estado").eq("paciente_id", pacienteId),
         ]);
 
         const all: TimelineEvent[] = [];
@@ -77,9 +77,9 @@ export function TimelineClinica({ pacienteId }: { pacienteId: string }) {
 
         (lls.data || []).forEach((l: any) => all.push({
           id: `ll-${l.id}`,
-          fecha: l.fecha_programada || l.created_at,
+          fecha: l.fecha_agendada || l.created_at,
           tipo: "llamada",
-          titulo: l.motivo_llamada || "Llamada de seguimiento",
+          titulo: l.motivo || "Llamada de seguimiento",
           badge: l.resultado_seguimiento || l.estado,
         }));
 
@@ -93,13 +93,13 @@ export function TimelineClinica({ pacienteId }: { pacienteId: string }) {
 
         // Recetas emitidas
         (recs.data || []).forEach((r: any) => {
-          const itemsCount = Array.isArray(r.items) ? r.items.length : 0;
+          const itemsCount = Array.isArray(r.recetas_items) ? r.recetas_items.length : 0;
           all.push({
             id: `rc-${r.id}`,
-            fecha: r.created_at,
+            fecha: r.fecha_emision,
             tipo: "receta",
-            titulo: `Receta Médica Folio ${r.folio || r.id.substring(0, 8)}`,
-            descripcion: r.diagnostico ? `Dx: ${r.diagnostico} · ${itemsCount} medicamento(s)` : `${itemsCount} medicamentos prescritos`,
+            titulo: `Receta médica ${r.id.substring(0, 8)}`,
+            descripcion: r.diagnostico_texto ? `Dx: ${r.diagnostico_texto} · ${itemsCount} medicamento(s)` : `${itemsCount} medicamentos prescritos`,
             badge: "Prescripción",
           });
         });

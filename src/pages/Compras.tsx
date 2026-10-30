@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Search, Truck, Package, ShoppingCart, CheckCircle, XCircle, Building2 } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const ESTADOS_COLOR: Record<string, string> = {
   borrador: "bg-gray-100 text-gray-800",
@@ -119,10 +120,7 @@ const Compras = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Compras / Procurement</h1>
-        <p className="text-muted-foreground">Proveedores y órdenes de compra</p>
-      </div>
+      <ClinicalPageHeader title="Compras / Procurement" subtitle="Proveedores y órdenes de compra" />
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>

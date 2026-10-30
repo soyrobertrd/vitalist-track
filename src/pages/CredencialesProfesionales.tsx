@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Plus, AlertTriangle, ShieldCheck } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const TIPOS = ["exequatur", "colegiatura", "especialidad", "certificacion", "malpractice", "rcm", "otro"];
 
@@ -55,10 +56,7 @@ export default function CredencialesProfesionales() {
   return (
     <div className="p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Credenciales y Licencias Profesionales</h1>
-          <p className="text-sm text-muted-foreground">Exequátur, colegiatura, especialidades, certificaciones y seguros de mala práctica.</p>
-        </div>
+        <ClinicalPageHeader title="Credenciales y Licencias Profesionales" subtitle="Exequátur, colegiatura, especialidades, certificaciones y seguros de mala práctica." />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> Nueva credencial</Button></DialogTrigger>
           <DialogContent>

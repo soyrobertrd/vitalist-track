@@ -50,8 +50,11 @@ import VerticalIAPredictivaTab from "@/components/vertical/VerticalIAPredictivaT
 import VerticalIoTTab from "@/components/vertical/VerticalIoTTab";
 import VerticalCamasTab from "@/components/vertical/VerticalCamasTab";
 import VerticalReportesRegulatoriosTab from "@/components/vertical/VerticalReportesRegulatoriosTab";
-import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFidelizacionTab";
 import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
+import BitacoraDrenajesPostOp from "@/components/recovery/BitacoraDrenajesPostOp";
+import ConciergeTurismoMedico from "@/components/recovery/ConciergeTurismoMedico";
+import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFidelizacionTab";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const estadoPacColor: Record<string, string> = {
   reservado: "bg-primary/10 text-primary border-primary/20",
@@ -131,10 +134,7 @@ function RecoveryCareContent() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2"><Heart className="h-6 w-6" /> Recovery Care</h1>
-        <p className="text-muted-foreground">Post-lipo, BBL, turismo médico, recovery premium, cuidados domiciliarios</p>
-      </div>
+      <ClinicalPageHeader title="Recovery Care" subtitle="Post-lipo, BBL, turismo médico, recovery premium, cuidados domiciliarios" icon={Heart} />
 
       {isResumen && (
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
@@ -253,19 +253,24 @@ function RecoveryCareContent() {
           ))}
         </TabsContent>
 
-        <TabsContent value="seguimiento" className="space-y-3">
-          {seguimientos.map((s: any) => (
-            <Card key={s.id}><CardContent className="py-4">
-              <p className="font-medium">{s.fecha}</p>
-              <p className="text-sm text-muted-foreground">Dolor: {s.nivel_dolor}/10 · T: {s.temperatura || "—"}°C · PA: {s.presion_arterial || "—"}</p>
-              {s.observaciones && <p className="text-xs text-muted-foreground mt-1">{s.observaciones}</p>}
-            </CardContent></Card>
-          ))}
-          {!seguimientos.length && <Card><CardContent className="py-8 text-center text-muted-foreground">Sin seguimientos</CardContent></Card>}
+        <TabsContent value="seguimiento" className="space-y-6">
+          <BitacoraDrenajesPostOp />
+          <div className="space-y-3 pt-2">
+            <h3 className="text-sm font-semibold text-foreground">Bitácora General de Signos & Dolor</h3>
+            {seguimientos.map((s: any) => (
+              <Card key={s.id}><CardContent className="py-4">
+                <p className="font-medium">{s.fecha}</p>
+                <p className="text-sm text-muted-foreground">Dolor: {s.nivel_dolor}/10 · T: {s.temperatura || "—"}°C · PA: {s.presion_arterial || "—"}</p>
+                {s.observaciones && <p className="text-xs text-muted-foreground mt-1">{s.observaciones}</p>}
+              </CardContent></Card>
+            ))}
+            {!seguimientos.length && <Card><CardContent className="py-8 text-center text-muted-foreground">Sin seguimientos registrados</CardContent></Card>}
+          </div>
         </TabsContent>
 
-        <TabsContent value="concierge" className="mt-4">
-          <Card><Table>
+        <TabsContent value="concierge" className="space-y-6 mt-4">
+          <ConciergeTurismoMedico />
+          <Card className="rounded-2xl border-border/80 shadow-none"><Table>
             <TableHeader><TableRow><TableHead>Tipo</TableHead><TableHead>Fecha</TableHead><TableHead>Hora</TableHead><TableHead>Proveedor</TableHead><TableHead className="text-right">Costo</TableHead><TableHead>Estado</TableHead></TableRow></TableHeader>
             <TableBody>
               {conciergeServ.map((c: any) => (
@@ -278,7 +283,7 @@ function RecoveryCareContent() {
                   <TableCell><Badge variant={c.estado === "completado" ? "default" : "secondary"}>{c.estado}</Badge></TableCell>
                 </TableRow>
               ))}
-              {!conciergeServ.length && <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Sin servicios concierge</TableCell></TableRow>}
+              {!conciergeServ.length && <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">Sin servicios concierge registrados</TableCell></TableRow>}
             </TableBody>
           </Table></Card>
         </TabsContent>

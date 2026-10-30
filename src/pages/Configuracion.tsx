@@ -46,6 +46,7 @@ import {
 import { ConfiguracionSeguridadTab } from "@/components/configuracion/ConfiguracionSeguridadTab";
 import { ConfiguracionNotificacionesTab } from "@/components/configuracion/ConfiguracionNotificacionesTab";
 import { ConfiguracionAparienciaTab } from "@/components/configuracion/ConfiguracionAparienciaTab";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const Configuracion = () => {
   const navigate = useNavigate();
@@ -400,12 +401,7 @@ const Configuracion = () => {
         <Button variant="ghost" size="icon" onClick={() => navigate("/app")}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Configuración</h1>
-          <p className="text-muted-foreground">
-            Gestiona tu información personal, seguridad y preferencias
-          </p>
-        </div>
+        <ClinicalPageHeader title="Configuración" subtitle="Gestiona tu información personal, seguridad y preferencias" />
       </div>
 
       <Tabs defaultValue="personal" className="space-y-6">

@@ -14,7 +14,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { SmilePlus, ClipboardList, FlaskConical, Users, CalendarDays, DollarSign, Calculator, Armchair, Percent, Smile, Bell, Plus, Sparkles, ArrowRight, Stethoscope } from "lucide-react";
+import { SmilePlus, ClipboardList, FlaskConical, Users, CalendarDays, DollarSign, Calculator, Armchair, Percent, Smile, Bell, Plus, Sparkles, ArrowRight, Stethoscope, Shield } from "lucide-react";
+import ConsentimientoDental from "@/components/dental/ConsentimientoDental";
+import TrazabilidadLaboratorioDental from "@/components/dental/TrazabilidadLaboratorioDental";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { formatCurrency, resolveCurrency } from "@/lib/currency";
@@ -52,6 +54,7 @@ import VerticalCamasTab from "@/components/vertical/VerticalCamasTab";
 import VerticalReportesRegulatoriosTab from "@/components/vertical/VerticalReportesRegulatoriosTab";
 import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFidelizacionTab";
 import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const estadoPlanColor: Record<string, string> = {
   borrador: "bg-muted text-muted-foreground",
@@ -178,7 +181,7 @@ function DentalCareProContent() {
     queryKey: ["pacientes_dental_combo", wsId],
     enabled: !!wsId,
     queryFn: async () => {
-      const { data } = await (supabase.from("pacientes") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).eq("activo", true).order("nombre").limit(500);
+      const { data } = await (supabase.from("pacientes") as any).select("id, nombre, apellido").eq("workspace_id", wsId!).eq("status_px", "activo").order("nombre").limit(500);
       return (data || []) as any[];
     },
   });
@@ -208,12 +211,7 @@ function DentalCareProContent() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <SmilePlus className="h-6 w-6 text-primary" /> DentalCare Pro
-          </h1>
-          <p className="text-sm text-muted-foreground">Gestión integral dental — General, Ortodoncia, Implantología, Endodoncia, Odontopediatría</p>
-        </div>
+        <ClinicalPageHeader title="DentalCare Pro" subtitle="Gestión integral dental — General, Ortodoncia, Implantología, Endodoncia, Odontopediatría" icon={SmilePlus} />
         <div className="flex items-center gap-2.5">
           <Button variant="outline" className="rounded-xl border-primary/30 text-primary hover:bg-primary/10 gap-2 shadow-none" asChild>
             <Link to="/odontograma">
@@ -305,7 +303,8 @@ function DentalCareProContent() {
           <TabsTrigger value="resumen" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Resumen</TabsTrigger>
           <TabsTrigger value="planes" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Tratamientos</TabsTrigger>
           <TabsTrigger value="ortodoncia" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Ortodoncia</TabsTrigger>
-          <TabsTrigger value="laboratorio" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Laboratorio</TabsTrigger>
+          <TabsTrigger value="laboratorio" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Laboratorio CAD/CAM</TabsTrigger>
+          <TabsTrigger value="consentimiento" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Shield className="h-3.5 w-3.5 mr-1" />Consentimiento</TabsTrigger>
           <TabsTrigger value="sillones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Sillones</TabsTrigger>
           <TabsTrigger value="presupuestos" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Presup. Sonrisa</TabsTrigger>
           <TabsTrigger value="comisiones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Comisiones</TabsTrigger>
@@ -464,20 +463,28 @@ function DentalCareProContent() {
           ))}
         </TabsContent>
 
-        <TabsContent value="laboratorio" className="space-y-3">
-          {ordenes.length === 0 ? (
-            <Card className="rounded-2xl border-border/80 shadow-none"><CardContent className="py-8 text-center text-muted-foreground">No hay órdenes de laboratorio</CardContent></Card>
-          ) : ordenes.map((o: any) => (
-            <Card key={o.id} className="rounded-2xl border-border/80 shadow-none hover:border-amber-500/40 transition-colors">
-              <CardContent className="py-4 flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-foreground">{o.numero} — {o.tipo}</p>
-                  <p className="text-sm text-muted-foreground">{o.diente ? `Diente: ${o.diente}` : ""} · {o.material || ""} · {o.laboratorio || ""}</p>
-                </div>
-                <Badge variant="outline" className={`rounded-full px-2.5 py-0.5 text-xs ${estadoOrdenColor[o.estado] || ""}`}>{o.estado?.replace(/_/g, " ")}</Badge>
-              </CardContent>
-            </Card>
-          ))}
+        <TabsContent value="laboratorio" className="space-y-6">
+          <TrazabilidadLaboratorioDental />
+          {ordenes.length > 0 && (
+            <div className="space-y-3 pt-2">
+              <h3 className="text-sm font-semibold text-foreground">Historial de Órdenes Anteriores</h3>
+              {ordenes.map((o: any) => (
+                <Card key={o.id} className="rounded-2xl border-border/80 shadow-none hover:border-amber-500/40 transition-colors">
+                  <CardContent className="py-4 flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-foreground">{o.numero} — {o.tipo}</p>
+                      <p className="text-sm text-muted-foreground">{o.diente ? `Diente: ${o.diente}` : ""} · {o.material || ""} · {o.laboratorio || ""}</p>
+                    </div>
+                    <Badge variant="outline" className={`rounded-full px-2.5 py-0.5 text-xs ${estadoOrdenColor[o.estado] || ""}`}>{o.estado?.replace(/_/g, " ")}</Badge>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="consentimiento" className="space-y-4">
+          <ConsentimientoDental />
         </TabsContent>
 
         <TabsContent value="sillones" className="mt-4 space-y-4">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { Plus, ClipboardList, BarChart3, Trash2, Eye } from "lucide-react";
+import { Plus, ClipboardList, BarChart3, Trash2, Eye, Star, CheckCircle2, MessageSquareText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { EncuestaBuilder } from "@/components/EncuestaBuilder";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
 import {
   BarChart,
   Bar,
@@ -164,23 +166,83 @@ const Encuestas = () => {
     }
   };
 
+  const kpis = useMemo(() => {
+    const total = encuestas.length;
+    const activas = encuestas.filter((e) => e.activo).length;
+    return {
+      total,
+      activas,
+      inactivas: total - activas,
+    };
+  }, [encuestas]);
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Encuestas</h1>
-          <p className="text-muted-foreground">Gestiona encuestas de satisfacción y seguimiento</p>
-        </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Nueva Encuesta
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+    <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
+      {/* Header Modo B */}
+      <ClinicalPageHeader
+        title="Encuestas de Satisfacción & Calidad Asistencial"
+        subtitle="Evaluación continua de experiencia del paciente, protocolos de seguimiento y métricas NPS hospitalarias"
+        icon={ClipboardList}
+        badge="Calidad & Experiencia"
+        action={
+          <Button
+            onClick={() => {
+              setSelectedEncuesta(null);
+              setFormData({
+                nombre: "",
+                descripcion: "",
+                tipo: "satisfaccion",
+                activo: true,
+                estructura: [],
+              });
+              setDialogOpen(true);
+            }}
+            className="rounded-xl shadow-sm gap-2"
+          >
+            <Plus className="h-4 w-4" /> Nueva Encuesta
+          </Button>
+        }
+      />
+
+      {/* KPIs Clínicos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <ClinicalKpiCard
+          title="Instrumentos Diseñados"
+          value={kpis.total}
+          subtitle="Modelos de encuesta creados"
+          icon={ClipboardList}
+          variant="purple"
+        />
+        <ClinicalKpiCard
+          title="Encuestas Activas"
+          value={kpis.activas}
+          subtitle="Disponibles para envío"
+          icon={CheckCircle2}
+          variant="emerald"
+        />
+        <ClinicalKpiCard
+          title="Satisfacción Promedio"
+          value={`${mockStats.promedioGeneral} / 5.0`}
+          subtitle="Calificación CSAT consolidada"
+          icon={Star}
+          variant="amber"
+        />
+        <ClinicalKpiCard
+          title="Tasa de Respuesta"
+          value={`${mockStats.tasaRespuesta}%`}
+          subtitle={`${mockStats.totalRespuestas} respuestas recibidas`}
+          icon={MessageSquareText}
+          variant="teal"
+        />
+      </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-2xl rounded-2xl">
           <DialogHeader>
-            <DialogTitle>{selectedEncuesta ? 'Editar Encuesta' : 'Nueva Encuesta'}</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <ClipboardList className="w-5 h-5 text-purple-600" />
+              {selectedEncuesta ? "Editar Encuesta" : "Nueva Encuesta de Calidad"}
+            </DialogTitle>
           </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -252,8 +314,7 @@ const Encuestas = () => {
               </div>
             </div>
           </DialogContent>
-        </Dialog>
-      </div>
+      </Dialog>
 
       {loading ? (
         <p className="text-muted-foreground text-center">Cargando encuestas...</p>

@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Plus, Users, UserX, Search, RotateCcw, Pencil, Eye, Calendar } from "lucide-react";
+import { Plus, Users, UserX, Search, RotateCcw, Pencil, Eye, Calendar, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { DataTable, ColumnDef } from "@/components/common/DataTable";
 
@@ -31,6 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import { BulkActionsToolbar, PACIENTE_BULK_ACTIONS, BulkActionType } from "@/components/BulkActionsToolbar";
 import { AgendarCitaButton } from "@/components/AgendarCitaButton";
 import { PlanLimitAlert } from "@/components/PlanLimitAlert";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const MOTIVO_LABELS: Record<string, string> = {
   viaje: "De viaje",
@@ -43,6 +45,7 @@ const MOTIVO_LABELS: Record<string, string> = {
 };
 
 const Pacientes = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>("activos");
   
   // Pacientes activos
@@ -184,10 +187,7 @@ const Pacientes = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold">Pacientes</h1>
-              <p className="text-muted-foreground text-sm">Gestión de pacientes del programa</p>
-            </div>
+            <ClinicalPageHeader title="Pacientes" subtitle="Gestión de pacientes del programa" />
             {/* Acciones principales agrupadas a la derecha del título */}
             <div className="flex flex-wrap items-center gap-2">
               <AgendarCitaButton size="sm" variant="outline" className="rounded-full" />
@@ -379,12 +379,22 @@ const Pacientes = () => {
                     variant="ghost"
                     size="sm"
                     className="h-7 w-7 p-0"
+                    onClick={() => navigate(`/hub-paciente/${p.id}`)}
+                    title="Expediente Hub 360°"
+                    aria-label="Expediente Hub 360°"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5 text-primary hover:text-primary/80" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 p-0"
                     onClick={() => {
                       setSelectedPacienteId(p.id);
                       setDetailOpen(true);
                     }}
-                    title="Ver Ficha 360"
-                    aria-label="Ver Ficha 360"
+                    title="Ver Ficha Rápida"
+                    aria-label="Ver Ficha Rápida"
                   >
                     <Eye className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
                   </Button>

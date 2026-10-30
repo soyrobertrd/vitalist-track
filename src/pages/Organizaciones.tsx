@@ -13,6 +13,7 @@ import { Building2, MapPin, Users, Plus, Trash2, Pencil, Star, Loader2 } from "l
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { useSucursales, type Sucursal } from "@/hooks/useSucursales";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface Member {
   id: string;
@@ -254,15 +255,7 @@ export default function Organizaciones() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Building2 className="h-7 w-7 text-primary" />
-            Organizaciones y Sucursales
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Administra clínicas (workspaces), sus sucursales y miembros del equipo.
-          </p>
-        </div>
+        <ClinicalPageHeader title="Organizaciones y Sucursales" subtitle="Administra clínicas (workspaces), sus sucursales y miembros del equipo." icon={Building2} />
         <div className="flex gap-2">
           <Select value={currentWorkspace?.id || ""} onValueChange={switchWorkspace}>
             <SelectTrigger className="w-[260px]">

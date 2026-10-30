@@ -159,6 +159,18 @@ const CentroComando = lazy(() => import("./pages/CentroComando"));
 const WorkflowsClinicos = lazy(() => import("./pages/WorkflowsClinicos"));
 const TurnosPersonal = lazy(() => import("./pages/TurnosPersonal"));
 const EdificacionHospitalaria = lazy(() => import("./pages/EdificacionHospitalaria"));
+const Cardiologia = lazy(() => import("./pages/especialidades/Cardiologia"));
+const DiabetesEndocrino = lazy(() => import("./pages/especialidades/DiabetesEndocrino"));
+const Pediatria = lazy(() => import("./pages/especialidades/Pediatria"));
+const GinecologiaObstetricia = lazy(() => import("./pages/especialidades/GinecologiaObstetricia"));
+const Neurologia = lazy(() => import("./pages/especialidades/Neurologia"));
+const Nefrologia = lazy(() => import("./pages/especialidades/Nefrologia"));
+const Neumologia = lazy(() => import("./pages/especialidades/Neumologia"));
+const Gastroenterologia = lazy(() => import("./pages/especialidades/Gastroenterologia"));
+const TraumatologiaOrtopedia = lazy(() => import("./pages/especialidades/TraumatologiaOrtopedia"));
+const Urologia = lazy(() => import("./pages/especialidades/Urologia"));
+const Dermatologia = lazy(() => import("./pages/especialidades/Dermatologia"));
+const ConsentimientosInformados = lazy(() => import("./pages/ConsentimientosInformados"));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -317,6 +329,10 @@ const App = () => {
                   element={session ? <Layout><Pacientes /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
+                  path="/recepcion"
+                  element={session ? <Layout><Recepcion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
                   path="/personal"
                   element={session ? <Layout><Personal /></Layout> : <Navigate to="/auth" />}
                 />
@@ -443,7 +459,7 @@ const App = () => {
                 />
                 <Route
                   path="/triaje"
-                  element={session ? <Layout><Triaje /></Layout> : <Navigate to="/auth" />}
+                  element={<Navigate to="/urgencias-triage" replace />}
                 />
                 <Route
                   path="/api-citas"
@@ -508,6 +524,54 @@ const App = () => {
                 <Route
                   path="/oncologia"
                   element={session ? <Layout><Oncologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/cardiologia"
+                  element={session ? <Layout><Cardiologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/diabetes-endocrinologia"
+                  element={session ? <Layout><DiabetesEndocrino /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/pediatria"
+                  element={session ? <Layout><Pediatria /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/ginecologia-obstetricia"
+                  element={session ? <Layout><GinecologiaObstetricia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/neurologia"
+                  element={session ? <Layout><Neurologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/nefrologia"
+                  element={session ? <Layout><Nefrologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/neumologia"
+                  element={session ? <Layout><Neumologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/gastroenterologia"
+                  element={session ? <Layout><Gastroenterologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/traumatologia-ortopedia"
+                  element={session ? <Layout><TraumatologiaOrtopedia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/urologia"
+                  element={session ? <Layout><Urologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/dermatologia"
+                  element={session ? <Layout><Dermatologia /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/consentimientos-informados"
+                  element={session ? <Layout><ConsentimientosInformados /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
                   path="/maternidad-neonatologia"

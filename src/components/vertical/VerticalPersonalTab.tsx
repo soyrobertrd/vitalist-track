@@ -43,10 +43,10 @@ export default function VerticalPersonalTab({ profesionalLabel = "Profesionales"
       workspace_id: wsId,
       nombre: form.nombre,
       apellido: form.apellido || null,
-      telefono: form.telefono || null,
-      email: form.email || null,
-      especialidad: form.especialidad || null,
-      cargo: form.cargo || null,
+      contacto: form.telefono || null,
+      email_contacto: form.email || null,
+      // personal_salud no tiene columna cargo: se guarda en especialidad si no se indicó una.
+      especialidad: form.especialidad || form.cargo || null,
     } as any);
     if (error) { toast.error(error.message); return; }
     toast.success("Profesional agregado");
@@ -105,8 +105,8 @@ export default function VerticalPersonalTab({ profesionalLabel = "Profesionales"
                 <TableCell>{p.especialidad || "—"}</TableCell>
                 <TableCell>{p.cargo || "—"}</TableCell>
                 <TableCell className="space-x-2">
-                  {p.telefono && <a href={`tel:${p.telefono}`} className="text-primary hover:underline inline-flex items-center gap-1"><Phone className="h-3 w-3" />{p.telefono}</a>}
-                  {p.email && <a href={`mailto:${p.email}`} className="text-primary hover:underline inline-flex items-center gap-1"><Mail className="h-3 w-3" />{p.email}</a>}
+                  {p.contacto && <a href={`tel:${p.contacto}`} className="text-primary hover:underline inline-flex items-center gap-1"><Phone className="h-3 w-3" />{p.contacto}</a>}
+                  {p.email_contacto && <a href={`mailto:${p.email_contacto}`} className="text-primary hover:underline inline-flex items-center gap-1"><Mail className="h-3 w-3" />{p.email_contacto}</a>}
                 </TableCell>
                 <TableCell><Badge variant={p.activo !== false ? "default" : "secondary"}>{p.activo !== false ? "Activo" : "Inactivo"}</Badge></TableCell>
               </TableRow>

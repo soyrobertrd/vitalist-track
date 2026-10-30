@@ -95,7 +95,6 @@ const BancoSangre = () => {
         title="Banco de Sangre & Hemovigilancia"
         subtitle="Stock de hemocomponentes, compatibilidad cruzada ABO/RhD, donantes y prevención de reacciones adversas"
         icon={Droplets}
-        variant="rose"
       />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

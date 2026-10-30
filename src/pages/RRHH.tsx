@@ -142,7 +142,6 @@ export default function RRHH() {
         title="Talento Humano & Recursos Humanos"
         subtitle="Departamentos, puestos de trabajo, expedientes de personal y solicitudes de vacaciones o permisos"
         icon={Users}
-        variant="purple"
       >
         <Button variant="outline" className="rounded-xl border-border/80 shadow-none gap-2" onClick={() => setOpenDept(true)}>
           <Plus className="h-4 w-4" /> Nuevo Depto

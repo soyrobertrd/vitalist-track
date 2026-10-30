@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Key, Plus, Copy, Trash2, Code } from "lucide-react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface Token { id: string; nombre: string; api_key: string; activo: boolean; ultimo_uso: string | null; total_llamadas: number; created_at: string; }
 
@@ -53,10 +54,7 @@ export default function ApiPublicaCitas() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2"><Key className="h-6 w-6"/>API Pública de Citas</h1>
-          <p className="text-sm text-muted-foreground">Conecta el portal público de tu centro para que pacientes consulten y agenden</p>
-        </div>
+        <ClinicalPageHeader title="API Pública de Citas" subtitle="Conecta el portal público de tu centro para que pacientes consulten y agenden" icon={Key} />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1"/>Nueva API key</Button></DialogTrigger>
           <DialogContent>

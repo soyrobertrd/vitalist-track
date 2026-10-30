@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "sonner";
 import { ListTodo, Plus, Calendar, AlertCircle, User } from "lucide-react";
 import { format } from "date-fns";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const COLUMNAS = [
   { id: "pendiente",   label: "Pendiente",   color: "bg-slate-100 dark:bg-slate-800" },
@@ -101,12 +102,7 @@ export default function TareasInternas() {
   return (
     <div className="space-y-4 p-4 md:p-6">
       <div className="flex items-start justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <ListTodo className="h-7 w-7 text-primary" /> Tareas internas
-          </h1>
-          <p className="text-muted-foreground">Tablero tipo Trello para coordinar pendientes por departamento.</p>
-        </div>
+        <ClinicalPageHeader title="Tareas internas" subtitle="Tablero tipo Trello para coordinar pendientes por departamento." icon={ListTodo} />
         <div className="flex gap-2">
           <Select value={filtro} onValueChange={setFiltro}>
             <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>

@@ -168,9 +168,8 @@ Deno.serve(async (req) => {
               nombre,
               apellido,
               contacto_px: telefono,
-              email: email || null,
+              email_px: email || null,
               tipo_atencion: "ambulatorio",
-              origen_registro: "portal_publico",
             })
             .select("id")
             .single();

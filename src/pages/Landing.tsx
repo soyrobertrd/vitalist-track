@@ -133,7 +133,7 @@ export default function Landing() {
     e.preventDefault();
     const parsed = contactSchema.safeParse(form);
     if (!parsed.success) {
-      toast.error(parsed.error.errors[0]?.message || "Revisa los campos");
+      toast.error(parsed.error.issues[0]?.message || "Revisa los campos");
       return;
     }
     setSubmitting(true);

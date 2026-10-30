@@ -47,7 +47,6 @@ export default function Enfermeria() {
         title="Enfermería & Cuidados Clínicos"
         subtitle="Valoración integral, signos vitales por turno, planes NANDA/NIC/NOC y administración de fármacos"
         icon={Heart}
-        variant="teal"
       />
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

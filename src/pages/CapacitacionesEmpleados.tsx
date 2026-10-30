@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { GraduationCap, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const estadoColor: Record<string, string> = {
   en_curso: "bg-blue-500/10 text-blue-700",
@@ -67,12 +68,7 @@ export default function CapacitacionesEmpleados() {
   return (
     <div className="p-4 md:p-6 space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <GraduationCap className="h-7 w-7 text-primary" /> Capacitaciones
-          </h1>
-          <p className="text-sm text-muted-foreground">Cursos y certificaciones del personal</p>
-        </div>
+        <ClinicalPageHeader title="Capacitaciones" subtitle="Cursos y certificaciones del personal" icon={GraduationCap} />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> Nueva</Button></DialogTrigger>
           <DialogContent>

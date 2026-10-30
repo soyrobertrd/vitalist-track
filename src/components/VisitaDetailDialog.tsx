@@ -18,6 +18,7 @@ import { GlassCard } from "@/components/GlassCard";
 import { EnviarRecordatorioDialog } from "@/components/EnviarRecordatorioDialog";
 import { useMedicamentosPaciente } from "@/hooks/useMedicamentosPaciente";
 import { useDiasLaborables } from "@/hooks/useDiasLaborables";
+import { enlaceSeguro } from "@/lib/videoLinks";
 
 interface VisitaDetailDialogProps {
   open: boolean;
@@ -364,7 +365,7 @@ export function VisitaDetailDialog({
                     <>
                       <div className="flex items-center gap-2 flex-wrap">
                         <a
-                          href={visita.video_enlace}
+                          href={enlaceSeguro(visita.video_enlace)}
                           target="_blank"
                           rel="noreferrer"
                           className="text-sm underline break-all flex-1 min-w-0"
@@ -383,7 +384,7 @@ export function VisitaDetailDialog({
                           Copiar
                         </Button>
                         <Button type="button" size="sm" asChild>
-                          <a href={visita.video_enlace} target="_blank" rel="noreferrer">Abrir sala</a>
+                          <a href={enlaceSeguro(visita.video_enlace)} target="_blank" rel="noreferrer">Abrir sala</a>
                         </Button>
                       </div>
                       {visita.video_token && (

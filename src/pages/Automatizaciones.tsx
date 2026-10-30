@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Zap, Trash2, Clock, Users } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface Automatizacion {
   id: string;
@@ -190,10 +191,7 @@ const Automatizaciones = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Automatizaciones</h1>
-          <p className="text-muted-foreground">Configura reglas y acciones automáticas</p>
-        </div>
+        <ClinicalPageHeader title="Automatizaciones" subtitle="Configura reglas y acciones automáticas" />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2">

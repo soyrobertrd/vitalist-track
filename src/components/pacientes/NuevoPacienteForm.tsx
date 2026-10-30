@@ -202,7 +202,7 @@ export function NuevoPacienteForm({ personal, onSuccess, onCancel }: NuevoPacien
       pacienteSchema.parse(formValues);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        error.errors.forEach((err) => toast.error(err.message));
+        error.issues.forEach((err) => toast.error(err.message));
         setLoading(false);
         return;
       }

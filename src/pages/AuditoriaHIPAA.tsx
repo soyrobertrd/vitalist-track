@@ -22,6 +22,7 @@ import { PanelSaludSistema } from "@/components/PanelSaludSistema";
 import { ExportarAuditoriaAvanzada } from "@/components/ExportarAuditoriaAvanzada";
 import { PushNotificationsToggle } from "@/components/PushNotificationsToggle";
 import { Activity } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface AccesoLog {
   id: string;
@@ -180,7 +181,7 @@ export default function AuditoriaHIPAA() {
         l.ip_address ?? "",
       ]),
     ];
-    const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csv = rows.map((r) => r.map((v) => `"${(typeof v === "string" && /^[=+\-@\t\r]/.test(v) ? `'${v}` : String(v)).replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -234,14 +235,7 @@ export default function AuditoriaHIPAA() {
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Shield className="h-7 w-7 text-primary" /> Auditoría y cumplimiento
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Logs de acceso a fichas clínicas, alertas de acceso sospechoso y política de retención (HIPAA-like).
-          </p>
-        </div>
+        <ClinicalPageHeader title="Auditoría y cumplimiento" subtitle="Logs de acceso a fichas clínicas, alertas de acceso sospechoso y política de retención (HIPAA-like)." icon={Shield} />
         <a href="/auditoria/configuracion" className="text-sm underline text-primary">Configurar umbrales y ruteo →</a>
       </div>
 

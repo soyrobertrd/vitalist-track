@@ -9,7 +9,8 @@ import html2canvas from "html2canvas";
 export function descargarCSV(data: Record<string, unknown>[], columns: { key: string; label: string }[], filename: string) {
   try {
     const celda = (v: unknown) => {
-      const t = String(v ?? "");
+      // Un texto que empieza por = + - @ se ejecutaría como fórmula en Excel: se antepone '.
+      const t = typeof v === "string" && /^[=+\-@\t\r]/.test(v) ? `'${v}` : String(v ?? "");
       return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
     };
     const csv = [columns.map((c) => celda(c.label)).join(","), ...data.map((row) => columns.map((c) => celda(row[c.key])).join(","))].join("\n");

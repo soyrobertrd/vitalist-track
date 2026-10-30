@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, Gift, Star, Users } from "lucide-react";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 export default function BeneficiosUsuarios() {
   const [data, setData] = useState<any[]>([]);
@@ -25,10 +26,7 @@ export default function BeneficiosUsuarios() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Gift className="h-7 w-7 text-primary" /> Beneficios de usuarios</h1>
-        <p className="text-muted-foreground">Programa de loyalty: puntos, descuentos y niveles VIP para pacientes individuales.</p>
-      </div>
+      <ClinicalPageHeader title="Beneficios de usuarios" subtitle="Programa de loyalty: puntos, descuentos y niveles VIP para pacientes individuales." icon={Gift} />
 
       <div className="grid md:grid-cols-4 gap-4">
         <Card className="p-4"><div className="flex items-center gap-3"><Star className="h-8 w-8 text-amber-500" /><div><div className="text-sm text-muted-foreground">Puntos activos</div><div className="text-2xl font-bold">{totalPuntos}</div></div></div></Card>

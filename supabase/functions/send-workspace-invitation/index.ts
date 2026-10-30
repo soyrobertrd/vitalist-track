@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { Resend } from "npm:resend@2.0.0";
+import { escapeHtml } from "../_shared/caller-auth.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -40,7 +41,7 @@ serve(async (req) => {
     const body: InviteRequest = await req.json();
     const { workspace_id, email, role } = body;
 
-    if (!workspace_id || !email || !role) {
+    if (!workspace_id || !email || !["admin", "member"].includes(role)) {
       return new Response(JSON.stringify({ error: "Faltan campos requeridos" }), {
         status: 400,
         headers: { "Content-Type": "application/json", ...corsHeaders },
@@ -117,7 +118,8 @@ serve(async (req) => {
       ? `${inviterProfile.nombre || ""} ${inviterProfile.apellido || ""}`.trim() || user.email
       : user.email;
 
-    const origin = req.headers.get("origin") || req.headers.get("referer")?.replace(/\/$/, "") || Deno.env.get("APP_URL") || "https://vitalist-track.vercel.app";
+    // No se usa el header Origin: lo controla quien llama y acabaría en el enlace del email.
+    const origin = (Deno.env.get("APP_URL") || "https://vitalist-track.vercel.app").replace(/\/$/, "");
     const acceptUrl = `${origin}/aceptar-invitacion?token=${invitation.token}`;
 
     // Enviar email
@@ -132,7 +134,7 @@ serve(async (req) => {
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #111;">
           <h1 style="font-size: 22px; margin: 0 0 16px;">Te invitaron a una organización</h1>
           <p style="font-size: 15px; line-height: 1.6; color: #444;">
-            <strong>${inviterName}</strong> te invitó a unirte a <strong>${ws?.nombre || "una organización"}</strong> en Vitalist Track como <strong>${roleLabel}</strong>.
+            <strong>${escapeHtml(inviterName)}</strong> te invitó a unirte a <strong>${escapeHtml(ws?.nombre || "una organización")}</strong> en Vitalist Track como <strong>${roleLabel}</strong>.
           </p>
           <div style="margin: 28px 0;">
             <a href="${acceptUrl}"
@@ -141,7 +143,7 @@ serve(async (req) => {
             </a>
           </div>
           <p style="font-size: 13px; color: #777; line-height: 1.5;">
-            Si no tienes cuenta, podrás crear una con este mismo correo electrónico (${email}) y la invitación se vinculará automáticamente.
+            Si no tienes cuenta, podrás crear una con este mismo correo electrónico (${escapeHtml(email)}) y la invitación se vinculará automáticamente.
           </p>
           <p style="font-size: 12px; color: #999; margin-top: 32px;">
             Esta invitación expira el ${new Date(invitation.expires_at).toLocaleDateString("es-DO", { dateStyle: "long" })}.

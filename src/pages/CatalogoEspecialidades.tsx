@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Plus, Pencil } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const CATEGORIAS = [
   { v: "medica", l: "Médica" },
@@ -67,10 +68,7 @@ export default function CatalogoEspecialidades() {
   return (
     <div className="p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Catálogo de Especialidades y Profesiones</h1>
-          <p className="text-sm text-muted-foreground">Define qué tipos de profesionales pueden registrarse en tu centro.</p>
-        </div>
+        <ClinicalPageHeader title="Catálogo de Especialidades y Profesiones" subtitle="Define qué tipos de profesionales pueden registrarse en tu centro." />
         <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setEditing(null); }}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> Nueva</Button></DialogTrigger>
           <DialogContent>

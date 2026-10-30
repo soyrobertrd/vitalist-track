@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, AlertTriangle, Star, Users } from "lucide-react";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 export default function PerfilValorPacientes() {
   const [data, setData] = useState<any[]>([]);
@@ -28,10 +29,7 @@ export default function PerfilValorPacientes() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><TrendingUp className="h-7 w-7 text-primary" /> Perfil de valor (LTV)</h1>
-        <p className="text-muted-foreground">Análisis del valor de vida de cada paciente y riesgo de pérdida.</p>
-      </div>
+      <ClinicalPageHeader title="Perfil de valor (LTV)" subtitle="Análisis del valor de vida de cada paciente y riesgo de pérdida." icon={TrendingUp} />
 
       <div className="grid md:grid-cols-4 gap-4">
         <Card className="p-4"><div className="flex items-center gap-3"><TrendingUp className="h-8 w-8 text-emerald-500" /><div><div className="text-sm text-muted-foreground">LTV total</div><div className="text-2xl font-bold">${totalLTV.toFixed(0)}</div></div></div></Card>

@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Building, Plus, Layers, DoorOpen, Bed } from "lucide-react";
 import { useSucursales } from "@/hooks/useSucursales";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 interface Edificio { id: string; nombre: string; codigo: string | null; sucursal_id: string; }
 interface Piso { id: string; numero: number; nombre: string | null; edificio_id: string; }
@@ -59,10 +60,7 @@ export default function Consultorios() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2"><Building className="h-6 w-6"/> Estructura física</h1>
-          <p className="text-sm text-muted-foreground">Edificios, pisos, alas y consultorios por sucursal</p>
-        </div>
+        <ClinicalPageHeader title="Estructura física" subtitle="Edificios, pisos, alas y consultorios por sucursal" icon={Building} />
         <Select value={sucursalId} onValueChange={setSucursalId}>
           <SelectTrigger className="w-64"><SelectValue placeholder="Selecciona sucursal" /></SelectTrigger>
           <SelectContent>{sucursales.map(s => <SelectItem key={s.id} value={s.id}>{s.nombre}</SelectItem>)}</SelectContent>

@@ -49,6 +49,7 @@ import VerticalCamasTab from "@/components/vertical/VerticalCamasTab";
 import VerticalReportesRegulatoriosTab from "@/components/vertical/VerticalReportesRegulatoriosTab";
 import VerticalCRMFidelizacionTab from "@/components/vertical/VerticalCRMFidelizacionTab";
 import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const estadoOrdenColor: Record<string, string> = {
   solicitada: "bg-primary/10 text-primary border-primary/20",
@@ -122,10 +123,7 @@ function VisionCareProContent() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2"><Eye className="h-6 w-6" /> VisionCare Pro</h1>
-        <p className="text-muted-foreground">Ópticas, centros oftalmológicos, cadenas multi-sucursal — recetas, inventario, combos, garantías</p>
-      </div>
+      <ClinicalPageHeader title="VisionCare Pro" subtitle="Ópticas, centros oftalmológicos, cadenas multi-sucursal — recetas, inventario, combos, garantías" icon={Eye} />
 
       {isResumen && (
       <div className="grid grid-cols-2 md:grid-cols-7 gap-3">

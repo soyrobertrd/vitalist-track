@@ -23,6 +23,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const TIPOS: { value: TipoReporte; label: string }[] = [
   { value: "kpi_profesionales", label: "KPIs por profesional" },
@@ -115,14 +116,7 @@ export default function ReportesProgramados() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <CalendarClock className="h-7 w-7 text-primary" /> Reportes programados
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Envía reportes automáticos por email con la frecuencia que necesites.
-          </p>
-        </div>
+        <ClinicalPageHeader title="Reportes programados" subtitle="Envía reportes automáticos por email con la frecuencia que necesites." icon={CalendarClock} />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button><Plus className="mr-2 h-4 w-4" /> Nuevo reporte</Button>

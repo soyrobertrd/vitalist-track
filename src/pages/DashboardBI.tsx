@@ -28,6 +28,8 @@ import * as XLSX from "xlsx";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useActiveSucursal } from "@/contexts/ActiveSucursalContext";
 import { ReportBuilder } from "@/components/ReportBuilder";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
 
 const COLORS = [
   "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -86,8 +88,12 @@ export default function DashboardBI() {
         .gte("created_at", from || "2000-01-01").lte("created_at", to || "2099-12-31")),
       scope(supabase.from("control_visitas").select("id, estado, profesional_id, created_at, sucursal_id, fecha_hora_visita")
         .gte("created_at", from || "2000-01-01").lte("created_at", to || "2099-12-31")),
-      scope(supabase.from("facturas").select("id, monto_total, monto_pagado, estado, sucursal_id, created_at")
-        .gte("created_at", from || "2000-01-01").lte("created_at", to || "2099-12-31")),
+      // facturas no tiene sucursal_id: se toma de la visita y se filtra abajo.
+      (() => {
+        const q = supabase.from("facturas").select("id, monto_total, monto_pagado, estado, created_at, control_visitas(sucursal_id)");
+        return wsId ? q.eq("workspace_id", wsId) : q;
+      })()
+        .gte("created_at", from || "2000-01-01").lte("created_at", to || "2099-12-31"),
       supabase.from("sucursales").select("id, nombre").eq("workspace_id", wsId),
       supabase.from("personal_salud").select("id, nombre, apellido").eq("workspace_id", wsId).eq("activo", true),
     ]);
@@ -95,7 +101,9 @@ export default function DashboardBI() {
     const pacientes = pacRes.data || [];
     const llamadas = llamRes.data || [];
     const visitas = visRes.data || [];
-    const facturas = facRes.data || [];
+    const facturas = (facRes.data || [])
+      .map((f: any) => ({ ...f, sucursal_id: f.control_visitas?.sucursal_id ?? null }))
+      .filter((f: any) => !activeSucursalId || f.sucursal_id === activeSucursalId);
     const sucursales = sucRes.data || [];
     const profesionales = profRes.data || [];
 
@@ -181,6 +189,7 @@ export default function DashboardBI() {
 
   const exportExcel = () => {
     const wb = XLSX.utils.book_new();
+
     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet([kpis]), "KPIs");
     if (trendData.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(trendData), "Tendencia");
     if (sucursalData.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sucursalData), "Sucursales");
@@ -189,72 +198,106 @@ export default function DashboardBI() {
     toast.success("Exportado a Excel");
   };
 
-  const KpiCard = ({ title, value, subtitle, icon: Icon, color = "primary" }: any) => (
-    <Card>
-      <CardContent className="pt-4 pb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold">{typeof value === "number" && title.includes("$") ? `$${value.toLocaleString()}` : value}</p>
-            {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
-          </div>
-          <Icon className={`h-8 w-8 text-${color} opacity-60`} />
-        </div>
-      </CardContent>
-    </Card>
-  );
-
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard BI</h1>
-          <p className="text-muted-foreground">Inteligencia de negocio y analítica avanzada</p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm">
-                <CalendarIcon className="h-4 w-4 mr-2" />
-                {dateRange.from && dateRange.to
-                  ? `${format(dateRange.from, "dd/MM/yy")} - ${format(dateRange.to, "dd/MM/yy")}`
-                  : "Rango"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Calendar mode="range" selected={dateRange}
-                onSelect={(r: any) => setDateRange(r || { from: undefined, to: undefined })}
-                numberOfMonths={2} />
-            </PopoverContent>
-          </Popover>
-          <Button variant="outline" size="sm" onClick={exportExcel}>
-            <Download className="h-4 w-4 mr-2" /> Excel
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
+      {/* Header Modo B */}
+      <ClinicalPageHeader
+        title="Business Intelligence & Analítica Clínica"
+        subtitle="Inteligencia de negocio, métricas operacionales consolidadas y comparativa multisede"
+        icon={BarChart3}
+        badge="BI Suite"
+        action={
+          <div className="flex gap-2 flex-wrap items-center">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="rounded-xl border-border/80 text-xs">
+                  <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                  {dateRange.from && dateRange.to
+                    ? `${format(dateRange.from, "dd/MM/yy")} - ${format(dateRange.to, "dd/MM/yy")}`
+                    : "Seleccionar Período"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 rounded-2xl" align="end">
+                <Calendar
+                  mode="range"
+                  selected={dateRange}
+                  onSelect={(r: any) => setDateRange(r || { from: undefined, to: undefined })}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+            <Button variant="outline" size="sm" onClick={exportExcel} className="rounded-xl border-border/80 text-xs">
+              <Download className="h-4 w-4 mr-2" /> Exportar Excel
+            </Button>
+          </div>
+        }
+      />
 
-      <Tabs defaultValue="resumen">
-        <TabsList>
-          <TabsTrigger value="resumen">Resumen Ejecutivo</TabsTrigger>
-          <TabsTrigger value="tendencias">Tendencias</TabsTrigger>
-          <TabsTrigger value="comparativo">Comparativo</TabsTrigger>
-          <TabsTrigger value="constructor">Constructor</TabsTrigger>
+      <Tabs defaultValue="resumen" className="space-y-4">
+        <TabsList className="bg-card border border-border/80 rounded-xl p-1">
+          <TabsTrigger value="resumen" className="rounded-lg text-xs">Resumen Ejecutivo</TabsTrigger>
+          <TabsTrigger value="tendencias" className="rounded-lg text-xs">Tendencias</TabsTrigger>
+          <TabsTrigger value="comparativo" className="rounded-lg text-xs">Comparativo Sedes</TabsTrigger>
+          <TabsTrigger value="constructor" className="rounded-lg text-xs">Constructor de Reportes</TabsTrigger>
         </TabsList>
 
         {/* RESUMEN */}
-        <TabsContent value="resumen" className="space-y-6">
-          {/* KPIs */}
-          <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-            <KpiCard title="Pacientes totales" value={kpis.totalPacientes} subtitle={`${kpis.pacientesActivos} activos`} icon={Users} />
-            <KpiCard title="Nuevos (período)" value={kpis.pacientesNuevos} icon={TrendingUp} color="success" />
-            <KpiCard title="Llamadas" value={kpis.totalLlamadas} subtitle={`${kpis.tasaContacto}% contacto`} icon={Phone} color="warning" />
-            <KpiCard title="Visitas" value={kpis.totalVisitas} subtitle={`${kpis.tasaCumplimiento}% cumplimiento`} icon={Stethoscope} />
+        <TabsContent value="resumen" className="space-y-6 mt-0">
+          {/* KPIs Operativos Modo B */}
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <ClinicalKpiCard
+              title="Pacientes Totales"
+              value={kpis.totalPacientes}
+              subtitle={`${kpis.pacientesActivos} activos en sistema`}
+              icon={Users}
+              variant="primary"
+            />
+            <ClinicalKpiCard
+              title="Nuevos en Período"
+              value={kpis.pacientesNuevos}
+              subtitle="Altas en el intervalo seleccionado"
+              icon={TrendingUp}
+              variant="emerald"
+            />
+            <ClinicalKpiCard
+              title="Gestión Telefónica"
+              value={kpis.totalLlamadas}
+              subtitle={`${kpis.tasaContacto}% tasa de contacto`}
+              icon={Phone}
+              variant="blue"
+            />
+            <ClinicalKpiCard
+              title="Visitas Clínicas"
+              value={kpis.totalVisitas}
+              subtitle={`${kpis.tasaCumplimiento}% cumplimiento global`}
+              icon={Stethoscope}
+              variant="purple"
+            />
           </div>
 
-          <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
-            <KpiCard title="$ Ingresos brutos" value={kpis.ingresosBrutos} icon={DollarSign} color="primary" />
-            <KpiCard title="$ Cobrado" value={kpis.cobrado} icon={DollarSign} color="success" />
-            <KpiCard title="$ Pendiente cobro" value={kpis.pendienteCobro} icon={DollarSign} color="destructive" />
+          {/* KPIs Financieros Modo B */}
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+            <ClinicalKpiCard
+              title="Facturación Bruta"
+              value={`$${kpis.ingresosBrutos.toLocaleString("es-DO")}`}
+              subtitle="Monto total facturado"
+              icon={DollarSign}
+              variant="primary"
+            />
+            <ClinicalKpiCard
+              title="Recaudación Cobrada"
+              value={`$${kpis.cobrado.toLocaleString("es-DO")}`}
+              subtitle="Ingresos percibidos"
+              icon={DollarSign}
+              variant="emerald"
+            />
+            <ClinicalKpiCard
+              title="Cuentas por Cobrar"
+              value={`$${kpis.pendienteCobro.toLocaleString("es-DO")}`}
+              subtitle="Saldo pendiente de cobro"
+              icon={Target}
+              variant={kpis.pendienteCobro > 0 ? "amber" : "teal"}
+            />
           </div>
 
           {/* Distribución zonal */}

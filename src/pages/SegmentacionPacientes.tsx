@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Target } from "lucide-react";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 export default function SegmentacionPacientes() {
   const [data, setData] = useState<any[]>([]);
@@ -20,10 +21,7 @@ export default function SegmentacionPacientes() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Target className="h-7 w-7 text-primary" /> Segmentación de pacientes</h1>
-        <p className="text-muted-foreground">Crea segmentos para campañas de marketing, recordatorios y promociones.</p>
-      </div>
+      <ClinicalPageHeader title="Segmentación de pacientes" subtitle="Crea segmentos para campañas de marketing, recordatorios y promociones." icon={Target} />
 
       <Card className="p-4">
         <h2 className="font-semibold mb-3">Segmentos definidos</h2>

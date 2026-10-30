@@ -14,6 +14,7 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, ReferenceLine,
 } from "recharts";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 function csv(rows: any[], filename: string) {
   if (!rows.length) return;
@@ -131,14 +132,7 @@ export default function ReportesPsicologia() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <BarChart3 className="h-6 w-6 text-primary" /> Reportes clínicos · Psicología
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Toda lectura de datos sensibles queda registrada en la bitácora de auditoría.
-          </p>
-        </div>
+        <ClinicalPageHeader title="Reportes clínicos · Psicología" subtitle="Toda lectura de datos sensibles queda registrada en la bitácora de auditoría." icon={BarChart3} />
       </div>
 
       <Card>

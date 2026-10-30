@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Brain, Sparkles, FileText, Stethoscope, Mic, AlertCircle } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const CAPACIDADES = [
   { tipo: "resumen", l: "Resumen automático de consultas", icon: FileText, desc: "Genera resumen estructurado de las notas de evolución." },
@@ -47,10 +48,7 @@ export default function IAClinicaModulo() {
   return (
     <div className="p-6 space-y-4">
       <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2"><Brain className="h-6 w-6" /> IA Clínica</h1>
-          <p className="text-sm text-muted-foreground">Módulo preparado para integración de IA clínica. La integración con modelos reales se activará cuando se conecten las credenciales correspondientes.</p>
-        </div>
+        <ClinicalPageHeader title="IA Clínica" subtitle="Módulo preparado para integración de IA clínica. La integración con modelos reales se activará cuando se conecten las credenciales correspondientes." icon={Brain} />
         <Badge variant="outline" className="border-yellow-500 text-yellow-600">No integrado todavía</Badge>
       </div>
 

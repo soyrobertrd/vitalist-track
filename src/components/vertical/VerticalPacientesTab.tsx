@@ -33,7 +33,7 @@ export default function VerticalPacientesTab({ pacienteLabel = "Pacientes" }: Pr
       let q: any = (supabase.from("pacientes") as any)
         .select("*")
         .eq("workspace_id", wsId!)
-        .eq("activo", true);
+        .eq("status_px", "activo");
       if (verticalActiva && verticalActiva !== "todas") {
         q = q.eq("vertical", verticalActiva);
       }
@@ -50,8 +50,8 @@ export default function VerticalPacientesTab({ pacienteLabel = "Pacientes" }: Pr
       nombre: form.nombre,
       apellido: form.apellido || null,
       cedula: form.cedula || null,
-      numero_principal: form.telefono || null,
-      email: form.email || null,
+      contacto_px: form.telefono || null,
+      email_px: form.email || null,
       sexo: form.sexo || null,
       fecha_nacimiento: form.fecha_nacimiento || null,
     } as any);

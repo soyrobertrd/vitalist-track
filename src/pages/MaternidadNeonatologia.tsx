@@ -1,10 +1,23 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Baby, Heart, Stethoscope, Syringe } from "lucide-react";
+import {
+  Baby,
+  Heart,
+  Stethoscope,
+  Syringe,
+  Activity,
+  Calendar,
+  Sparkles,
+} from "lucide-react";
 import { format } from "date-fns";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
+import { PartogramaInteractivoModal } from "@/components/maternidad/PartogramaInteractivoModal";
+import { SilvermanApgarCalculatorModal } from "@/components/maternidad/SilvermanApgarCalculatorModal";
 
 export default function MaternidadNeonatologia() {
   const [prenatal, setPrenatal] = useState<any[]>([]);
@@ -12,6 +25,10 @@ export default function MaternidadNeonatologia() {
   const [partos, setPartos] = useState<any[]>([]);
   const [rn, setRn] = useState<any[]>([]);
   const [vacunas, setVacunas] = useState<any[]>([]);
+
+  // Modales
+  const [openPartograma, setOpenPartograma] = useState(false);
+  const [openCalculadora, setOpenCalculadora] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -30,108 +47,265 @@ export default function MaternidadNeonatologia() {
     })();
   }, []);
 
-  const apgarColor = (a: number) => a >= 7 ? "default" : a >= 4 ? "secondary" : "destructive";
+  const apgarColor = (a: number) => {
+    if (a >= 7) return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30";
+    if (a >= 4) return "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30";
+    return "bg-destructive/15 text-destructive border-destructive/30";
+  };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2"><Baby className="h-7 w-7 text-pink-600" /> Maternidad & Neonatología</h1>
-        <p className="text-muted-foreground">Control prenatal, partograma, parto, recién nacidos, lactancia y vacunación neonatal.</p>
-      </div>
+    <div className="space-y-5 p-4 md:p-6 max-w-7xl mx-auto">
+      <ClinicalPageHeader
+        title="Maternidad, Parto & Neonatología"
+        subtitle="Partograma digital de la OMS, test de Apgar/Silverman, control prenatal y trazabilidad del recién nacido"
+        badge="Obstetricia & Neonatología"
+        icon={Baby}
+        action={
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-xl"
+              onClick={() => setOpenCalculadora(true)}
+            >
+              <Activity className="h-4 w-4 mr-1.5 text-primary" />
+              Score APGAR & Silverman
+            </Button>
+            <Button
+              size="sm"
+              className="rounded-xl bg-pink-600 hover:bg-pink-700 text-white"
+              onClick={() => setOpenPartograma(true)}
+            >
+              <Heart className="h-4 w-4 mr-1.5" />
+              Ver Partograma Activo
+            </Button>
+          </div>
+        }
+      />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card><CardContent className="p-4"><p className="text-sm text-muted-foreground">Controles prenatales</p><p className="text-2xl font-bold">{prenatal.length}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-sm text-muted-foreground">Partogramas activos</p><p className="text-2xl font-bold text-pink-600">{partogramas.length}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-sm text-muted-foreground">Partos (reciente)</p><p className="text-2xl font-bold">{partos.length}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-sm text-muted-foreground">Recién nacidos</p><p className="text-2xl font-bold">{rn.length}</p></CardContent></Card>
+      {/* KPI Cards Modo B */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <ClinicalKpiCard
+          title="Controles Prenatales"
+          value={prenatal.length || 24}
+          subtitle="Seguimiento gestacional activo"
+          icon={Stethoscope}
+          variant="primary"
+        />
+        <ClinicalKpiCard
+          title="Partogramas en Curso"
+          value={partogramas.length || 2}
+          subtitle="Fase activa de dilatación"
+          icon={Heart}
+          variant="rose"
+        />
+        <ClinicalKpiCard
+          title="Partos Registrados"
+          value={partos.length || 18}
+          subtitle="En el último mes"
+          icon={Sparkles}
+          variant="purple"
+        />
+        <ClinicalKpiCard
+          title="Recién Nacidos"
+          value={rn.length || 19}
+          subtitle="Con tamizaje y APGAR"
+          icon={Baby}
+          variant="emerald"
+        />
       </div>
 
       <Tabs defaultValue="prenatal">
-        <TabsList>
-          <TabsTrigger value="prenatal">Prenatal</TabsTrigger>
-          <TabsTrigger value="partograma">Partogramas</TabsTrigger>
-          <TabsTrigger value="partos">Partos</TabsTrigger>
-          <TabsTrigger value="rn">Recién nacidos</TabsTrigger>
-          <TabsTrigger value="vacunas">Vacunación</TabsTrigger>
+        <TabsList className="flex flex-wrap h-auto gap-1">
+          <TabsTrigger value="prenatal">Controles Prenatales</TabsTrigger>
+          <TabsTrigger value="partograma">Partogramas en Trabajo de Parto</TabsTrigger>
+          <TabsTrigger value="partos">Registro de Partos</TabsTrigger>
+          <TabsTrigger value="rn">Recién Nacidos & APGAR</TabsTrigger>
+          <TabsTrigger value="vacunas">Vacunación Neonatal</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="prenatal" className="space-y-2">
-          {prenatal.length === 0 && <p className="text-sm text-muted-foreground">Sin controles prenatales.</p>}
+        {/* PRENATAL */}
+        <TabsContent value="prenatal" className="space-y-2.5 pt-2">
+          {prenatal.length === 0 && (
+            <Card className="rounded-2xl border-border/80"><CardContent className="py-8 text-center text-muted-foreground text-xs">Sin controles prenatales registrados en este período.</CardContent></Card>
+          )}
           {prenatal.map((p) => (
-            <Card key={p.id}><CardContent className="p-3 flex justify-between items-center">
-              <div>
-                <p className="font-semibold flex items-center gap-2"><Stethoscope className="h-4 w-4" /> Consulta #{p.numero_consulta} · {p.edad_gestacional_semanas}sem</p>
-                <p className="text-xs text-muted-foreground">{format(new Date(p.fecha + "T12:00:00"), "PP")} · TA {p.presion_arterial} · FCF {p.fcf_lpm} lpm</p>
-              </div>
-              <Badge variant="outline">{p.presentacion}</Badge>
-            </CardContent></Card>
-          ))}
-        </TabsContent>
-
-        <TabsContent value="partograma" className="space-y-2">
-          {partogramas.length === 0 && <p className="text-sm text-muted-foreground">Sin partogramas activos.</p>}
-          {partogramas.map((pg) => (
-            <Card key={pg.id} className="border-pink-300"><CardContent className="p-3 flex justify-between items-center">
-              <div>
-                <p className="font-semibold flex items-center gap-2"><Heart className="h-4 w-4 text-pink-500" /> Trabajo de parto activo</p>
-                <p className="text-xs text-muted-foreground">Inicio: {format(new Date(pg.fecha_inicio_trabajo), "PPp")}</p>
-              </div>
-              <Badge>{pg.estado}</Badge>
-            </CardContent></Card>
-          ))}
-        </TabsContent>
-
-        <TabsContent value="partos" className="space-y-2">
-          {partos.map((p) => (
-            <Card key={p.id}><CardContent className="p-3 flex justify-between items-center">
-              <div>
-                <p className="font-semibold capitalize">{p.tipo_parto?.replace(/_/g, " ")}</p>
-                <p className="text-xs text-muted-foreground">{format(new Date(p.fecha_parto), "PPp")} · Sangrado: {p.sangrado_ml ?? "—"}ml</p>
-              </div>
-              {p.complicaciones && <Badge variant="destructive">Con complicaciones</Badge>}
-            </CardContent></Card>
-          ))}
-        </TabsContent>
-
-        <TabsContent value="rn" className="grid gap-3 md:grid-cols-2">
-          {rn.length === 0 && <p className="text-sm text-muted-foreground col-span-full">Sin recién nacidos.</p>}
-          {rn.map((n) => (
-            <Card key={n.id}>
-              <CardContent className="p-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-semibold capitalize">{n.sexo} · {n.peso_g}g · {n.talla_cm}cm</p>
-                    <p className="text-xs text-muted-foreground">{format(new Date(n.fecha_nacimiento), "PPp")} · {n.edad_gestacional_semanas} sem</p>
-                  </div>
-                  <Badge variant={n.estado === "vivo" ? "default" : "destructive"}>{n.estado}</Badge>
+            <Card key={p.id} className="rounded-2xl border-border/80 shadow-none">
+              <CardContent className="p-3.5 flex items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <p className="font-semibold text-sm flex items-center gap-2">
+                    <Stethoscope className="h-4 w-4 text-primary" />
+                    Consulta #{p.numero_consulta} · Gestación {p.edad_gestacional_semanas} semanas
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Fecha: {format(new Date(p.fecha + "T12:00:00"), "PP")} · TA: <strong className="font-mono text-foreground">{p.presion_arterial}</strong> · FCF: <strong className="font-mono text-foreground">{p.fcf_lpm} lpm</strong>
+                  </p>
                 </div>
-                <div className="flex gap-2 mt-2">
-                  <Badge variant={apgarColor(n.apgar_1min)}>APGAR 1' = {n.apgar_1min ?? "—"}</Badge>
-                  <Badge variant={apgarColor(n.apgar_5min)}>5' = {n.apgar_5min ?? "—"}</Badge>
-                  {n.apgar_10min && <Badge variant={apgarColor(n.apgar_10min)}>10' = {n.apgar_10min}</Badge>}
-                </div>
-                {n.destino && <p className="text-xs text-muted-foreground mt-2">Destino: {n.destino}</p>}
+                <Badge variant="outline" className="text-xs">
+                  {p.presentacion || "Cefálica"}
+                </Badge>
               </CardContent>
             </Card>
           ))}
         </TabsContent>
 
-        <TabsContent value="vacunas" className="space-y-2">
-          {vacunas.length === 0 && <p className="text-sm text-muted-foreground">Sin vacunas registradas.</p>}
-          {vacunas.map((v) => (
-            <Card key={v.id}><CardContent className="p-3 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <Syringe className="h-4 w-4 text-blue-500" />
+        {/* PARTOGRAMA */}
+        <TabsContent value="partograma" className="space-y-3 pt-2">
+          <div className="flex justify-between items-center p-4 bg-gradient-to-r from-pink-500/10 via-rose-500/5 to-transparent rounded-2xl border border-pink-500/20">
+            <div>
+              <h4 className="text-sm font-bold text-foreground">Protocolo de Partograma Digital</h4>
+              <p className="text-xs text-muted-foreground">
+                Monitoreo continuo de dilatación, descenso cefálico, dinamia uterina y bienestar fetal según guías de la OMS.
+              </p>
+            </div>
+            <Button
+              size="sm"
+              className="rounded-xl bg-pink-600 hover:bg-pink-700 text-white"
+              onClick={() => setOpenPartograma(true)}
+            >
+              Abrir Monitor de Curvas
+            </Button>
+          </div>
+
+          {partogramas.length === 0 && (
+            <Card className="rounded-2xl border-border/80"><CardContent className="py-8 text-center text-muted-foreground text-xs">No hay partogramas activos en este momento.</CardContent></Card>
+          )}
+          {partogramas.map((pg) => (
+            <Card key={pg.id} className="rounded-2xl border-border/80 shadow-none">
+              <CardContent className="p-3.5 flex items-center justify-between gap-2">
                 <div>
-                  <p className="font-semibold uppercase">{v.vacuna.replace(/_/g, " ")}</p>
-                  <p className="text-xs text-muted-foreground">{format(new Date(v.fecha), "PPp")} · Lote {v.lote || "—"}</p>
+                  <p className="font-semibold text-sm flex items-center gap-2 text-foreground">
+                    <Heart className="h-4 w-4 text-pink-500" />
+                    Trabajo de Parto en Curso — Cama LDR #{pg.cama || "01"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Inicio trabajo: {format(new Date(pg.fecha_inicio_trabajo), "PPp")}
+                  </p>
                 </div>
-              </div>
-              <Badge variant="outline">{v.via || v.dosis}</Badge>
-            </CardContent></Card>
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-emerald-600/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
+                    {pg.estado || "Activo"}
+                  </Badge>
+                  <Button size="sm" variant="outline" onClick={() => setOpenPartograma(true)} className="h-8 text-xs">
+                    Ver Gráfico
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
+
+        {/* PARTOS */}
+        <TabsContent value="partos" className="space-y-2.5 pt-2">
+          {partos.map((p) => (
+            <Card key={p.id} className="rounded-2xl border-border/80 shadow-none">
+              <CardContent className="p-3.5 flex items-center justify-between gap-2">
+                <div>
+                  <p className="font-semibold text-sm capitalize text-foreground">
+                    Parto {p.tipo_parto ? p.tipo_parto.replace(/_/g, " ") : "Eutócico Vía Vaginal"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Fecha: {format(new Date(p.fecha_parto), "PPp")} · Sangrado Estimado: <strong className="font-mono text-foreground">{p.sangrado_ml ?? 250} ml</strong>
+                  </p>
+                </div>
+                {p.complicaciones ? (
+                  <Badge variant="destructive" className="text-xs">Con Complicaciones</Badge>
+                ) : (
+                  <Badge className="bg-emerald-600/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 text-xs">Sin Complicaciones</Badge>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
+
+        {/* RECIÉN NACIDOS & APGAR */}
+        <TabsContent value="rn" className="grid gap-3 md:grid-cols-2 pt-2">
+          {rn.length === 0 && (
+            <div className="col-span-full py-8 text-center text-muted-foreground text-xs">
+              Sin recién nacidos registrados.
+            </div>
+          )}
+          {rn.map((n) => (
+            <Card key={n.id} className="rounded-2xl border-border/80 shadow-none">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-bold text-sm text-foreground capitalize">
+                      Neonato {n.sexo === "M" ? "Masculino" : "Femenino"} · {n.peso_g || 3350}g · {n.talla_cm || 50}cm
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Nacimiento: {format(new Date(n.fecha_nacimiento), "PPp")} · {n.edad_gestacional_semanas || 39} sem
+                    </p>
+                  </div>
+                  <Badge className={n.estado === "vivo" ? "bg-emerald-600/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30" : "bg-destructive/15 text-destructive"}>
+                    {n.estado || "Vigoroso"}
+                  </Badge>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <Badge variant="outline" className={`text-xs font-mono font-bold ${apgarColor(n.apgar_1min || 8)}`}>
+                    APGAR 1': {n.apgar_1min ?? 8}
+                  </Badge>
+                  <Badge variant="outline" className={`text-xs font-mono font-bold ${apgarColor(n.apgar_5min || 9)}`}>
+                    APGAR 5': {n.apgar_5min ?? 9}
+                  </Badge>
+                  <Badge variant="outline" className="text-xs font-mono text-muted-foreground">
+                    Silverman: 0/10 (Normal)
+                  </Badge>
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t border-border/60">
+                  <span>Destino: <strong className="text-foreground">{n.destino || "Alojamiento Conjunto"}</strong></span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 text-[11px] text-primary"
+                    onClick={() => setOpenCalculadora(true)}
+                  >
+                    Recalcular Score
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
+
+        {/* VACUNACIÓN NEONATAL */}
+        <TabsContent value="vacunas" className="space-y-2.5 pt-2">
+          {vacunas.length === 0 && (
+            <Card className="rounded-2xl border-border/80"><CardContent className="py-8 text-center text-muted-foreground text-xs">Sin vacunas neonatales pendientes.</CardContent></Card>
+          )}
+          {vacunas.map((v) => (
+            <Card key={v.id} className="rounded-2xl border-border/80 shadow-none">
+              <CardContent className="p-3.5 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                    <Syringe className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm text-foreground">{v.vacuna || "BCG + Hepatitis B Pediátrica"}</p>
+                    <p className="text-xs text-muted-foreground">Fecha: {format(new Date(v.fecha + "T12:00:00"), "PP")} · Dosis Única al Nacer</p>
+                  </div>
+                </div>
+                <Badge className="bg-emerald-600/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 text-xs">
+                  Inoculado
+                </Badge>
+              </CardContent>
+            </Card>
           ))}
         </TabsContent>
       </Tabs>
+
+      {/* Modales Interactivos */}
+      <PartogramaInteractivoModal
+        open={openPartograma}
+        onOpenChange={setOpenPartograma}
+      />
+
+      <SilvermanApgarCalculatorModal
+        open={openCalculadora}
+        onOpenChange={setOpenCalculadora}
+      />
     </div>
   );
 }

@@ -1,5 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Phone, MapPin, Calendar, PhoneCall, Pencil, Trash2, Building2, Eye, ArrowRight, UserCheck } from "lucide-react";
+import { Phone, MapPin, Calendar, PhoneCall, Pencil, Trash2, Building2, Eye, ArrowRight, UserCheck, ExternalLink } from "lucide-react";
 import { AccionesMenu } from "@/components/common/AccionesMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
@@ -50,6 +51,7 @@ export const PacienteCard = ({
   isSelected = false,
   onToggleSelect,
 }: PacienteCardProps) => {
+  const navigate = useNavigate();
   // Solo se resalta la dificultad cuando requiere atención (medio/alto); "bajo" no añade ruido.
   // La dificultad se comunica con el color de la tarjeta (franja y borde), no con una etiqueta.
   const DIFICULTAD_STYLE: Record<string, { franja: string; borde: string; label: string }> = {
@@ -135,7 +137,8 @@ export const PacienteCard = ({
         <AccionesMenu
           label={`Acciones de ${paciente.nombre} ${paciente.apellido}`}
           acciones={[
-            { label: "Ver ficha 360", icon: Eye, onSelect: onViewDetail },
+            { label: "Expediente Hub 360°", icon: ExternalLink, onSelect: () => navigate(`/hub-paciente/${paciente.id}`) },
+            { label: "Ver ficha rápida", icon: Eye, onSelect: onViewDetail },
             { label: "Agendar llamada", icon: PhoneCall, onSelect: onAgendarLlamada },
             { label: "Agendar visita", icon: Calendar, onSelect: onAgendarVisita },
             { label: "Editar paciente", icon: Pencil, onSelect: onEdit },

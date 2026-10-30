@@ -9,6 +9,7 @@ import { Calendar, Clock, MapPin, Phone, Globe, Loader2, AlertCircle, Printer, V
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
+import { enlaceSeguro } from "@/lib/videoLinks";
 
 export default function TicketPublico() {
   const { token } = useParams<{ token: string }>();
@@ -162,7 +163,7 @@ export default function TicketPublico() {
                     <Video className="h-4 w-4" /> Videoconsulta {data.video_proveedor ? `· ${data.video_proveedor}` : ""}
                   </p>
                   <Button asChild className="w-full" size="sm">
-                    <a href={data.video_enlace} target="_blank" rel="noreferrer">
+                    <a href={enlaceSeguro(data.video_enlace)} target="_blank" rel="noreferrer">
                       <Video className="h-4 w-4 mr-2" /> Unirse a la sala
                     </a>
                   </Button>

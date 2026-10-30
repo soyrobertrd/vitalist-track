@@ -270,7 +270,6 @@ export default function NotasMedicas() {
         title="Notas Médicas & Equipo Multidisciplinario"
         subtitle="Registro de evoluciones SOAP individuales, pases de guardia y juntas médicas interdisciplinarias"
         icon={FileText}
-        variant="teal"
         badge="Expediente Clínico Electrónico"
         action={
           <div className="flex items-center gap-2">

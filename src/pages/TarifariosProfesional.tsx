@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 export default function TarifariosProfesional() {
   const { currentWorkspace } = useWorkspace();
@@ -46,10 +47,7 @@ export default function TarifariosProfesional() {
   return (
     <div className="p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Tarifarios por Profesional y ARS</h1>
-          <p className="text-sm text-muted-foreground">Precios distintos por procedimiento, aseguradora y profesional con comisiones.</p>
-        </div>
+        <ClinicalPageHeader title="Tarifarios por Profesional y ARS" subtitle="Precios distintos por procedimiento, aseguradora y profesional con comisiones." />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> Nueva tarifa</Button></DialogTrigger>
           <DialogContent>

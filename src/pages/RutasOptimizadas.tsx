@@ -21,6 +21,7 @@ import {
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const RutasOptimizadas = () => {
   const [fecha, setFecha] = useState(format(new Date(), "yyyy-MM-dd"));
@@ -90,15 +91,7 @@ const RutasOptimizadas = () => {
     <div className="space-y-6">
       <Breadcrumbs />
 
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Route className="h-7 w-7 text-primary" />
-          Rutas Optimizadas
-        </h1>
-        <p className="text-muted-foreground">
-          Visitas domiciliarias agrupadas por zona y ordenadas por proximidad geográfica
-        </p>
-      </div>
+      <ClinicalPageHeader title="Rutas Optimizadas" subtitle="Visitas domiciliarias agrupadas por zona y ordenadas por proximidad geográfica" icon={Route} />
 
       <Card>
         <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-3 gap-4">

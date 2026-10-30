@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "sonner";
 import { FileSignature, Plus, CheckCircle2, XCircle, Eraser } from "lucide-react";
 import { format } from "date-fns";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const TIPOS = [
   { v: "medicamento_entrega", l: "Entrega de medicamento" },
@@ -131,12 +132,7 @@ export default function FirmasDigitales() {
   return (
     <div className="space-y-4 p-4 md:p-6">
       <div className="flex items-start justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <FileSignature className="h-7 w-7 text-primary" /> Firmas digitales
-          </h1>
-          <p className="text-muted-foreground">Entrega de medicamentos, documentos, alta médica y más, con firma manuscrita.</p>
-        </div>
+        <ClinicalPageHeader title="Firmas digitales" subtitle="Entrega de medicamentos, documentos, alta médica y más, con firma manuscrita." icon={FileSignature} />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> Capturar firma</Button></DialogTrigger>
           <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">

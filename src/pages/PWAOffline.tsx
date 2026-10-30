@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Smartphone, RefreshCw, WifiOff, Wifi, Trash2 } from "lucide-react";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 export default function PWAOffline() {
   const { currentWorkspace } = useWorkspace();
@@ -109,10 +110,7 @@ export default function PWAOffline() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">PWA Offline & Dispositivos</h1>
-          <p className="text-muted-foreground">Sincronización offline y gestión de dispositivos móviles</p>
-        </div>
+        <ClinicalPageHeader title="PWA Offline & Dispositivos" subtitle="Sincronización offline y gestión de dispositivos móviles" />
         <div className="flex items-center gap-2">
           {isOnline ? <Badge className="bg-green-500"><Wifi className="h-3 w-3 mr-1" />En línea</Badge>
                     : <Badge variant="destructive"><WifiOff className="h-3 w-3 mr-1" />Sin conexión</Badge>}

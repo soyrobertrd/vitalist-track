@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Award, Plus, Star } from "lucide-react";
 import { toast } from "sonner";
+import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 
 const estadoColor: Record<string, string> = {
   borrador: "bg-muted text-muted-foreground",
@@ -69,12 +70,7 @@ export default function EvaluacionesDesempeno() {
   return (
     <div className="p-4 md:p-6 space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Award className="h-7 w-7 text-primary" /> Evaluaciones de Desempeño
-          </h1>
-          <p className="text-sm text-muted-foreground">Ciclos de evaluación, competencias y planes de mejora</p>
-        </div>
+        <ClinicalPageHeader title="Evaluaciones de Desempeño" subtitle="Ciclos de evaluación, competencias y planes de mejora" icon={Award} />
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="h-4 w-4 mr-1" /> Nueva evaluación</Button></DialogTrigger>
           <DialogContent className="max-w-lg">
