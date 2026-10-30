@@ -57,6 +57,7 @@ import {
   Menu as MenuIcon,
   FileText,
   Syringe,
+  Camera,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -162,8 +163,11 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/dental-care?tab=consentimiento", label: "Consentimiento quirúrgico", icon: ShieldCheck, verticales: ["dental"] },
         { path: "/aesthetic-pro?tab=evaluaciones", label: "Evaluaciones estéticas", verticales: ["aesthetic"] },
         { path: "/aesthetic-pro?tab=ficha_biotipo", label: "Ficha Cutánea & Bonos", icon: Sparkles, verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=mapa_facial", label: "Face Mapping / Toxina", icon: Syringe, verticales: ["aesthetic"] },
         { path: "/aesthetic-pro?tab=viales", label: "Trazabilidad Viales/Botox", icon: Syringe, verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=fotos", label: "Fotos evolución", verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=fotos", label: "Fotos evolución & Split", icon: Camera, verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=cuidados_post", label: "Cuidados & Rutina en Casa", icon: Sparkles, verticales: ["aesthetic"] },
+        { path: "/aesthetic-pro?tab=gift_cards", label: "Gift Cards & Membresías", icon: Heart, verticales: ["aesthetic"] },
         { path: "/aesthetic-pro?tab=membresias", label: "Membresías Spa", icon: Heart, verticales: ["aesthetic"] },
         { path: "/vision-care?tab=recetas", label: "Recetas ópticas", verticales: ["vision"] },
         { path: "/vet-care?tab=mascotas", label: "Fichas de mascotas", verticales: ["veterinaria"] },

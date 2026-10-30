@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Users, Calendar, DoorOpen, Pill, SmilePlus, ReceiptText, Brain, Heart, PawPrint, Microscope, BedDouble, ChevronRight } from "lucide-react";
+import { Users, Calendar, DoorOpen, Pill, SmilePlus, ReceiptText, Brain, Heart, PawPrint, Microscope, BedDouble, ChevronRight, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface QuickLinkItem {
@@ -78,6 +78,15 @@ const ESPECIALIDADES_LINKS: QuickLinkItem[] = [
     to: "/dental-care",
     bgColor: "bg-teal-50 dark:bg-teal-950/40 border-teal-200/70 dark:border-teal-900/40",
     textColor: "text-teal-600 dark:text-teal-400",
+  },
+  {
+    id: "estetica",
+    label: "AestheticPro & Spa",
+    description: "Cabinas, botox & gift cards",
+    icon: Sparkles,
+    to: "/aesthetic-pro",
+    bgColor: "bg-fuchsia-50 dark:bg-fuchsia-950/40 border-fuchsia-200/70 dark:border-fuchsia-900/40",
+    textColor: "text-fuchsia-600 dark:text-fuchsia-400",
   },
   {
     id: "psicologia",

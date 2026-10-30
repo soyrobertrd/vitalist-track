@@ -53,6 +53,10 @@ import VerticalAPIGatewayTab from "@/components/vertical/VerticalAPIGatewayTab";
 import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 import FichaBiotipoConsentimiento from "@/components/aesthetic/FichaBiotipoConsentimiento";
 import CabinasSpaTrazabilidadViales from "@/components/aesthetic/CabinasSpaTrazabilidadViales";
+import MapaFacialInyectables from "@/components/aesthetic/MapaFacialInyectables";
+import MembresiasGiftCardsSpa from "@/components/aesthetic/MembresiasGiftCardsSpa";
+import ComparadorAntesDespues from "@/components/aesthetic/ComparadorAntesDespues";
+import ProtocoloCosmeceuticoPostTratamiento from "@/components/aesthetic/ProtocoloCosmeceuticoPostTratamiento";
 
 const estadoLeadColor: Record<string, string> = {
   nuevo: "bg-primary/10 text-primary border-primary/20",
@@ -207,12 +211,15 @@ function AestheticProContent() {
           <TabsTrigger value="leads">Leads CRM</TabsTrigger>
           <TabsTrigger value="evaluaciones">Evaluaciones</TabsTrigger>
           <TabsTrigger value="ficha_biotipo">Ficha Cutánea & Bonos</TabsTrigger>
+          <TabsTrigger value="mapa_facial">Mapa Facial / Inyectables</TabsTrigger>
           <TabsTrigger value="procedimientos">Procedimientos</TabsTrigger>
           <TabsTrigger value="paquetes">Paquetes</TabsTrigger>
           <TabsTrigger value="cabinas">Cabinas & Spa</TabsTrigger>
           <TabsTrigger value="viales">Trazabilidad Viales</TabsTrigger>
+          <TabsTrigger value="gift_cards">Gift Cards & Membresías</TabsTrigger>
           <TabsTrigger value="membresias">Membresías</TabsTrigger>
           <TabsTrigger value="fotos">Fotos Evolución</TabsTrigger>
+          <TabsTrigger value="cuidados_post">Cuidados & Rutina</TabsTrigger>
           <TabsTrigger value="promos">Promociones</TabsTrigger>
           <TabsTrigger value="financiamiento">Financiamiento</TabsTrigger>
           <TabsTrigger value="pacientes"><Users className="h-3.5 w-3.5 mr-1" />Clientes</TabsTrigger>
@@ -371,9 +378,23 @@ function AestheticProContent() {
           <CabinasSpaTrazabilidadViales />
         </TabsContent>
 
+        {/* MAPA FACIAL & INYECTABLES */}
+        <TabsContent value="mapa_facial" className="space-y-4 mt-4">
+          <MapaFacialInyectables />
+        </TabsContent>
+
+        {/* GIFT CARDS & MEMBRESÍAS VIP SPA */}
+        <TabsContent value="gift_cards" className="space-y-6 mt-4">
+          <MembresiasGiftCardsSpa />
+        </TabsContent>
+
         {/* MEMBRESÍAS */}
-        <TabsContent value="membresias" className="mt-4 space-y-4">
+        <TabsContent value="membresias" className="mt-4 space-y-6">
+          <MembresiasGiftCardsSpa />
           <Card>
+            <div className="p-4 border-b border-border/60">
+              <h3 className="text-sm font-semibold text-foreground">Registro Histórico de Membresías</h3>
+            </div>
             <Table>
               <TableHeader><TableRow>
                 <TableHead>Número</TableHead><TableHead>Cliente</TableHead><TableHead>Plan</TableHead><TableHead>Sesiones</TableHead><TableHead>Vigencia</TableHead><TableHead>Estado</TableHead>
@@ -395,20 +416,32 @@ function AestheticProContent() {
           </Card>
         </TabsContent>
 
-        {/* FOTOS EVOLUCIÓN */}
-        <TabsContent value="fotos" className="mt-4 space-y-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {fotosEvol.map((f: any) => (
-              <Card key={f.id}><CardContent className="pt-3 text-center">
-                <Image className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                <Badge variant="outline" className="mb-1">{f.tipo}</Badge>
-                <p className="text-xs font-medium">{f.procedimiento || "Sin procedimiento"}</p>
-                <p className="text-[10px] text-muted-foreground">{f.pacientes ? `${f.pacientes.nombre}` : ""} · {f.fecha_foto}</p>
-                {f.consentimiento_uso && <Badge variant="default" className="mt-1 text-[10px]">Consentimiento ✓</Badge>}
-              </CardContent></Card>
-            ))}
-            {!fotosEvol.length && <Card className="col-span-4"><CardContent className="py-8 text-center text-muted-foreground">Sin fotos de evolución</CardContent></Card>}
-          </div>
+        {/* FOTOS EVOLUCIÓN & COMPARADOR ANTES / DESPUÉS */}
+        <TabsContent value="fotos" className="mt-4 space-y-6">
+          <ComparadorAntesDespues />
+          {fotosEvol.length > 0 && (
+            <div className="space-y-3 pt-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Archivo de Fotografías Clínicas Subidas
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {fotosEvol.map((f: any) => (
+                  <Card key={f.id}><CardContent className="pt-3 text-center">
+                    <Image className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                    <Badge variant="outline" className="mb-1">{f.tipo}</Badge>
+                    <p className="text-xs font-medium">{f.procedimiento || "Sin procedimiento"}</p>
+                    <p className="text-[10px] text-muted-foreground">{f.pacientes ? `${f.pacientes.nombre}` : ""} · {f.fecha_foto}</p>
+                    {f.consentimiento_uso && <Badge variant="default" className="mt-1 text-[10px]">Consentimiento ✓</Badge>}
+                  </CardContent></Card>
+                ))}
+              </div>
+            </div>
+          )}
+        </TabsContent>
+
+        {/* CUIDADOS POST-TRATAMIENTO & PROTOCOLO COSMECÉUTICO */}
+        <TabsContent value="cuidados_post" className="mt-4 space-y-6">
+          <ProtocoloCosmeceuticoPostTratamiento />
         </TabsContent>
 
         {/* PROMOCIONES */}
