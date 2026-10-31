@@ -37,12 +37,14 @@ import {
   ShieldCheck,
   User,
   Clock,
+  Share2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { addDays, addMonths, addYears, format, differenceInWeeks, differenceInDays } from "date-fns";
 import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
+import { useModoOperativo } from "@/hooks/useModoOperativo";
 
 export type TipoConsultaGineco =
   | "prenatal"
@@ -115,11 +117,31 @@ const MOCK_CONSULTAS_GINECO: ConsultaGinecoObstetrica[] = [
 ];
 
 export default function GinecologiaObstetricia() {
+  const { esModoClinica } = useModoOperativo();
   const [consultas, setConsultas] = useState<ConsultaGinecoObstetrica[]>(MOCK_CONSULTAS_GINECO);
   const [tab, setTab] = useState<"consultas" | "calculadora_gestacional" | "score_bishop">("consultas");
   const [search, setSearch] = useState("");
   const [filtroTipo, setFiltroTipo] = useState<string>("todas");
   const [modalOpen, setModalOpen] = useState(false);
+
+  const handleCopiarInformeGineco = (c: ConsultaGinecoObstetrica) => {
+    const texto = `🌸 *CONTROL GINECO-OBSTÉTRICO*
+👤 *Paciente:* ${c.paciente_nombre}
+📅 *Fecha:* ${c.fecha}
+🩺 *Tipo:* ${c.tipo_consulta.replace("_", " ").toUpperCase()}
+⚖️ *Signos Vitales:* TA: ${c.ta} mmHg | Peso: ${c.peso_kg} kg
+${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_semanas} semanas
+📏 *Altura Uterina:* ${c.altura_uterina_cm || "—"} cm
+💓 *Frecuencia Cardíaca Fetal (FCF):* ${c.fcf_lpm || "—"} lpm
+🗓️ *FUM:* ${c.fum || "—"} | *FPP Estimada:* ${c.fpp || "—"}` : ""}
+🔬 *Diagnóstico:* ${c.diagnostico}
+📋 *Plan & Conducta:* ${c.plan_conducta}
+
+🏥 *Atendido en:* ${esModoClinica ? "Clínica de la Mujer & Maternidad" : "Consultorio Ginecológico"}`;
+
+    navigator.clipboard.writeText(texto);
+    toast.success("Informe copiado al portapapeles para WhatsApp");
+  };
 
   // Calculadora de Naegele
   const [calcFum, setCalcFum] = useState("2026-04-10");
@@ -330,12 +352,13 @@ export default function GinecologiaObstetricia() {
                       <TableHead className="text-xs font-semibold">Datos Gestacionales</TableHead>
                       <TableHead className="text-xs font-semibold">Diagnóstico Clínico</TableHead>
                       <TableHead className="text-xs font-semibold">Conducta / Plan</TableHead>
+                      <TableHead className="text-xs font-semibold text-right">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredConsultas.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-6 text-xs text-muted-foreground">
+                        <TableCell colSpan={7} className="text-center py-6 text-xs text-muted-foreground">
                           No hay consultas gineco-obstétricas registradas.
                         </TableCell>
                       </TableRow>
@@ -381,6 +404,17 @@ export default function GinecologiaObstetricia() {
                           </TableCell>
                           <TableCell className="text-muted-foreground max-w-[220px]">
                             {c.plan_conducta}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              onClick={() => handleCopiarInformeGineco(c)}
+                              variant="ghost"
+                              size="icon"
+                              title="Copiar informe para WhatsApp"
+                              className="h-7 w-7 text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 rounded-lg"
+                            >
+                              <Share2 className="h-3.5 w-3.5" />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))

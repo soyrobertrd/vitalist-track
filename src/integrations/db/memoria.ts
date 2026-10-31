@@ -4,9 +4,9 @@
  * pero los datos viven en memoria y se guardan en localStorage.
  * Es la capa que se sustituirá por la API sobre Turso sin tocar las páginas.
  */
-import relaciones from "./relaciones.json";
-import { sembrarDatos } from "./seed";
-import { Consulta, parsearSelect, type Campo, type Descriptor, type Filtro, type Resultado } from "./consulta";
+import relaciones from "./relaciones.js";
+import { sembrarDatos } from "./seed.js";
+import { Consulta, parsearSelect, type Campo, type Descriptor, type Filtro, type Resultado } from "./consulta.js";
 
 type Fila = Record<string, any>;
 type Tablas = Record<string, Fila[]>;

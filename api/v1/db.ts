@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { getAppDb } from "../../src/server/db/conexion-app";
-import { asegurarEsquema } from "../../src/server/db/esquema-sql";
-import { usuarioDeRequest } from "../../src/server/auth/sesion";
-import { contextoDe, ejecutarDescriptor } from "../../src/server/db/motor-sql";
-import type { Descriptor } from "../../src/integrations/db/consulta";
+import { getAppDb } from "../../src/server/db/conexion-app.js";
+import { asegurarEsquema } from "../../src/server/db/esquema-sql.js";
+import { usuarioDeRequest } from "../../src/server/auth/sesion.js";
+import { contextoDe, ejecutarDescriptor } from "../../src/server/db/motor-sql.js";
+import type { Descriptor } from "../../src/integrations/db/consulta.js";
 
 const filtro: z.ZodType<unknown> = z.lazy(() =>
   z.union([

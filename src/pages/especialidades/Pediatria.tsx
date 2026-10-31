@@ -25,10 +25,12 @@ import {
   Syringe,
   Wind,
   Smile,
-  HeartPulse
+  HeartPulse,
+  Share2,
 } from "lucide-react";
 import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
+import { useModoOperativo } from "@/hooks/useModoOperativo";
 
 export type TipoConsultaPedia =
   | "nino_sano"
@@ -120,10 +122,33 @@ const PACIENTES_PEDIA_MOCK: ConsultaPediatrica[] = [
 ];
 
 export default function Pediatria() {
+  const { esModoClinica } = useModoOperativo();
   const [consultas, setConsultas] = useState<ConsultaPediatrica[]>(PACIENTES_PEDIA_MOCK);
   const [busqueda, setBusqueda] = useState("");
   const [filtroTipo, setFiltroTipo] = useState<string>("todos");
   const [tabActual, setTabActual] = useState("consultas");
+
+  const handleCopiarInformePediatrico = (c: ConsultaPediatrica) => {
+    const texto = `👶 *INFORME DE CONSULTA PEDIÁTRICA & PUERICULTURA*
+👤 *Paciente:* ${c.paciente_nombre} (${c.edad_meses} meses)
+👨‍👩‍👧 *Tutor Responsable:* ${c.tutor_nombre}
+📅 *Fecha:* ${format(new Date(c.fecha), "dd/MM/yyyy hh:mm a")}
+
+📊 *Antropometría & Percentiles OMS:*
+- Peso: ${c.peso_kg} kg (Percentil: ${c.percentil_peso_edad})
+- Talla: ${c.talla_cm} cm (Percentil: ${c.percentil_talla_edad})
+- Perímetro Cefálico: ${c.pc_cm ? `${c.pc_cm} cm` : "N/D"}
+💉 *Esquema Vacunación (PAI):* ${c.vacunas_al_dia ? "Al día" : "Pendiente de actualizar"}
+${c.score_wood_downes !== undefined ? `💨 *Wood-Downes Respiratorio:* ${c.score_wood_downes} pts` : ""}
+
+🩺 *Diagnóstico Clínico:* ${c.diagnostico}
+📋 *Plan & Recomendaciones Médicas:* ${c.plan_conducta}
+
+🏥 *Atendido en:* ${esModoClinica ? "Policlínica / Centro Pediátrico" : "Consultorio Pediátrico Independiente"}`;
+
+    navigator.clipboard.writeText(texto);
+    toast.success("Informe pediátrico copiado para WhatsApp");
+  };
 
   // Modal nueva consulta
   const [modalOpen, setModalOpen] = useState(false);
@@ -347,6 +372,15 @@ export default function Pediatria() {
                           Wood-Downes: {c.score_wood_downes} pts
                         </Badge>
                       )}
+                      <Button
+                        onClick={() => handleCopiarInformePediatrico(c)}
+                        variant="ghost"
+                        size="icon"
+                        title="Copiar informe pediátrico para WhatsApp"
+                        className="h-7 w-7 text-sky-600 hover:text-sky-700 hover:bg-sky-500/10 rounded-lg"
+                      >
+                        <Share2 className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
                   </div>
 

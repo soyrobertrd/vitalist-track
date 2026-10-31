@@ -4,9 +4,9 @@
  * Todas las clínicas comparten una sola base en esta fase; el aislamiento lo da este archivo.
  */
 import type { Client, InValue } from "@libsql/client";
-import relacionesJson from "../../integrations/db/relaciones.json";
-import { parsearSelect, type Campo, type Descriptor, type Filtro, type Resultado } from "../../integrations/db/consulta";
-import { ESQUEMA, aSql, desdeSql, q, type TipoColumna } from "./esquema-sql";
+import relacionesJson from "../../integrations/db/relaciones.js";
+import { parsearSelect, type Campo, type Descriptor, type Filtro, type Resultado } from "../../integrations/db/consulta.js";
+import { ESQUEMA, aSql, desdeSql, q, type TipoColumna } from "./esquema-sql.js";
 
 type Fila = Record<string, unknown>;
 const FK = relacionesJson as [string, string, string][];

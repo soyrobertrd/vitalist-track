@@ -133,6 +133,8 @@ const AestheticPro = lazy(() => import("./pages/AestheticPro"));
 const DentalCarePro = lazy(() => import("./pages/DentalCarePro"));
 const VisionCarePro = lazy(() => import("./pages/VisionCarePro"));
 const PsicologiaPro = lazy(() => import("./pages/PsicologiaPro"));
+const FisioterapiaPro = lazy(() => import("./pages/FisioterapiaPro"));
+const NutricionPro = lazy(() => import("./pages/NutricionPro"));
 const LandingPsicologia = lazy(() => import("./pages/landing/LandingPsicologia"));
 const ReportesPsicologia = lazy(() => import("./pages/psicologia/ReportesPsicologia"));
 const ReportesDental = lazy(() => import("./pages/reportes/ReportesDental"));
@@ -741,6 +743,14 @@ const App = () => {
                 <Route
                   path="/psicologia-pro"
                   element={session ? <Layout><PsicologiaPro /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/fisioterapia-pro"
+                  element={session ? <Layout><FisioterapiaPro /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
+                  path="/nutricion-pro"
+                  element={session ? <Layout><NutricionPro /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route path="/landing/psicologia" element={<LandingPsicologia />} />
                 <Route path="/psicologia/reportes" element={session ? <Layout><ReportesPsicologia /></Layout> : <Navigate to="/auth" />} />

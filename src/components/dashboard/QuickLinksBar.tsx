@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Users, Calendar, DoorOpen, Pill, SmilePlus, ReceiptText, Brain, Heart, PawPrint, Microscope, BedDouble, ChevronRight, Sparkles, Glasses } from "lucide-react";
+import { Users, Calendar, DoorOpen, Pill, SmilePlus, ReceiptText, Brain, Heart, PawPrint, Microscope, BedDouble, ChevronRight, Sparkles, Glasses, Dumbbell, Apple, Baby, HeartHandshake } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface QuickLinkItem {
@@ -141,6 +141,42 @@ const ESPECIALIDADES_LINKS: QuickLinkItem[] = [
     to: "/censo-camas",
     bgColor: "bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200/70 dark:border-indigo-900/40",
     textColor: "text-indigo-600 dark:text-indigo-400",
+  },
+  {
+    id: "fisioterapia",
+    label: "Fisioterapia & Kine",
+    description: "Goniometría, Daniels & Boxes",
+    icon: Dumbbell,
+    to: "/fisioterapia-pro",
+    bgColor: "bg-teal-50 dark:bg-teal-950/40 border-teal-200/70 dark:border-teal-900/40",
+    textColor: "text-teal-600 dark:text-teal-400",
+  },
+  {
+    id: "nutricion",
+    label: "Nutrición Clínica",
+    description: "Bioimpedancia & Minutas",
+    icon: Apple,
+    to: "/nutricion-pro",
+    bgColor: "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200/70 dark:border-emerald-900/40",
+    textColor: "text-emerald-600 dark:text-emerald-400",
+  },
+  {
+    id: "ginecologia",
+    label: "Salud Femenina / Gineco",
+    description: "Control prenatal & Naegele",
+    icon: HeartHandshake,
+    to: "/ginecologia-obstetricia",
+    bgColor: "bg-rose-50 dark:bg-rose-950/40 border-rose-200/70 dark:border-rose-900/40",
+    textColor: "text-rose-600 dark:text-rose-400",
+  },
+  {
+    id: "pediatria",
+    label: "Pediatría & Puericultura",
+    description: "Curvas OMS & Vacunas",
+    icon: Baby,
+    to: "/pediatria",
+    bgColor: "bg-sky-50 dark:bg-sky-950/40 border-sky-200/70 dark:border-sky-900/40",
+    textColor: "text-sky-600 dark:text-sky-400",
   },
 ];
 

@@ -1,9 +1,9 @@
 /**
  * Esquema SQLite de la app en Turso (una sola base en esta fase de pruebas).
- * Las tablas salen de src/integrations/db/esquema.json, generado con scripts/generar-esquema-sqlite.mjs.
+ * Las tablas salen de src/integrations/db/esquema.ts, generado con scripts/generar-esquema-sqlite.mjs.
  */
 import type { Client } from "@libsql/client";
-import esquemaJson from "../../integrations/db/esquema.json";
+import esquemaJson from "../../integrations/db/esquema.js";
 
 export type TipoColumna = "text" | "real" | "bool" | "json";
 export const ESQUEMA = esquemaJson as Record<string, Record<string, TipoColumna>>;

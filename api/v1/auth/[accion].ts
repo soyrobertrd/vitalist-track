@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { getAppDb } from "../../../src/server/db/conexion-app";
-import { asegurarEsquema } from "../../../src/server/db/esquema-sql";
-import { hashClave, verificarClave } from "../../../src/server/auth/clave";
-import { cerrarSesion, crearSesion, usuarioDeRequest } from "../../../src/server/auth/sesion";
+import { getAppDb } from "../../../src/server/db/conexion-app.js";
+import { asegurarEsquema } from "../../../src/server/db/esquema-sql.js";
+import { hashClave, verificarClave } from "../../../src/server/auth/clave.js";
+import { cerrarSesion, crearSesion, usuarioDeRequest } from "../../../src/server/auth/sesion.js";
 
 const credenciales = z.object({ email: z.string().trim().toLowerCase().email().max(254), password: z.string().min(8).max(200) });
 const registro = credenciales.extend({ data: z.record(z.string(), z.unknown()).optional() });

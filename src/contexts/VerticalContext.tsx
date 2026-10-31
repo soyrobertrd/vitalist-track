@@ -3,7 +3,7 @@ import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { useUserRole } from "@/hooks/useUserRole";
 
-export type VerticalTipo = "clinica" | "dental" | "aesthetic" | "recovery" | "vision" | "psicologia" | "veterinaria";
+export type VerticalTipo = "clinica" | "dental" | "aesthetic" | "recovery" | "vision" | "psicologia" | "veterinaria" | "fisioterapia" | "nutricion" | "ginecologia" | "pediatria";
 
 interface VerticalContextValue {
   verticalesActivas: VerticalTipo[];

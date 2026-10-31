@@ -2,7 +2,7 @@
  * Configuración Canónica de las 6 Verticales de Salud (Fase 4 Plan Maestro)
  * Centraliza nombres, iconos, rutas raíz y metadatos de vertical.
  */
-import { Activity, CircleDot, Sparkles, BedDouble, Eye, Brain, PawPrint, type LucideIcon } from "lucide-react";
+import { Activity, CircleDot, Sparkles, BedDouble, Eye, Brain, PawPrint, Dumbbell, Apple, HeartHandshake, Baby, type LucideIcon } from "lucide-react";
 import type { VerticalTipo } from "@/contexts/VerticalContext";
 
 export interface VerticalMetadata {
@@ -79,6 +79,42 @@ export const VERTICALES_CONFIG: Record<VerticalTipo, VerticalMetadata> = {
     descripcion: "Fichas de mascotas con tutor, especie, raza y peso; calendario de vacunas.",
     badgeColorClass: "bg-amber-500/10 text-amber-700 border-amber-500/20",
   },
+  fisioterapia: {
+    id: "fisioterapia",
+    label: "Fisioterapia & Kinesiología",
+    nombreComercial: "KinePhysio Pro",
+    icon: Dumbbell,
+    rootPath: "/fisioterapia-pro",
+    descripcion: "Goniometría, balance Daniels, escala EVA, boxes de electroterapia y bonos.",
+    badgeColorClass: "bg-teal-500/10 text-teal-600 border-teal-500/20",
+  },
+  nutricion: {
+    id: "nutricion",
+    label: "Nutrición & Dietética",
+    nombreComercial: "NutriVital Pro",
+    icon: Apple,
+    rootPath: "/nutricion-pro",
+    descripcion: "Bioimpedancia, tasa metabólica basal, minutas semanales y control calórico.",
+    badgeColorClass: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  },
+  ginecologia: {
+    id: "ginecologia",
+    label: "Ginecología & Obstetricia",
+    nombreComercial: "Salud Femenina Pro",
+    icon: HeartHandshake,
+    rootPath: "/ginecologia-obstetricia",
+    descripcion: "Control prenatal, regla Naegele FPP, altura uterina y ecografías obstétricas.",
+    badgeColorClass: "bg-rose-500/10 text-rose-600 border-rose-500/20",
+  },
+  pediatria: {
+    id: "pediatria",
+    label: "Pediatría & Puericultura",
+    nombreComercial: "Pediatría Integral",
+    icon: Baby,
+    rootPath: "/pediatria",
+    descripcion: "Percentiles OMS de crecimiento, cartilla nacional de vacunas y puericultura.",
+    badgeColorClass: "bg-sky-500/10 text-sky-600 border-sky-500/20",
+  },
 };
 
 export const VERTICAL_LABELS: Record<VerticalTipo, string> = {
@@ -89,6 +125,10 @@ export const VERTICAL_LABELS: Record<VerticalTipo, string> = {
   vision: VERTICALES_CONFIG.vision.label,
   psicologia: VERTICALES_CONFIG.psicologia.label,
   veterinaria: VERTICALES_CONFIG.veterinaria.label,
+  fisioterapia: VERTICALES_CONFIG.fisioterapia.label,
+  nutricion: VERTICALES_CONFIG.nutricion.label,
+  ginecologia: VERTICALES_CONFIG.ginecologia.label,
+  pediatria: VERTICALES_CONFIG.pediatria.label,
 };
 
 export const VERTICAL_ICONS: Record<VerticalTipo, LucideIcon> = {
@@ -99,6 +139,10 @@ export const VERTICAL_ICONS: Record<VerticalTipo, LucideIcon> = {
   vision: VERTICALES_CONFIG.vision.icon,
   psicologia: VERTICALES_CONFIG.psicologia.icon,
   veterinaria: VERTICALES_CONFIG.veterinaria.icon,
+  fisioterapia: VERTICALES_CONFIG.fisioterapia.icon,
+  nutricion: VERTICALES_CONFIG.nutricion.icon,
+  ginecologia: VERTICALES_CONFIG.ginecologia.icon,
+  pediatria: VERTICALES_CONFIG.pediatria.icon,
 };
 
 export const VERTICAL_ROOTS: Record<VerticalTipo, string> = {
@@ -109,6 +153,10 @@ export const VERTICAL_ROOTS: Record<VerticalTipo, string> = {
   vision: VERTICALES_CONFIG.vision.rootPath,
   psicologia: VERTICALES_CONFIG.psicologia.rootPath,
   veterinaria: VERTICALES_CONFIG.veterinaria.rootPath,
+  fisioterapia: VERTICALES_CONFIG.fisioterapia.rootPath,
+  nutricion: VERTICALES_CONFIG.nutricion.rootPath,
+  ginecologia: VERTICALES_CONFIG.ginecologia.rootPath,
+  pediatria: VERTICALES_CONFIG.pediatria.rootPath,
 };
 
 export interface VerticalCatalogoItem {
@@ -168,5 +216,33 @@ export const VERTICALES_CATALOGO: Record<VerticalTipo, VerticalCatalogoItem> = {
     icon: PawPrint,
     colorName: "Ámbar Veterinario",
     descripcion: VERTICALES_CONFIG.veterinaria.descripcion,
+  },
+  fisioterapia: {
+    codigo: "fisioterapia",
+    label: "Fisioterapia & Kinesiología",
+    icon: Dumbbell,
+    colorName: "Turquesa Rehab",
+    descripcion: VERTICALES_CONFIG.fisioterapia.descripcion,
+  },
+  nutricion: {
+    codigo: "nutricion",
+    label: "Nutrición & Dietética",
+    icon: Apple,
+    colorName: "Esmeralda Nutricional",
+    descripcion: VERTICALES_CONFIG.nutricion.descripcion,
+  },
+  ginecologia: {
+    codigo: "ginecologia",
+    label: "Ginecología & Obstetricia",
+    icon: HeartHandshake,
+    colorName: "Rosa Obstétrico",
+    descripcion: VERTICALES_CONFIG.ginecologia.descripcion,
+  },
+  pediatria: {
+    codigo: "pediatria",
+    label: "Pediatría & Puericultura",
+    icon: Baby,
+    colorName: "Cielo Pediátrico",
+    descripcion: VERTICALES_CONFIG.pediatria.descripcion,
   },
 };

@@ -59,6 +59,9 @@ import {
   Syringe,
   Camera,
   Zap,
+  Dumbbell,
+  Apple,
+  Utensils,
 } from "lucide-react";
 import { db } from "@/integrations/db/client";
 import { toast } from "sonner";
@@ -190,6 +193,10 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/psicologia-pro?tab=psiquiatria", label: "Psiquiatría", verticales: ["psicologia"] },
         { path: "/psicologia-pro?tab=tareas", label: "Tareas terapéuticas", verticales: ["psicologia"] },
         { path: "/psicologia-pro?tab=paquetes", label: "Paquetes/Bonos", verticales: ["psicologia"] },
+        { path: "/fisioterapia-pro?tab=goniometria", label: "Goniometría & Daniels", icon: Dumbbell, verticales: ["fisioterapia"] },
+        { path: "/fisioterapia-pro?tab=boxes_sesiones", label: "Boxes & Paquetes Terapia", icon: Building2, verticales: ["fisioterapia"] },
+        { path: "/nutricion-pro?tab=bioimpedancia", label: "Bioimpedancia & Metabolismo", icon: Apple, verticales: ["nutricion"] },
+        { path: "/nutricion-pro?tab=planificador", label: "Planificador de Minutas & Dietas", icon: Utensils, verticales: ["nutricion"] },
       ]
     },
 
@@ -274,6 +281,8 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/vision-care?tab=garantias", label: "Garantías", verticales: ["vision"] },
         { path: "/recovery-care?tab=habitaciones", label: "Habitaciones", icon: BedDouble, verticales: ["recovery"] },
         { path: "/recovery-care?tab=reservas", label: "Reservas", verticales: ["recovery"] },
+        { path: "/fisioterapia-pro?tab=boxes_sesiones", label: "Boxes & Gimnasio Fisioterapia", icon: Building2, verticales: ["fisioterapia"] },
+        { path: "/nutricion-pro?tab=planificador", label: "Alimentos & Equivalencias", icon: Apple, verticales: ["nutricion"] },
       ]
     },
 
@@ -374,6 +383,8 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/reportes/aesthetic", label: "Reportes Estética", verticales: ["aesthetic"] as VerticalTipo[] },
         { path: "/reportes/recovery", label: "Reportes Recovery", verticales: ["recovery"] as VerticalTipo[] },
         { path: "/psicologia/reportes", label: "Reportes Psicología", verticales: ["psicologia"] as VerticalTipo[] },
+        { path: "/reportes", label: "Reportes Fisioterapia", verticales: ["fisioterapia"] as VerticalTipo[] },
+        { path: "/reportes", label: "Reportes Nutrición", verticales: ["nutricion"] as VerticalTipo[] },
       ],
     },
 
