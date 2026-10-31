@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -372,15 +373,15 @@ ${c.score_wood_downes !== undefined ? `💨 *Wood-Downes Respiratorio:* ${c.scor
                           Wood-Downes: {c.score_wood_downes} pts
                         </Badge>
                       )}
-                      <Button
+                      <IconButton label="Compartir"
                         onClick={() => handleCopiarInformePediatrico(c)}
                         variant="ghost"
                         size="icon"
                         title="Copiar informe pediátrico para WhatsApp"
-                        className="h-7 w-7 text-sky-600 hover:text-sky-700 hover:bg-sky-500/10 rounded-lg"
+                        className="h-7 w-7 text-sky-600 hover:text-sky-700 hover:bg-sky-500/10"
                       >
                         <Share2 className="h-3.5 w-3.5" />
-                      </Button>
+                      </IconButton>
                     </div>
                   </div>
 

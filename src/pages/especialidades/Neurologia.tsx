@@ -230,7 +230,7 @@ export default function Neurologia() {
           <Button
             onClick={() => setModalOpen(true)}
             size="sm"
-            className="rounded-xl gap-1.5 bg-purple-600 hover:bg-purple-700 text-white"
+            className="gap-1.5 bg-purple-600 hover:bg-purple-700 text-white"
           >
             <Plus className="w-4 h-4" /> Registrar Consulta Neurológica
           </Button>
@@ -271,16 +271,16 @@ export default function Neurologia() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={(v: any) => setTab(v)} className="space-y-4">
-        <TabsList className="bg-muted/40 p-1.5 rounded-2xl border border-border/70 flex flex-wrap gap-1 h-auto">
-          <TabsTrigger value="consultas" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+        <TabsList className="bg-muted/40 p-1.5 border border-border/70 flex flex-wrap gap-1 h-auto">
+          <TabsTrigger value="consultas" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <FileText className="h-4 w-4 text-purple-600" />
             Consultas & Pacientes
           </TabsTrigger>
-          <TabsTrigger value="calculadora_nihss" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="calculadora_nihss" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <Zap className="h-4 w-4 text-amber-600" />
             Calculadora NIHSS (Ictus / ACV)
           </TabsTrigger>
-          <TabsTrigger value="escala_glasgow" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="escala_glasgow" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <Calculator className="h-4 w-4 text-blue-600" />
             Escala de Coma de Glasgow
           </TabsTrigger>
@@ -296,12 +296,12 @@ export default function Neurologia() {
                   placeholder="Buscar paciente, sospecha ACV, diagnóstico..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 rounded-xl border-border/80 text-xs"
+                  className="pl-9 border-border/80 text-xs"
                 />
               </div>
 
               <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-                <SelectTrigger className="w-[200px] rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="w-[200px] border-border/80 text-xs">
                   <SelectValue placeholder="Tipo de Patología" />
                 </SelectTrigger>
                 <SelectContent>
@@ -427,7 +427,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">1a. Nivel de Conciencia</Label>
                 <Select value={String(nihssConciencia)} onValueChange={(v) => setNihssConciencia(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Alerta / Responde inmediatamente</SelectItem>
                     <SelectItem value="1">1: Somnoliento pero estimulable</SelectItem>
@@ -440,7 +440,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">1b. Preguntas (Mes & Edad)</Label>
                 <Select value={String(nihssPreguntas)} onValueChange={(v) => setNihssPreguntas(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Ambas respuestas correctas</SelectItem>
                     <SelectItem value="1">1: Una respuesta correcta</SelectItem>
@@ -452,7 +452,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">1c. Órdenes (Abrir ojos / Cerrar puño)</Label>
                 <Select value={String(nihssOrdenes)} onValueChange={(v) => setNihssOrdenes(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Realiza ambas tareas bien</SelectItem>
                     <SelectItem value="1">1: Realiza una tarea bien</SelectItem>
@@ -464,7 +464,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">2. Mirada Conjugada Horizontal</Label>
                 <Select value={String(nihssMirada)} onValueChange={(v) => setNihssMirada(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Movimientos oculares normales</SelectItem>
                     <SelectItem value="1">1: Paresia parcial de la mirada</SelectItem>
@@ -476,7 +476,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">3. Campos Visuales (Campimetría)</Label>
                 <Select value={String(nihssVisual)} onValueChange={(v) => setNihssVisual(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Sin pérdida visual</SelectItem>
                     <SelectItem value="1">1: Hemianopsia parcial</SelectItem>
@@ -489,7 +489,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">4. Parálisis Facial</Label>
                 <Select value={String(nihssFacial)} onValueChange={(v) => setNihssFacial(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Movimiento simétrico normal</SelectItem>
                     <SelectItem value="1">1: Paresia menor (borramiento surco nasogeniano)</SelectItem>
@@ -502,7 +502,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">5a. Motor Brazo Izquierdo (10 seg)</Label>
                 <Select value={String(nihssMotorBrazoIzq)} onValueChange={(v) => setNihssMotorBrazoIzq(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Mantiene 10 seg sin claudicar</SelectItem>
                     <SelectItem value="1">1: Claudica antes de 10 seg pero no cae</SelectItem>
@@ -516,7 +516,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">5b. Motor Brazo Derecho (10 seg)</Label>
                 <Select value={String(nihssMotorBrazoDer)} onValueChange={(v) => setNihssMotorBrazoDer(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Mantiene 10 seg sin claudicar</SelectItem>
                     <SelectItem value="1">1: Claudica antes de 10 seg pero no cae</SelectItem>
@@ -530,7 +530,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">6a. Motor Pierna Izquierda (5 seg)</Label>
                 <Select value={String(nihssMotorPiernaIzq)} onValueChange={(v) => setNihssMotorPiernaIzq(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Mantiene 5 seg a 30°</SelectItem>
                     <SelectItem value="1">1: Claudica antes de 5 seg</SelectItem>
@@ -544,7 +544,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">6b. Motor Pierna Derecha (5 seg)</Label>
                 <Select value={String(nihssMotorPiernaDer)} onValueChange={(v) => setNihssMotorPiernaDer(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Mantiene 5 seg a 30°</SelectItem>
                     <SelectItem value="1">1: Claudica antes de 5 seg</SelectItem>
@@ -558,7 +558,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">9. Lenguaje / Afasia</Label>
                 <Select value={String(nihssLenguaje)} onValueChange={(v) => setNihssLenguaje(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Sin afasia / Fluidez normal</SelectItem>
                     <SelectItem value="1">1: Afasia leve a moderada</SelectItem>
@@ -571,7 +571,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs">11. Inatención / Extinción</Label>
                 <Select value={String(nihssNegligencia)} onValueChange={(v) => setNihssNegligencia(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">0: Normal / Sin negligencia</SelectItem>
                     <SelectItem value="1">1: Inatención a una modalidad sensorial</SelectItem>
@@ -641,7 +641,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs font-semibold">Respuesta Ocular (E: 1-4)</Label>
                 <Select value={String(glasgowOcular)} onValueChange={(v) => setGlasgowOcular(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="4">4: Espontánea</SelectItem>
                     <SelectItem value="3">3: Al estímulo verbal</SelectItem>
@@ -654,7 +654,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs font-semibold">Respuesta Verbal (V: 1-5)</Label>
                 <Select value={String(glasgowVerbal)} onValueChange={(v) => setGlasgowVerbal(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="5">5: Orientado y conversando</SelectItem>
                     <SelectItem value="4">4: Confuso / Desorientado</SelectItem>
@@ -668,7 +668,7 @@ export default function Neurologia() {
               <div className="space-y-1">
                 <Label className="text-xs font-semibold">Respuesta Motora (M: 1-6)</Label>
                 <Select value={String(glasgowMotor)} onValueChange={(v) => setGlasgowMotor(Number(v))}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="6">6: Obedece órdenes simples</SelectItem>
                     <SelectItem value="5">5: Localiza el dolor</SelectItem>
@@ -721,7 +721,7 @@ export default function Neurologia() {
                 placeholder="Ej. Danilo Castillo Mora"
                 value={form.paciente_nombre}
                 onChange={(e) => setForm({ ...form, paciente_nombre: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -731,7 +731,7 @@ export default function Neurologia() {
                 placeholder="Ej. 64a / M"
                 value={form.edad_sexo}
                 onChange={(e) => setForm({ ...form, edad_sexo: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -741,7 +741,7 @@ export default function Neurologia() {
                 value={form.tipo_consulta}
                 onValueChange={(v: any) => setForm({ ...form, tipo_consulta: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="codigo_acv">Código ACV / Ictus Isquémico</SelectItem>
                   <SelectItem value="cefalea_migrana">Cefalea / Migraña</SelectItem>
@@ -760,7 +760,7 @@ export default function Neurologia() {
                 max="15"
                 value={form.glasgow_score}
                 onChange={(e) => setForm({ ...form, glasgow_score: Number(e.target.value) })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -770,7 +770,7 @@ export default function Neurologia() {
                 value={form.fuerza_daniels}
                 onValueChange={(v: any) => setForm({ ...form, fuerza_daniels: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="5/5 (Normal)">5/5 (Normal)</SelectItem>
                   <SelectItem value="4/5 (Vence gravedad y resistencia leve)">4/5 (Vence gravedad y resistencia)</SelectItem>
@@ -790,7 +790,7 @@ export default function Neurologia() {
                     type="number"
                     value={form.nihss_score}
                     onChange={(e) => setForm({ ...form, nihss_score: Number(e.target.value) })}
-                    className="rounded-xl border-border/80 text-xs"
+                    className="border-border/80 text-xs"
                   />
                 </div>
 
@@ -801,7 +801,7 @@ export default function Neurologia() {
                     step="0.5"
                     value={form.ventana_tiempo_horas}
                     onChange={(e) => setForm({ ...form, ventana_tiempo_horas: Number(e.target.value) })}
-                    className="rounded-xl border-border/80 text-xs"
+                    className="border-border/80 text-xs"
                   />
                 </div>
               </>
@@ -813,7 +813,7 @@ export default function Neurologia() {
                 placeholder="Ej. ACV Isquémico agudo de territorio medio izquierdo"
                 value={form.diagnostico}
                 onChange={(e) => setForm({ ...form, diagnostico: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -823,19 +823,19 @@ export default function Neurologia() {
                 placeholder="Estudios de neuroimagen (Angio-TAC, RMN), antiagregación, estatina, trombolisis..."
                 value={form.plan_conducta}
                 onChange={(e) => setForm({ ...form, plan_conducta: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 rows={2}
               />
             </div>
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancelar
             </Button>
             <Button
               onClick={handleCrearConsulta}
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white"
+              className="bg-purple-600 hover:bg-purple-700 text-white"
             >
               Guardar Consulta
             </Button>

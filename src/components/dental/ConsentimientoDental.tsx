@@ -171,7 +171,7 @@ export default function ConsentimientoDental() {
               value={pacienteNombre}
               onChange={(e) => setPacienteNombre(e.target.value)}
               disabled={firmado}
-              className="rounded-xl mt-1 h-8 text-xs"
+              className="mt-1 h-8 text-xs"
             />
           </div>
           <div>
@@ -181,7 +181,7 @@ export default function ConsentimientoDental() {
               value={cedula}
               onChange={(e) => setCedula(e.target.value)}
               disabled={firmado}
-              className="rounded-xl mt-1 h-8 text-xs"
+              className="mt-1 h-8 text-xs"
             />
           </div>
           <div>
@@ -191,7 +191,7 @@ export default function ConsentimientoDental() {
               value={piezaDental}
               onChange={(e) => setPiezaDental(e.target.value)}
               disabled={firmado}
-              className="rounded-xl mt-1 h-8 text-xs"
+              className="mt-1 h-8 text-xs"
             />
           </div>
         </div>
@@ -204,7 +204,7 @@ export default function ConsentimientoDental() {
             onValueChange={(val: any) => setProcedimiento(val)}
             disabled={firmado}
           >
-            <SelectTrigger className="rounded-xl mt-1 h-9 text-xs">
+            <SelectTrigger className="mt-1 h-9 text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -308,7 +308,7 @@ export default function ConsentimientoDental() {
             <div className="pt-2 flex justify-end">
               <Button
                 onClick={handleFirmar}
-                className="rounded-xl gap-2 shadow-none bg-teal-600 hover:bg-teal-700 text-white"
+                className="gap-2 shadow-none bg-teal-600 hover:bg-teal-700 text-white"
               >
                 <CheckCircle2 className="h-4 w-4" /> Validar Consentimiento Odontológico
               </Button>
@@ -328,7 +328,7 @@ export default function ConsentimientoDental() {
             <Button
               variant="outline"
               size="sm"
-              className="rounded-xl text-xs gap-1.5 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+              className="text-xs gap-1.5 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
               onClick={() => toast.info("Generando copia en PDF del consentimiento...")}
             >
               <Download className="h-3.5 w-3.5" /> Descargar PDF

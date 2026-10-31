@@ -44,6 +44,8 @@ All colors MUST be HSL.
     --ring: 217 91% 60%;
 
     --radius: 0.75rem;
+    /* Botones, inputs y selects: nunca más de 8px. */
+    --radius-control: 0.5rem;
     
     /* Glassmorphism effects */
     --glass-bg: rgba(255, 255, 255, 0.1);

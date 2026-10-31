@@ -66,7 +66,7 @@ export function ChildPughTab({
                 step="0.1"
                 value={cpBilirrubina}
                 onChange={(e) => setCpBilirrubina(Number(e.target.value))}
-                className="rounded-xl border-border/80"
+                className="border-border/80"
               />
               <span className="text-[11px] text-muted-foreground block">
                 &lt; 2 mg/dL (1 pt) | 2 - 3 mg/dL (2 pts) | &gt; 3 mg/dL (3 pts)
@@ -80,7 +80,7 @@ export function ChildPughTab({
                 step="0.1"
                 value={cpAlbumina}
                 onChange={(e) => setCpAlbumina(Number(e.target.value))}
-                className="rounded-xl border-border/80"
+                className="border-border/80"
               />
               <span className="text-[11px] text-muted-foreground block">
                 &gt; 3.5 g/dL (1 pt) | 2.8 - 3.5 g/dL (2 pts) | &lt; 2.8 g/dL (3 pts)
@@ -94,7 +94,7 @@ export function ChildPughTab({
                 step="0.05"
                 value={cpInr}
                 onChange={(e) => setCpInr(Number(e.target.value))}
-                className="rounded-xl border-border/80"
+                className="border-border/80"
               />
               <span className="text-[11px] text-muted-foreground block">
                 &lt; 1.7 (1 pt) | 1.7 - 2.3 (2 pts) | &gt; 2.3 (3 pts)
@@ -104,7 +104,7 @@ export function ChildPughTab({
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Ascitis Clínica / Ecográfica:</Label>
               <Select value={cpAscitis.toString()} onValueChange={(v) => setCpAscitis(Number(v))}>
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -118,7 +118,7 @@ export function ChildPughTab({
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Encefalopatía Hepática (Criterios West-Haven):</Label>
               <Select value={cpEncefalopatia.toString()} onValueChange={(v) => setCpEncefalopatia(Number(v))}>
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -164,7 +164,7 @@ export function ChildPughTab({
 
             <Button
               variant="outline"
-              className="w-full rounded-xl text-xs"
+              className="w-full text-xs"
               onClick={() => {
                 onUsarClase(childPughResultado.clase);
                 toast.info(`Clase Child-Pugh (${childPughResultado.clase}) copiada.`);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -153,13 +154,13 @@ export function DiasNoLaborablesCalendar() {
                       {dia.descripcion}
                     </p>
                   </div>
-                  <Button
+                  <IconButton label="Eliminar"
                     variant="ghost"
                     size="icon"
                     onClick={() => handleDeleteDia(dia.fecha)}
                   >
                     <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
+                  </IconButton>
                 </div>
               ))
             )}

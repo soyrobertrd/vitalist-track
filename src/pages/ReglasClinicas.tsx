@@ -344,7 +344,7 @@ export default function ReglasClinicas() {
           <Button
             onClick={() => setModalOpen(true)}
             size="sm"
-            className="rounded-xl gap-1.5 bg-purple-600 hover:bg-purple-700 text-white"
+            className="gap-1.5 bg-purple-600 hover:bg-purple-700 text-white"
           >
             <Plus className="w-4 h-4" /> Crear Regla Clínica
           </Button>
@@ -392,13 +392,13 @@ export default function ReglasClinicas() {
               placeholder="Buscar regla por código (ej. CDSS-SEP), nombre, fármaco..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 rounded-xl border-border/80 text-xs"
+              className="pl-9 border-border/80 text-xs"
             />
           </div>
 
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
             <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
-              <SelectTrigger className="w-[180px] rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="w-[180px] border-border/80 text-xs">
                 <SelectValue placeholder="Categoría" />
               </SelectTrigger>
               <SelectContent>
@@ -412,7 +412,7 @@ export default function ReglasClinicas() {
             </Select>
 
             <Select value={filtroSeveridad} onValueChange={setFiltroSeveridad}>
-              <SelectTrigger className="w-[160px] rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="w-[160px] border-border/80 text-xs">
                 <SelectValue placeholder="Severidad" />
               </SelectTrigger>
               <SelectContent>
@@ -505,7 +505,7 @@ export default function ReglasClinicas() {
                       size="sm"
                       variant="ghost"
                       onClick={() => abrirSimulador(r)}
-                      className="h-6 text-[10px] px-2 rounded-lg gap-1 hover:bg-muted text-purple-600 font-semibold"
+                      className="h-6 text-[10px] px-2 gap-1 hover:bg-muted text-purple-600 font-semibold"
                     >
                       <Play className="w-2.5 h-2.5" /> Simular
                     </Button>
@@ -536,7 +536,7 @@ export default function ReglasClinicas() {
                 placeholder="Ej. CDSS-SEP-02"
                 value={nuevaRegla.codigo}
                 onChange={(e) => setNuevaRegla({ ...nuevaRegla, codigo: e.target.value })}
-                className="rounded-xl border-border/80 text-xs font-mono"
+                className="border-border/80 text-xs font-mono"
               />
             </div>
 
@@ -546,7 +546,7 @@ export default function ReglasClinicas() {
                 value={nuevaRegla.categoria}
                 onValueChange={(v: any) => setNuevaRegla({ ...nuevaRegla, categoria: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="sepsis">Sepsis & Deterioro</SelectItem>
                   <SelectItem value="laboratorio_panico">Valores de Pánico LIS</SelectItem>
@@ -563,7 +563,7 @@ export default function ReglasClinicas() {
                 placeholder="Ej. Detección de Shock Anafiláctico en Sala de Procedimientos"
                 value={nuevaRegla.nombre}
                 onChange={(e) => setNuevaRegla({ ...nuevaRegla, nombre: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -573,7 +573,7 @@ export default function ReglasClinicas() {
                 value={nuevaRegla.severidad}
                 onValueChange={(v: any) => setNuevaRegla({ ...nuevaRegla, severidad: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="critica">Crítica (Soporte Vital)</SelectItem>
                   <SelectItem value="alta">Alta</SelectItem>
@@ -589,7 +589,7 @@ export default function ReglasClinicas() {
                 value={nuevaRegla.evento_disparador}
                 onValueChange={(v) => setNuevaRegla({ ...nuevaRegla, evento_disparador: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="actualizacion_signos_vitales">Actualización Signos Vitales</SelectItem>
                   <SelectItem value="resultado_laboratorio_validado">Resultado LIS Validado</SelectItem>
@@ -615,7 +615,7 @@ export default function ReglasClinicas() {
                 placeholder="Ej. Generar Alerta STAT con sonido continuo y notificar a intensivista de guardia"
                 value={nuevaRegla.accion_ejecutada}
                 onChange={(e) => setNuevaRegla({ ...nuevaRegla, accion_ejecutada: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -625,17 +625,17 @@ export default function ReglasClinicas() {
                 placeholder="Explicación clínica de la regla según guías de práctica clínica internacionales..."
                 value={nuevaRegla.descripcion}
                 onChange={(e) => setNuevaRegla({ ...nuevaRegla, descripcion: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 rows={2}
               />
             </div>
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleCrearRegla} className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white">
+            <Button onClick={handleCrearRegla} className="bg-purple-600 hover:bg-purple-700 text-white">
               Guardar & Activar Regla
             </Button>
           </DialogFooter>
@@ -669,7 +669,7 @@ export default function ReglasClinicas() {
                   <Input
                     value={simParam1}
                     onChange={(e) => setSimParam1(e.target.value)}
-                    className="rounded-xl border-border/80 text-xs font-mono"
+                    className="border-border/80 text-xs font-mono"
                   />
                 </div>
                 <div className="space-y-1">
@@ -677,7 +677,7 @@ export default function ReglasClinicas() {
                   <Input
                     value={simParam2}
                     onChange={(e) => setSimParam2(e.target.value)}
-                    className="rounded-xl border-border/80 text-xs font-mono"
+                    className="border-border/80 text-xs font-mono"
                   />
                 </div>
               </div>
@@ -697,10 +697,10 @@ export default function ReglasClinicas() {
           )}
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setSimuladorModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setSimuladorModalOpen(false)}>
               Cerrar
             </Button>
-            <Button onClick={ejecutarSimulacion} className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white gap-1.5">
+            <Button onClick={ejecutarSimulacion} className="bg-purple-600 hover:bg-purple-700 text-white gap-1.5">
               <Play className="w-3.5 h-3.5" /> Evaluar Inferencia
             </Button>
           </DialogFooter>

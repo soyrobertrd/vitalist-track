@@ -86,7 +86,7 @@ export function IntercambioGuardiasModal({
                     <div className="flex justify-end gap-2 pt-1">
                       <Button
                         size="sm"
-                        className="rounded-xl text-xs h-7 gap-1 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className="text-xs h-7 gap-1 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
                         onClick={() => onAprobar(s.id)}
                       >
                         <CheckCircle2 className="h-3.5 w-3.5" /> Aprobar Cambio
@@ -110,7 +110,7 @@ export function IntercambioGuardiasModal({
                 <Input
                   value={receptor}
                   onChange={e => setReceptor(e.target.value)}
-                  className="rounded-xl mt-1 text-xs"
+                  className="mt-1 text-xs"
                   required
                 />
               </div>
@@ -121,7 +121,7 @@ export function IntercambioGuardiasModal({
                   type="date"
                   value={fechaTurno}
                   onChange={e => setFechaTurno(e.target.value)}
-                  className="rounded-xl mt-1 text-xs font-mono"
+                  className="mt-1 text-xs font-mono"
                   required
                 />
               </div>
@@ -131,7 +131,7 @@ export function IntercambioGuardiasModal({
               <div>
                 <Label className="text-[11px] text-muted-foreground">Turno que cedo</Label>
                 <Select value={turnoOfrecido} onValueChange={(v: any) => setTurnoOfrecido(v)}>
-                  <SelectTrigger className="rounded-xl mt-1 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="G24">G24 (Guardia 24h)</SelectItem>
                     <SelectItem value="N">N (Noche 23-7h)</SelectItem>
@@ -144,7 +144,7 @@ export function IntercambioGuardiasModal({
               <div>
                 <Label className="text-[11px] text-muted-foreground">Turno que recibo</Label>
                 <Select value={turnoDeseado} onValueChange={(v: any) => setTurnoDeseado(v)}>
-                  <SelectTrigger className="rounded-xl mt-1 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="M">M (Mañana 7-15h)</SelectItem>
                     <SelectItem value="T">T (Tarde 15-23h)</SelectItem>
@@ -160,20 +160,20 @@ export function IntercambioGuardiasModal({
               <Input
                 value={motivo}
                 onChange={e => setMotivo(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
                 placeholder="Razón del cambio..."
                 required
               />
             </div>
 
-            <Button type="submit" className="w-full rounded-xl text-xs shadow-none">
+            <Button type="submit" className="w-full text-xs shadow-none">
               Enviar Solicitud
             </Button>
           </form>
         </div>
 
         <DialogFooter className="pt-2">
-          <Button variant="outline" className="rounded-xl text-xs" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" className="text-xs" onClick={() => onOpenChange(false)}>
             Cerrar
           </Button>
         </DialogFooter>

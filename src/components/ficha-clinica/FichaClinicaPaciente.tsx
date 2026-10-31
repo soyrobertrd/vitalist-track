@@ -3,6 +3,7 @@ import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -344,12 +345,12 @@ export function FichaClinicaPaciente({ pacienteId, conCabecera = false }: Props)
                     {a.notas && <p className="text-sm text-muted-foreground mt-1">{a.notas}</p>}
                   </div>
                   <div className="flex gap-1">
-                    <Button size="icon" variant="ghost" onClick={() => setAlergiaDialog({ open: true, data: a })}>
+                    <IconButton label="Editar" size="icon" variant="ghost" onClick={() => setAlergiaDialog({ open: true, data: a })}>
                       <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button size="icon" variant="ghost" onClick={() => deleteItem("alergias_paciente", a.id)}>
+                    </IconButton>
+                    <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => deleteItem("alergias_paciente", a.id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    </IconButton>
                   </div>
                 </div>
               ))
@@ -379,12 +380,12 @@ export function FichaClinicaPaciente({ pacienteId, conCabecera = false }: Props)
                     {ant.notas && <p className="text-sm text-muted-foreground mt-1">{ant.notas}</p>}
                   </div>
                   <div className="flex gap-1">
-                    <Button size="icon" variant="ghost" onClick={() => setAntecedenteDialog({ open: true, data: ant })}>
+                    <IconButton label="Editar" size="icon" variant="ghost" onClick={() => setAntecedenteDialog({ open: true, data: ant })}>
                       <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button size="icon" variant="ghost" onClick={() => deleteItem("antecedentes_medicos", ant.id)}>
+                    </IconButton>
+                    <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => deleteItem("antecedentes_medicos", ant.id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    </IconButton>
                   </div>
                 </div>
               ))
@@ -419,12 +420,12 @@ export function FichaClinicaPaciente({ pacienteId, conCabecera = false }: Props)
                     {s.notas && <p className="text-sm text-muted-foreground mt-1">{s.notas}</p>}
                   </div>
                   <div className="flex gap-1">
-                    <Button size="icon" variant="ghost" onClick={() => setSeguroDialog({ open: true, data: s })}>
+                    <IconButton label="Editar" size="icon" variant="ghost" onClick={() => setSeguroDialog({ open: true, data: s })}>
                       <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button size="icon" variant="ghost" onClick={() => deleteItem("seguros_paciente", s.id)}>
+                    </IconButton>
+                    <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => deleteItem("seguros_paciente", s.id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    </IconButton>
                   </div>
                 </div>
               ))

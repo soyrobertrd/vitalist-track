@@ -58,7 +58,7 @@ export function VacunasDesparasitacionTab({
               Inmunizaciones activas, refuerzos anuales y desparasitación interna / externa
             </p>
           </div>
-          <Button size="sm" className="rounded-xl shadow-none gap-1.5" onClick={onNuevoRegistro}>
+          <Button size="sm" className="shadow-none gap-1.5" onClick={onNuevoRegistro}>
             <Plus className="h-4 w-4" /> Registrar Dosis
           </Button>
         </div>
@@ -71,7 +71,7 @@ export function VacunasDesparasitacionTab({
               placeholder="Buscar por mascota, producto o lote..."
               value={busqueda}
               onChange={e => setBusqueda(e.target.value)}
-              className="pl-9 h-9 text-xs rounded-xl border-border/80"
+              className="pl-9 h-9 text-xs border-border/80"
             />
           </div>
 
@@ -80,7 +80,7 @@ export function VacunasDesparasitacionTab({
               type="button"
               size="sm"
               variant={filtroTipo === "todos" ? "default" : "outline"}
-              className="rounded-xl text-xs h-9 px-3"
+              className="text-xs h-9 px-3"
               onClick={() => setFiltroTipo("todos")}
             >
               Todos
@@ -89,7 +89,7 @@ export function VacunasDesparasitacionTab({
               type="button"
               size="sm"
               variant={filtroTipo === "vacuna" ? "default" : "outline"}
-              className="rounded-xl text-xs h-9 px-3 gap-1"
+              className="text-xs h-9 px-3 gap-1"
               onClick={() => setFiltroTipo("vacuna")}
             >
               <Syringe className="h-3.5 w-3.5 text-blue-500" />
@@ -99,7 +99,7 @@ export function VacunasDesparasitacionTab({
               type="button"
               size="sm"
               variant={filtroTipo === "desparasitacion_interna" ? "default" : "outline"}
-              className="rounded-xl text-xs h-9 px-3 gap-1"
+              className="text-xs h-9 px-3 gap-1"
               onClick={() => setFiltroTipo("desparasitacion_interna")}
             >
               <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
@@ -109,7 +109,7 @@ export function VacunasDesparasitacionTab({
               type="button"
               size="sm"
               variant={filtroTipo === "desparasitacion_externa" ? "default" : "outline"}
-              className="rounded-xl text-xs h-9 px-3 gap-1"
+              className="text-xs h-9 px-3 gap-1"
               onClick={() => setFiltroTipo("desparasitacion_externa")}
             >
               <Bug className="h-3.5 w-3.5 text-amber-500" />

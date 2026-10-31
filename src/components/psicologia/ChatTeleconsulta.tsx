@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { db } from "@/integrations/db/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Send } from "lucide-react";
 
 interface Props {
@@ -78,7 +79,7 @@ export default function ChatTeleconsulta({ teleconsultaId, autorTipo, autorUserI
         <Input value={txt} onChange={e => setTxt(e.target.value)}
           onKeyDown={e => e.key === "Enter" && send()}
           placeholder="Mensaje..." />
-        <Button size="icon" onClick={send}><Send className="h-4 w-4" /></Button>
+        <IconButton label="Enviar" variant="default" size="icon" onClick={send}><Send className="h-4 w-4" /></IconButton>
       </div>
     </div>
   );

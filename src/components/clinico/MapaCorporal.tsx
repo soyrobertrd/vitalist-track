@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -134,9 +135,9 @@ export function MapaCorporal({ pacienteId }: { pacienteId: string }) {
                   {m.etiqueta && <span>{m.etiqueta}</span>}
                   {m.severidad != null && <span className="text-muted-foreground">· {m.severidad}/10</span>}
                 </div>
-                <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => eliminar(m.id)}>
+                <IconButton label="Eliminar" size="icon" variant="ghost" className="h-6 w-6" onClick={() => eliminar(m.id)}>
                   <Trash2 className="h-3 w-3"/>
-                </Button>
+                </IconButton>
               </div>
             ))}
           </div>

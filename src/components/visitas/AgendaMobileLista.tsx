@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { 
   Calendar, ChevronLeft, ChevronRight, Clock, Phone, 
   MapPin, Plus, User, CheckCircle2, AlertCircle
@@ -57,9 +58,9 @@ export function AgendaMobileLista({
     <div className={`space-y-3 ${className}`}>
       {/* Navegador de Fecha Móvil */}
       <div className="bg-card border border-border rounded-xl p-3 flex items-center justify-between gap-2 shadow-none">
-        <Button variant="ghost" size="icon" onClick={handlePrevDay} className="h-9 w-9 shrink-0">
+        <IconButton label="Anterior" variant="ghost" size="icon" onClick={handlePrevDay} className="h-9 w-9 shrink-0">
           <ChevronLeft className="h-5 w-5" />
-        </Button>
+        </IconButton>
 
         <div className="text-center min-w-0 flex-1">
           <div className="flex items-center justify-center gap-1.5">
@@ -77,9 +78,9 @@ export function AgendaMobileLista({
           </p>
         </div>
 
-        <Button variant="ghost" size="icon" onClick={handleNextDay} className="h-9 w-9 shrink-0">
+        <IconButton label="Siguiente" variant="ghost" size="icon" onClick={handleNextDay} className="h-9 w-9 shrink-0">
           <ChevronRight className="h-5 w-5" />
-        </Button>
+        </IconButton>
       </div>
 
       {!isToday && (
@@ -171,7 +172,7 @@ export function AgendaMobileLista({
         type="button"
         onClick={onOpenNuevaCita}
         aria-label="Nueva Cita Rápida"
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all"
+        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-control bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary/90 active:scale-95 transition-all"
       >
         <Plus className="h-6 w-6" />
       </button>

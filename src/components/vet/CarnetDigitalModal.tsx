@@ -135,10 +135,10 @@ export function CarnetDigitalModal({
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
-              <Button variant="outline" className="rounded-xl text-xs flex-1 sm:flex-initial" onClick={() => onOpenChange(false)}>
+              <Button variant="outline" className="text-xs flex-1 sm:flex-initial" onClick={() => onOpenChange(false)}>
                 Cerrar
               </Button>
-              <Button className="rounded-xl text-xs flex-1 sm:flex-initial shadow-none" onClick={handleImprimir}>
+              <Button className="text-xs flex-1 sm:flex-initial shadow-none" onClick={handleImprimir}>
                 <Printer className="h-3.5 w-3.5 mr-1.5" /> Imprimir Carnet
               </Button>
             </div>

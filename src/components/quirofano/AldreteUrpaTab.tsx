@@ -43,7 +43,7 @@ export function AldreteUrpaTab({
               value={aldrete.actividad.toString()}
               onValueChange={(v) => setAldrete((p) => ({ ...p, actividad: parseInt(v) }))}
             >
-              <SelectTrigger className="rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="border-border/80 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -61,7 +61,7 @@ export function AldreteUrpaTab({
               value={aldrete.respiracion.toString()}
               onValueChange={(v) => setAldrete((p) => ({ ...p, respiracion: parseInt(v) }))}
             >
-              <SelectTrigger className="rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="border-border/80 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -79,7 +79,7 @@ export function AldreteUrpaTab({
               value={aldrete.circulacion.toString()}
               onValueChange={(v) => setAldrete((p) => ({ ...p, circulacion: parseInt(v) }))}
             >
-              <SelectTrigger className="rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="border-border/80 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -97,7 +97,7 @@ export function AldreteUrpaTab({
               value={aldrete.consciencia.toString()}
               onValueChange={(v) => setAldrete((p) => ({ ...p, consciencia: parseInt(v) }))}
             >
-              <SelectTrigger className="rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="border-border/80 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -115,7 +115,7 @@ export function AldreteUrpaTab({
               value={aldrete.saturacion.toString()}
               onValueChange={(v) => setAldrete((p) => ({ ...p, saturacion: parseInt(v) }))}
             >
-              <SelectTrigger className="rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="border-border/80 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -164,7 +164,7 @@ export function AldreteUrpaTab({
         </CardContent>
         <div className="p-4 border-t border-border/60">
           <Button
-            className="w-full rounded-xl bg-purple-600 hover:bg-purple-700 text-white"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
             disabled={!esAptoAltaURPA}
             onClick={() => toast.success(`Alta de URPA autorizada con Aldrete ${aldreteScoreTotal}/10`)}
           >

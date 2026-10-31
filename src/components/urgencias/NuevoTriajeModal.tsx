@@ -124,7 +124,7 @@ export function NuevoTriajeModal({ open, onOpenChange, onGuardar }: NuevoTriajeM
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Nombre Completo del Paciente *</Label>
               <Input
-                className="rounded-xl"
+               
                 placeholder="Ej: Ramón Valdez Santana"
                 value={nuevoNombre}
                 onChange={(e) => setNuevoNombre(e.target.value)}
@@ -133,7 +133,7 @@ export function NuevoTriajeModal({ open, onOpenChange, onGuardar }: NuevoTriajeM
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Edad / Sexo</Label>
               <Input
-                className="rounded-xl"
+               
                 placeholder="Ej: 48 años / M"
                 value={nuevaEdadSexo}
                 onChange={(e) => setNuevaEdadSexo(e.target.value)}
@@ -144,7 +144,7 @@ export function NuevoTriajeModal({ open, onOpenChange, onGuardar }: NuevoTriajeM
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold">Motivo de Consulta Espontáneo *</Label>
             <Input
-              className="rounded-xl"
+             
               placeholder="Ej: Dolor retroesternal opresivo con sensación de falta de aire..."
               value={nuevoMotivo}
               onChange={(e) => setNuevoMotivo(e.target.value)}
@@ -162,7 +162,7 @@ export function NuevoTriajeModal({ open, onOpenChange, onGuardar }: NuevoTriajeM
                   setDiscriminadorSel("");
                 }}
               >
-                <SelectTrigger className="w-full sm:w-64 h-8 text-xs rounded-xl">
+                <SelectTrigger className="w-full sm:w-64 h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -215,36 +215,36 @@ export function NuevoTriajeModal({ open, onOpenChange, onGuardar }: NuevoTriajeM
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
               <div>
                 <Label className="text-[11px] text-muted-foreground">TA (mmHg)</Label>
-                <Input value={ta} onChange={(e) => setTa(e.target.value)} className="h-8 rounded-lg font-mono" />
+                <Input value={ta} onChange={(e) => setTa(e.target.value)} className="h-8 font-mono" />
               </div>
               <div>
                 <Label className="text-[11px] text-muted-foreground">FC (lpm)</Label>
-                <Input type="number" value={fc} onChange={(e) => setFc(e.target.value)} className="h-8 rounded-lg font-mono" />
+                <Input type="number" value={fc} onChange={(e) => setFc(e.target.value)} className="h-8 font-mono" />
               </div>
               <div>
                 <Label className="text-[11px] text-muted-foreground">FR (rpm)</Label>
-                <Input type="number" value={fr} onChange={(e) => setFr(e.target.value)} className="h-8 rounded-lg font-mono" />
+                <Input type="number" value={fr} onChange={(e) => setFr(e.target.value)} className="h-8 font-mono" />
               </div>
               <div>
                 <Label className="text-[11px] text-muted-foreground">SpO2 (%)</Label>
-                <Input type="number" value={spo2} onChange={(e) => setSpo2(e.target.value)} className="h-8 rounded-lg font-mono" />
+                <Input type="number" value={spo2} onChange={(e) => setSpo2(e.target.value)} className="h-8 font-mono" />
               </div>
               <div>
                 <Label className="text-[11px] text-muted-foreground">Temp (°C)</Label>
-                <Input type="number" step="0.1" value={temp} onChange={(e) => setTemp(e.target.value)} className="h-8 rounded-lg font-mono" />
+                <Input type="number" step="0.1" value={temp} onChange={(e) => setTemp(e.target.value)} className="h-8 font-mono" />
               </div>
               <div>
                 <Label className="text-[11px] text-muted-foreground">Dolor EVA (0-10)</Label>
-                <Input type="number" min="0" max="10" value={eva} onChange={(e) => setEva(e.target.value)} className="h-8 rounded-lg font-mono" />
+                <Input type="number" min="0" max="10" value={eva} onChange={(e) => setEva(e.target.value)} className="h-8 font-mono" />
               </div>
               <div>
                 <Label className="text-[11px] text-muted-foreground">Glasgow (3-15)</Label>
-                <Input type="number" min="3" max="15" value={glasgow} onChange={(e) => setGlasgow(e.target.value)} className="h-8 rounded-lg font-mono" />
+                <Input type="number" min="3" max="15" value={glasgow} onChange={(e) => setGlasgow(e.target.value)} className="h-8 font-mono" />
               </div>
               <div>
                 <Label className="text-[11px] text-muted-foreground">Asignar Box</Label>
                 <Select value={boxAsignar} onValueChange={setBoxAsignar}>
-                  <SelectTrigger className="h-8 text-xs rounded-lg">
+                  <SelectTrigger className="h-8 text-xs">
                     <SelectValue placeholder="Sala de Espera" />
                   </SelectTrigger>
                   <SelectContent>
@@ -284,16 +284,16 @@ export function NuevoTriajeModal({ open, onOpenChange, onGuardar }: NuevoTriajeM
               value={obs}
               onChange={(e) => setObs(e.target.value)}
               rows={2}
-              className="text-xs rounded-xl"
+              className="text-xs"
             />
           </div>
         </div>
 
         <DialogFooter className="gap-2 pt-2">
-          <Button variant="outline" size="sm" className="rounded-xl" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button size="sm" className="rounded-xl bg-primary text-white" onClick={handleGuardar}>
+          <Button size="sm" className="bg-primary text-white" onClick={handleGuardar}>
             <CheckCircle2 className="h-4 w-4 mr-1" />
             Confirmar y Clasificar Paciente
           </Button>

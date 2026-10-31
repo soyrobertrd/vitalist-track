@@ -130,7 +130,7 @@ export const UnidosisHospitalariaTab: React.FC = () => {
               placeholder="Buscar por paciente, cama o servicio..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              className="pl-9 h-9 text-xs rounded-xl"
+              className="pl-9 h-9 text-xs"
             />
           </div>
         </div>

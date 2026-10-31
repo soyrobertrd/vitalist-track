@@ -300,7 +300,7 @@ export default function CensoCamas() {
         action={
           <div className="flex items-center gap-2">
             <Select value={pisoSeleccionadoId} onValueChange={setPisoSeleccionadoId}>
-              <SelectTrigger className="w-[240px] rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="w-[240px] border-border/80 text-xs">
                 <SelectValue placeholder="Seleccionar Piso" />
               </SelectTrigger>
               <SelectContent>
@@ -364,13 +364,13 @@ export default function CensoCamas() {
               placeholder="Buscar por cama (ej. C-201), habitación, paciente o diagnóstico..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              className="pl-9 rounded-xl border-border/80 text-xs"
+              className="pl-9 border-border/80 text-xs"
             />
           </div>
 
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
             <Select value={filtroEstado} onValueChange={setFiltroEstado}>
-              <SelectTrigger className="w-[180px] rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="w-[180px] border-border/80 text-xs">
                 <SelectValue placeholder="Estado de cama" />
               </SelectTrigger>
               <SelectContent>
@@ -549,7 +549,7 @@ export default function CensoCamas() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => handleCambiarEstado(cama.id, "disponible")}
-                                className="h-6 text-[10px] px-2 rounded-lg border-amber-500/40 hover:bg-amber-100"
+                                className="h-6 text-[10px] px-2 border-amber-500/40 hover:bg-amber-100"
                               >
                                 Finalizar Limpieza
                               </Button>
@@ -565,7 +565,7 @@ export default function CensoCamas() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => handleCambiarEstado(cama.id, "disponible")}
-                                className="h-6 text-[10px] px-2 rounded-lg hover:bg-muted"
+                                className="h-6 text-[10px] px-2 hover:bg-muted"
                               >
                                 Habilitar
                               </Button>
@@ -579,7 +579,7 @@ export default function CensoCamas() {
                                 <Button
                                   size="sm"
                                   onClick={() => handleAbrirAdmision(cama)}
-                                  className="h-7 text-xs px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
+                                  className="h-7 text-xs px-2.5 bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
                                 >
                                   <UserPlus className="w-3.5 h-3.5" /> Ingresar Paciente
                                 </Button>
@@ -587,7 +587,7 @@ export default function CensoCamas() {
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => handleCambiarEstado(cama.id, "mantenimiento")}
-                                  className="h-7 text-xs px-2 rounded-lg text-muted-foreground hover:bg-muted"
+                                  className="h-7 text-xs px-2 text-muted-foreground hover:bg-muted"
                                   title="Bloquear por mantenimiento"
                                 >
                                   <Wrench className="w-3.5 h-3.5" />
@@ -601,7 +601,7 @@ export default function CensoCamas() {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => handleAbrirTraslado(cama)}
-                                  className="h-7 text-xs px-2 rounded-lg gap-1 border-border/80 text-foreground hover:bg-muted"
+                                  className="h-7 text-xs px-2 gap-1 border-border/80 text-foreground hover:bg-muted"
                                 >
                                   <ArrowRightLeft className="w-3 h-3 text-primary" /> Trasladar
                                 </Button>
@@ -609,7 +609,7 @@ export default function CensoCamas() {
                                   size="sm"
                                   variant="outline"
                                   onClick={() => handleCambiarEstado(cama.id, "limpieza")}
-                                  className="h-7 text-xs px-2 rounded-lg border-rose-500/30 text-rose-600 hover:bg-rose-50"
+                                  className="h-7 text-xs px-2 border-rose-500/30 text-rose-600 hover:bg-rose-50"
                                 >
                                   Alta / Liberar Cama
                                 </Button>

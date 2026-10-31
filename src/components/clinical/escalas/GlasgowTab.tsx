@@ -60,7 +60,7 @@ export function GlasgowTab({ onGuardar, onCopiar }: GlasgowTabProps) {
                     key={item.pts}
                     type="button"
                     variant={gcsOcular === item.pts ? "default" : "outline"}
-                    className="h-auto py-2.5 px-3 flex-col items-start text-left rounded-xl"
+                    className="h-auto py-2.5 px-3 flex-col items-start text-left"
                     onClick={() => setGcsOcular(item.pts)}
                   >
                     <span className="font-bold text-xs">{item.pts} pts</span>
@@ -87,7 +87,7 @@ export function GlasgowTab({ onGuardar, onCopiar }: GlasgowTabProps) {
                     key={item.pts}
                     type="button"
                     variant={gcsVerbal === item.pts ? "default" : "outline"}
-                    className="h-auto py-2.5 px-3 flex-col items-start text-left rounded-xl"
+                    className="h-auto py-2.5 px-3 flex-col items-start text-left"
                     onClick={() => setGcsVerbal(item.pts)}
                   >
                     <span className="font-bold text-xs">{item.pts} pts</span>
@@ -115,7 +115,7 @@ export function GlasgowTab({ onGuardar, onCopiar }: GlasgowTabProps) {
                     key={item.pts}
                     type="button"
                     variant={gcsMotor === item.pts ? "default" : "outline"}
-                    className="h-auto py-2.5 px-3 flex-col items-start text-left rounded-xl"
+                    className="h-auto py-2.5 px-3 flex-col items-start text-left"
                     onClick={() => setGcsMotor(item.pts)}
                   >
                     <span className="font-bold text-xs">{item.pts} pts</span>
@@ -158,7 +158,7 @@ export function GlasgowTab({ onGuardar, onCopiar }: GlasgowTabProps) {
 
             <div className="flex flex-col gap-2 pt-2">
               <Button
-                className="w-full rounded-xl shadow-none"
+                className="w-full shadow-none"
                 onClick={() =>
                   onGuardar(
                     "Glasgow (GCS)",
@@ -175,7 +175,7 @@ export function GlasgowTab({ onGuardar, onCopiar }: GlasgowTabProps) {
               </Button>
               <Button
                 variant="outline"
-                className="w-full rounded-xl"
+                className="w-full"
                 onClick={() =>
                   onCopiar(
                     `Escala de Coma de Glasgow (GCS): ${gcsTotal}/15 (Ocular: ${gcsOcular}, Verbal: ${gcsVerbal}, Motor: ${gcsMotor}). Conclusión: ${getGcsInterpretacion().texto}.`

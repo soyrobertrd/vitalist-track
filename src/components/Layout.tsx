@@ -148,18 +148,18 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/app/citas", label: "Citas & Consultas", icon: Calendar },
         { path: "/calendario", label: "Calendario", icon: CalendarDays },
         { path: "/recepcion", label: "Recepción", icon: ScanLine },
-        { path: "/rutas", label: "Rutas Domiciliarias", icon: Route, verticales: ["clinica", "recovery"] },
+        { path: "/rutas", label: "Rutas Domiciliarias", icon: Route, verticales: ["recovery"] },
         { path: "/llamadas", label: "Llamadas de soporte", icon: Phone, verticales: ["clinica"] },
         { path: "/agenda-universal", label: "Agenda universal" },
       ]
     },
 
     {
-      path: "/pacientes", icon: Users, label: va === "aesthetic" ? "Clientes" : va === "veterinaria" ? "Mascotas" : "Pacientes", moduleKey: "pacientes",
+      path: "/pacientes", icon: Users, label: va === "aesthetic" ? "Clientes" : va === "veterinaria" ? "Mascotas" : va === "recovery" ? "Huéspedes" : "Pacientes", moduleKey: "pacientes",
       subItems: [
-        { path: "/pacientes", label: va === "aesthetic" ? "Lista de Clientes" : "Lista de Pacientes" },
+        { path: "/pacientes", label: va === "aesthetic" ? "Lista de Clientes" : va === "veterinaria" ? "Lista de Mascotas" : va === "recovery" ? "Huéspedes Recovery" : "Lista de Pacientes" },
         { path: "/sospechosos", label: "Sospechosos", verticales: ["clinica"] },
-        { path: "/atencion-paciente", label: va === "aesthetic" ? "Atención al Cliente" : "Atención al Paciente", icon: Stethoscope },
+        { path: "/atencion-paciente", label: va === "aesthetic" ? "Atención al Cliente" : "Atención al Paciente", icon: Stethoscope, excludeVerticales: ["veterinaria", "recovery"] },
         // Específicos por vertical integrados aquí:
         { path: "/odontograma", label: "Odontograma", icon: SmilePlus, verticales: ["dental"] },
         { path: "/dental-care?tab=planes", label: "Planes de tratamiento", verticales: ["dental"] },
@@ -404,12 +404,52 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/soporte", icon: HelpCircle, label: "Soporte", moduleKey: "soporte" },
   ];
 
-  // Helpers de filtrado por vertical sobre subItems
+  // Helpers de filtrado estricto por vertical sobre subItems:
+  // "Cuando selecciono un modulo en la liena vertical me debe mostrar solo lo de ese modulo"
+  // "UN hospital no tiene servicio de veterinaria, esa va separada igual que recovery home"
   const subItemAplica = (sub: any): boolean => {
-    if (va === "todas") return true;
+    // Si la vertical activa es "todas":
+    // Veterinaria y Recovery Home son entidades estrictamente separadas del flujo hospitalario general
+    if (va === "todas") {
+      if (sub.verticales && sub.verticales.length === 1 && (sub.verticales[0] === "veterinaria" || sub.verticales[0] === "recovery")) {
+        return false;
+      }
+      return true;
+    }
+
+    // 1. Si el item excluye explícitamente esta vertical:
     if (sub.excludeVerticales && sub.excludeVerticales.includes(va)) return false;
-    if (sub.verticales && !sub.verticales.includes(va)) return false;
-    return true;
+
+    // 2. Si el item tiene declaradas las verticales a las que pertenece:
+    if (sub.verticales) {
+      return sub.verticales.includes(va);
+    }
+
+    // 3. Si el item NO tiene `verticales` definida:
+    // A. En Veterinaria: sólo ítems compatibles con veterinaria
+    if (va === "veterinaria") {
+      const pathsPermitidosVet = ["/pacientes", "/app/citas", "/calendario", "/recepcion", "/agenda-universal"];
+      return pathsPermitidosVet.includes(sub.path);
+    }
+
+    // B. En Recovery Care: sólo ítems compatibles con recovery home
+    if (va === "recovery") {
+      const pathsPermitidosRecovery = ["/pacientes", "/app/citas", "/calendario", "/recepcion", "/agenda-universal"];
+      return pathsPermitidosRecovery.includes(sub.path);
+    }
+
+    // C. En Clínica / Hospital: no mostrar nada exclusivo de otras verticales
+    if (va === "clinica") {
+      if (sub.verticales && !sub.verticales.includes("clinica")) {
+        return false;
+      }
+      return true;
+    }
+
+    // D. Para cualquier vertical especializada (dental, vision, aesthetic, psicologia, fisioterapia, nutricion):
+    // Si no tiene `verticales`, sólo los ítems de gestión base aplican:
+    const subItemsComunes = ["/pacientes", "/app/citas", "/calendario", "/recepcion", "/agenda-universal"];
+    return subItemsComunes.includes(sub.path);
   };
 
   // Plan FREE: solo Dashboard, Agenda (calendario), Pacientes, Ficha clínica.
@@ -579,7 +619,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <CollapsibleTrigger asChild>
                   <button
                     className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
+                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-control text-sm font-medium transition-colors",
                       "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                       "focus:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
                       // El grupo se marca cuando alguna de sus páginas está abierta
@@ -773,10 +813,10 @@ const Layout = ({ children }: LayoutProps) => {
                 <SucursalSwitcher />
                 <GlobalSearch />
                 {/* Creación rápida (estilo barra superior de las referencias) */}
-                <Button size="sm" variant="outline" className="rounded-full" onClick={() => navigate("/app/citas")}>
+                <Button size="sm" variant="outline" onClick={() => navigate("/app/citas")}>
                   <CalendarPlus className="mr-1.5 h-4 w-4" aria-hidden="true" /> Cita
                 </Button>
-                <Button size="sm" className="rounded-full" onClick={() => navigate("/pacientes?nuevo=1")}>
+                <Button size="sm" onClick={() => navigate("/pacientes?nuevo=1")}>
                   <UserPlus className="mr-1.5 h-4 w-4" aria-hidden="true" /> Paciente
                 </Button>
                 <NotificationBell />

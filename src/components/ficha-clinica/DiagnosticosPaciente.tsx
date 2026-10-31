@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -119,12 +120,12 @@ export function DiagnosticosPaciente({ pacienteId }: { pacienteId: string }) {
               {d.notas && <p className="text-sm text-muted-foreground mt-1">{d.notas}</p>}
             </div>
             <div className="flex gap-1">
-              <Button size="icon" variant="ghost" onClick={() => setDialog({ open: true, data: d })}>
+              <IconButton label="Editar" size="icon" variant="ghost" onClick={() => setDialog({ open: true, data: d })}>
                 <Pencil className="h-4 w-4" />
-              </Button>
-              <Button size="icon" variant="ghost" onClick={() => remove(d.id)}>
+              </IconButton>
+              <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => remove(d.id)}>
                 <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              </IconButton>
             </div>
           </div>
         ))

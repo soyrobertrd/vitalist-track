@@ -76,7 +76,7 @@ export function NuevoIngresoHospModal({
             <div>
               <Label className="text-xs font-semibold">Mascota Paciente *</Label>
               <Select value={pacienteId} onValueChange={setPacienteId}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs">
+                <SelectTrigger className="mt-1 text-xs">
                   <SelectValue placeholder="Seleccionar mascota..." />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -92,7 +92,7 @@ export function NuevoIngresoHospModal({
             <div>
               <Label className="text-xs font-semibold">Tipo de Procedimiento *</Label>
               <Select value={tipoProcedimiento} onValueChange={(v: any) => setTipoProcedimiento(v)}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="cirugia">Cirugía Mayor / Menor</SelectItem>
                   <SelectItem value="hospitalizacion">Hospitalización / UCI</SelectItem>
@@ -108,7 +108,7 @@ export function NuevoIngresoHospModal({
               placeholder="Ej: Ovariohisterectomía, Sondaje FLUTD, Profilaxis dental..."
               value={titulo}
               onChange={e => setTitulo(e.target.value)}
-              className="rounded-xl mt-1 text-xs"
+              className="mt-1 text-xs"
               required
             />
           </div>
@@ -119,7 +119,7 @@ export function NuevoIngresoHospModal({
               <Input
                 value={jaulaBox}
                 onChange={e => setJaulaBox(e.target.value)}
-                className="rounded-xl mt-1 text-xs font-mono"
+                className="mt-1 text-xs font-mono"
               />
             </div>
 
@@ -128,7 +128,7 @@ export function NuevoIngresoHospModal({
               <Input
                 value={cirujano}
                 onChange={e => setCirujano(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
               />
             </div>
           </div>
@@ -143,7 +143,7 @@ export function NuevoIngresoHospModal({
                 <div>
                   <Label className="text-[11px] text-muted-foreground">Riesgo ASA</Label>
                   <Select value={clasificacionAsa} onValueChange={(v: any) => setClasificacionAsa(v)}>
-                    <SelectTrigger className="rounded-xl mt-0.5 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="mt-0.5 text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent className="rounded-xl">
                       <SelectItem value="ASA I">ASA I (Paciente sano)</SelectItem>
                       <SelectItem value="ASA II">ASA II (Enfermedad sistémica leve)</SelectItem>
@@ -159,7 +159,7 @@ export function NuevoIngresoHospModal({
                   <Input
                     value={tipoAnestesia}
                     onChange={e => setTipoAnestesia(e.target.value)}
-                    className="rounded-xl mt-0.5 text-xs"
+                    className="mt-0.5 text-xs"
                   />
                 </div>
               </div>
@@ -172,7 +172,7 @@ export function NuevoIngresoHospModal({
               placeholder="Ej: Ringer Lactato 40 ml/h"
               value={fluidoterapia}
               onChange={e => setFluidoterapia(e.target.value)}
-              className="rounded-xl mt-1 text-xs font-mono"
+              className="mt-1 text-xs font-mono"
             />
           </div>
 
@@ -182,15 +182,15 @@ export function NuevoIngresoHospModal({
               placeholder="Monitoreo de micción, analgesia pautada, control de apósito..."
               value={notasEvolucion}
               onChange={e => setNotasEvolucion(e.target.value)}
-              className="rounded-xl mt-1 text-xs min-h-[60px]"
+              className="mt-1 text-xs min-h-[60px]"
             />
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" className="rounded-xl text-xs" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" className="text-xs" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" className="rounded-xl text-xs shadow-none">
+            <Button type="submit" className="text-xs shadow-none">
               <CheckCircle2 className="h-4 w-4 mr-1.5" /> Registrar Ingreso
             </Button>
           </DialogFooter>

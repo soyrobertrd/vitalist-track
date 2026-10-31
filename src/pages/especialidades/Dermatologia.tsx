@@ -272,7 +272,7 @@ export default function Dermatologia() {
         actions={
           <Button
             onClick={() => setModalNueva(true)}
-            className="rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-medium shadow-sm flex items-center gap-2"
+            className="bg-pink-600 hover:bg-pink-700 text-white font-medium shadow-sm flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
             Nueva Consulta Dermatológica
@@ -310,16 +310,16 @@ export default function Dermatologia() {
 
       {/* Tabs */}
       <Tabs defaultValue="consultas" className="w-full">
-        <TabsList className="bg-muted/70 p-1 rounded-xl">
-          <TabsTrigger value="consultas" className="rounded-lg text-xs font-semibold gap-2">
+        <TabsList className="bg-muted/70 p-1">
+          <TabsTrigger value="consultas" className="text-xs font-semibold gap-2">
             <FileText className="h-4 w-4" />
             Consultas & Pacientes
           </TabsTrigger>
-          <TabsTrigger value="abcde" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="abcde" className="text-xs font-semibold gap-2">
             <Eye className="h-4 w-4" />
             Regla ABCDE Melanoma
           </TabsTrigger>
-          <TabsTrigger value="fitzpatrick" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="fitzpatrick" className="text-xs font-semibold gap-2">
             <Sun className="h-4 w-4" />
             Fototipos Fitzpatrick (I-VI)
           </TabsTrigger>
@@ -335,11 +335,11 @@ export default function Dermatologia() {
                 placeholder="Buscar por paciente, diagnóstico o localización..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                className="pl-9 rounded-xl border-border/80"
+                className="pl-9 border-border/80"
               />
             </div>
             <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-              <SelectTrigger className="w-full sm:w-[240px] rounded-xl border-border/80">
+              <SelectTrigger className="w-full sm:w-[240px] border-border/80">
                 <SelectValue placeholder="Tipo de Patología" />
               </SelectTrigger>
               <SelectContent>
@@ -535,7 +535,7 @@ export default function Dermatologia() {
 
                   <Button
                     variant="outline"
-                    className="w-full rounded-xl text-xs"
+                    className="w-full text-xs"
                     onClick={() => {
                       setFormAbcde(abcdeTotalPuntos >= 3 || abcdeE);
                       toast.info(`Criterio ABCDE (${abcdeTotalPuntos} pts) transferido a nueva consulta.`);
@@ -567,7 +567,7 @@ export default function Dermatologia() {
                   <Button
                     key={f}
                     variant={selFitzpatrick === f ? "default" : "outline"}
-                    className={`rounded-xl text-xs font-bold py-5 ${
+                    className={` text-xs font-bold py-5 ${
                       selFitzpatrick === f ? "bg-pink-600 hover:bg-pink-700 text-white" : ""
                     }`}
                     onClick={() => setSelFitzpatrick(f)}
@@ -601,7 +601,7 @@ export default function Dermatologia() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="rounded-xl text-xs"
+                  className="text-xs"
                   onClick={() => {
                     setFormFototipo(selFitzpatrick);
                     toast.info(`Fototipo ${selFitzpatrick} seleccionado para nueva consulta.`);
@@ -636,7 +636,7 @@ export default function Dermatologia() {
                   placeholder="Ej: Rosa Morales"
                   value={formNombre}
                   onChange={(e) => setFormNombre(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   required
                 />
               </div>
@@ -646,7 +646,7 @@ export default function Dermatologia() {
                   placeholder="Ej: 42a / F"
                   value={formEdadSexo}
                   onChange={(e) => setFormEdadSexo(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
             </div>
@@ -655,7 +655,7 @@ export default function Dermatologia() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Tipo de Patología:</Label>
                 <Select value={formTipo} onValueChange={(v) => setFormTipo(v as TipoConsultaDerma)}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -671,7 +671,7 @@ export default function Dermatologia() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Fototipo de Fitzpatrick:</Label>
                 <Select value={formFototipo} onValueChange={setFormFototipo}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -692,7 +692,7 @@ export default function Dermatologia() {
                 placeholder="Ej: Dorso nasal, tercio superior espalda, pliegues flexurales..."
                 value={formLocalizacion}
                 onChange={(e) => setFormLocalizacion(e.target.value)}
-                className="rounded-xl border-border/80"
+                className="border-border/80"
               />
             </div>
 
@@ -703,7 +703,7 @@ export default function Dermatologia() {
                 value={formDiag}
                 onChange={(e) => setFormDiag(e.target.value)}
                 rows={2}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 required
               />
             </div>
@@ -715,15 +715,15 @@ export default function Dermatologia() {
                 value={formPlan}
                 onChange={(e) => setFormPlan(e.target.value)}
                 rows={3}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
             <DialogFooter className="pt-2">
-              <Button type="button" variant="outline" onClick={() => setModalNueva(false)} className="rounded-xl">
+              <Button type="button" variant="outline" onClick={() => setModalNueva(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" className="rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-medium">
+              <Button type="submit" className="bg-pink-600 hover:bg-pink-700 text-white font-medium">
                 Guardar Consulta
               </Button>
             </DialogFooter>
@@ -787,10 +787,10 @@ export default function Dermatologia() {
             </div>
 
             <DialogFooter className="pt-2">
-              <Button variant="outline" onClick={() => window.print()} className="rounded-xl">
+              <Button variant="outline" onClick={() => window.print()}>
                 Imprimir Informe
               </Button>
-              <Button onClick={() => setConsultaDetalle(null)} className="rounded-xl bg-pink-600 hover:bg-pink-700 text-white">
+              <Button onClick={() => setConsultaDetalle(null)} className="bg-pink-600 hover:bg-pink-700 text-white">
                 Cerrar
               </Button>
             </DialogFooter>

@@ -210,7 +210,7 @@ export function EnfermeriaUciTab() {
                         setBombaSeleccionada(b);
                         setModalDobleChequeoOpen(true);
                       }}
-                      className="h-7 px-2 rounded-xl text-[10px] gap-1 text-red-600 border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-950/30"
+                      className="h-7 px-2 text-[10px] gap-1 text-red-600 border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-950/30"
                     >
                       <ShieldAlert className="h-3 w-3" /> Doble Chequeo
                     </Button>
@@ -236,7 +236,7 @@ export function EnfermeriaUciTab() {
                 <button
                   key={r.score}
                   type="button"
-                  className={`w-full text-left p-2.5 rounded-xl border text-xs flex items-center justify-between transition-all ${
+                  className={`w-full text-left p-2.5 rounded-control border text-xs flex items-center justify-between transition-all ${
                     rassSeleccionado === r.score
                       ? "bg-teal-500/15 border-teal-500 text-teal-900 dark:text-teal-200 font-bold"
                       : "bg-card border-border/60 hover:bg-muted/40"

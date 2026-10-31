@@ -165,7 +165,7 @@ export function NewPatientsWidget() {
                   variant="outline"
                   size="sm"
                   onClick={() => navigate(`/pacientes?id=${p.id}`)}
-                  className="h-8 flex-1 rounded-xl text-xs font-semibold gap-1.5"
+                  className="h-8 flex-1 text-xs font-semibold gap-1.5"
                 >
                   <Eye className="h-3.5 w-3.5" /> Ficha 360
                 </Button>
@@ -174,7 +174,7 @@ export function NewPatientsWidget() {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate(`/pacientes?id=${p.id}&tab=historia`)}
-                  className="h-8 flex-1 rounded-xl text-xs font-semibold gap-1.5 hover:bg-muted"
+                  className="h-8 flex-1 text-xs font-semibold gap-1.5 hover:bg-muted"
                 >
                   <FileText className="h-3.5 w-3.5" /> Nota
                 </Button>

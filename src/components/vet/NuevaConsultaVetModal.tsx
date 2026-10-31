@@ -99,7 +99,7 @@ export function NuevaConsultaVetModal({
             <div>
               <Label className="text-xs font-semibold">Mascota Paciente *</Label>
               <Select value={pacienteId} onValueChange={setPacienteId}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs">
+                <SelectTrigger className="mt-1 text-xs">
                   <SelectValue placeholder="Seleccionar mascota..." />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -117,7 +117,7 @@ export function NuevaConsultaVetModal({
               <Input
                 value={veterinario}
                 onChange={e => setVeterinario(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
               />
             </div>
           </div>
@@ -128,7 +128,7 @@ export function NuevaConsultaVetModal({
               placeholder="Ej: Cojera miembro anterior, control post-quirúrgico, vómitos agudos..."
               value={motivo}
               onChange={e => setMotivo(e.target.value)}
-              className="rounded-xl mt-1 text-xs"
+              className="mt-1 text-xs"
             />
           </div>
 
@@ -146,7 +146,7 @@ export function NuevaConsultaVetModal({
                   step="0.1"
                   value={pesoKg}
                   onChange={e => setPesoKg(e.target.value)}
-                  className="rounded-xl mt-0.5 text-xs font-mono font-bold"
+                  className="mt-0.5 text-xs font-mono font-bold"
                 />
               </div>
 
@@ -157,7 +157,7 @@ export function NuevaConsultaVetModal({
                   step="0.1"
                   value={temperaturaC}
                   onChange={e => setTemperaturaC(e.target.value)}
-                  className="rounded-xl mt-0.5 text-xs font-mono font-bold"
+                  className="mt-0.5 text-xs font-mono font-bold"
                 />
               </div>
 
@@ -167,7 +167,7 @@ export function NuevaConsultaVetModal({
                   type="number"
                   value={fc}
                   onChange={e => setFc(e.target.value)}
-                  className="rounded-xl mt-0.5 text-xs font-mono"
+                  className="mt-0.5 text-xs font-mono"
                 />
               </div>
 
@@ -177,7 +177,7 @@ export function NuevaConsultaVetModal({
                   type="number"
                   value={fr}
                   onChange={e => setFr(e.target.value)}
-                  className="rounded-xl mt-0.5 text-xs font-mono"
+                  className="mt-0.5 text-xs font-mono"
                 />
               </div>
             </div>
@@ -190,14 +190,14 @@ export function NuevaConsultaVetModal({
                   step="0.5"
                   value={tllc}
                   onChange={e => setTllc(e.target.value)}
-                  className="rounded-xl mt-0.5 text-xs font-mono"
+                  className="mt-0.5 text-xs font-mono"
                 />
               </div>
 
               <div>
                 <Label className="text-[11px] text-muted-foreground">Mucosas</Label>
                 <Select value={mucosas} onValueChange={(v: any) => setMucosas(v)}>
-                  <SelectTrigger className="rounded-xl mt-0.5 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-0.5 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="rosadas">Rosadas (Normal)</SelectItem>
                     <SelectItem value="palidas">Pálidas (Anemia / Shock)</SelectItem>
@@ -211,7 +211,7 @@ export function NuevaConsultaVetModal({
               <div>
                 <Label className="text-[11px] text-muted-foreground">Hidratación</Label>
                 <Select value={hidratacion} onValueChange={setHidratacion}>
-                  <SelectTrigger className="rounded-xl mt-0.5 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-0.5 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="Normohidratado <5%">Normohidratado (&lt;5%)</SelectItem>
                     <SelectItem value="Deshidratación Leve (5-6%)">Deshidratación Leve (5-6%)</SelectItem>
@@ -229,7 +229,7 @@ export function NuevaConsultaVetModal({
               placeholder="Signos clínicos reportados por el tutor, apetito, micción, defecación, palpación abdominal..."
               value={anamnesis}
               onChange={e => setAnamnesis(e.target.value)}
-              className="rounded-xl mt-1 text-xs min-h-[60px]"
+              className="mt-1 text-xs min-h-[60px]"
             />
           </div>
 
@@ -239,7 +239,7 @@ export function NuevaConsultaVetModal({
               placeholder="Ej: Gastroenteritis aguda bacteriana, Gingivoestomatitis felina, etc."
               value={diagnostico}
               onChange={e => setDiagnostico(e.target.value)}
-              className="rounded-xl mt-1 text-xs"
+              className="mt-1 text-xs"
             />
           </div>
 
@@ -249,15 +249,15 @@ export function NuevaConsultaVetModal({
               placeholder="Fármacos prescritos, posología (mg/kg o ml), frecuencia, vía y fecha de control..."
               value={tratamientoReceta}
               onChange={e => setTratamientoReceta(e.target.value)}
-              className="rounded-xl mt-1 text-xs min-h-[70px] font-mono"
+              className="mt-1 text-xs min-h-[70px] font-mono"
             />
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" className="rounded-xl text-xs" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" className="text-xs" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" className="rounded-xl text-xs shadow-none">
+            <Button type="submit" className="text-xs shadow-none">
               <CheckCircle2 className="h-4 w-4 mr-1.5" /> Guardar Consulta
             </Button>
           </DialogFooter>

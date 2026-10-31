@@ -68,7 +68,7 @@ export function ModalAdmisionCama({
               placeholder="Ej. Roberto Guzmán Rosario"
               value={formData.nombre_paciente}
               onChange={(e) => setFormData({ ...formData, nombre_paciente: e.target.value })}
-              className="rounded-xl border-border/80 text-xs"
+              className="border-border/80 text-xs"
             />
           </div>
 
@@ -78,7 +78,7 @@ export function ModalAdmisionCama({
               placeholder="001-XXXXXXX-X"
               value={formData.cedula_nss}
               onChange={(e) => setFormData({ ...formData, cedula_nss: e.target.value })}
-              className="rounded-xl border-border/80 text-xs"
+              className="border-border/80 text-xs"
             />
           </div>
 
@@ -88,7 +88,7 @@ export function ModalAdmisionCama({
               placeholder="Ej. 42a / M"
               value={formData.edad_sexo}
               onChange={(e) => setFormData({ ...formData, edad_sexo: e.target.value })}
-              className="rounded-xl border-border/80 text-xs"
+              className="border-border/80 text-xs"
             />
           </div>
 
@@ -98,7 +98,7 @@ export function ModalAdmisionCama({
               placeholder="Ej. Neumonía bacteriana no especificada (J18.9)"
               value={formData.diagnostico_cie10}
               onChange={(e) => setFormData({ ...formData, diagnostico_cie10: e.target.value })}
-              className="rounded-xl border-border/80 text-xs"
+              className="border-border/80 text-xs"
             />
           </div>
 
@@ -107,7 +107,7 @@ export function ModalAdmisionCama({
             <Input
               value={formData.medico_tratante}
               onChange={(e) => setFormData({ ...formData, medico_tratante: e.target.value })}
-              className="rounded-xl border-border/80 text-xs"
+              className="border-border/80 text-xs"
             />
           </div>
 
@@ -117,7 +117,7 @@ export function ModalAdmisionCama({
               value={formData.especialidad}
               onValueChange={(v) => setFormData({ ...formData, especialidad: v })}
             >
-              <SelectTrigger className="rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="border-border/80 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -142,7 +142,7 @@ export function ModalAdmisionCama({
               value={formData.dieta}
               onValueChange={(v) => setFormData({ ...formData, dieta: v })}
             >
-              <SelectTrigger className="rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="border-border/80 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -162,7 +162,7 @@ export function ModalAdmisionCama({
               value={formData.aislamiento}
               onValueChange={(v: any) => setFormData({ ...formData, aislamiento: v })}
             >
-              <SelectTrigger className="rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="border-border/80 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -181,18 +181,18 @@ export function ModalAdmisionCama({
               placeholder="Ej. Alergia a Penicilina, AINEs o Ninguna"
               value={formData.alergias}
               onChange={(e) => setFormData({ ...formData, alergias: e.target.value })}
-              className="rounded-xl border-border/80 text-xs"
+              className="border-border/80 text-xs"
             />
           </div>
         </div>
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="rounded-xl">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
           <Button
             onClick={onConfirmar}
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white"
           >
             Confirmar Ingreso en Cama
           </Button>

@@ -171,7 +171,7 @@ export default function LiquidacionComisionesSpa() {
               variant="outline"
               size="sm"
               onClick={liquidarTodoPendiente}
-              className="rounded-xl h-9 text-xs gap-1.5 shadow-none text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+              className="h-9 text-xs gap-1.5 shadow-none text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               Liquidar Pendientes
@@ -180,7 +180,7 @@ export default function LiquidacionComisionesSpa() {
 
           <Dialog open={openModalNuevo} onOpenChange={setOpenModalNuevo}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl h-9 text-xs gap-1.5 shadow-none">
+              <Button size="sm" className="h-9 text-xs gap-1.5 shadow-none">
                 <Plus className="h-3.5 w-3.5" />
                 Registrar Servicio
               </Button>
@@ -210,7 +210,7 @@ export default function LiquidacionComisionesSpa() {
                       setNuevoForm({ ...nuevoForm, profesional: v, rol, porcentajeComision: pct });
                     }}
                   >
-                    <SelectTrigger className="h-9 text-xs rounded-xl">
+                    <SelectTrigger className="h-9 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -227,7 +227,7 @@ export default function LiquidacionComisionesSpa() {
                     placeholder="Ej. Limpieza Facial / Relleno"
                     value={nuevoForm.servicio}
                     onChange={(e) => setNuevoForm({ ...nuevoForm, servicio: e.target.value })}
-                    className="h-9 text-xs rounded-xl"
+                    className="h-9 text-xs"
                   />
                 </div>
 
@@ -239,7 +239,7 @@ export default function LiquidacionComisionesSpa() {
                       placeholder="0.00"
                       value={nuevoForm.precioServicio || ""}
                       onChange={(e) => setNuevoForm({ ...nuevoForm, precioServicio: parseFloat(e.target.value) || 0 })}
-                      className="h-9 text-xs rounded-xl font-mono"
+                      className="h-9 text-xs font-mono"
                     />
                   </div>
                   <div className="space-y-1">
@@ -249,7 +249,7 @@ export default function LiquidacionComisionesSpa() {
                       placeholder="0.00"
                       value={nuevoForm.costoInsumos || ""}
                       onChange={(e) => setNuevoForm({ ...nuevoForm, costoInsumos: parseFloat(e.target.value) || 0 })}
-                      className="h-9 text-xs rounded-xl font-mono"
+                      className="h-9 text-xs font-mono"
                     />
                   </div>
                 </div>
@@ -263,7 +263,7 @@ export default function LiquidacionComisionesSpa() {
                       max={100}
                       value={nuevoForm.porcentajeComision}
                       onChange={(e) => setNuevoForm({ ...nuevoForm, porcentajeComision: parseFloat(e.target.value) || 0 })}
-                      className="h-9 text-xs rounded-xl font-mono"
+                      className="h-9 text-xs font-mono"
                     />
                   </div>
                   <div className="p-2.5 rounded-xl bg-muted/40 border border-border/70 flex flex-col justify-center">
@@ -280,10 +280,10 @@ export default function LiquidacionComisionesSpa() {
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenModalNuevo(false)} className="rounded-xl">
+                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenModalNuevo(false)}>
                     Cancelar
                   </Button>
-                  <Button type="submit" size="sm" className="rounded-xl">
+                  <Button type="submit" size="sm">
                     Guardar
                   </Button>
                 </div>
@@ -334,7 +334,7 @@ export default function LiquidacionComisionesSpa() {
       {/* Filtros */}
       <div className="flex flex-wrap items-center gap-2">
         <Select value={filtroProfesional} onValueChange={setFiltroProfesional}>
-          <SelectTrigger className="w-[180px] h-9 text-xs rounded-xl">
+          <SelectTrigger className="w-[180px] h-9 text-xs">
             <SelectValue placeholder="Profesional" />
           </SelectTrigger>
           <SelectContent>
@@ -346,7 +346,7 @@ export default function LiquidacionComisionesSpa() {
         </Select>
 
         <Select value={filtroEstado} onValueChange={setFiltroEstado}>
-          <SelectTrigger className="w-[130px] h-9 text-xs rounded-xl">
+          <SelectTrigger className="w-[130px] h-9 text-xs">
             <SelectValue placeholder="Estado" />
           </SelectTrigger>
           <SelectContent>
@@ -404,7 +404,7 @@ export default function LiquidacionComisionesSpa() {
                       size="sm"
                       variant="ghost"
                       onClick={() => liquidarItem(item.id)}
-                      className="h-7 text-xs rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+                      className="h-7 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
                     >
                       Pagar
                     </Button>

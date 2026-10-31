@@ -164,7 +164,7 @@ export default function TurnosPersonal() {
         action={
           <Button
             size="sm"
-            className="rounded-xl text-xs gap-1.5 shadow-none"
+            className="text-xs gap-1.5 shadow-none"
             onClick={() => setModalIntercambioOpen(true)}
           >
             <ArrowLeftRight className="h-4 w-4" /> Intercambio de Guardias

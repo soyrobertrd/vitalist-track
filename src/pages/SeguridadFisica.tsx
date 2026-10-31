@@ -240,14 +240,14 @@ export default function SeguridadFisica() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewCred(true)}
             >
               <CreditCard className="h-4 w-4 mr-1.5 text-teal-600" />
               Nueva Credencial
             </Button>
             <Button 
-              className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-teal-600 hover:bg-teal-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewAcceso(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -295,7 +295,7 @@ export default function SeguridadFisica() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por nombre, código de pase o credencial..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -304,20 +304,20 @@ export default function SeguridadFisica() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="bitacora" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="bitacora" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Clock className="h-4 w-4 mr-1.5 text-teal-600" />
             Bitácora de Accesos ({bitacoraFiltrada.length})
           </TabsTrigger>
-          <TabsTrigger value="areas" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="areas" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <DoorClosed className="h-4 w-4 mr-1.5 text-blue-600" />
             Zonas & Niveles de Acceso ({areas.length})
           </TabsTrigger>
-          <TabsTrigger value="credenciales" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="credenciales" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <CreditCard className="h-4 w-4 mr-1.5 text-purple-600" />
             Credenciales & Carnets ({credencialesFiltradas.length})
           </TabsTrigger>
-          <TabsTrigger value="analitica" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="analitica" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <PieChartIcon className="h-4 w-4 mr-1.5 text-emerald-600" />
             Analítica de Afluencia
           </TabsTrigger>
@@ -581,7 +581,7 @@ export default function SeguridadFisica() {
               <Label>Nombre Completo de la Persona *</Label>
               <Input
                 placeholder="Ej. Juan Pérez Rodríguez"
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataAcceso.persona_nombre}
                 onChange={(e) => setFormDataAcceso(p => ({ ...p, persona_nombre: e.target.value }))}
               />
@@ -594,7 +594,7 @@ export default function SeguridadFisica() {
                   value={formDataAcceso.tipo_persona} 
                   onValueChange={(val) => setFormDataAcceso(p => ({ ...p, tipo_persona: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -611,7 +611,7 @@ export default function SeguridadFisica() {
                   value={formDataAcceso.tipo} 
                   onValueChange={(val) => setFormDataAcceso(p => ({ ...p, tipo: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -628,7 +628,7 @@ export default function SeguridadFisica() {
                 value={formDataAcceso.metodo_verificacion} 
                 onValueChange={(val) => setFormDataAcceso(p => ({ ...p, metodo_verificacion: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -644,7 +644,7 @@ export default function SeguridadFisica() {
               <Label>Motivo de Visita / Área de Destino</Label>
               <Input
                 placeholder="Ej. Quirófano, Habitación 302, Mantenimiento..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataAcceso.motivo_visita}
                 onChange={(e) => setFormDataAcceso(p => ({ ...p, motivo_visita: e.target.value }))}
               />
@@ -652,11 +652,11 @@ export default function SeguridadFisica() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewAcceso(false)}>
+            <Button variant="outline" onClick={() => setShowNewAcceso(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white" 
+              className="bg-teal-600 hover:bg-teal-700 text-white" 
               onClick={() => crearAcceso.mutate()}
               disabled={crearAcceso.isPending || !formDataAcceso.persona_nombre}
             >
@@ -684,7 +684,7 @@ export default function SeguridadFisica() {
               <Label>Nombre del Titular *</Label>
               <Input
                 placeholder="Nombre del médico, enfermero o empleado..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataCred.persona_nombre}
                 onChange={(e) => setFormDataCred(p => ({ ...p, persona_nombre: e.target.value }))}
               />
@@ -694,7 +694,7 @@ export default function SeguridadFisica() {
               <div className="space-y-2">
                 <Label>Código / Chip RFID</Label>
                 <Input
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataCred.codigo_credencial}
                   onChange={(e) => setFormDataCred(p => ({ ...p, codigo_credencial: e.target.value }))}
                 />
@@ -705,7 +705,7 @@ export default function SeguridadFisica() {
                   value={formDataCred.tipo} 
                   onValueChange={(val) => setFormDataCred(p => ({ ...p, tipo: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -722,7 +722,7 @@ export default function SeguridadFisica() {
               <Label>Fecha de Expiración</Label>
               <Input
                 type="date"
-                className="rounded-xl border-border/80 font-mono"
+                className="border-border/80 font-mono"
                 value={formDataCred.fecha_vencimiento}
                 onChange={(e) => setFormDataCred(p => ({ ...p, fecha_vencimiento: e.target.value }))}
               />
@@ -730,11 +730,11 @@ export default function SeguridadFisica() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewCred(false)}>
+            <Button variant="outline" onClick={() => setShowNewCred(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white" 
+              className="bg-teal-600 hover:bg-teal-700 text-white" 
               onClick={() => crearCredencial.mutate()}
               disabled={crearCredencial.isPending || !formDataCred.persona_nombre}
             >

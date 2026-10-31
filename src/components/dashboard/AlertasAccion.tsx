@@ -66,7 +66,7 @@ export function AlertasAccion({ alertas }: { alertas: AlertaAccion[] }) {
               <p className="mt-0.5 text-sm text-muted-foreground">{a.detalle}</p>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <Badge variant="outline" dot className={`text-[11px] ${chip}`}>{a.etiqueta}</Badge>
-                <Button size="sm" className="ml-auto h-8 rounded-full" onClick={() => navigate(a.accion.to)}>
+                <Button size="sm" className="ml-auto h-8" onClick={() => navigate(a.accion.to)}>
                   {a.accion.label}
                 </Button>
               </div>

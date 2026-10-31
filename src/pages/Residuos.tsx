@@ -230,14 +230,14 @@ export default function Residuos() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewManifiesto(true)}
             >
               <Truck className="h-4 w-4 mr-1.5 text-rose-600" />
               Emitir Manifiesto
             </Button>
             <Button 
-              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-rose-600 hover:bg-rose-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewResiduo(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -286,14 +286,14 @@ export default function Residuos() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por lote, área generadora o tipo..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="w-full sm:w-64">
           <Select value={filterTipo} onValueChange={setFilterTipo}>
-            <SelectTrigger className="rounded-xl border-border/80 h-10">
+            <SelectTrigger className="border-border/80 h-10">
               <SelectValue placeholder="Clasificación de residuo" />
             </SelectTrigger>
             <SelectContent>
@@ -308,20 +308,20 @@ export default function Residuos() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="residuos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="residuos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Trash2 className="h-4 w-4 mr-1.5 text-rose-600" />
             Lotes & Pesajes ({residuosFiltrados.length})
           </TabsTrigger>
-          <TabsTrigger value="manifiestos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="manifiestos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Truck className="h-4 w-4 mr-1.5 text-purple-600" />
             Manifiestos de Custodia ({manifiestos.length})
           </TabsTrigger>
-          <TabsTrigger value="analitica" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="analitica" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <PieChartIcon className="h-4 w-4 mr-1.5 text-blue-500" />
             Analítica de Volumen y Áreas
           </TabsTrigger>
-          <TabsTrigger value="codigos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="codigos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Biohazard className="h-4 w-4 mr-1.5 text-red-500" />
             Código de Colores & Bioseguridad
           </TabsTrigger>
@@ -589,7 +589,7 @@ export default function Residuos() {
                 value={formDataResiduo.tipo} 
                 onValueChange={(val) => setFormDataResiduo(p => ({ ...p, tipo: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -607,7 +607,7 @@ export default function Residuos() {
                   type="number"
                   step="0.1"
                   placeholder="Ej. 4.8"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataResiduo.peso_kg}
                   onChange={(e) => setFormDataResiduo(p => ({ ...p, peso_kg: e.target.value }))}
                 />
@@ -616,7 +616,7 @@ export default function Residuos() {
                 <Label>Área Hospitalaria</Label>
                 <Input
                   placeholder="Ej. Quirófano 01, UCI"
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataResiduo.area_generadora}
                   onChange={(e) => setFormDataResiduo(p => ({ ...p, area_generadora: e.target.value }))}
                 />
@@ -629,7 +629,7 @@ export default function Residuos() {
                 value={formDataResiduo.estado} 
                 onValueChange={(val) => setFormDataResiduo(p => ({ ...p, estado: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -642,11 +642,11 @@ export default function Residuos() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewResiduo(false)}>
+            <Button variant="outline" onClick={() => setShowNewResiduo(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white" 
+              className="bg-rose-600 hover:bg-rose-700 text-white" 
               onClick={() => crearResiduo.mutate()}
               disabled={crearResiduo.isPending || !formDataResiduo.peso_kg}
             >
@@ -674,7 +674,7 @@ export default function Residuos() {
               <Label>Empresa Transportista Autorizada *</Label>
               <Input
                 placeholder="Nombre de la empresa acreditada"
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataManifiesto.transportista}
                 onChange={(e) => setFormDataManifiesto(p => ({ ...p, transportista: e.target.value }))}
               />
@@ -684,7 +684,7 @@ export default function Residuos() {
               <Label>Planta de Tratamiento / Destino</Label>
               <Input
                 placeholder="Ej. Planta de Autoclave e Incineración"
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataManifiesto.destino}
                 onChange={(e) => setFormDataManifiesto(p => ({ ...p, destino: e.target.value }))}
               />
@@ -696,7 +696,7 @@ export default function Residuos() {
                 <Input
                   type="number"
                   step="0.5"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataManifiesto.peso_total_kg}
                   onChange={(e) => setFormDataManifiesto(p => ({ ...p, peso_total_kg: e.target.value }))}
                 />
@@ -705,7 +705,7 @@ export default function Residuos() {
                 <Label>Placa del Vehículo</Label>
                 <Input
                   placeholder="Ej. L-482910"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataManifiesto.placa_vehiculo}
                   onChange={(e) => setFormDataManifiesto(p => ({ ...p, placa_vehiculo: e.target.value }))}
                 />
@@ -714,11 +714,11 @@ export default function Residuos() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewManifiesto(false)}>
+            <Button variant="outline" onClick={() => setShowNewManifiesto(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white" 
+              className="bg-purple-600 hover:bg-purple-700 text-white" 
               onClick={() => crearManifiesto.mutate()}
               disabled={crearManifiesto.isPending || !formDataManifiesto.transportista}
             >

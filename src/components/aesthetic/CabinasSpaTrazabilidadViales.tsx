@@ -181,7 +181,7 @@ export default function CabinasSpaTrazabilidadViales() {
 
         <Dialog open={openModalVial} onOpenChange={setOpenModalVial}>
           <DialogTrigger asChild>
-            <Button size="sm" className="rounded-xl gap-1.5 shadow-none bg-purple-600 hover:bg-purple-700 text-white">
+            <Button size="sm" className="gap-1.5 shadow-none bg-purple-600 hover:bg-purple-700 text-white">
               <Syringe className="h-4 w-4" /> Registrar Lote / Inyectable
             </Button>
           </DialogTrigger>
@@ -200,7 +200,7 @@ export default function CabinasSpaTrazabilidadViales() {
                     placeholder="Ej. Valeria Guzmán"
                     value={vialForm.clienteNombre}
                     onChange={(e) => setVialForm({ ...vialForm, clienteNombre: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
                 <div>
@@ -208,7 +208,7 @@ export default function CabinasSpaTrazabilidadViales() {
                   <Input
                     value={vialForm.medicoTratante}
                     onChange={(e) => setVialForm({ ...vialForm, medicoTratante: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function CabinasSpaTrazabilidadViales() {
                     value={vialForm.productoTipo}
                     onValueChange={(val: any) => setVialForm({ ...vialForm, productoTipo: val })}
                   >
-                    <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                    <SelectTrigger className="mt-1 h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -235,7 +235,7 @@ export default function CabinasSpaTrazabilidadViales() {
                     placeholder="Ej. Botox® Allergan 100 UI"
                     value={vialForm.marcaComercial}
                     onChange={(e) => setVialForm({ ...vialForm, marcaComercial: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
               </div>
@@ -246,7 +246,7 @@ export default function CabinasSpaTrazabilidadViales() {
                     placeholder="BTX-XXXXX"
                     value={vialForm.numeroLote}
                     onChange={(e) => setVialForm({ ...vialForm, numeroLote: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs font-mono font-bold"
+                    className="mt-1 h-8 text-xs font-mono font-bold"
                   />
                 </div>
                 <div>
@@ -255,7 +255,7 @@ export default function CabinasSpaTrazabilidadViales() {
                     placeholder="MM/AAAA"
                     value={vialForm.fechaCaducidad}
                     onChange={(e) => setVialForm({ ...vialForm, fechaCaducidad: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
               </div>
@@ -266,7 +266,7 @@ export default function CabinasSpaTrazabilidadViales() {
                     placeholder="Ej. 40 UI o 1.0 ml"
                     value={vialForm.dosisAplicada}
                     onChange={(e) => setVialForm({ ...vialForm, dosisAplicada: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs font-semibold"
+                    className="mt-1 h-8 text-xs font-semibold"
                   />
                 </div>
                 <div>
@@ -275,11 +275,11 @@ export default function CabinasSpaTrazabilidadViales() {
                     placeholder="Frente, Glabela, Patas de gallo..."
                     value={vialForm.zonasTratadas}
                     onChange={(e) => setVialForm({ ...vialForm, zonasTratadas: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
               </div>
-              <Button type="submit" className="w-full rounded-xl mt-2 bg-purple-600 hover:bg-purple-700 text-white">
+              <Button type="submit" className="w-full mt-2 bg-purple-600 hover:bg-purple-700 text-white">
                 Validar Lote y Registrar Ficha Médica
               </Button>
             </form>
@@ -352,7 +352,7 @@ export default function CabinasSpaTrazabilidadViales() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="w-full rounded-xl text-xs h-7 border-border/80"
+                      className="w-full text-xs h-7 border-border/80"
                       onClick={() => alternarEstadoCabina(c.id, "ocupada")}
                     >
                       Ocupar Cabina
@@ -361,7 +361,7 @@ export default function CabinasSpaTrazabilidadViales() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="w-full rounded-xl text-xs h-7 border-border/80 text-emerald-600 dark:text-emerald-400"
+                      className="w-full text-xs h-7 border-border/80 text-emerald-600 dark:text-emerald-400"
                       onClick={() => alternarEstadoCabina(c.id, "disponible")}
                     >
                       Liberar Cabina

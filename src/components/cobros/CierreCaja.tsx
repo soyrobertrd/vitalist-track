@@ -404,12 +404,12 @@ export function CierreCaja() {
               type="date"
               value={fechaArqueo}
               onChange={(e) => setFechaArqueo(e.target.value)}
-              className="w-[145px] h-8 rounded-xl border-border/80 text-xs"
+              className="w-[145px] h-8 border-border/80 text-xs"
             />
             <Button
               size="sm"
               onClick={handleAbrirArqueo}
-              className="h-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 text-xs"
+              className="h-8 bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 text-xs"
             >
               <Calculator className="h-3.5 w-3.5" /> Realizar Arqueo de Turno
             </Button>
@@ -417,7 +417,7 @@ export function CierreCaja() {
               size="sm"
               variant="outline"
               onClick={fetchCierres}
-              className="h-8 rounded-xl border-border/80 text-xs"
+              className="h-8 border-border/80 text-xs"
               title="Refrescar datos"
             >
               <RefreshCw className="h-3.5 w-3.5" />
@@ -512,7 +512,7 @@ export function CierreCaja() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleVerActa(c)}
-                          className="h-7 w-7 p-0 rounded-lg hover:bg-muted"
+                          className="h-7 w-7 p-0 hover:bg-muted"
                           title="Ver e Imprimir Acta de Arqueo"
                         >
                           <Printer className="w-3.5 h-3.5 text-muted-foreground" />
@@ -548,7 +548,7 @@ export function CierreCaja() {
                   value={arqueoForm.turno}
                   onValueChange={(v: any) => setArqueoForm({ ...arqueoForm, turno: v })}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                  <SelectTrigger className="border-border/80 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -564,7 +564,7 @@ export function CierreCaja() {
                 <Input
                   value={arqueoForm.cajero_nombre}
                   onChange={(e) => setArqueoForm({ ...arqueoForm, cajero_nombre: e.target.value })}
-                  className="rounded-xl border-border/80 text-xs"
+                  className="border-border/80 text-xs"
                 />
               </div>
             </div>
@@ -618,7 +618,7 @@ export function CierreCaja() {
                       onChange={(e) =>
                         setArqueoForm({ ...arqueoForm, declarado_efectivo: Number(e.target.value) })
                       }
-                      className="h-8 rounded-xl border-border/80 text-xs font-mono"
+                      className="h-8 border-border/80 text-xs font-mono"
                     />
                   </div>
 
@@ -630,7 +630,7 @@ export function CierreCaja() {
                       onChange={(e) =>
                         setArqueoForm({ ...arqueoForm, declarado_tarjeta: Number(e.target.value) })
                       }
-                      className="h-8 rounded-xl border-border/80 text-xs font-mono"
+                      className="h-8 border-border/80 text-xs font-mono"
                     />
                   </div>
 
@@ -642,7 +642,7 @@ export function CierreCaja() {
                       onChange={(e) =>
                         setArqueoForm({ ...arqueoForm, declarado_transferencia: Number(e.target.value) })
                       }
-                      className="h-8 rounded-xl border-border/80 text-xs font-mono"
+                      className="h-8 border-border/80 text-xs font-mono"
                     />
                   </div>
                 </div>
@@ -684,7 +684,7 @@ export function CierreCaja() {
                   value={arqueoForm.lote_datáfono}
                   onChange={(e) => setArqueoForm({ ...arqueoForm, lote_datáfono: e.target.value })}
                   placeholder="Ej. LOTE-CardNet-8842"
-                  className="rounded-xl border-border/80 text-xs font-mono"
+                  className="border-border/80 text-xs font-mono"
                 />
               </div>
 
@@ -696,7 +696,7 @@ export function CierreCaja() {
                     setArqueoForm({ ...arqueoForm, justificacion_diferencia: e.target.value })
                   }
                   placeholder="Notas de entrega de turno o justificación en caso de descuadre..."
-                  className="rounded-xl border-border/80 text-xs"
+                  className="border-border/80 text-xs"
                   rows={2}
                 />
               </div>
@@ -704,13 +704,13 @@ export function CierreCaja() {
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setArqueoModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setArqueoModalOpen(false)}>
               Cancelar
             </Button>
             <Button
               onClick={handleConfirmarArqueo}
               disabled={saving}
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5"
             >
               <Lock className="w-4 h-4" /> {saving ? "Guardando..." : "Confirmar Cierre de Turno"}
             </Button>
@@ -814,12 +814,12 @@ export function CierreCaja() {
           )}
 
           <DialogFooter className="gap-2 print:hidden">
-            <Button variant="outline" onClick={() => setActaModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setActaModalOpen(false)}>
               Cerrar
             </Button>
             <Button
               onClick={() => window.print()}
-              className="rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 gap-1.5"
+              className="bg-neutral-900 text-white hover:bg-neutral-800 gap-1.5"
             >
               <Printer className="w-4 h-4" /> Imprimir Acta
             </Button>

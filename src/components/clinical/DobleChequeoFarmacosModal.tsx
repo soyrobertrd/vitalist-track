@@ -118,7 +118,7 @@ export function DobleChequeoFarmacosModal({
                 step="0.1"
                 value={nuevaVelocidad}
                 onChange={e => setNuevaVelocidad(parseFloat(e.target.value) || 0)}
-                className="h-8 text-xs font-mono font-bold rounded-xl mt-1"
+                className="h-8 text-xs font-mono font-bold mt-1"
               />
             </div>
             <div>
@@ -126,7 +126,7 @@ export function DobleChequeoFarmacosModal({
               <Input
                 value={dosisTexto}
                 onChange={e => setDosisTexto(e.target.value)}
-                className="h-8 text-xs font-mono rounded-xl mt-1"
+                className="h-8 text-xs font-mono mt-1"
               />
             </div>
           </div>
@@ -197,7 +197,7 @@ export function DobleChequeoFarmacosModal({
                   placeholder="PIN testigo (ej. 4821)"
                   value={codigoTestigo}
                   onChange={e => setCodigoTestigo(e.target.value)}
-                  className="h-8 text-xs font-mono rounded-xl w-44"
+                  className="h-8 text-xs font-mono w-44"
                 />
               </div>
             </div>
@@ -205,14 +205,14 @@ export function DobleChequeoFarmacosModal({
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} className="rounded-xl text-xs">
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} className="text-xs">
             Cancelar
           </Button>
           <Button
             size="sm"
             onClick={handleConfirmar}
             disabled={!todoVerificado}
-            className="rounded-xl text-xs bg-red-600 hover:bg-red-700 text-white gap-1.5"
+            className="text-xs bg-red-600 hover:bg-red-700 text-white gap-1.5"
           >
             <CheckCircle2 className="h-4 w-4" />
             Certificar Doble Chequeo

@@ -210,7 +210,7 @@ export default function DashboardBI() {
           <div className="flex gap-2 flex-wrap items-center">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-xl border-border/80 text-xs">
+                <Button variant="outline" size="sm" className="border-border/80 text-xs">
                   <CalendarIcon className="h-4 w-4 mr-2 text-muted-foreground" />
                   {dateRange.from && dateRange.to
                     ? `${format(dateRange.from, "dd/MM/yy")} - ${format(dateRange.to, "dd/MM/yy")}`
@@ -226,7 +226,7 @@ export default function DashboardBI() {
                 />
               </PopoverContent>
             </Popover>
-            <Button variant="outline" size="sm" onClick={exportExcel} className="rounded-xl border-border/80 text-xs">
+            <Button variant="outline" size="sm" onClick={exportExcel} className="border-border/80 text-xs">
               <Download className="h-4 w-4 mr-2" /> Exportar Excel
             </Button>
           </div>
@@ -234,11 +234,11 @@ export default function DashboardBI() {
       />
 
       <Tabs defaultValue="resumen" className="space-y-4">
-        <TabsList className="bg-card border border-border/80 rounded-xl p-1">
-          <TabsTrigger value="resumen" className="rounded-lg text-xs">Resumen Ejecutivo</TabsTrigger>
-          <TabsTrigger value="tendencias" className="rounded-lg text-xs">Tendencias</TabsTrigger>
-          <TabsTrigger value="comparativo" className="rounded-lg text-xs">Comparativo Sedes</TabsTrigger>
-          <TabsTrigger value="constructor" className="rounded-lg text-xs">Constructor de Reportes</TabsTrigger>
+        <TabsList className="bg-card border border-border/80 p-1">
+          <TabsTrigger value="resumen" className="text-xs">Resumen Ejecutivo</TabsTrigger>
+          <TabsTrigger value="tendencias" className="text-xs">Tendencias</TabsTrigger>
+          <TabsTrigger value="comparativo" className="text-xs">Comparativo Sedes</TabsTrigger>
+          <TabsTrigger value="constructor" className="text-xs">Constructor de Reportes</TabsTrigger>
         </TabsList>
 
         {/* RESUMEN */}

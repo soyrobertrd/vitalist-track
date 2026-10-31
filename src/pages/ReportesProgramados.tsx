@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -218,15 +219,15 @@ export default function ReportesProgramados() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button size="icon" variant="ghost" title="Descargar CSV ahora" onClick={() => ejecutarAhora(r, true)}>
+                      <IconButton label="Descargar" size="icon" variant="ghost" title="Descargar CSV ahora" onClick={() => ejecutarAhora(r, true)}>
                         <Download className="h-4 w-4" />
-                      </Button>
-                      <Button size="icon" variant="ghost" title="Enviar por email ahora" onClick={() => ejecutarAhora(r, false)}>
+                      </IconButton>
+                      <IconButton label="Enviar" size="icon" variant="ghost" title="Enviar por email ahora" onClick={() => ejecutarAhora(r, false)}>
                         <Send className="h-4 w-4 text-primary" />
-                      </Button>
-                      <Button size="icon" variant="ghost" onClick={() => eliminar.mutate(r.id)}>
+                      </IconButton>
+                      <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => eliminar.mutate(r.id)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                      </IconButton>
                     </div>
                   </TableCell>
                 </TableRow>

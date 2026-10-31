@@ -221,14 +221,14 @@ export default function Quirofano() {
             <Button
               variant="outline"
               size="sm"
-              className="rounded-xl border-border/80 gap-1.5"
+              className="border-border/80 gap-1.5"
               onClick={() => setSalaDialogOpen(true)}
             >
               <Plus className="h-4 w-4" /> Nueva Sala
             </Button>
             <Button
               size="sm"
-              className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl"
+              className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
               onClick={() => setDialogOpen(true)}
             >
               <Plus className="h-4 w-4" /> Programar Intervención
@@ -270,14 +270,14 @@ export default function Quirofano() {
       </div>
 
       <Tabs defaultValue="agenda" className="space-y-4">
-        <TabsList className="bg-card border border-border/80 p-1 rounded-xl">
-          <TabsTrigger value="agenda" className="rounded-lg gap-2">
+        <TabsList className="bg-card border border-border/80 p-1">
+          <TabsTrigger value="agenda" className="gap-2">
             <CalendarIcon className="h-4 w-4" /> Agenda Quirúrgica ({cirugias.length})
           </TabsTrigger>
-          <TabsTrigger value="salas" className="rounded-lg gap-2">
+          <TabsTrigger value="salas" className="gap-2">
             <Activity className="h-4 w-4" /> Quirófanos & Salas ({salas.length})
           </TabsTrigger>
-          <TabsTrigger value="checklists" className="rounded-lg gap-2">
+          <TabsTrigger value="checklists" className="gap-2">
             <CheckSquare className="h-4 w-4" /> Checklists de Seguridad OMS
           </TabsTrigger>
         </TabsList>
@@ -356,7 +356,7 @@ export default function Quirofano() {
                                   setCirugiaSeleccionada(c);
                                   setConsentimientoModalOpen(true);
                                 }}
-                                className="h-8 px-2.5 rounded-xl text-xs gap-1.5 border-teal-500/40 text-teal-700 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-950/40"
+                                className="h-8 px-2.5 text-xs gap-1.5 border-teal-500/40 text-teal-700 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-950/40"
                               >
                                 <FileSignature className="h-3.5 w-3.5 text-teal-600" />
                                 Consentimiento
@@ -365,7 +365,7 @@ export default function Quirofano() {
                               {c.estado === "programada" && (
                                 <Button
                                   size="sm"
-                                  className="h-8 rounded-xl text-xs bg-indigo-600 hover:bg-indigo-700 text-white"
+                                  className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white"
                                   onClick={() => actualizarEstado(c.id, "en_curso")}
                                 >
                                   Iniciar
@@ -375,7 +375,7 @@ export default function Quirofano() {
                               {c.estado === "en_curso" && (
                                 <Button
                                   size="sm"
-                                  className="h-8 rounded-xl text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                                  className="h-8 text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
                                   onClick={() => actualizarEstado(c.id, "completada")}
                                 >
                                   Completar
@@ -386,7 +386,7 @@ export default function Quirofano() {
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  className="h-8 rounded-xl text-xs text-muted-foreground hover:text-rose-600"
+                                  className="h-8 text-xs text-muted-foreground hover:text-rose-600"
                                   onClick={() => actualizarEstado(c.id, "cancelada")}
                                 >
                                   Cancelar
@@ -529,7 +529,7 @@ export default function Quirofano() {
             <div>
               <Label className="text-xs font-semibold">Quirófano / Sala</Label>
               <Select value={form.sala_id} onValueChange={(v) => setForm((p) => ({ ...p, sala_id: v }))}>
-                <SelectTrigger className="rounded-xl mt-1"><SelectValue placeholder="Seleccionar sala..." /></SelectTrigger>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccionar sala..." /></SelectTrigger>
                 <SelectContent>
                   {salas.map((s) => <SelectItem key={s.id} value={s.id}>{s.nombre}</SelectItem>)}
                 </SelectContent>
@@ -538,7 +538,7 @@ export default function Quirofano() {
             <div>
               <Label className="text-xs font-semibold">Tipo de Cirugía / Procedimiento *</Label>
               <Input
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={form.tipo_cirugia}
                 onChange={(e) => setForm((p) => ({ ...p, tipo_cirugia: e.target.value }))}
                 placeholder="Ej: Colecistectomía Laparoscópica"
@@ -547,7 +547,7 @@ export default function Quirofano() {
             <div>
               <Label className="text-xs font-semibold">Diagnóstico Preoperatorio</Label>
               <Input
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={form.diagnostico_preop}
                 onChange={(e) => setForm((p) => ({ ...p, diagnostico_preop: e.target.value }))}
                 placeholder="Ej: Colelitiasis sintomática"
@@ -557,7 +557,7 @@ export default function Quirofano() {
               <Label className="text-xs font-semibold">Fecha Programada *</Label>
               <Input
                 type="date"
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={form.fecha_programada}
                 onChange={(e) => setForm((p) => ({ ...p, fecha_programada: e.target.value }))}
               />
@@ -566,7 +566,7 @@ export default function Quirofano() {
               <Label className="text-xs font-semibold">Hora de Inicio</Label>
               <Input
                 type="time"
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={form.hora_inicio}
                 onChange={(e) => setForm((p) => ({ ...p, hora_inicio: e.target.value }))}
               />
@@ -575,7 +575,7 @@ export default function Quirofano() {
               <Label className="text-xs font-semibold">Duración Estimada (minutos)</Label>
               <Input
                 type="number"
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={form.duracion_estimada_min}
                 onChange={(e) => setForm((p) => ({ ...p, duracion_estimada_min: parseInt(e.target.value) || 60 }))}
               />
@@ -583,7 +583,7 @@ export default function Quirofano() {
             <div>
               <Label className="text-xs font-semibold">Prioridad Quirúrgica</Label>
               <Select value={form.prioridad} onValueChange={(v) => setForm((p) => ({ ...p, prioridad: v }))}>
-                <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="electiva">Electiva (Programada habitual)</SelectItem>
                   <SelectItem value="urgente">Urgente (&lt; 24h)</SelectItem>
@@ -594,7 +594,7 @@ export default function Quirofano() {
             <div>
               <Label className="text-xs font-semibold">Médico Anestesiólogo</Label>
               <Input
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={form.anestesiologo}
                 onChange={(e) => setForm((p) => ({ ...p, anestesiologo: e.target.value }))}
                 placeholder="Dr(a). Nombre del anestesiólogo"
@@ -603,7 +603,7 @@ export default function Quirofano() {
             <div>
               <Label className="text-xs font-semibold">Técnica Anestésica</Label>
               <Select value={form.tipo_anestesia} onValueChange={(v) => setForm((p) => ({ ...p, tipo_anestesia: v }))}>
-                <SelectTrigger className="rounded-xl mt-1"><SelectValue placeholder="Seleccionar técnica..." /></SelectTrigger>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccionar técnica..." /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="general">General Inhalatoria / TIVA</SelectItem>
                   <SelectItem value="regional">Regional (Raquídea / Epidural)</SelectItem>
@@ -615,7 +615,7 @@ export default function Quirofano() {
             <div className="md:col-span-2">
               <Label className="text-xs font-semibold">Notas Preoperatorias / Requerimientos Especiales</Label>
               <Textarea
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={form.notas_operatorias}
                 onChange={(e) => setForm((p) => ({ ...p, notas_operatorias: e.target.value }))}
                 placeholder="Ej: Requiere intensificador de imágenes (Arco en C), torre de laparoscopia y reserva de 2 unidades de GRE."
@@ -623,7 +623,7 @@ export default function Quirofano() {
               />
             </div>
           </div>
-          <Button onClick={crearCirugia} className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5 mt-3">
+          <Button onClick={crearCirugia} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5 mt-3">
             Confirmar Programación Quirúrgica
           </Button>
         </DialogContent>
@@ -640,17 +640,17 @@ export default function Quirofano() {
           <div className="space-y-3 pt-2">
             <div>
               <Label className="text-xs font-semibold">Nombre o Identificador del Quirófano *</Label>
-              <Input className="rounded-xl mt-1" value={salaForm.nombre} onChange={(e) => setSalaForm((p) => ({ ...p, nombre: e.target.value }))} placeholder="Ej: Quirófano 1 (Laparoscópico)" />
+              <Input className="mt-1" value={salaForm.nombre} onChange={(e) => setSalaForm((p) => ({ ...p, nombre: e.target.value }))} placeholder="Ej: Quirófano 1 (Laparoscópico)" />
             </div>
             <div>
               <Label className="text-xs font-semibold">Capacidad de Mesas de Operación</Label>
-              <Input type="number" className="rounded-xl mt-1" value={salaForm.capacidad} onChange={(e) => setSalaForm((p) => ({ ...p, capacidad: parseInt(e.target.value) || 1 }))} />
+              <Input type="number" className="mt-1" value={salaForm.capacidad} onChange={(e) => setSalaForm((p) => ({ ...p, capacidad: parseInt(e.target.value) || 1 }))} />
             </div>
             <div>
               <Label className="text-xs font-semibold">Observaciones / Equipamiento</Label>
-              <Textarea className="rounded-xl mt-1" value={salaForm.notas} onChange={(e) => setSalaForm((p) => ({ ...p, notas: e.target.value }))} placeholder="Equipado con flujo laminar y filtros HEPA." />
+              <Textarea className="mt-1" value={salaForm.notas} onChange={(e) => setSalaForm((p) => ({ ...p, notas: e.target.value }))} placeholder="Equipado con flujo laminar y filtros HEPA." />
             </div>
-            <Button onClick={crearSala} className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
+            <Button onClick={crearSala} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
               Registrar Quirófano
             </Button>
           </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,7 +68,7 @@ export function GenerarTokenPortal({ pacienteId, pacienteNombre }: Props) {
             <div className="space-y-3">
               <div className="flex gap-2">
                 <Input value={link} readOnly className="text-xs" />
-                <Button variant="outline" size="icon" onClick={copiar}><Copy className="h-4 w-4" /></Button>
+                <IconButton label="Copiar" variant="outline" size="icon" onClick={copiar}><Copy className="h-4 w-4" /></IconButton>
               </div>
               <Button variant="outline" className="w-full gap-2" onClick={() => window.open(link, "_blank")}>
                 <ExternalLink className="h-4 w-4" /> Abrir portal

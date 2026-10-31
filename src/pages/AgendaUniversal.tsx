@@ -158,7 +158,7 @@ export default function AgendaUniversal() {
           <div className="flex items-center gap-2">
             <Dialog open={openCita} onOpenChange={setOpenCita}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-none">
+                <Button className="shadow-none">
                   <Plus className="h-4 w-4 mr-2" />
                   Nueva Cita
                 </Button>
@@ -177,7 +177,7 @@ export default function AgendaUniversal() {
                       value={formCita.area_id ?? ""}
                       onValueChange={v => setFormCita({ ...formCita, area_id: v })}
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger>
                         <SelectValue placeholder="Seleccionar área clínica..." />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -201,7 +201,7 @@ export default function AgendaUniversal() {
                       value={formCita.paciente_id ?? ""}
                       onValueChange={v => setFormCita({ ...formCita, paciente_id: v })}
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger>
                         <SelectValue placeholder="Seleccionar paciente..." />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl max-h-56">
@@ -219,7 +219,7 @@ export default function AgendaUniversal() {
                       value={formCita.profesional_id ?? ""}
                       onValueChange={v => setFormCita({ ...formCita, profesional_id: v })}
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger>
                         <SelectValue placeholder="(Opcional - Cualquier médico disponible)" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl max-h-56">
@@ -236,7 +236,7 @@ export default function AgendaUniversal() {
                       <Label className="text-xs font-semibold">Fecha y Hora *</Label>
                       <Input
                         type="datetime-local"
-                        className="rounded-xl"
+                       
                         value={formCita.fecha_inicio ?? ""}
                         onChange={e => setFormCita({ ...formCita, fecha_inicio: e.target.value })}
                       />
@@ -247,7 +247,7 @@ export default function AgendaUniversal() {
                         value={formCita.prioridad}
                         onValueChange={v => setFormCita({ ...formCita, prioridad: v })}
                       >
-                        <SelectTrigger className="rounded-xl">
+                        <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
@@ -262,7 +262,7 @@ export default function AgendaUniversal() {
                   <div>
                     <Label className="text-xs font-semibold">Motivo de Consulta</Label>
                     <Input
-                      className="rounded-xl"
+                     
                       placeholder="Ej: Evaluación posoperatoria, rutina, dolor"
                       value={formCita.motivo ?? ""}
                       onChange={e => setFormCita({ ...formCita, motivo: e.target.value })}
@@ -271,7 +271,7 @@ export default function AgendaUniversal() {
                   <div>
                     <Label className="text-xs font-semibold">Instrucciones o Notas</Label>
                     <Textarea
-                      className="rounded-xl resize-none"
+                      className="resize-none"
                       rows={2}
                       placeholder="Requisitos de preparación, antecedentes..."
                       value={formCita.notas ?? ""}
@@ -280,7 +280,7 @@ export default function AgendaUniversal() {
                   </div>
                 </div>
                 <DialogFooter className="pt-2">
-                  <Button onClick={saveCita} className="w-full rounded-xl shadow-none">
+                  <Button onClick={saveCita} className="w-full shadow-none">
                     Confirmar y Agendar
                   </Button>
                 </DialogFooter>
@@ -325,12 +325,12 @@ export default function AgendaUniversal() {
 
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <TabsList className="w-full sm:w-auto flex justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-            <TabsTrigger value="citas" className="rounded-xl text-xs font-semibold px-4 py-2 gap-2">
+          <TabsList className="w-full sm:w-auto flex justify-start gap-1 p-1.5 bg-muted/40 border border-border/70 h-auto">
+            <TabsTrigger value="citas" className="text-xs font-semibold px-4 py-2 gap-2">
               <CalendarCheck className="h-4 w-4" />
               Citas y Turnos
             </TabsTrigger>
-            <TabsTrigger value="areas" className="rounded-xl text-xs font-semibold px-4 py-2 gap-2">
+            <TabsTrigger value="areas" className="text-xs font-semibold px-4 py-2 gap-2">
               <Settings className="h-4 w-4" />
               Configuración de Áreas ({areas.length})
             </TabsTrigger>
@@ -339,7 +339,7 @@ export default function AgendaUniversal() {
           {tab === "citas" && (
             <div className="w-full sm:w-auto flex items-center gap-2">
               <Select value={filterArea} onValueChange={setFilterArea}>
-                <SelectTrigger className="w-full sm:w-64 rounded-xl border-border/80">
+                <SelectTrigger className="w-full sm:w-64 border-border/80">
                   <SelectValue placeholder="Filtrar por área..." />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -432,7 +432,7 @@ export default function AgendaUniversal() {
                       {i.estado === "pendiente" && (
                         <Button
                           size="sm"
-                          className="rounded-xl h-8 text-xs font-semibold shadow-none bg-blue-600 hover:bg-blue-700 text-white"
+                          className="h-8 text-xs font-semibold shadow-none bg-blue-600 hover:bg-blue-700 text-white"
                           onClick={() => cambiarEstado(i.id, "confirmada")}
                         >
                           Confirmar
@@ -441,7 +441,7 @@ export default function AgendaUniversal() {
                       {i.estado === "confirmada" && (
                         <Button
                           size="sm"
-                          className="rounded-xl h-8 text-xs font-semibold shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
+                          className="h-8 text-xs font-semibold shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
                           onClick={() => cambiarEstado(i.id, "completada")}
                         >
                           <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
@@ -452,7 +452,7 @@ export default function AgendaUniversal() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="rounded-xl h-8 text-xs font-semibold text-muted-foreground hover:text-destructive"
+                          className="h-8 text-xs font-semibold text-muted-foreground hover:text-destructive"
                           onClick={() => cambiarEstado(i.id, "cancelada")}
                         >
                           Cancelar
@@ -519,7 +519,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="rounded-xl shadow-none">
+            <Button className="shadow-none">
               <Plus className="h-4 w-4 mr-2" />
               Nueva Área Clínica
             </Button>
@@ -533,7 +533,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
                 <div>
                   <Label className="text-xs font-semibold">Nombre *</Label>
                   <Input
-                    className="rounded-xl"
+                   
                     placeholder="Ej: Quirófano 1"
                     value={form.nombre ?? ""}
                     onChange={e => setForm({ ...form, nombre: e.target.value })}
@@ -542,7 +542,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
                 <div>
                   <Label className="text-xs font-semibold">Código *</Label>
                   <Input
-                    className="rounded-xl font-mono"
+                    className="font-mono"
                     placeholder="Q1"
                     value={form.codigo ?? ""}
                     onChange={e => setForm({ ...form, codigo: e.target.value })}
@@ -552,7 +552,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
               <div>
                 <Label className="text-xs font-semibold">Tipo de Recurso</Label>
                 <Select value={form.tipo} onValueChange={v => setForm({ ...form, tipo: v })}>
-                  <SelectTrigger className="rounded-xl">
+                  <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl max-h-56">
@@ -569,7 +569,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
                   <Label className="text-xs font-semibold">Duración (min)</Label>
                   <Input
                     type="number"
-                    className="rounded-xl font-mono"
+                    className="font-mono"
                     value={form.duracion}
                     onChange={e => setForm({ ...form, duracion: e.target.value })}
                   />
@@ -578,7 +578,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
                   <Label className="text-xs font-semibold">Capacidad</Label>
                   <Input
                     type="number"
-                    className="rounded-xl font-mono"
+                    className="font-mono"
                     value={form.capacidad ?? "1"}
                     onChange={e => setForm({ ...form, capacidad: e.target.value })}
                   />
@@ -587,7 +587,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
                   <Label className="text-xs font-semibold">Color</Label>
                   <Input
                     type="color"
-                    className="rounded-xl h-10 p-1 cursor-pointer"
+                    className="h-10 p-1 cursor-pointer"
                     value={form.color}
                     onChange={e => setForm({ ...form, color: e.target.value })}
                   />
@@ -608,7 +608,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
               <div>
                 <Label className="text-xs font-semibold">Instrucciones de Preparación</Label>
                 <Textarea
-                  className="rounded-xl resize-none"
+                  className="resize-none"
                   rows={2}
                   placeholder="Ej: Presentar estudios radiológicos previos..."
                   value={form.preparacion ?? ""}
@@ -617,7 +617,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
               </div>
             </div>
             <DialogFooter className="pt-2">
-              <Button onClick={save} className="w-full rounded-xl shadow-none">
+              <Button onClick={save} className="w-full shadow-none">
                 Guardar Área de Servicio
               </Button>
             </DialogFooter>
@@ -652,7 +652,7 @@ function AreasTab({ areas, onRefresh }: { areas: any[]; onRefresh: () => void })
               <Button
                 size="sm"
                 variant={i.activo !== false ? "outline" : "secondary"}
-                className="rounded-xl text-xs font-semibold h-8"
+                className="text-xs font-semibold h-8"
                 onClick={() => toggle(i.id, i.activo !== false)}
               >
                 {i.activo !== false ? "Activa" : "Inactiva"}

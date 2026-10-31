@@ -245,7 +245,7 @@ export function TodayAppointmentsTable() {
                         variant="ghost"
                         size="sm"
                         onClick={() => navigate(`/app/citas?id=${item.id}`)}
-                        className="h-7 w-7 p-0 rounded-lg text-muted-foreground hover:text-foreground"
+                        className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
                       >
                         <Eye className="h-3.5 w-3.5" />
                       </Button>

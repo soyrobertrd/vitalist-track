@@ -455,7 +455,7 @@ export default function WorkflowsClinicos() {
             onClick={() => {
               if (plantillas.length > 0) abrirEjecucion(plantillas[0]);
             }}
-            className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-medium flex items-center gap-2 shadow-sm"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium flex items-center gap-2 shadow-sm"
           >
             <Play className="h-4 w-4" />
             Ejecutar Workflow en Paciente
@@ -492,12 +492,12 @@ export default function WorkflowsClinicos() {
       </div>
 
       <Tabs defaultValue="plantillas" className="w-full">
-        <TabsList className="bg-muted/70 p-1 rounded-xl">
-          <TabsTrigger value="plantillas" className="rounded-lg text-xs font-semibold gap-2">
+        <TabsList className="bg-muted/70 p-1">
+          <TabsTrigger value="plantillas" className="text-xs font-semibold gap-2">
             <Layers className="h-4 w-4" />
             Catálogo de Workflows Clínicos
           </TabsTrigger>
-          <TabsTrigger value="historial" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="historial" className="text-xs font-semibold gap-2">
             <Clock className="h-4 w-4" />
             Registro de Ejecuciones & Auditoría
           </TabsTrigger>
@@ -513,11 +513,11 @@ export default function WorkflowsClinicos() {
                 placeholder="Buscar por nombre, código o evento disparador..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                className="pl-9 rounded-xl border-border/80"
+                className="pl-9 border-border/80"
               />
             </div>
             <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
-              <SelectTrigger className="w-full sm:w-[240px] rounded-xl border-border/80">
+              <SelectTrigger className="w-full sm:w-[240px] border-border/80">
                 <SelectValue placeholder="Categoría de Workflow" />
               </SelectTrigger>
               <SelectContent>
@@ -619,7 +619,7 @@ export default function WorkflowsClinicos() {
 
                     <Button
                       onClick={() => abrirEjecucion(p)}
-                      className="w-full rounded-xl text-xs font-medium gap-2 mt-2"
+                      className="w-full text-xs font-medium gap-2 mt-2"
                     >
                       <Play className="h-4 w-4" />
                       Ejecutar Workflow en Paciente
@@ -716,7 +716,7 @@ export default function WorkflowsClinicos() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Seleccionar Paciente:</Label>
                 <Select value={pacienteSeleccionado} onValueChange={setPacienteSeleccionado}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue placeholder="Seleccione un paciente" />
                   </SelectTrigger>
                   <SelectContent>
@@ -751,14 +751,14 @@ export default function WorkflowsClinicos() {
               type="button"
               variant="outline"
               onClick={() => setModalEjecutar(false)}
-              className="rounded-xl"
+             
             >
               Cancelar
             </Button>
             <Button
               onClick={ejecutarWorkflow}
               disabled={ejecutando || !pacienteSeleccionado}
-              className="rounded-xl font-medium"
+              className="font-medium"
             >
               {ejecutando ? "Orquestando acciones..." : "Confirmar y Ejecutar"}
             </Button>

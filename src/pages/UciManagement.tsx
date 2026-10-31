@@ -200,7 +200,7 @@ export default function UciManagement() {
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground hidden sm:inline">Paciente en Cama:</span>
             <Select value={pacienteId} onValueChange={setPacienteId}>
-              <SelectTrigger className="w-64 h-9 text-xs rounded-xl border-border/80 bg-background">
+              <SelectTrigger className="w-64 h-9 text-xs border-border/80 bg-background">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

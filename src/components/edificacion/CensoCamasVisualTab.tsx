@@ -45,7 +45,7 @@ export function CensoCamasVisualTab({
             <Button
               size="sm"
               variant={filtroEstado === "todos" ? "default" : "outline"}
-              className="rounded-xl text-xs h-8 px-3"
+              className="text-xs h-8 px-3"
               onClick={() => setFiltroEstado("todos")}
             >
               Todas ({total})
@@ -58,7 +58,7 @@ export function CensoCamasVisualTab({
                   key={est}
                   size="sm"
                   variant={filtroEstado === est ? "default" : "outline"}
-                  className="rounded-xl text-xs h-8 px-2.5 gap-1"
+                  className="text-xs h-8 px-2.5 gap-1"
                   onClick={() => setFiltroEstado(est)}
                 >
                   <span className="capitalize">{cfg.label}</span>
@@ -148,7 +148,7 @@ export function CensoCamasVisualTab({
                   <Button
                     size="sm"
                     variant="outline"
-                    className="w-full rounded-xl text-xs h-7.5 gap-1.5 border-border/80"
+                    className="w-full text-xs h-7.5 gap-1.5 border-border/80"
                     onClick={() => onIniciarTraslado(c)}
                   >
                     <ArrowLeftRight className="h-3.5 w-3.5 text-purple-600" /> Trasladar Cama
@@ -156,7 +156,7 @@ export function CensoCamasVisualTab({
                 ) : c.estado === "desinfeccion" ? (
                   <Button
                     size="sm"
-                    className="w-full rounded-xl text-xs h-7.5 gap-1.5 shadow-none bg-emerald-600 text-white"
+                    className="w-full text-xs h-7.5 gap-1.5 shadow-none bg-emerald-600 text-white"
                     onClick={() => {
                       onCambiarEstadoCama(c.id, "libre");
                       toast.success(`Cama ${c.codigo} liberada y lista para uso.`);
@@ -168,7 +168,7 @@ export function CensoCamasVisualTab({
                   <Button
                     size="sm"
                     variant="outline"
-                    className="w-full rounded-xl text-xs h-7.5 gap-1.5"
+                    className="w-full text-xs h-7.5 gap-1.5"
                     onClick={() => {
                       onCambiarEstadoCama(c.id, "desinfeccion");
                       toast.info(`Cama ${c.codigo} enviada a desinfección terminal.`);

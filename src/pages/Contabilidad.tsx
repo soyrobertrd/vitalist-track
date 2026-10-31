@@ -3,6 +3,7 @@ import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -151,7 +152,7 @@ const Contabilidad = () => {
           <div className="flex items-center gap-2">
             <Dialog open={asientoDialog} onOpenChange={setAsientoDialog}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-none">
+                <Button className="shadow-none">
                   <Plus className="h-4 w-4 mr-2" />
                   Nuevo Asiento
                 </Button>
@@ -166,7 +167,7 @@ const Contabilidad = () => {
                       <Label>Fecha</Label>
                       <Input
                         type="date"
-                        className="rounded-xl"
+                       
                         value={asientoForm.fecha}
                         onChange={e => setAsientoForm(f => ({ ...f, fecha: e.target.value }))}
                       />
@@ -174,7 +175,7 @@ const Contabilidad = () => {
                     <div className="md:col-span-2">
                       <Label>Descripción *</Label>
                       <Input
-                        className="rounded-xl"
+                       
                         value={asientoForm.descripcion}
                         onChange={e => setAsientoForm(f => ({ ...f, descripcion: e.target.value }))}
                         placeholder="Motivo del asiento contable"
@@ -185,7 +186,7 @@ const Contabilidad = () => {
                     <div>
                       <Label>Referencia</Label>
                       <Input
-                        className="rounded-xl"
+                       
                         value={asientoForm.referencia}
                         onChange={e => setAsientoForm(f => ({ ...f, referencia: e.target.value }))}
                         placeholder="Ej: FAC-2026-00001"
@@ -194,7 +195,7 @@ const Contabilidad = () => {
                     <div>
                       <Label>Notas</Label>
                       <Input
-                        className="rounded-xl"
+                       
                         value={asientoForm.notas}
                         onChange={e => setAsientoForm(f => ({ ...f, notas: e.target.value }))}
                       />
@@ -204,7 +205,7 @@ const Contabilidad = () => {
                   <div className="space-y-2 pt-2">
                     <div className="flex items-center justify-between">
                       <Label className="text-sm font-semibold">Líneas de Asiento</Label>
-                      <Button size="sm" variant="outline" className="rounded-xl" onClick={addLinea}>
+                      <Button size="sm" variant="outline" onClick={addLinea}>
                         <Plus className="h-3.5 w-3.5 mr-1" />
                         Agregar Línea
                       </Button>
@@ -214,7 +215,7 @@ const Contabilidad = () => {
                         <div className="col-span-12 sm:col-span-4">
                           {i === 0 && <Label className="text-xs mb-1 block">Cuenta</Label>}
                           <Select value={l.cuenta_id} onValueChange={v => updateLinea(i, "cuenta_id", v)}>
-                            <SelectTrigger className="rounded-xl"><SelectValue placeholder="Seleccionar cuenta..." /></SelectTrigger>
+                            <SelectTrigger><SelectValue placeholder="Seleccionar cuenta..." /></SelectTrigger>
                             <SelectContent className="rounded-xl">
                               {cuentasActivas.map(c => (
                                 <SelectItem key={c.id} value={c.id}>{c.codigo} — {c.nombre}</SelectItem>
@@ -224,20 +225,20 @@ const Contabilidad = () => {
                         </div>
                         <div className="col-span-12 sm:col-span-3">
                           {i === 0 && <Label className="text-xs mb-1 block">Descripción</Label>}
-                          <Input className="rounded-xl" value={l.descripcion} onChange={e => updateLinea(i, "descripcion", e.target.value)} />
+                          <Input value={l.descripcion} onChange={e => updateLinea(i, "descripcion", e.target.value)} />
                         </div>
                         <div className="col-span-5 sm:col-span-2">
                           {i === 0 && <Label className="text-xs mb-1 block">Debe</Label>}
-                          <Input className="rounded-xl font-mono text-right" type="number" min={0} step={0.01} value={l.debe} onChange={e => updateLinea(i, "debe", Number(e.target.value))} />
+                          <Input className="font-mono text-right" type="number" min={0} step={0.01} value={l.debe} onChange={e => updateLinea(i, "debe", Number(e.target.value))} />
                         </div>
                         <div className="col-span-5 sm:col-span-2">
                           {i === 0 && <Label className="text-xs mb-1 block">Haber</Label>}
-                          <Input className="rounded-xl font-mono text-right" type="number" min={0} step={0.01} value={l.haber} onChange={e => updateLinea(i, "haber", Number(e.target.value))} />
+                          <Input className="font-mono text-right" type="number" min={0} step={0.01} value={l.haber} onChange={e => updateLinea(i, "haber", Number(e.target.value))} />
                         </div>
                         <div className="col-span-2 sm:col-span-1 flex justify-center">
-                          <Button size="icon" variant="ghost" className="rounded-xl text-destructive hover:bg-destructive/10" onClick={() => removeLinea(i)}>
+                          <IconButton label="Cerrar" size="icon" variant="ghost" className="text-destructive hover:bg-destructive/10" onClick={() => removeLinea(i)}>
                             <XCircle className="h-4 w-4" />
-                          </Button>
+                          </IconButton>
                         </div>
                       </div>
                     ))}
@@ -252,7 +253,7 @@ const Contabilidad = () => {
                     )}
                   </div>
 
-                  <Button onClick={handleCreateAsiento} className="w-full rounded-xl shadow-none" disabled={!cuadrado || lineas.length === 0}>
+                  <Button onClick={handleCreateAsiento} className="w-full shadow-none" disabled={!cuadrado || lineas.length === 0}>
                     Registrar Asiento
                   </Button>
                 </div>
@@ -296,11 +297,11 @@ const Contabilidad = () => {
       </div>
 
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="w-full sm:w-auto flex justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-          <TabsTrigger value="asientos" className="rounded-xl text-xs font-semibold px-4 py-2">
+        <TabsList className="w-full sm:w-auto flex justify-start gap-1 p-1.5 bg-muted/40 border border-border/70 h-auto">
+          <TabsTrigger value="asientos" className="text-xs font-semibold px-4 py-2">
             Libro Diario
           </TabsTrigger>
-          <TabsTrigger value="cuentas" className="rounded-xl text-xs font-semibold px-4 py-2">
+          <TabsTrigger value="cuentas" className="text-xs font-semibold px-4 py-2">
             Catálogo de Cuentas
           </TabsTrigger>
         </TabsList>
@@ -311,7 +312,7 @@ const Contabilidad = () => {
             <div className="relative flex-1 min-w-[240px] max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                className="pl-9 rounded-xl border-border/80"
+                className="pl-9 border-border/80"
                 placeholder="Buscar asiento por número o descripción..."
                 value={searchAsiento}
                 onChange={e => setSearchAsiento(e.target.value)}
@@ -319,7 +320,7 @@ const Contabilidad = () => {
             </div>
             <div className="flex items-center gap-2">
               <Select value={filterEstado} onValueChange={setFilterEstado}>
-                <SelectTrigger className="w-[160px] rounded-xl border-border/80">
+                <SelectTrigger className="w-[160px] border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -385,7 +386,7 @@ const Contabilidad = () => {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="rounded-xl h-8 text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
+                                  className="h-8 text-xs font-semibold text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
                                   onClick={() => updateEstadoAsiento(a.id, "aprobado")}
                                 >
                                   <CheckCircle className="h-3.5 w-3.5 mr-1" />
@@ -394,7 +395,7 @@ const Contabilidad = () => {
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  className="rounded-xl h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                                  className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
                                   onClick={() => updateEstadoAsiento(a.id, "anulado")}
                                 >
                                   <XCircle className="h-4 w-4" />
@@ -417,7 +418,7 @@ const Contabilidad = () => {
           <div className="flex justify-end">
             <Dialog open={cuentaDialog} onOpenChange={setCuentaDialog}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-none">
+                <Button className="shadow-none">
                   <Plus className="h-4 w-4 mr-2" />
                   Nueva Cuenta
                 </Button>
@@ -431,7 +432,7 @@ const Contabilidad = () => {
                     <div>
                       <Label>Código *</Label>
                       <Input
-                        className="rounded-xl font-mono"
+                        className="font-mono"
                         value={cuentaForm.codigo}
                         onChange={e => setCuentaForm(f => ({ ...f, codigo: e.target.value }))}
                         placeholder="Ej: 1.1.01"
@@ -440,7 +441,7 @@ const Contabilidad = () => {
                     <div>
                       <Label>Nombre *</Label>
                       <Input
-                        className="rounded-xl"
+                       
                         value={cuentaForm.nombre}
                         onChange={e => setCuentaForm(f => ({ ...f, nombre: e.target.value }))}
                       />
@@ -459,7 +460,7 @@ const Contabilidad = () => {
                           }))
                         }
                       >
-                        <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent className="rounded-xl">
                           {TIPOS_CUENTA.map(t => (
                             <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
@@ -470,7 +471,7 @@ const Contabilidad = () => {
                     <div>
                       <Label>Naturaleza</Label>
                       <Select value={cuentaForm.naturaleza} onValueChange={v => setCuentaForm(f => ({ ...f, naturaleza: v }))}>
-                        <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectItem value="deudora">Deudora</SelectItem>
                           <SelectItem value="acreedora">Acreedora</SelectItem>
@@ -482,7 +483,7 @@ const Contabilidad = () => {
                     <div>
                       <Label>Cuenta Padre</Label>
                       <Select value={cuentaForm.cuenta_padre_id} onValueChange={v => setCuentaForm(f => ({ ...f, cuenta_padre_id: v }))}>
-                        <SelectTrigger className="rounded-xl"><SelectValue placeholder="Ninguna" /></SelectTrigger>
+                        <SelectTrigger><SelectValue placeholder="Ninguna" /></SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectItem value="">Ninguna</SelectItem>
                           {cuentas.map(c => (
@@ -497,13 +498,13 @@ const Contabilidad = () => {
                         type="number"
                         min={1}
                         max={6}
-                        className="rounded-xl"
+                       
                         value={cuentaForm.nivel}
                         onChange={e => setCuentaForm(f => ({ ...f, nivel: Number(e.target.value) }))}
                       />
                     </div>
                   </div>
-                  <Button onClick={handleCreateCuenta} className="w-full rounded-xl shadow-none">
+                  <Button onClick={handleCreateCuenta} className="w-full shadow-none">
                     Guardar Cuenta
                   </Button>
                 </div>
@@ -624,7 +625,7 @@ const Contabilidad = () => {
               <div className="flex gap-2 justify-end pt-2">
                 <Button
                   size="sm"
-                  className="rounded-xl shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
                   onClick={() => updateEstadoAsiento(detalleAsiento.id, "aprobado")}
                 >
                   <CheckCircle className="h-3.5 w-3.5 mr-1" />
@@ -633,7 +634,7 @@ const Contabilidad = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="rounded-xl border-destructive/40 text-destructive hover:bg-destructive/10"
+                  className="border-destructive/40 text-destructive hover:bg-destructive/10"
                   onClick={() => updateEstadoAsiento(detalleAsiento.id, "anulado")}
                 >
                   <XCircle className="h-3.5 w-3.5 mr-1" />

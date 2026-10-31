@@ -69,7 +69,7 @@ export function TrasladoCamaModal({
           <div>
             <Label className="text-xs font-semibold">Cama / Habitación de Destino (Disponibles)</Label>
             <Select value={camaDestinoId} onValueChange={setCamaDestinoId}>
-              <SelectTrigger className="rounded-xl mt-1 text-xs">
+              <SelectTrigger className="mt-1 text-xs">
                 <SelectValue placeholder="Seleccionar cama libre..." />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
@@ -87,17 +87,17 @@ export function TrasladoCamaModal({
             <Input
               value={motivo}
               onChange={e => setMotivo(e.target.value)}
-              className="rounded-xl mt-1 text-xs"
+              className="mt-1 text-xs"
               placeholder="Evolución clínica, requerimiento de UCI, aislamiento..."
               required
             />
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" className="rounded-xl text-xs" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" className="text-xs" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" className="rounded-xl text-xs shadow-none gap-1.5">
+            <Button type="submit" className="text-xs shadow-none gap-1.5">
               <CheckCircle2 className="h-4 w-4" /> Confirmar Traslado
             </Button>
           </DialogFooter>

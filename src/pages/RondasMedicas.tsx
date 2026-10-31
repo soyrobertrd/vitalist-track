@@ -119,13 +119,13 @@ function RondaCard({ r, onUpdated }: { r: any; onUpdated: () => void }) {
             size="sm"
             variant="outline"
             onClick={() => setFastHugsOpen(true)}
-            className="h-8 rounded-xl text-xs gap-1 border-teal-200 text-teal-700 dark:border-teal-800 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-950/40"
+            className="h-8 text-xs gap-1 border-teal-200 text-teal-700 dark:border-teal-800 dark:text-teal-300 hover:bg-teal-50 dark:hover:bg-teal-950/40"
           >
             <HeartPulse className="h-3.5 w-3.5 text-teal-600" /> FAST-HUGS
           </Button>
           <NotaRondaDialog rondaId={r.id} />
-          {r.estado === "planificada" && <Button size="sm" variant="outline" className="h-8 rounded-xl text-xs" onClick={async () => { await (db.from("rondas_medicas" as any) as any).update({ estado: "en_curso" }).eq("id", r.id); toast.success("Ronda iniciada"); onUpdated(); }}>Iniciar</Button>}
-          {r.estado === "en_curso" && <Button size="sm" className="h-8 rounded-xl text-xs" onClick={async () => { await (db.from("rondas_medicas" as any) as any).update({ estado: "finalizada" }).eq("id", r.id); toast.success("Ronda finalizada"); onUpdated(); }}>Finalizar</Button>}
+          {r.estado === "planificada" && <Button size="sm" variant="outline" className="h-8 text-xs" onClick={async () => { await (db.from("rondas_medicas" as any) as any).update({ estado: "en_curso" }).eq("id", r.id); toast.success("Ronda iniciada"); onUpdated(); }}>Iniciar</Button>}
+          {r.estado === "en_curso" && <Button size="sm" className="h-8 text-xs" onClick={async () => { await (db.from("rondas_medicas" as any) as any).update({ estado: "finalizada" }).eq("id", r.id); toast.success("Ronda finalizada"); onUpdated(); }}>Finalizar</Button>}
         </div>
       </CardContent>
 

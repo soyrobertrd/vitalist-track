@@ -49,7 +49,7 @@ export default function Finanzas() {
               variant="outline"
               size="sm"
               onClick={() => navigate("/comisiones-empleados")}
-              className="rounded-xl border-border/80 text-xs gap-1.5"
+              className="border-border/80 text-xs gap-1.5"
             >
               <Stethoscope className="w-3.5 h-3.5 text-emerald-600" /> Liquidación Honorarios
             </Button>
@@ -57,7 +57,7 @@ export default function Finanzas() {
               variant="outline"
               size="sm"
               onClick={() => navigate("/forecast-ingresos")}
-              className="rounded-xl border-border/80 text-xs gap-1.5"
+              className="border-border/80 text-xs gap-1.5"
             >
               <TrendingUp className="w-3.5 h-3.5 text-primary" /> Forecast Ingresos
             </Button>
@@ -65,7 +65,7 @@ export default function Finanzas() {
               variant="outline"
               size="sm"
               onClick={() => navigate("/ar-aging")}
-              className="rounded-xl border-border/80 text-xs gap-1.5"
+              className="border-border/80 text-xs gap-1.5"
             >
               <Receipt className="w-3.5 h-3.5 text-amber-600" /> Cartera AR Aging
             </Button>
@@ -84,23 +84,23 @@ export default function Finanzas() {
         className="w-full space-y-4"
       >
         <div className="overflow-x-auto pb-1">
-          <TabsList className="bg-card border border-border/80 rounded-xl p-1 h-auto flex flex-nowrap sm:flex-wrap gap-1 min-w-max sm:min-w-0">
-            <TabsTrigger value="caja" className="rounded-lg text-xs gap-1.5 py-1.5">
+          <TabsList className="bg-card border border-border/80 p-1 h-auto flex flex-nowrap sm:flex-wrap gap-1 min-w-max sm:min-w-0">
+            <TabsTrigger value="caja" className="text-xs gap-1.5 py-1.5">
               <DollarSign className="h-3.5 w-3.5 text-emerald-600" /> Caja & Arqueo
             </TabsTrigger>
-            <TabsTrigger value="devoluciones" className="rounded-lg text-xs gap-1.5 py-1.5">
+            <TabsTrigger value="devoluciones" className="text-xs gap-1.5 py-1.5">
               <RotateCcw className="h-3.5 w-3.5 text-amber-600" /> Notas de Crédito
             </TabsTrigger>
-            <TabsTrigger value="aseguradoras" className="rounded-lg text-xs gap-1.5 py-1.5">
+            <TabsTrigger value="aseguradoras" className="text-xs gap-1.5 py-1.5">
               <Building2 className="h-3.5 w-3.5 text-blue-600" /> Aseguradoras (ARS)
             </TabsTrigger>
-            <TabsTrigger value="tarifarios" className="rounded-lg text-xs gap-1.5 py-1.5">
+            <TabsTrigger value="tarifarios" className="text-xs gap-1.5 py-1.5">
               <ListChecks className="h-3.5 w-3.5 text-purple-600" /> Tarifarios
             </TabsTrigger>
-            <TabsTrigger value="autorizaciones" className="rounded-lg text-xs gap-1.5 py-1.5">
+            <TabsTrigger value="autorizaciones" className="text-xs gap-1.5 py-1.5">
               <ClipboardCheck className="h-3.5 w-3.5 text-teal-600" /> Autorizaciones
             </TabsTrigger>
-            <TabsTrigger value="reclamaciones" className="rounded-lg text-xs gap-1.5 py-1.5">
+            <TabsTrigger value="reclamaciones" className="text-xs gap-1.5 py-1.5">
               <FileText className="h-3.5 w-3.5 text-rose-600" /> Reclamaciones
             </TabsTrigger>
           </TabsList>

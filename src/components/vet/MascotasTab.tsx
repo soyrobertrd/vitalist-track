@@ -58,7 +58,7 @@ export function MascotasTab({
               {mascotasFiltradas.length} de {mascotas.length} mascotas registradas
             </p>
           </div>
-          <Button size="sm" className="rounded-xl shadow-none gap-1.5" onClick={onNuevaMascota}>
+          <Button size="sm" className="shadow-none gap-1.5" onClick={onNuevaMascota}>
             <Plus className="h-4 w-4" /> Nueva Mascota
           </Button>
         </div>
@@ -71,7 +71,7 @@ export function MascotasTab({
               placeholder="Buscar por nombre de mascota, tutor, raza o chip..."
               value={busqueda}
               onChange={e => setBusqueda(e.target.value)}
-              className="pl-9 h-9 text-xs rounded-xl border-border/80"
+              className="pl-9 h-9 text-xs border-border/80"
             />
           </div>
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
@@ -79,7 +79,7 @@ export function MascotasTab({
               type="button"
               size="sm"
               variant={especieFiltro === "todas" ? "default" : "outline"}
-              className="rounded-xl text-xs h-9 px-3"
+              className="text-xs h-9 px-3"
               onClick={() => setEspecieFiltro("todas")}
             >
               Todas
@@ -90,7 +90,7 @@ export function MascotasTab({
                 type="button"
                 size="sm"
                 variant={especieFiltro === esp ? "default" : "outline"}
-                className="rounded-xl text-xs h-9 px-2.5 gap-1 capitalize"
+                className="text-xs h-9 px-2.5 gap-1 capitalize"
                 onClick={() => setEspecieFiltro(esp)}
               >
                 <span>{ESPECIE_ICONOS[esp]}</span>
@@ -201,7 +201,7 @@ export function MascotasTab({
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-8 px-2 text-xs rounded-xl gap-1 text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/40"
+                          className="h-8 px-2 text-xs gap-1 text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/40"
                           title="Carnet de Vacunación"
                           onClick={() => onVerCarnet(m)}
                         >
@@ -211,7 +211,7 @@ export function MascotasTab({
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-8 px-2 text-xs rounded-xl gap-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950/40"
+                          className="h-8 px-2 text-xs gap-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950/40"
                           title="Nueva Vacuna"
                           onClick={() => onNuevaVacuna(m)}
                         >
@@ -221,7 +221,7 @@ export function MascotasTab({
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-8 px-2.5 text-xs rounded-xl gap-1"
+                          className="h-8 px-2.5 text-xs gap-1"
                           onClick={() => onNuevaConsulta(m)}
                         >
                           <Stethoscope className="h-3.5 w-3.5" />

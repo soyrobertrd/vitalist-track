@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -342,15 +343,15 @@ export function RecetasPaciente({ pacienteId }: Props) {
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <Button size="icon" variant="ghost" onClick={() => printReceta(r)} title="Imprimir">
+                  <IconButton label="Imprimir" size="icon" variant="ghost" onClick={() => printReceta(r)} title="Imprimir">
                     <Printer className="h-4 w-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" onClick={() => openEdit(r)}>
+                  </IconButton>
+                  <IconButton label="Editar" size="icon" variant="ghost" onClick={() => openEdit(r)}>
                     <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" onClick={() => deleteReceta(r.id)}>
+                  </IconButton>
+                  <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => deleteReceta(r.id)}>
                     <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
+                  </IconButton>
                 </div>
               </div>
             </CardContent>
@@ -428,13 +429,13 @@ export function RecetasPaciente({ pacienteId }: Props) {
                 {items.map((item, idx) => (
                   <div key={idx} className="border rounded-lg p-3 space-y-2 relative">
                     {items.length > 1 && (
-                      <Button
+                      <IconButton label="Cerrar"
                         size="icon" variant="ghost"
                         className="absolute top-1 right-1 h-6 w-6"
                         onClick={() => removeItem(idx)}
                       >
                         <X className="h-3 w-3" />
-                      </Button>
+                      </IconButton>
                     )}
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                       <div className="col-span-2 sm:col-span-1">

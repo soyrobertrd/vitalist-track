@@ -3,6 +3,7 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -380,8 +381,8 @@ export default function Organizaciones() {
                         </div>
                         {isOwnerOrAdmin && (
                           <div className="flex gap-1">
-                            <Button size="icon" variant="ghost" onClick={() => handleEditSucursal(s)}><Pencil className="h-3.5 w-3.5" /></Button>
-                            <Button size="icon" variant="ghost" onClick={() => handleDeleteSucursal(s.id)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+                            <IconButton label="Editar" size="icon" variant="ghost" onClick={() => handleEditSucursal(s)}><Pencil className="h-3.5 w-3.5" /></IconButton>
+                            <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => handleDeleteSucursal(s.id)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></IconButton>
                           </div>
                         )}
                       </div>
@@ -488,9 +489,9 @@ export default function Organizaciones() {
                           <Badge variant={m.role === "owner" ? "default" : "secondary"}>{m.role}</Badge>
                         )}
                         {isOwnerOrAdmin && m.role !== "owner" && (
-                          <Button size="icon" variant="ghost" onClick={() => handleRemoveMember(m.id)}>
+                          <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => handleRemoveMember(m.id)}>
                             <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
+                          </IconButton>
                         )}
                       </div>
                     </CardContent>

@@ -54,7 +54,7 @@ export function MeldTab({
                 step="0.1"
                 value={meldCr}
                 onChange={(e) => setMeldCr(Number(e.target.value))}
-                className="rounded-xl border-border/80"
+                className="border-border/80"
               />
             </div>
             <div className="space-y-1.5">
@@ -64,7 +64,7 @@ export function MeldTab({
                 step="0.1"
                 value={meldBili}
                 onChange={(e) => setMeldBili(Number(e.target.value))}
-                className="rounded-xl border-border/80"
+                className="border-border/80"
               />
             </div>
             <div className="space-y-1.5">
@@ -74,7 +74,7 @@ export function MeldTab({
                 step="0.05"
                 value={meldInr}
                 onChange={(e) => setMeldInr(Number(e.target.value))}
-                className="rounded-xl border-border/80"
+                className="border-border/80"
               />
             </div>
             <div className="space-y-1.5">
@@ -83,7 +83,7 @@ export function MeldTab({
                 type="number"
                 value={meldNa}
                 onChange={(e) => setMeldNa(Number(e.target.value))}
-                className="rounded-xl border-border/80"
+                className="border-border/80"
               />
             </div>
           </div>
@@ -103,7 +103,7 @@ export function MeldTab({
 
             <Button
               variant="outline"
-              className="w-full rounded-xl text-xs"
+              className="w-full text-xs"
               onClick={() => {
                 onTransferir(calcMeldNa);
                 toast.info(`MELD-Na (${calcMeldNa}) transferido.`);

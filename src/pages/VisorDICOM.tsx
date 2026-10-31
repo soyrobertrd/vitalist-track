@@ -159,7 +159,7 @@ export default function VisorDICOM() {
         action={
           <Dialog open={openNew} onOpenChange={setOpenNew}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl">
+              <Button size="sm">
                 <Upload className="h-4 w-4 mr-1.5" />
                 Nuevo Estudio DICOM
               </Button>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -153,8 +154,8 @@ export function PlantillasEspecialidadAdmin() {
                   <p className="text-xs text-muted-foreground mt-1">{p.campos_json.length} campos</p>
                 </div>
                 <div className="flex gap-1">
-                  <Button size="icon" variant="ghost" onClick={() => openEdit(p)}><Pencil className="h-4 w-4" /></Button>
-                  <Button size="icon" variant="ghost" onClick={() => del(p.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  <IconButton label="Editar" size="icon" variant="ghost" onClick={() => openEdit(p)}><Pencil className="h-4 w-4" /></IconButton>
+                  <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => del(p.id)}><Trash2 className="h-4 w-4 text-destructive" /></IconButton>
                 </div>
               </CardContent>
             </Card>
@@ -310,9 +311,9 @@ export function ConsultasEspecialidad({ pacienteId }: ConsultasProps) {
                 </p>
               )}
             </div>
-            <Button size="icon" variant="ghost" onClick={() => setViewDialog(c)}>
+            <IconButton label="Ver" size="icon" variant="ghost" onClick={() => setViewDialog(c)}>
               <Eye className="h-4 w-4" />
-            </Button>
+            </IconButton>
           </CardContent>
         </Card>
       ))}

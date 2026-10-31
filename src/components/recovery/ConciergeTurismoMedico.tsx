@@ -139,7 +139,7 @@ export default function ConciergeTurismoMedico() {
 
         <Dialog open={openModal} onOpenChange={setOpenModal}>
           <DialogTrigger asChild>
-            <Button size="sm" className="rounded-xl gap-1.5 shadow-none">
+            <Button size="sm" className="gap-1.5 shadow-none">
               <Plus className="h-4 w-4" /> Registrar Huésped / Paciente
             </Button>
           </DialogTrigger>
@@ -157,7 +157,7 @@ export default function ConciergeTurismoMedico() {
                   value={form.nombre}
                   onChange={(e) => setForm({ ...form, nombre: e.target.value })}
                   placeholder="Ej. Katherine Vance"
-                  className="rounded-xl mt-1 h-8 text-xs"
+                  className="mt-1 h-8 text-xs"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -166,7 +166,7 @@ export default function ConciergeTurismoMedico() {
                   <Input
                     value={form.paisOrigen}
                     onChange={(e) => setForm({ ...form, paisOrigen: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
                 <div>
@@ -174,7 +174,7 @@ export default function ConciergeTurismoMedico() {
                   <Input
                     value={form.cirujanoTratante}
                     onChange={(e) => setForm({ ...form, cirujanoTratante: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
               </div>
@@ -185,7 +185,7 @@ export default function ConciergeTurismoMedico() {
                     placeholder="Ej. 30 Oct - 03:00 PM"
                     value={form.fechaLlegadaVuelo}
                     onChange={(e) => setForm({ ...form, fechaLlegadaVuelo: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
                 <div>
@@ -194,7 +194,7 @@ export default function ConciergeTurismoMedico() {
                     placeholder="AA-1422 (AILA)"
                     value={form.vueloInfo}
                     onChange={(e) => setForm({ ...form, vueloInfo: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
               </div>
@@ -205,7 +205,7 @@ export default function ConciergeTurismoMedico() {
                     value={form.suiteAsignada}
                     onValueChange={(val) => setForm({ ...form, suiteAsignada: val })}
                   >
-                    <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                    <SelectTrigger className="mt-1 h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -221,7 +221,7 @@ export default function ConciergeTurismoMedico() {
                     value={form.tipoDieta}
                     onValueChange={(val: any) => setForm({ ...form, tipoDieta: val })}
                   >
-                    <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                    <SelectTrigger className="mt-1 h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -239,10 +239,10 @@ export default function ConciergeTurismoMedico() {
                   value={form.contactoEmergencia}
                   onChange={(e) => setForm({ ...form, contactoEmergencia: e.target.value })}
                   placeholder="+1 (809) 000-0000"
-                  className="rounded-xl mt-1 h-8 text-xs"
+                  className="mt-1 h-8 text-xs"
                 />
               </div>
-              <Button type="submit" className="w-full rounded-xl mt-2 bg-purple-600 hover:bg-purple-700 text-white">
+              <Button type="submit" className="w-full mt-2 bg-purple-600 hover:bg-purple-700 text-white">
                 Confirmar Registro de Concierge
               </Button>
             </form>
@@ -342,7 +342,7 @@ export default function ConciergeTurismoMedico() {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="rounded-xl text-xs h-7 gap-1 border-border/80"
+                  className="text-xs h-7 gap-1 border-border/80"
                   onClick={() => registrarSesionDrenaje(h.id)}
                 >
                   <Sparkles className="h-3 w-3 text-teal-500" /> +1 Drenaje Linfático

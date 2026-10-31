@@ -281,7 +281,7 @@ export default function Planes() {
 
               <CardFooter>
                 <Button
-                  className="w-full rounded-xl font-semibold"
+                  className="w-full font-semibold"
                   variant={isPro || isPlus ? "default" : "outline"}
                   disabled={isCurrent || changing !== null}
                   onClick={() => handleSelectPlan(plan.codigo)}

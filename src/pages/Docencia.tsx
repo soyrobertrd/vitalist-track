@@ -247,14 +247,14 @@ export default function Docencia() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewProtocolo(true)}
             >
               <FlaskConical className="h-4 w-4 mr-1.5 text-purple-600" />
               Nuevo Protocolo
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-purple-600 hover:bg-purple-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewRotacion(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -302,7 +302,7 @@ export default function Docencia() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por nombre de residente, universidad o protocolo..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -311,20 +311,20 @@ export default function Docencia() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="programas" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="programas" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Award className="h-4 w-4 mr-1.5 text-purple-600" />
             Programas Académicos ({programas.length})
           </TabsTrigger>
-          <TabsTrigger value="residentes" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="residentes" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Users className="h-4 w-4 mr-1.5 text-blue-600" />
             Residentes & Rotaciones ({rotacionesFiltradas.length})
           </TabsTrigger>
-          <TabsTrigger value="investigacion" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="investigacion" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <FlaskConical className="h-4 w-4 mr-1.5 text-teal-600" />
             Protocolos de Investigación ({protocolosFiltrados.length})
           </TabsTrigger>
-          <TabsTrigger value="analitica" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="analitica" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <PieChartIcon className="h-4 w-4 mr-1.5 text-emerald-600" />
             Distribución Académica
           </TabsTrigger>
@@ -582,7 +582,7 @@ export default function Docencia() {
               <Label>Nombre del Médico Residente / Interno *</Label>
               <Input
                 placeholder="Ej. Dra. Carmen Lora"
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataRot.nombre_residente}
                 onChange={(e) => setFormDataRot(p => ({ ...p, nombre_residente: e.target.value }))}
               />
@@ -593,7 +593,7 @@ export default function Docencia() {
                 <Label>Universidad de Origen</Label>
                 <Input
                   placeholder="Ej. UASD, UNIBE, INTEC, PUCMM"
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataRot.universidad}
                   onChange={(e) => setFormDataRot(p => ({ ...p, universidad: e.target.value }))}
                 />
@@ -602,7 +602,7 @@ export default function Docencia() {
                 <Label>Área de Rotación</Label>
                 <Input
                   placeholder="Ej. Medicina Interna, UCI..."
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataRot.area_rotacion}
                   onChange={(e) => setFormDataRot(p => ({ ...p, area_rotacion: e.target.value }))}
                 />
@@ -614,7 +614,7 @@ export default function Docencia() {
                 <Label>Fecha Inicio</Label>
                 <Input
                   type="date"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataRot.periodo_inicio}
                   onChange={(e) => setFormDataRot(p => ({ ...p, periodo_inicio: e.target.value }))}
                 />
@@ -623,7 +623,7 @@ export default function Docencia() {
                 <Label>Fecha Conclusión</Label>
                 <Input
                   type="date"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataRot.periodo_fin}
                   onChange={(e) => setFormDataRot(p => ({ ...p, periodo_fin: e.target.value }))}
                 />
@@ -634,7 +634,7 @@ export default function Docencia() {
               <Label>Tutor / Especialista Responsable</Label>
               <Input
                 placeholder="Nombre del médico tratante tutor..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataRot.tutor_responsable}
                 onChange={(e) => setFormDataRot(p => ({ ...p, tutor_responsable: e.target.value }))}
               />
@@ -642,11 +642,11 @@ export default function Docencia() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewRotacion(false)}>
+            <Button variant="outline" onClick={() => setShowNewRotacion(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white" 
+              className="bg-purple-600 hover:bg-purple-700 text-white" 
               onClick={() => crearRotacion.mutate()}
               disabled={crearRotacion.isPending || !formDataRot.nombre_residente}
             >
@@ -674,7 +674,7 @@ export default function Docencia() {
               <Label>Título de la Investigación *</Label>
               <Input
                 placeholder="Título completo del ensayo o estudio observacional..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataProt.titulo}
                 onChange={(e) => setFormDataProt(p => ({ ...p, titulo: e.target.value }))}
               />
@@ -685,7 +685,7 @@ export default function Docencia() {
                 <Label>Investigador Principal</Label>
                 <Input
                   placeholder="Dr. Nombre Apellido"
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataProt.investigador_principal}
                   onChange={(e) => setFormDataProt(p => ({ ...p, investigador_principal: e.target.value }))}
                 />
@@ -696,7 +696,7 @@ export default function Docencia() {
                   value={formDataProt.comite_etica} 
                   onValueChange={(val) => setFormDataProt(p => ({ ...p, comite_etica: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -712,7 +712,7 @@ export default function Docencia() {
               <Label>Resumen Metodológico / Objetivos</Label>
               <Textarea
                 placeholder="Describa el diseño del estudio, criterios de inclusión y variables..."
-                className="rounded-xl border-border/80 resize-none h-24"
+                className="border-border/80 resize-none h-24"
                 value={formDataProt.descripcion}
                 onChange={(e) => setFormDataProt(p => ({ ...p, descripcion: e.target.value }))}
               />
@@ -720,11 +720,11 @@ export default function Docencia() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewProtocolo(false)}>
+            <Button variant="outline" onClick={() => setShowNewProtocolo(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white" 
+              className="bg-purple-600 hover:bg-purple-700 text-white" 
               onClick={() => crearProtocolo.mutate()}
               disabled={crearProtocolo.isPending || !formDataProt.titulo}
             >

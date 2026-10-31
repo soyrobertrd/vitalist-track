@@ -243,14 +243,14 @@ export default function Lavanderia() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewPrenda(true)}
             >
               <Package className="h-4 w-4 mr-1.5 text-blue-600" />
               Nueva Prenda
             </Button>
             <Button 
-              className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-blue-600 hover:bg-blue-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewOrden(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -299,14 +299,14 @@ export default function Lavanderia() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por lote, servicio solicitante o tipo de prenda..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="w-full sm:w-56">
           <Select value={filterEstado} onValueChange={setFilterEstado}>
-            <SelectTrigger className="rounded-xl border-border/80 h-10">
+            <SelectTrigger className="border-border/80 h-10">
               <SelectValue placeholder="Estado del lote" />
             </SelectTrigger>
             <SelectContent>
@@ -321,20 +321,20 @@ export default function Lavanderia() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="ordenes" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="ordenes" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Waves className="h-4 w-4 mr-1.5 text-blue-600" />
             Lotes de Lavado ({ordenesFiltradas.length})
           </TabsTrigger>
-          <TabsTrigger value="inventario" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="inventario" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Package className="h-4 w-4 mr-1.5 text-purple-600" />
             Inventario de Lencería ({inventarioFiltrado.length})
           </TabsTrigger>
-          <TabsTrigger value="analitica" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="analitica" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <PieChartIcon className="h-4 w-4 mr-1.5 text-emerald-600" />
             Volumen & Distribución
           </TabsTrigger>
-          <TabsTrigger value="bioseguridad" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="bioseguridad" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <ShieldCheck className="h-4 w-4 mr-1.5 text-teal-600" />
             Protocolos de Desinfección Térmica
           </TabsTrigger>
@@ -405,7 +405,7 @@ export default function Lavanderia() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="rounded-xl h-8 text-xs border-border/80"
+                                className="h-8 text-xs border-border/80"
                                 onClick={() => avanzarEstado.mutate({ id: o.id, nuevoEstado: siguienteEstado.value })}
                                 disabled={avanzarEstado.isPending}
                               >
@@ -624,7 +624,7 @@ export default function Lavanderia() {
               <Label>Servicio Solicitante *</Label>
               <Input
                 placeholder="Ej. Quirófano 01, UCI, Maternidad..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataOrden.servicio_solicitante}
                 onChange={(e) => setFormDataOrden(p => ({ ...p, servicio_solicitante: e.target.value }))}
               />
@@ -634,7 +634,7 @@ export default function Lavanderia() {
               <Label>Tipo de Lencería / Ropa</Label>
               <Input
                 placeholder="Ej. Ropa quirúrgica esterilizable, sábanas..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataOrden.tipo_ropa}
                 onChange={(e) => setFormDataOrden(p => ({ ...p, tipo_ropa: e.target.value }))}
               />
@@ -646,7 +646,7 @@ export default function Lavanderia() {
                 <Input
                   type="number"
                   placeholder="Ej. 25"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataOrden.cantidad_piezas}
                   onChange={(e) => setFormDataOrden(p => ({ ...p, cantidad_piezas: e.target.value }))}
                 />
@@ -657,7 +657,7 @@ export default function Lavanderia() {
                   type="number"
                   step="0.5"
                   placeholder="Ej. 12.5"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataOrden.peso_kg}
                   onChange={(e) => setFormDataOrden(p => ({ ...p, peso_kg: e.target.value }))}
                 />
@@ -670,7 +670,7 @@ export default function Lavanderia() {
                 value={formDataOrden.prioridad} 
                 onValueChange={(val) => setFormDataOrden(p => ({ ...p, prioridad: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -682,11 +682,11 @@ export default function Lavanderia() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewOrden(false)}>
+            <Button variant="outline" onClick={() => setShowNewOrden(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white" 
+              className="bg-blue-600 hover:bg-blue-700 text-white" 
               onClick={() => crearOrden.mutate()}
               disabled={crearOrden.isPending || !formDataOrden.servicio_solicitante}
             >
@@ -714,7 +714,7 @@ export default function Lavanderia() {
               <Label>Descripción de la Prenda *</Label>
               <Input
                 placeholder="Ej. Sábana clínica ajustable, bata de paciente..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataPrenda.tipo}
                 onChange={(e) => setFormDataPrenda(p => ({ ...p, tipo: e.target.value }))}
               />
@@ -725,7 +725,7 @@ export default function Lavanderia() {
                 <Label>Total en Circuito</Label>
                 <Input
                   type="number"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataPrenda.cantidad_total}
                   onChange={(e) => setFormDataPrenda(p => ({ ...p, cantidad_total: e.target.value }))}
                 />
@@ -734,7 +734,7 @@ export default function Lavanderia() {
                 <Label>Disponibles</Label>
                 <Input
                   type="number"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataPrenda.cantidad_disponible}
                   onChange={(e) => setFormDataPrenda(p => ({ ...p, cantidad_disponible: e.target.value }))}
                 />
@@ -743,7 +743,7 @@ export default function Lavanderia() {
                 <Label>Stock Mínimo</Label>
                 <Input
                   type="number"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataPrenda.stock_minimo}
                   onChange={(e) => setFormDataPrenda(p => ({ ...p, stock_minimo: e.target.value }))}
                 />
@@ -752,11 +752,11 @@ export default function Lavanderia() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewPrenda(false)}>
+            <Button variant="outline" onClick={() => setShowNewPrenda(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white" 
+              className="bg-blue-600 hover:bg-blue-700 text-white" 
               onClick={() => crearPrenda.mutate()}
               disabled={crearPrenda.isPending || !formDataPrenda.tipo}
             >

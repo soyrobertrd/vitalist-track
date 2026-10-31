@@ -79,7 +79,7 @@ export function ModalTrasladoCama({
           <div className="space-y-1">
             <Label className="text-xs">Cama de Destino Disponible *</Label>
             <Select value={destinoCamaId} onValueChange={setDestinoCamaId}>
-              <SelectTrigger className="rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="border-border/80 text-xs">
                 <SelectValue placeholder="Seleccione cama libre..." />
               </SelectTrigger>
               <SelectContent>
@@ -104,20 +104,20 @@ export function ModalTrasladoCama({
               placeholder="Ej. Traslado a UCI por deterioro hemodinámico, o pase a sala común por mejoría..."
               value={motivo}
               onChange={(e) => setMotivo(e.target.value)}
-              className="rounded-xl border-border/80 text-xs"
+              className="border-border/80 text-xs"
               rows={2}
             />
           </div>
         </div>
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="rounded-xl">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
           <Button
             onClick={onConfirmar}
             disabled={!destinoCamaId}
-            className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             Ejecutar Traslado
           </Button>

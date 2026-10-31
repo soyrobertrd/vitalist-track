@@ -64,7 +64,7 @@ export function ResultRow({ prueba, onSave, onPanicTrigger }: ResultRowProps) {
           value={resultado}
           onChange={(e) => handleResultadoChange(e.target.value)}
           placeholder="Valor numérico / texto"
-          className="h-8 rounded-lg font-mono text-sm"
+          className="h-8 font-mono text-sm"
           disabled={saved}
         />
       </TableCell>
@@ -91,7 +91,7 @@ export function ResultRow({ prueba, onSave, onPanicTrigger }: ResultRowProps) {
         {!saved && resultado && (
           <Button
             size="sm"
-            className="h-7 text-xs rounded-lg bg-teal-600 hover:bg-teal-700 text-white"
+            className="h-7 text-xs bg-teal-600 hover:bg-teal-700 text-white"
             onClick={() => onSave({ id: prueba.id, resultado, anormal, critico })}
           >
             Guardar

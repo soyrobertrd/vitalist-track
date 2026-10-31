@@ -166,7 +166,7 @@ export default function FichaBiotipoConsentimiento() {
                     value={pacienteNombre}
                     onChange={(e) => setPacienteNombre(e.target.value)}
                     disabled={firmado}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
                 <div>
@@ -176,7 +176,7 @@ export default function FichaBiotipoConsentimiento() {
                     value={telefono}
                     onChange={(e) => setTelefono(e.target.value)}
                     disabled={firmado}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
               </div>
@@ -188,7 +188,7 @@ export default function FichaBiotipoConsentimiento() {
                     Fototipo Escala de Fitzpatrick
                   </Label>
                   <Select value={fitzpatrick} onValueChange={setFitzpatrick} disabled={firmado}>
-                    <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                    <SelectTrigger className="mt-1 h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -210,7 +210,7 @@ export default function FichaBiotipoConsentimiento() {
                     Biotipo Cutáneo Predominante
                   </Label>
                   <Select value={biotipo} onValueChange={setBiotipo} disabled={firmado}>
-                    <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                    <SelectTrigger className="mt-1 h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -326,7 +326,7 @@ export default function FichaBiotipoConsentimiento() {
                     />
                   </div>
                   <div className="flex justify-end pt-1">
-                    <Button onClick={handleValidarFicha} className="rounded-xl gap-2 shadow-none bg-pink-600 hover:bg-pink-700 text-white">
+                    <Button onClick={handleValidarFicha} className="gap-2 shadow-none bg-pink-600 hover:bg-pink-700 text-white">
                       <CheckCircle2 className="h-4 w-4" /> Validar y Guardar Ficha
                     </Button>
                   </div>
@@ -337,7 +337,7 @@ export default function FichaBiotipoConsentimiento() {
                     <CheckCircle2 className="h-4 w-4 shrink-0" />
                     <span className="font-semibold text-xs">Ficha & Consentimiento Firmados Correctamente</span>
                   </div>
-                  <Button variant="outline" size="sm" className="h-7 rounded-xl text-xs gap-1 border-emerald-500/30" onClick={() => toast.info("Generando comprobante digital...")}>
+                  <Button variant="outline" size="sm" className="h-7 text-xs gap-1 border-emerald-500/30" onClick={() => toast.info("Generando comprobante digital...")}>
                     <Download className="h-3 w-3" /> PDF
                   </Button>
                 </div>
@@ -383,7 +383,7 @@ export default function FichaBiotipoConsentimiento() {
                       size="sm"
                       variant="outline"
                       disabled={restantes <= 0}
-                      className="w-full rounded-xl text-xs h-7 border-border/80 text-pink-600 hover:bg-pink-500/10"
+                      className="w-full text-xs h-7 border-border/80 text-pink-600 hover:bg-pink-500/10"
                       onClick={() => registrarSesionBono(b.id)}
                     >
                       {restantes > 0 ? "Consumir 1 Sesión" : "Bono Completado ✓"}
@@ -405,23 +405,23 @@ export default function FichaBiotipoConsentimiento() {
             <CardContent className="p-4 pt-2 space-y-2.5 text-xs">
               <div>
                 <Label className="text-[10px] font-semibold text-muted-foreground">Paso 1: Higiene Facial</Label>
-                <Input value={rutina.limpiador} onChange={(e) => setRutina({ ...rutina, limpiador: e.target.value })} className="rounded-xl mt-0.5 h-7 text-xs" />
+                <Input value={rutina.limpiador} onChange={(e) => setRutina({ ...rutina, limpiador: e.target.value })} className="mt-0.5 h-7 text-xs" />
               </div>
               <div>
                 <Label className="text-[10px] font-semibold text-muted-foreground">Paso 2: Principio Activo (Sérum)</Label>
-                <Input value={rutina.serum} onChange={(e) => setRutina({ ...rutina, serum: e.target.value })} className="rounded-xl mt-0.5 h-7 text-xs" />
+                <Input value={rutina.serum} onChange={(e) => setRutina({ ...rutina, serum: e.target.value })} className="mt-0.5 h-7 text-xs" />
               </div>
               <div>
                 <Label className="text-[10px] font-semibold text-muted-foreground">Paso 3: Hidratante Barrera</Label>
-                <Input value={rutina.hidratante} onChange={(e) => setRutina({ ...rutina, hidratante: e.target.value })} className="rounded-xl mt-0.5 h-7 text-xs" />
+                <Input value={rutina.hidratante} onChange={(e) => setRutina({ ...rutina, hidratante: e.target.value })} className="mt-0.5 h-7 text-xs" />
               </div>
               <div>
                 <Label className="text-[10px] font-semibold text-muted-foreground">Paso 4: Fotoprotección SPF 50+</Label>
-                <Input value={rutina.bloqueador} onChange={(e) => setRutina({ ...rutina, bloqueador: e.target.value })} className="rounded-xl mt-0.5 h-7 text-xs" />
+                <Input value={rutina.bloqueador} onChange={(e) => setRutina({ ...rutina, bloqueador: e.target.value })} className="mt-0.5 h-7 text-xs" />
               </div>
               <Button
                 size="sm"
-                className="w-full rounded-xl text-xs h-7 mt-1 bg-purple-600 hover:bg-purple-700 text-white"
+                className="w-full text-xs h-7 mt-1 bg-purple-600 hover:bg-purple-700 text-white"
                 onClick={() => toast.success("Rutina enviada al WhatsApp del cliente")}
               >
                 Compartir por WhatsApp

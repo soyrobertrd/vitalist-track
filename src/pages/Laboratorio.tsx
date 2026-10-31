@@ -278,7 +278,7 @@ export default function Laboratorio() {
         icon={FlaskConical}
         badgeText="Red Asistencial LIS"
         actions={
-          <Button onClick={() => setShowNewOrder(true)} className="gap-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl">
+          <Button onClick={() => setShowNewOrder(true)} className="gap-2 bg-teal-600 hover:bg-teal-700 text-white">
             <Plus className="h-4 w-4" /> Nueva Orden LIS
           </Button>
         }
@@ -317,11 +317,11 @@ export default function Laboratorio() {
       </div>
 
       <Tabs defaultValue="ordenes" className="space-y-4">
-        <TabsList className="bg-card border border-border/80 p-1 rounded-xl">
-          <TabsTrigger value="ordenes" className="rounded-lg gap-2">
+        <TabsList className="bg-card border border-border/80 p-1">
+          <TabsTrigger value="ordenes" className="gap-2">
             <ClipboardList className="h-4 w-4" /> Órdenes & Resultados ({filtered.length})
           </TabsTrigger>
-          <TabsTrigger value="paneles" className="rounded-lg gap-2">
+          <TabsTrigger value="paneles" className="gap-2">
             <FlaskConical className="h-4 w-4" /> Catálogo de Paneles ({paneles.length})
           </TabsTrigger>
         </TabsList>
@@ -333,14 +333,14 @@ export default function Laboratorio() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar por código de orden, nombre del paciente o cédula..."
-                className="pl-9 bg-background/50 rounded-xl"
+                className="pl-9 bg-background/50"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
               <Select value={filtroEstado} onValueChange={setFiltroEstado}>
-                <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder="Estado" /></SelectTrigger>
+                <SelectTrigger className="w-[140px]"><SelectValue placeholder="Estado" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="todos">Todos los Estados</SelectItem>
                   <SelectItem value="pendiente">Pendientes</SelectItem>
@@ -349,7 +349,7 @@ export default function Laboratorio() {
                 </SelectContent>
               </Select>
               <Select value={filtroPrioridad} onValueChange={setFiltroPrioridad}>
-                <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder="Prioridad" /></SelectTrigger>
+                <SelectTrigger className="w-[140px]"><SelectValue placeholder="Prioridad" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="todos">Toda Prioridad</SelectItem>
                   <SelectItem value="rutina">Rutina</SelectItem>
@@ -414,7 +414,7 @@ export default function Laboratorio() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="rounded-lg h-8 gap-1.5"
+                              className="h-8 gap-1.5"
                               onClick={() => { setSelectedOrder(o); setShowResults(true); }}
                             >
                               <ClipboardList className="h-3.5 w-3.5 text-teal-600" /> Analíticas
@@ -424,7 +424,7 @@ export default function Laboratorio() {
                               <Button
                                 size="sm"
                                 variant="secondary"
-                                className="rounded-lg h-8 text-xs"
+                                className="h-8 text-xs"
                                 onClick={() => updateOrderStatus.mutate({ id: o.id, estado: "en_proceso" })}
                               >
                                 Recibir Muestra
@@ -434,7 +434,7 @@ export default function Laboratorio() {
                             {o.estado === "en_proceso" && (
                               <Button
                                 size="sm"
-                                className="rounded-lg h-8 text-xs bg-teal-600 hover:bg-teal-700 text-white"
+                                className="h-8 text-xs bg-teal-600 hover:bg-teal-700 text-white"
                                 onClick={() => updateOrderStatus.mutate({ id: o.id, estado: "completada" })}
                               >
                                 Validar & Completar
@@ -444,7 +444,7 @@ export default function Laboratorio() {
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="rounded-lg h-8 w-8 p-0"
+                              className="h-8 w-8 p-0"
                               title="Imprimir Informe de Resultados Oficial"
                               onClick={() => setShowPrintReport(o)}
                             >
@@ -483,7 +483,7 @@ export default function Laboratorio() {
               <div>
                 <Label className="text-xs font-semibold">Paciente *</Label>
                 <Select value={newOrder.paciente_id} onValueChange={(v) => setNewOrder((p) => ({ ...p, paciente_id: v }))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue placeholder="Buscar paciente..." /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue placeholder="Buscar paciente..." /></SelectTrigger>
                   <SelectContent>
                     {pacientes.map((p: any) => (
                       <SelectItem key={p.id} value={p.id}>
@@ -496,7 +496,7 @@ export default function Laboratorio() {
               <div>
                 <Label className="text-xs font-semibold">Médico Solicitante</Label>
                 <Select value={newOrder.medico_solicitante_id} onValueChange={(v) => setNewOrder((p) => ({ ...p, medico_solicitante_id: v }))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue placeholder="Seleccionar médico..." /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccionar médico..." /></SelectTrigger>
                   <SelectContent>
                     {medicos.map((m: any) => (
                       <SelectItem key={m.id} value={m.id}>
@@ -512,7 +512,7 @@ export default function Laboratorio() {
               <div>
                 <Label className="text-xs font-semibold">Prioridad Asistencial</Label>
                 <Select value={newOrder.prioridad} onValueChange={(v) => setNewOrder((p) => ({ ...p, prioridad: v }))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="rutina">Rutina (Ambulatoria normal)</SelectItem>
                     <SelectItem value="urgente">Urgente (&lt; 2 horas)</SelectItem>
@@ -523,7 +523,7 @@ export default function Laboratorio() {
               <div>
                 <Label className="text-xs font-semibold">Diagnóstico Presuntivo (CIE-10)</Label>
                 <Input
-                  className="rounded-xl mt-1"
+                  className="mt-1"
                   placeholder="Ej: Sepsis urinaria, Cetoacidosis, Dolor torácico"
                   value={newOrder.diagnostico_presuntivo}
                   onChange={(e) => setNewOrder((p) => ({ ...p, diagnostico_presuntivo: e.target.value }))}
@@ -534,7 +534,7 @@ export default function Laboratorio() {
             <div>
               <Label className="text-xs font-semibold">Indicaciones Clínicas / Condiciones de Toma de Muestra</Label>
               <Textarea
-                className="rounded-xl mt-1"
+                className="mt-1"
                 placeholder="Ej: En ayuno de 8 horas, muestra en tubo con gel separador y citrato, previa infusión de antibióticos"
                 value={newOrder.indicaciones}
                 onChange={(e) => setNewOrder((p) => ({ ...p, indicaciones: e.target.value }))}
@@ -550,7 +550,7 @@ export default function Laboratorio() {
                 </Label>
                 <div className="flex flex-wrap gap-2">
                   {paneles.map((panel: any) => (
-                    <Button key={panel.id} size="sm" variant="outline" className="rounded-lg text-xs h-7" onClick={() => addPanelTests(panel)}>
+                    <Button key={panel.id} size="sm" variant="outline" className="text-xs h-7" onClick={() => addPanelTests(panel)}>
                       + {panel.nombre}
                     </Button>
                   ))}
@@ -575,7 +575,7 @@ export default function Laboratorio() {
               {newTests.map((t, i) => (
                 <div key={i} className="grid grid-cols-12 gap-2">
                   <Input
-                    className="col-span-5 rounded-xl text-sm"
+                    className="col-span-5 text-sm"
                     placeholder="Prueba (ej: Potasio sérico)"
                     value={t.nombre_prueba}
                     onChange={(e) => {
@@ -585,7 +585,7 @@ export default function Laboratorio() {
                     }}
                   />
                   <Input
-                    className="col-span-3 rounded-xl text-sm"
+                    className="col-span-3 text-sm"
                     placeholder="Categoría"
                     value={t.categoria}
                     onChange={(e) => {
@@ -595,7 +595,7 @@ export default function Laboratorio() {
                     }}
                   />
                   <Input
-                    className="col-span-4 rounded-xl text-sm"
+                    className="col-span-4 text-sm"
                     placeholder="Rango ref. (ej: 3.5 - 5.0 mEq/L)"
                     value={t.rango_referencia_texto}
                     onChange={(e) => {
@@ -609,7 +609,7 @@ export default function Laboratorio() {
             </div>
 
             <Button
-              className="w-full rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold py-5"
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-5"
               onClick={() => createOrder.mutate()}
               disabled={createOrder.isPending || !newOrder.paciente_id}
             >
@@ -647,7 +647,7 @@ export default function Laboratorio() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-7 text-xs rounded-lg gap-1"
+                    className="h-7 text-xs gap-1"
                     onClick={() => setShowPrintReport(selectedOrder)}
                   >
                     <Printer className="h-3.5 w-3.5" /> Ver Formato Oficial
@@ -712,7 +712,7 @@ export default function Laboratorio() {
             <div>
               <Label className="text-xs font-semibold">Médico Responsable Notificado *</Label>
               <Input
-                className="rounded-xl mt-1"
+                className="mt-1"
                 placeholder="Dr(a). Nombre y Especialidad o Servicio (ej: UCI / Emergencia)"
                 value={panicDoctor}
                 onChange={(e) => setPanicDoctor(e.target.value)}
@@ -721,7 +721,7 @@ export default function Laboratorio() {
             <div>
               <Label className="text-xs font-semibold">Detalles de Confirmación (Read-Back)</Label>
               <Textarea
-                className="rounded-xl mt-1"
+                className="mt-1"
                 placeholder="Ej: Confirmado verbalmente a las 14:32 por el Dr. Ramírez; se suspende infusión de K+ y se administra gluconato de calcio."
                 value={panicNotes}
                 onChange={(e) => setPanicNotes(e.target.value)}
@@ -729,7 +729,7 @@ export default function Laboratorio() {
               />
             </div>
             <Button
-              className="w-full bg-rose-600 hover:bg-rose-700 text-white rounded-xl py-5 font-semibold"
+              className="w-full bg-rose-600 hover:bg-rose-700 text-white py-5 font-semibold"
               onClick={registrarLlamadaPanico}
             >
               Registrar Notificación Telefónica de Emergencia
@@ -846,7 +846,7 @@ export default function Laboratorio() {
                 <div className="flex justify-end gap-2">
                   <Button
                     onClick={() => window.print()}
-                    className="bg-teal-600 hover:bg-teal-700 text-white rounded-xl gap-2 text-xs"
+                    className="bg-teal-600 hover:bg-teal-700 text-white gap-2 text-xs"
                   >
                     <Printer className="h-4 w-4" /> Imprimir Documento
                   </Button>

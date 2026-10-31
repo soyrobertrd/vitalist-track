@@ -7,6 +7,7 @@ import {
 } from "./turnos-types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -71,7 +72,7 @@ export function CuadranteTurnosTab({
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs text-muted-foreground font-semibold">Servicio:</span>
             <Select value={servicioFiltro} onValueChange={setServicioFiltro}>
-              <SelectTrigger className="w-44 h-8.5 rounded-xl text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-44 h-8.5 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent className="rounded-xl">
                 <SelectItem value="todos">Todos los Servicios</SelectItem>
                 <SelectItem value="Emergencias">Emergencias</SelectItem>
@@ -83,7 +84,7 @@ export function CuadranteTurnosTab({
 
             <span className="text-xs text-muted-foreground font-semibold ml-2">Personal:</span>
             <Select value={rolFiltro} onValueChange={setRolFiltro}>
-              <SelectTrigger className="w-36 h-8.5 rounded-xl text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-36 h-8.5 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent className="rounded-xl">
                 <SelectItem value="todos">Todo el Personal</SelectItem>
                 <SelectItem value="medico">Médicos</SelectItem>
@@ -96,7 +97,7 @@ export function CuadranteTurnosTab({
             <Button
               size="sm"
               variant="outline"
-              className="rounded-xl text-xs h-8.5 gap-1.5 border-border/80"
+              className="text-xs h-8.5 gap-1.5 border-border/80"
               onClick={onAbrirIntercambio}
             >
               <ArrowLeftRight className="h-3.5 w-3.5 text-purple-600" />
@@ -132,9 +133,9 @@ export function CuadranteTurnosTab({
               </p>
             </div>
             <div className="flex items-center gap-1">
-              <Button size="icon" variant="ghost" className="h-8 w-8 rounded-xl"><ChevronLeft className="h-4 w-4" /></Button>
+              <IconButton label="Anterior" size="icon" variant="ghost" className="h-8 w-8"><ChevronLeft className="h-4 w-4" /></IconButton>
               <span className="text-xs font-bold font-mono px-2">Semana 44</span>
-              <Button size="icon" variant="ghost" className="h-8 w-8 rounded-xl"><ChevronRight className="h-4 w-4" /></Button>
+              <IconButton label="Siguiente" size="icon" variant="ghost" className="h-8 w-8"><ChevronRight className="h-4 w-4" /></IconButton>
             </div>
           </div>
         </CardHeader>
@@ -177,7 +178,7 @@ export function CuadranteTurnosTab({
                         <TableCell key={d.fecha} className="text-center p-2">
                           <button
                             type="button"
-                            className={`w-11 h-8 rounded-xl border text-xs font-bold transition-transform active:scale-95 inline-flex items-center justify-center ${def.colorBadge}`}
+                            className={`w-11 h-8 rounded-control border text-xs font-bold transition-transform active:scale-95 inline-flex items-center justify-center ${def.colorBadge}`}
                             title={`${def.nombre}: ${def.horario}`}
                             onClick={() => {
                               // Rotar turno al hacer click: M -> T -> N -> G24 -> L -> M

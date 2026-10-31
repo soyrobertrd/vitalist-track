@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -183,12 +184,12 @@ export function DocumentosClinicos({ pacienteId }: { pacienteId: string }) {
                         {d.descripcion && <p className="text-sm text-muted-foreground truncate">{d.descripcion}</p>}
                       </div>
                       <div className="flex gap-1">
-                        <Button size="icon" variant="ghost" onClick={() => download(d)}>
+                        <IconButton label="Descargar" size="icon" variant="ghost" onClick={() => download(d)}>
                           <Download className="h-4 w-4" />
-                        </Button>
-                        <Button size="icon" variant="ghost" onClick={() => remove(d)}>
+                        </IconButton>
+                        <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => remove(d)}>
                           <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
+                        </IconButton>
                       </div>
                     </div>
                   );

@@ -188,14 +188,14 @@ export default function Morgue() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewEstudio(true)}
             >
               <FileText className="h-4 w-4 mr-1.5 text-teal-600" />
               Solicitud de Patología
             </Button>
             <Button 
-              className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-teal-600 hover:bg-teal-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewRegistro(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -243,7 +243,7 @@ export default function Morgue() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por código de óbito, nombre o causa de muerte..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -252,16 +252,16 @@ export default function Morgue() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="morgue" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="morgue" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <UserX className="h-4 w-4 mr-1.5 text-teal-600" />
             Censo de Morgue & Custodia ({registrosFiltrados.length})
           </TabsTrigger>
-          <TabsTrigger value="patologia" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="patologia" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Microscope className="h-4 w-4 mr-1.5 text-purple-600" />
             Anatomía Patológica & Biopsias ({estudios.length})
           </TabsTrigger>
-          <TabsTrigger value="protocolos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="protocolos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <ShieldCheck className="h-4 w-4 mr-1.5 text-blue-500" />
             Cadena de Custodia & Legal
           </TabsTrigger>
@@ -462,7 +462,7 @@ export default function Morgue() {
               <Label>Nombre Completo del Fallecido *</Label>
               <Input
                 placeholder="Nombre del paciente o 'Desconocido / NN'"
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataMorgue.nombre_fallecido}
                 onChange={(e) => setFormDataMorgue(p => ({ ...p, nombre_fallecido: e.target.value }))}
               />
@@ -473,7 +473,7 @@ export default function Morgue() {
                 <Label>Fecha y Hora Defunción</Label>
                 <Input
                   type="date"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataMorgue.fecha_defuncion}
                   onChange={(e) => setFormDataMorgue(p => ({ ...p, fecha_defuncion: e.target.value }))}
                 />
@@ -482,7 +482,7 @@ export default function Morgue() {
                 <Label>Cámara Frigorífica</Label>
                 <Input
                   placeholder="Ej. Cámara 02"
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataMorgue.ubicacion_camara}
                   onChange={(e) => setFormDataMorgue(p => ({ ...p, ubicacion_camara: e.target.value }))}
                 />
@@ -493,7 +493,7 @@ export default function Morgue() {
               <Label>Causa Médica de Muerte *</Label>
               <Input
                 placeholder="Ej. Paro cardiorrespiratorio secundario a shock séptico..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataMorgue.causa_muerte}
                 onChange={(e) => setFormDataMorgue(p => ({ ...p, causa_muerte: e.target.value }))}
               />
@@ -503,7 +503,7 @@ export default function Morgue() {
               <Label>Familiar o Persona Responsable que Retira</Label>
               <Input
                 placeholder="Nombre y parentesco del familiar"
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataMorgue.familiar_responsable}
                 onChange={(e) => setFormDataMorgue(p => ({ ...p, familiar_responsable: e.target.value }))}
               />
@@ -511,11 +511,11 @@ export default function Morgue() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewRegistro(false)}>
+            <Button variant="outline" onClick={() => setShowNewRegistro(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white" 
+              className="bg-teal-600 hover:bg-teal-700 text-white" 
               onClick={() => crearRegistroMorgue.mutate()}
               disabled={crearRegistroMorgue.isPending || !formDataMorgue.nombre_fallecido}
             >
@@ -545,7 +545,7 @@ export default function Morgue() {
                 value={formDataPat.tipo} 
                 onValueChange={(val) => setFormDataPat(p => ({ ...p, tipo: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -562,7 +562,7 @@ export default function Morgue() {
               <Label>Muestra Remitida *</Label>
               <Input
                 placeholder="Ej. Fragmento nodular tiroideo, pólipo colónico..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataPat.muestra}
                 onChange={(e) => setFormDataPat(p => ({ ...p, muestra: e.target.value }))}
               />
@@ -572,7 +572,7 @@ export default function Morgue() {
               <Label>Sitio Anatómico</Label>
               <Input
                 placeholder="Ej. Lóbulo derecho de tiroides, colon sigmoides..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataPat.sitio_anatomico}
                 onChange={(e) => setFormDataPat(p => ({ ...p, sitio_anatomico: e.target.value }))}
               />
@@ -582,7 +582,7 @@ export default function Morgue() {
               <Label>Diagnóstico Presuntivo / Datos Clínicos</Label>
               <Textarea
                 placeholder="Sospecha clínica de malignidad, antecedentes patológicos..."
-                className="rounded-xl border-border/80 resize-none h-20"
+                className="border-border/80 resize-none h-20"
                 value={formDataPat.diagnostico_presuntivo}
                 onChange={(e) => setFormDataPat(p => ({ ...p, diagnostico_presuntivo: e.target.value }))}
               />
@@ -590,11 +590,11 @@ export default function Morgue() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewEstudio(false)}>
+            <Button variant="outline" onClick={() => setShowNewEstudio(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white" 
+              className="bg-teal-600 hover:bg-teal-700 text-white" 
               onClick={() => crearEstudioPat.mutate()}
               disabled={crearEstudioPat.isPending || !formDataPat.muestra}
             >

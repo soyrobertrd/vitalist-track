@@ -78,36 +78,36 @@ export default function Enfermeria() {
       </div>
 
       <Tabs defaultValue="emergencias" className="space-y-4">
-        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-          <TabsTrigger value="emergencias" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 border border-border/70 h-auto">
+          <TabsTrigger value="emergencias" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <AlertOctagon className="h-4 w-4 text-red-600"/>
             Emergencias (Triage & STAT)
           </TabsTrigger>
-          <TabsTrigger value="uci" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="uci" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Droplets className="h-4 w-4 text-blue-600"/>
             UCI (Balance Hídrico & RASS)
           </TabsTrigger>
-          <TabsTrigger value="piso" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="piso" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Bed className="h-4 w-4 text-purple-600"/>
             Piso / Habitaciones (Kardex 5C)
           </TabsTrigger>
-          <TabsTrigger value="pediatria" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="pediatria" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Baby className="h-4 w-4 text-teal-600"/>
             Pediátrico & Neonatal
           </TabsTrigger>
-          <TabsTrigger value="sbar" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="sbar" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <FileCheck2 className="h-4 w-4 text-cyan-600"/>
             Pase de Guardia (SBAR)
           </TabsTrigger>
-          <TabsTrigger value="signos" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="signos" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Activity className="h-4 w-4 text-emerald-600"/>
             Signos Vitales
           </TabsTrigger>
-          <TabsTrigger value="plan" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="plan" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <ClipboardCheck className="h-4 w-4 text-amber-600"/>
             Planes NANDA
           </TabsTrigger>
-          <TabsTrigger value="med" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="med" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Pill className="h-4 w-4 text-indigo-600"/>
             Fármacos
           </TabsTrigger>
@@ -251,7 +251,7 @@ function PlanCuidadosTab() {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1.5"/>Nuevo plan</Button></DialogTrigger>
+          <DialogTrigger asChild><Button className="shadow-none"><Plus className="h-4 w-4 mr-1.5"/>Nuevo plan</Button></DialogTrigger>
           <DialogContent className="rounded-2xl">
             <DialogHeader><DialogTitle>Plan de cuidados (NANDA/NOC/NIC)</DialogTitle></DialogHeader>
             <div className="space-y-3">
@@ -266,7 +266,7 @@ function PlanCuidadosTab() {
                 </Select>
               </div>
             </div>
-            <DialogFooter><Button onClick={save} className="rounded-xl">Crear Plan</Button></DialogFooter>
+            <DialogFooter><Button onClick={save}>Crear Plan</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -318,7 +318,7 @@ function AdminMedicamentosTab() {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1.5"/>Programar fármaco</Button></DialogTrigger>
+          <DialogTrigger asChild><Button className="shadow-none"><Plus className="h-4 w-4 mr-1.5"/>Programar fármaco</Button></DialogTrigger>
           <DialogContent className="rounded-2xl">
             <DialogHeader><DialogTitle>Administración de medicamento</DialogTitle></DialogHeader>
             <div className="space-y-3">
@@ -330,7 +330,7 @@ function AdminMedicamentosTab() {
               </div>
               <div><Label>Hora programada</Label><Input type="datetime-local" value={form.hora_programada ?? ""} onChange={e => setForm({...form, hora_programada: e.target.value})}/></div>
             </div>
-            <DialogFooter><Button onClick={save} className="rounded-xl">Programar</Button></DialogFooter>
+            <DialogFooter><Button onClick={save}>Programar</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -345,8 +345,8 @@ function AdminMedicamentosTab() {
               <div className="flex items-center gap-2">
                 <StatusBadge status={i.estado} />
                 {i.estado === "programada" && <>
-                  <Button size="sm" className="rounded-xl h-8 px-2.5" onClick={() => marcar(i.id, "administrada")}>✓ Administrar</Button>
-                  <Button size="sm" variant="outline" className="rounded-xl h-8 px-2.5" onClick={() => marcar(i.id, "omitida")}>Omitir</Button>
+                  <Button size="sm" className="h-8 px-2.5" onClick={() => marcar(i.id, "administrada")}>✓ Administrar</Button>
+                  <Button size="sm" variant="outline" className="h-8 px-2.5" onClick={() => marcar(i.id, "omitida")}>Omitir</Button>
                 </>}
               </div>
             </CardContent>
@@ -380,7 +380,7 @@ function ProcedimientosTab() {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1.5"/>Nuevo procedimiento</Button></DialogTrigger>
+          <DialogTrigger asChild><Button className="shadow-none"><Plus className="h-4 w-4 mr-1.5"/>Nuevo procedimiento</Button></DialogTrigger>
           <DialogContent className="rounded-2xl">
             <DialogHeader><DialogTitle>Procedimiento de enfermería</DialogTitle></DialogHeader>
             <div className="space-y-3">
@@ -389,7 +389,7 @@ function ProcedimientosTab() {
               <div><Label>Descripción</Label><Textarea value={form.descripcion ?? ""} onChange={e => setForm({...form, descripcion: e.target.value})}/></div>
               <div><Label>Resultado</Label><Textarea value={form.resultado ?? ""} onChange={e => setForm({...form, resultado: e.target.value})}/></div>
             </div>
-            <DialogFooter><Button onClick={save} className="rounded-xl">Guardar</Button></DialogFooter>
+            <DialogFooter><Button onClick={save}>Guardar</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       </div>

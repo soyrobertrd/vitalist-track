@@ -126,7 +126,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
             <Button
               size="sm"
               variant="default"
-              className="rounded-xl bg-primary text-primary-foreground font-semibold shadow-sm hover:bg-primary/90"
+              className="bg-primary text-primary-foreground font-semibold shadow-sm hover:bg-primary/90"
               onClick={() => {
                 onOpenChange(false);
                 navigate(`/hub-paciente/${paciente.id}`);
@@ -136,21 +136,21 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
               Expediente Hub 360°
             </Button>
             {telefono && (
-              <Button asChild size="sm" variant="outline" className="rounded-xl">
+              <Button asChild size="sm" variant="outline">
                 <a href={`tel:${telefono.replace(/\D/g, "")}`}>
                   <Phone className="mr-1.5 h-4 w-4" aria-hidden="true" /> Llamar
                 </a>
               </Button>
             )}
             {telefono && (paciente.whatsapp_px || paciente.whatsapp_cuidador) && (
-              <Button asChild size="sm" variant="outline" className="rounded-xl">
+              <Button asChild size="sm" variant="outline">
                 <a href={`https://wa.me/${waNumero(telefono)}`} target="_blank" rel="noopener noreferrer">
                   <FontAwesomeIcon icon={faWhatsapp} className="mr-1.5 h-4 w-4 text-success" /> WhatsApp
                 </a>
               </Button>
             )}
             {paciente.email_px && (
-              <Button asChild size="sm" variant="outline" className="rounded-xl">
+              <Button asChild size="sm" variant="outline">
                 <a href={`mailto:${paciente.email_px}`}>
                   <Mail className="mr-1.5 h-4 w-4" aria-hidden="true" /> Email
                 </a>
@@ -159,7 +159,7 @@ export function PacienteDetailDialog({ pacienteId, open, onOpenChange }: Pacient
             <Button
               size="sm"
               variant="outline"
-              className="rounded-xl text-primary font-medium"
+              className="text-primary font-medium"
               onClick={() => {
                 printFichaClinica360(
                   {

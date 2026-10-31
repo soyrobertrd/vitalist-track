@@ -266,13 +266,13 @@ const Odontograma = () => {
                   key={o.id}
                   size="sm"
                   variant={odontogramaId === o.id ? "default" : "outline"}
-                  className="h-8 rounded-full tabular-nums"
+                  className="h-8 tabular-nums"
                   onClick={() => setOdontogramaId(o.id)}
                 >
                   {new Date(o.fecha_evaluacion + "T12:00:00").toLocaleDateString("es-DO")}
                 </Button>
               ))}
-              <Button size="sm" variant="outline" className="h-8 rounded-full" onClick={() => crearOdontograma.mutate()} disabled={crearOdontograma.isPending}>
+              <Button size="sm" variant="outline" className="h-8" onClick={() => crearOdontograma.mutate()} disabled={crearOdontograma.isPending}>
                 <Plus className="mr-1 h-4 w-4" aria-hidden="true" /> Nueva evaluación
               </Button>
             </div>
@@ -339,7 +339,7 @@ const Odontograma = () => {
                           key={t}
                           size="sm"
                           variant="outline"
-                          className="h-8 rounded-full"
+                          className="h-8"
                           disabled={!diente || sinEvaluacion || registrar.isPending}
                           onClick={() => registrar.mutate({ tipo: t })}
                         >

@@ -241,10 +241,10 @@ function PsicologiaProContent() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <ClinicalPageHeader title="Psicología & Psiquiatría Pro" subtitle="Salud mental integral — sesiones, notas privadas, escalas, seguimiento emocional, psiquiatría y paquetes." icon={Brain} />
         <div className="flex items-center gap-2.5">
-          <Button variant="outline" className="rounded-xl border-border/80 gap-2 shadow-none" onClick={() => setOpenPp(true)}>
+          <Button variant="outline" className="border-border/80 gap-2 shadow-none" onClick={() => setOpenPp(true)}>
             <Plus className="h-4 w-4" /> Nueva Ficha
           </Button>
-          <Button className="rounded-xl gap-2 shadow-none" onClick={() => setOpenSes(true)}>
+          <Button className="gap-2 shadow-none" onClick={() => setOpenSes(true)}>
             <Plus className="h-4 w-4" /> Agendar Sesión
           </Button>
         </div>
@@ -325,26 +325,26 @@ function PsicologiaProContent() {
       </div>
 
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="w-full flex justify-start gap-1 overflow-x-auto p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-          <TabsTrigger value="fichas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Fichas psico</TabsTrigger>
-          <TabsTrigger value="sesiones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Sesiones</TabsTrigger>
-          <TabsTrigger value="notas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Notas clínicas</TabsTrigger>
-          <TabsTrigger value="evaluaciones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Tests/Escalas</TabsTrigger>
-          <TabsTrigger value="tareas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Tareas</TabsTrigger>
-          <TabsTrigger value="seguimiento" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Seguimiento</TabsTrigger>
-          <TabsTrigger value="psiquiatria" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Psiquiatría</TabsTrigger>
-          <TabsTrigger value="paquetes" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Paquetes</TabsTrigger>
-          <TabsTrigger value="nichos" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Layers className="h-3.5 w-3.5 mr-1" />Sub-módulos</TabsTrigger>
-          <TabsTrigger value="cuestionarios" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><ClipboardList className="h-3.5 w-3.5 mr-1" />Cuestionarios</TabsTrigger>
-          <TabsTrigger value="graficas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><LineChart className="h-3.5 w-3.5 mr-1" />Progreso</TabsTrigger>
-          <TabsTrigger value="ultra-privadas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Lock className="h-3.5 w-3.5 mr-1" />Ultra privadas</TabsTrigger>
-          <TabsTrigger value="facturacion" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Receipt className="h-3.5 w-3.5 mr-1" />Facturación</TabsTrigger>
-          <TabsTrigger value="exportar" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><FileDown className="h-3.5 w-3.5 mr-1" />Exportar HC</TabsTrigger>
-          <TabsTrigger value="recordatorios" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Bell className="h-3.5 w-3.5 mr-1" />Recordatorios</TabsTrigger>
-          <TabsTrigger value="salas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><DoorOpen className="h-3.5 w-3.5 mr-1" />Consultorios/Salas</TabsTrigger>
-          <TabsTrigger value="consentimiento" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Shield className="h-3.5 w-3.5 mr-1" />Consentimiento</TabsTrigger>
-          <TabsTrigger value="integraciones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Plug className="h-3.5 w-3.5 mr-1" />Integraciones</TabsTrigger>
-          <TabsTrigger value="portal" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Link2 className="h-3.5 w-3.5 mr-1" />Portal paciente</TabsTrigger>
+        <TabsList className="w-full flex justify-start gap-1 overflow-x-auto p-1.5 bg-muted/40 border border-border/70 h-auto">
+          <TabsTrigger value="fichas" className="px-3.5 py-1.5 text-xs font-medium">Fichas psico</TabsTrigger>
+          <TabsTrigger value="sesiones" className="px-3.5 py-1.5 text-xs font-medium">Sesiones</TabsTrigger>
+          <TabsTrigger value="notas" className="px-3.5 py-1.5 text-xs font-medium">Notas clínicas</TabsTrigger>
+          <TabsTrigger value="evaluaciones" className="px-3.5 py-1.5 text-xs font-medium">Tests/Escalas</TabsTrigger>
+          <TabsTrigger value="tareas" className="px-3.5 py-1.5 text-xs font-medium">Tareas</TabsTrigger>
+          <TabsTrigger value="seguimiento" className="px-3.5 py-1.5 text-xs font-medium">Seguimiento</TabsTrigger>
+          <TabsTrigger value="psiquiatria" className="px-3.5 py-1.5 text-xs font-medium">Psiquiatría</TabsTrigger>
+          <TabsTrigger value="paquetes" className="px-3.5 py-1.5 text-xs font-medium">Paquetes</TabsTrigger>
+          <TabsTrigger value="nichos" className="px-3.5 py-1.5 text-xs font-medium"><Layers className="h-3.5 w-3.5 mr-1" />Sub-módulos</TabsTrigger>
+          <TabsTrigger value="cuestionarios" className="px-3.5 py-1.5 text-xs font-medium"><ClipboardList className="h-3.5 w-3.5 mr-1" />Cuestionarios</TabsTrigger>
+          <TabsTrigger value="graficas" className="px-3.5 py-1.5 text-xs font-medium"><LineChart className="h-3.5 w-3.5 mr-1" />Progreso</TabsTrigger>
+          <TabsTrigger value="ultra-privadas" className="px-3.5 py-1.5 text-xs font-medium"><Lock className="h-3.5 w-3.5 mr-1" />Ultra privadas</TabsTrigger>
+          <TabsTrigger value="facturacion" className="px-3.5 py-1.5 text-xs font-medium"><Receipt className="h-3.5 w-3.5 mr-1" />Facturación</TabsTrigger>
+          <TabsTrigger value="exportar" className="px-3.5 py-1.5 text-xs font-medium"><FileDown className="h-3.5 w-3.5 mr-1" />Exportar HC</TabsTrigger>
+          <TabsTrigger value="recordatorios" className="px-3.5 py-1.5 text-xs font-medium"><Bell className="h-3.5 w-3.5 mr-1" />Recordatorios</TabsTrigger>
+          <TabsTrigger value="salas" className="px-3.5 py-1.5 text-xs font-medium"><DoorOpen className="h-3.5 w-3.5 mr-1" />Consultorios/Salas</TabsTrigger>
+          <TabsTrigger value="consentimiento" className="px-3.5 py-1.5 text-xs font-medium"><Shield className="h-3.5 w-3.5 mr-1" />Consentimiento</TabsTrigger>
+          <TabsTrigger value="integraciones" className="px-3.5 py-1.5 text-xs font-medium"><Plug className="h-3.5 w-3.5 mr-1" />Integraciones</TabsTrigger>
+          <TabsTrigger value="portal" className="px-3.5 py-1.5 text-xs font-medium"><Link2 className="h-3.5 w-3.5 mr-1" />Portal paciente</TabsTrigger>
         </TabsList>
 
         {/* FICHAS */}
@@ -426,7 +426,7 @@ function PsicologiaProContent() {
         <TabsContent value="sesiones" className="space-y-3">
           <div className="flex justify-end">
             <Dialog open={openSes} onOpenChange={setOpenSes}>
-              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" />Agendar sesión</Button></DialogTrigger>
+              <DialogTrigger asChild><Button size="sm" className="shadow-none"><Plus className="h-4 w-4 mr-1" />Agendar sesión</Button></DialogTrigger>
               <DialogContent className="rounded-2xl"><DialogHeader><DialogTitle>Nueva sesión</DialogTitle></DialogHeader>
                 <div className="space-y-3">
                   <div><Label>Paciente</Label>
@@ -462,7 +462,7 @@ function PsicologiaProContent() {
                     </Select>
                   </div>
                   <div><Label>Motivo</Label><Textarea value={sesForm.motivo} onChange={e=>setSesForm({...sesForm, motivo:e.target.value})} /></div>
-                  <Button onClick={crearSesion} className="w-full rounded-xl">Agendar</Button>
+                  <Button onClick={crearSesion} className="w-full">Agendar</Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -485,7 +485,7 @@ function PsicologiaProContent() {
         <TabsContent value="notas" className="space-y-3">
           <div className="flex justify-end">
             <Dialog open={openNot} onOpenChange={setOpenNot}>
-              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" />Nueva nota</Button></DialogTrigger>
+              <DialogTrigger asChild><Button size="sm" className="shadow-none"><Plus className="h-4 w-4 mr-1" />Nueva nota</Button></DialogTrigger>
               <DialogContent className="max-h-[85vh] overflow-y-auto rounded-2xl"><DialogHeader><DialogTitle>Nota clínica privada</DialogTitle></DialogHeader>
                 <div className="space-y-3">
                   <div><Label>Paciente</Label>
@@ -508,7 +508,7 @@ function PsicologiaProContent() {
                   </div>
                   <div><Label>Contenido</Label><Textarea rows={8} value={notForm.contenido} onChange={e=>setNotForm({...notForm, contenido:e.target.value})} /></div>
                   <div className="flex items-center gap-2"><input type="checkbox" checked={notForm.es_privada} onChange={e=>setNotForm({...notForm, es_privada:e.target.checked})} /><Label>Nota privada (solo terapeuta y supervisor)</Label></div>
-                  <Button onClick={crearNota} className="w-full rounded-xl">Guardar nota</Button>
+                  <Button onClick={crearNota} className="w-full">Guardar nota</Button>
                 </div>
               </DialogContent>
             </Dialog>

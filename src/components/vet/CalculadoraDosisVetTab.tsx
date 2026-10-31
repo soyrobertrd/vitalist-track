@@ -71,7 +71,7 @@ export function CalculadoraDosisVetTab({ mascotas }: CalculadoraDosisVetTabProps
               <div>
                 <Label className="text-xs font-semibold">Cargar de Paciente</Label>
                 <Select value={mascotaSeleccionadaId} onValueChange={handleSeleccionarMascota}>
-                  <SelectTrigger className="rounded-xl mt-1 text-xs">
+                  <SelectTrigger className="mt-1 text-xs">
                     <SelectValue placeholder="Elegir..." />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
@@ -92,7 +92,7 @@ export function CalculadoraDosisVetTab({ mascotas }: CalculadoraDosisVetTabProps
                   min="0.1"
                   value={pesoManual}
                   onChange={e => setPesoManual(e.target.value)}
-                  className="rounded-xl mt-1 text-xs font-mono font-bold"
+                  className="mt-1 text-xs font-mono font-bold"
                 />
               </div>
 
@@ -102,7 +102,7 @@ export function CalculadoraDosisVetTab({ mascotas }: CalculadoraDosisVetTabProps
                   <Button
                     type="button"
                     variant={especie === "canino" ? "default" : "outline"}
-                    className="rounded-xl text-xs h-9"
+                    className="text-xs h-9"
                     onClick={() => setEspecie("canino")}
                   >
                     🐶 Canino
@@ -110,7 +110,7 @@ export function CalculadoraDosisVetTab({ mascotas }: CalculadoraDosisVetTabProps
                   <Button
                     type="button"
                     variant={especie === "felino" ? "default" : "outline"}
-                    className="rounded-xl text-xs h-9"
+                    className="text-xs h-9"
                     onClick={() => setEspecie("felino")}
                   >
                     🐱 Felino
@@ -124,7 +124,7 @@ export function CalculadoraDosisVetTab({ mascotas }: CalculadoraDosisVetTabProps
               <div>
                 <Label className="text-xs font-semibold">Fármaco Veterinario</Label>
                 <Select value={farmacoId} onValueChange={handleCambiarFarmaco}>
-                  <SelectTrigger className="rounded-xl mt-1 text-xs">
+                  <SelectTrigger className="mt-1 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl max-h-72">
@@ -145,7 +145,7 @@ export function CalculadoraDosisVetTab({ mascotas }: CalculadoraDosisVetTabProps
                   min="0.1"
                   value={concentracion}
                   onChange={e => setConcentracion(Math.max(0.01, Number(e.target.value)))}
-                  className="rounded-xl mt-1 text-xs font-mono"
+                  className="mt-1 text-xs font-mono"
                 />
               </div>
             </div>
@@ -212,7 +212,7 @@ export function CalculadoraDosisVetTab({ mascotas }: CalculadoraDosisVetTabProps
               </div>
             </div>
 
-            <Button className="w-full rounded-xl shadow-none" onClick={handleCopiarIndicacion}>
+            <Button className="w-full shadow-none" onClick={handleCopiarIndicacion}>
               <Copy className="h-4 w-4 mr-2" />
               Copiar Receta / Posología
             </Button>

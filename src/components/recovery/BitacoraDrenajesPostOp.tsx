@@ -167,7 +167,7 @@ export default function BitacoraDrenajesPostOp() {
             </p>
             <Dialog open={openModal} onOpenChange={setOpenModal}>
               <DialogTrigger asChild>
-                <Button size="sm" className="rounded-xl gap-1.5 shadow-none">
+                <Button size="sm" className="gap-1.5 shadow-none">
                   <Plus className="h-4 w-4" /> Registrar Gasto
                 </Button>
               </DialogTrigger>
@@ -185,7 +185,7 @@ export default function BitacoraDrenajesPostOp() {
                       placeholder="Ej. Yomaira Santos (Día 2 Post-Op)"
                       value={form.pacienteNombre}
                       onChange={(e) => setForm({ ...form, pacienteNombre: e.target.value })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -194,7 +194,7 @@ export default function BitacoraDrenajesPostOp() {
                       <Input
                         value={form.tipoCirugia}
                         onChange={(e) => setForm({ ...form, tipoCirugia: e.target.value })}
-                        className="rounded-xl mt-1 h-8 text-xs"
+                        className="mt-1 h-8 text-xs"
                       />
                     </div>
                     <div>
@@ -203,7 +203,7 @@ export default function BitacoraDrenajesPostOp() {
                         value={form.drenajeTipo}
                         onValueChange={(val: any) => setForm({ ...form, drenajeTipo: val })}
                       >
-                        <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                        <SelectTrigger className="mt-1 h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -222,7 +222,7 @@ export default function BitacoraDrenajesPostOp() {
                         placeholder="Ej. Flanco izq, Abdomen, Glúteo"
                         value={form.ubicacion}
                         onChange={(e) => setForm({ ...form, ubicacion: e.target.value })}
-                        className="rounded-xl mt-1 h-8 text-xs"
+                        className="mt-1 h-8 text-xs"
                       />
                     </div>
                     <div>
@@ -233,7 +233,7 @@ export default function BitacoraDrenajesPostOp() {
                         max="800"
                         value={form.volumenMl}
                         onChange={(e) => setForm({ ...form, volumenMl: Number(e.target.value) })}
-                        className="rounded-xl mt-1 h-8 text-xs font-semibold"
+                        className="mt-1 h-8 text-xs font-semibold"
                       />
                     </div>
                   </div>
@@ -244,7 +244,7 @@ export default function BitacoraDrenajesPostOp() {
                         value={form.aspecto}
                         onValueChange={(val: any) => setForm({ ...form, aspecto: val })}
                       >
-                        <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                        <SelectTrigger className="mt-1 h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -261,7 +261,7 @@ export default function BitacoraDrenajesPostOp() {
                         value={form.estadoFaja}
                         onValueChange={(val: any) => setForm({ ...form, estadoFaja: val })}
                       >
-                        <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                        <SelectTrigger className="mt-1 h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -278,10 +278,10 @@ export default function BitacoraDrenajesPostOp() {
                       placeholder="Vacío restablecido, apósitos limpios y secos..."
                       value={form.notas}
                       onChange={(e) => setForm({ ...form, notas: e.target.value })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
-                  <Button type="submit" className="w-full rounded-xl mt-2 bg-rose-600 hover:bg-rose-700 text-white">
+                  <Button type="submit" className="w-full mt-2 bg-rose-600 hover:bg-rose-700 text-white">
                     Guardar y Verificar Seguridad
                   </Button>
                 </form>

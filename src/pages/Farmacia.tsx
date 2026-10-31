@@ -118,7 +118,7 @@ const Farmacia = () => {
         action={
           <Dialog open={newStockOpen} onOpenChange={setNewStockOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl">
+              <Button size="sm">
                 <Plus className="h-4 w-4 mr-1.5" />
                 Ingresar Medicamento
               </Button>
@@ -252,7 +252,7 @@ const Farmacia = () => {
                 placeholder="Buscar por número o paciente..."
                 value={searchReceta}
                 onChange={(e) => setSearchReceta(e.target.value)}
-                className="pl-9 h-9 text-xs rounded-xl"
+                className="pl-9 h-9 text-xs"
               />
             </div>
           </div>
@@ -320,7 +320,7 @@ const Farmacia = () => {
                 placeholder="Buscar en catálogo de medicamentos..."
                 value={searchStock}
                 onChange={(e) => setSearchStock(e.target.value)}
-                className="pl-9 h-9 text-xs rounded-xl"
+                className="pl-9 h-9 text-xs"
               />
             </div>
           </div>

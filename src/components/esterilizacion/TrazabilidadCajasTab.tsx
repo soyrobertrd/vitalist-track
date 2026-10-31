@@ -221,11 +221,11 @@ export const TrazabilidadCajasTab: React.FC = () => {
               placeholder="Buscar caja, código o instrumental..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              className="pl-9 h-9 text-xs rounded-xl"
+              className="pl-9 h-9 text-xs"
             />
           </div>
           <Select value={filtroZona} onValueChange={setFiltroZona}>
-            <SelectTrigger className="w-[180px] h-9 text-xs rounded-xl">
+            <SelectTrigger className="w-[180px] h-9 text-xs">
               <SelectValue placeholder="Filtrar por zona..." />
             </SelectTrigger>
             <SelectContent>
@@ -240,7 +240,7 @@ export const TrazabilidadCajasTab: React.FC = () => {
 
         <Dialog open={openNueva} onOpenChange={setOpenNueva}>
           <DialogTrigger asChild>
-            <Button size="sm" className="rounded-xl shrink-0">
+            <Button size="sm" className="shrink-0">
               <Plus className="h-4 w-4 mr-1.5" />
               Nueva Caja Esterilizada
             </Button>

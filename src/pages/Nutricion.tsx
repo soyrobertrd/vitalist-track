@@ -308,14 +308,14 @@ export default function Nutricion() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewEval(true)}
             >
               <Scale className="h-4 w-4 mr-1.5 text-emerald-600" />
               Nueva Evaluación
             </Button>
             <Button 
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewDieta(true)}
             >
               <UtensilsCrossed className="h-4 w-4 mr-1.5" />
@@ -364,7 +364,7 @@ export default function Nutricion() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por nombre de paciente o cédula..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={searchPac}
             onChange={(e) => setSearchPac(e.target.value)}
           />
@@ -373,20 +373,20 @@ export default function Nutricion() {
 
       {/* Pestañas principales */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="evaluaciones" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="evaluaciones" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Scale className="h-4 w-4 mr-1.5" />
             Evaluaciones Antropométricas ({evalFiltradas.length})
           </TabsTrigger>
-          <TabsTrigger value="dietas" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="dietas" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <UtensilsCrossed className="h-4 w-4 mr-1.5" />
             Dietas Hospitalarias ({dietasFiltradas.length})
           </TabsTrigger>
-          <TabsTrigger value="calculadora" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="calculadora" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Calculator className="h-4 w-4 mr-1.5 text-emerald-600" />
             Calculadora Energética & Antropometría
           </TabsTrigger>
-          <TabsTrigger value="graficos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="graficos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <PieChartIcon className="h-4 w-4 mr-1.5 text-blue-500" />
             Distribución & Epidemiología
           </TabsTrigger>
@@ -565,7 +565,7 @@ export default function Nutricion() {
                       step="0.5"
                       value={calcPeso}
                       onChange={(e) => setCalcPeso(parseFloat(e.target.value) || 0)}
-                      className="rounded-xl border-border/80 font-mono"
+                      className="border-border/80 font-mono"
                     />
                   </div>
                   <div className="space-y-2">
@@ -575,7 +575,7 @@ export default function Nutricion() {
                       type="number"
                       value={calcTalla}
                       onChange={(e) => setCalcTalla(parseFloat(e.target.value) || 0)}
-                      className="rounded-xl border-border/80 font-mono"
+                      className="border-border/80 font-mono"
                     />
                   </div>
                 </div>
@@ -588,13 +588,13 @@ export default function Nutricion() {
                       type="number"
                       value={calcEdad}
                       onChange={(e) => setCalcEdad(parseInt(e.target.value) || 0)}
-                      className="rounded-xl border-border/80 font-mono"
+                      className="border-border/80 font-mono"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="calc-sexo">Sexo Biológico</Label>
                     <Select value={calcSexo} onValueChange={(val: any) => setCalcSexo(val)}>
-                      <SelectTrigger id="calc-sexo" className="rounded-xl border-border/80">
+                      <SelectTrigger id="calc-sexo" className="border-border/80">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -611,7 +611,7 @@ export default function Nutricion() {
                     value={calcActividad.toString()} 
                     onValueChange={(val) => setCalcActividad(parseFloat(val))}
                   >
-                    <SelectTrigger id="calc-actividad" className="rounded-xl border-border/80">
+                    <SelectTrigger id="calc-actividad" className="border-border/80">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -783,7 +783,7 @@ export default function Nutricion() {
                 value={formDataEval.paciente_id} 
                 onValueChange={(val) => setFormDataEval(p => ({ ...p, paciente_id: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue placeholder="Seleccione un paciente" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
@@ -803,7 +803,7 @@ export default function Nutricion() {
                   type="number"
                   step="0.1"
                   placeholder="Ej. 68.5"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataEval.peso_kg}
                   onChange={(e) => setFormDataEval(p => ({ ...p, peso_kg: e.target.value }))}
                 />
@@ -813,7 +813,7 @@ export default function Nutricion() {
                 <Input
                   type="number"
                   placeholder="Ej. 172"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataEval.talla_cm}
                   onChange={(e) => setFormDataEval(p => ({ ...p, talla_cm: e.target.value }))}
                 />
@@ -826,7 +826,7 @@ export default function Nutricion() {
                 value={formDataEval.diagnostico_nutricional} 
                 onValueChange={(val) => setFormDataEval(p => ({ ...p, diagnostico_nutricional: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -841,7 +841,7 @@ export default function Nutricion() {
               <Label>Observaciones Clínicas</Label>
               <Textarea
                 placeholder="Apetito, pérdida de peso involuntaria, disfagia, etc."
-                className="rounded-xl border-border/80 resize-none h-20"
+                className="border-border/80 resize-none h-20"
                 value={formDataEval.observaciones}
                 onChange={(e) => setFormDataEval(p => ({ ...p, observaciones: e.target.value }))}
               />
@@ -849,11 +849,11 @@ export default function Nutricion() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewEval(false)}>
+            <Button variant="outline" onClick={() => setShowNewEval(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white" 
+              className="bg-emerald-600 hover:bg-emerald-700 text-white" 
               onClick={() => crearEvaluacion.mutate()}
               disabled={crearEvaluacion.isPending || !formDataEval.paciente_id || !formDataEval.peso_kg}
             >
@@ -883,7 +883,7 @@ export default function Nutricion() {
                 value={formDataDieta.paciente_id} 
                 onValueChange={(val) => setFormDataDieta(p => ({ ...p, paciente_id: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue placeholder="Seleccione un paciente" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
@@ -903,7 +903,7 @@ export default function Nutricion() {
                   value={formDataDieta.tipo_dieta} 
                   onValueChange={(val) => setFormDataDieta(p => ({ ...p, tipo_dieta: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="max-h-56">
@@ -918,7 +918,7 @@ export default function Nutricion() {
                 <Input
                   type="number"
                   placeholder="Ej. 2000"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataDieta.calorias_objetivo}
                   onChange={(e) => setFormDataDieta(p => ({ ...p, calorias_objetivo: e.target.value }))}
                 />
@@ -929,7 +929,7 @@ export default function Nutricion() {
               <Label>Alergias o Intolerancias Alimentarias</Label>
               <Input
                 placeholder="Ej. Marisco, frutos secos, huevo, soya..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataDieta.alergias_alimentarias}
                 onChange={(e) => setFormDataDieta(p => ({ ...p, alergias_alimentarias: e.target.value }))}
               />
@@ -939,7 +939,7 @@ export default function Nutricion() {
               <Label>Indicaciones Especiales para Cocina / Enfermería</Label>
               <Textarea
                 placeholder="Ej. Textura papilla, sin sal añadida, fraccionar en 5 tomas..."
-                className="rounded-xl border-border/80 resize-none h-20"
+                className="border-border/80 resize-none h-20"
                 value={formDataDieta.indicaciones_especiales}
                 onChange={(e) => setFormDataDieta(p => ({ ...p, indicaciones_especiales: e.target.value }))}
               />
@@ -947,11 +947,11 @@ export default function Nutricion() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewDieta(false)}>
+            <Button variant="outline" onClick={() => setShowNewDieta(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white" 
+              className="bg-emerald-600 hover:bg-emerald-700 text-white" 
               onClick={() => crearDieta.mutate()}
               disabled={crearDieta.isPending || !formDataDieta.paciente_id}
             >

@@ -172,7 +172,7 @@ export default function CosteoServicios() {
           <div className="flex items-center gap-2 flex-wrap">
             <Dialog open={openCC} onOpenChange={setOpenCC}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl border-border/80 text-xs gap-1.5">
+                <Button variant="outline" className="border-border/80 text-xs gap-1.5">
                   <Building className="h-4 w-4 text-blue-600" /> Nuevo Centro
                 </Button>
               </DialogTrigger>
@@ -188,7 +188,7 @@ export default function CosteoServicios() {
                     <Label>Código Contable / Identificador *</Label>
                     <Input
                       placeholder="Ej: CC-QUIROFANO"
-                      className="rounded-xl font-mono uppercase"
+                      className="font-mono uppercase"
                       value={formCC.codigo}
                       onChange={(e) => setFormCC({ ...formCC, codigo: e.target.value })}
                     />
@@ -197,7 +197,7 @@ export default function CosteoServicios() {
                     <Label>Nombre del Centro *</Label>
                     <Input
                       placeholder="Ej: Unidad Quirúrgica Central"
-                      className="rounded-xl"
+                     
                       value={formCC.nombre}
                       onChange={(e) => setFormCC({ ...formCC, nombre: e.target.value })}
                     />
@@ -207,17 +207,17 @@ export default function CosteoServicios() {
                     <Input
                       type="number"
                       placeholder="0.00"
-                      className="rounded-xl font-mono"
+                      className="font-mono"
                       value={formCC.presupuesto_anual}
                       onChange={(e) => setFormCC({ ...formCC, presupuesto_anual: e.target.value })}
                     />
                   </div>
                 </div>
                 <DialogFooter className="gap-2">
-                  <Button variant="outline" onClick={() => setOpenCC(false)} className="rounded-xl">
+                  <Button variant="outline" onClick={() => setOpenCC(false)}>
                     Cancelar
                   </Button>
-                  <Button onClick={guardarCC} className="rounded-xl">
+                  <Button onClick={guardarCC}>
                     Guardar Centro
                   </Button>
                 </DialogFooter>
@@ -226,7 +226,7 @@ export default function CosteoServicios() {
 
             <Dialog open={openCS} onOpenChange={setOpenCS}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-sm gap-2">
+                <Button className="shadow-sm gap-2">
                   <Plus className="h-4 w-4" /> Nuevo Costeo
                 </Button>
               </DialogTrigger>
@@ -243,7 +243,7 @@ export default function CosteoServicios() {
                       <Label>Código</Label>
                       <Input
                         placeholder="Ej: SRV-001"
-                        className="rounded-xl font-mono uppercase"
+                        className="font-mono uppercase"
                         value={formCS.codigo_servicio}
                         onChange={(e) => setFormCS({ ...formCS, codigo_servicio: e.target.value })}
                       />
@@ -252,7 +252,7 @@ export default function CosteoServicios() {
                       <Label>Nombre del Servicio *</Label>
                       <Input
                         placeholder="Ej: Consulta Especializada"
-                        className="rounded-xl"
+                       
                         value={formCS.nombre_servicio}
                         onChange={(e) => setFormCS({ ...formCS, nombre_servicio: e.target.value })}
                       />
@@ -265,7 +265,7 @@ export default function CosteoServicios() {
                       value={formCS.centro_costo_id || "none"}
                       onValueChange={(v) => setFormCS({ ...formCS, centro_costo_id: v === "none" ? "" : v })}
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger>
                         <SelectValue placeholder="— Sin asignar —" />
                       </SelectTrigger>
                       <SelectContent>
@@ -285,7 +285,7 @@ export default function CosteoServicios() {
                       <Input
                         type="number"
                         placeholder="0.00"
-                        className="rounded-xl font-mono text-xs"
+                        className="font-mono text-xs"
                         value={formCS.costo_directo}
                         onChange={(e) => setFormCS({ ...formCS, costo_directo: e.target.value })}
                       />
@@ -295,7 +295,7 @@ export default function CosteoServicios() {
                       <Input
                         type="number"
                         placeholder="0.00"
-                        className="rounded-xl font-mono text-xs"
+                        className="font-mono text-xs"
                         value={formCS.costo_indirecto}
                         onChange={(e) => setFormCS({ ...formCS, costo_indirecto: e.target.value })}
                       />
@@ -305,7 +305,7 @@ export default function CosteoServicios() {
                       <Input
                         type="number"
                         placeholder="0.00"
-                        className="rounded-xl font-mono text-xs font-semibold"
+                        className="font-mono text-xs font-semibold"
                         value={formCS.precio_venta}
                         onChange={(e) => setFormCS({ ...formCS, precio_venta: e.target.value })}
                       />
@@ -313,10 +313,10 @@ export default function CosteoServicios() {
                   </div>
                 </div>
                 <DialogFooter className="gap-2">
-                  <Button variant="outline" onClick={() => setOpenCS(false)} className="rounded-xl">
+                  <Button variant="outline" onClick={() => setOpenCS(false)}>
                     Cancelar
                   </Button>
-                  <Button onClick={guardarCS} className="rounded-xl">
+                  <Button onClick={guardarCS}>
                     Guardar Costeo
                   </Button>
                 </DialogFooter>
@@ -360,14 +360,14 @@ export default function CosteoServicios() {
 
       {/* Tabs */}
       <Tabs defaultValue="costeo" className="space-y-4">
-        <TabsList className="bg-card border border-border/80 rounded-xl p-1">
-          <TabsTrigger value="costeo" className="rounded-lg gap-2 text-xs">
+        <TabsList className="bg-card border border-border/80 p-1">
+          <TabsTrigger value="costeo" className="gap-2 text-xs">
             <Layers className="w-4 h-4" /> Costeo de Servicios ({costeo.length})
           </TabsTrigger>
-          <TabsTrigger value="graficos" className="rounded-lg gap-2 text-xs">
+          <TabsTrigger value="graficos" className="gap-2 text-xs">
             <BarChart3 className="w-4 h-4" /> Analítica de Estructura de Costo
           </TabsTrigger>
-          <TabsTrigger value="centros" className="rounded-lg gap-2 text-xs">
+          <TabsTrigger value="centros" className="gap-2 text-xs">
             <Building className="w-4 h-4" /> Centros de Costo ({centros.length})
           </TabsTrigger>
         </TabsList>

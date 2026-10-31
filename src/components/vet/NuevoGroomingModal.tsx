@@ -87,7 +87,7 @@ export function NuevoGroomingModal({
             <div>
               <Label className="text-xs font-semibold">Mascota Paciente *</Label>
               <Select value={pacienteId} onValueChange={setPacienteId}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs">
+                <SelectTrigger className="mt-1 text-xs">
                   <SelectValue placeholder="Seleccionar mascota..." />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -103,7 +103,7 @@ export function NuevoGroomingModal({
             <div>
               <Label className="text-xs font-semibold">Tipo de Servicio *</Label>
               <Select value={tipoServicio} onValueChange={(v: any) => setTipoServicio(v)}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="bano_corte">Baño & Corte de Raza</SelectItem>
                   <SelectItem value="bano_medicado">Baño Medicado Dermatológico</SelectItem>
@@ -121,14 +121,14 @@ export function NuevoGroomingModal({
               <Input
                 value={estilista}
                 onChange={e => setEstilista(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
               />
             </div>
 
             <div>
               <Label className="text-xs font-semibold">Temperamento de la Mascota</Label>
               <Select value={temperamento} onValueChange={(v: any) => setTemperamento(v)}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="docil">Dócil & Tranquilo</SelectItem>
                   <SelectItem value="nervioso">Nervioso / Inquieto</SelectItem>
@@ -169,7 +169,7 @@ export function NuevoGroomingModal({
                 type="datetime-local"
                 value={fechaHora}
                 onChange={e => setFechaHora(e.target.value)}
-                className="rounded-xl mt-1 text-xs font-mono"
+                className="mt-1 text-xs font-mono"
               />
             </div>
 
@@ -179,16 +179,16 @@ export function NuevoGroomingModal({
                 placeholder="Nudos difíciles, verrugas, secado tibio..."
                 value={observaciones}
                 onChange={e => setObservaciones(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
               />
             </div>
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" className="rounded-xl text-xs" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" className="text-xs" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" className="rounded-xl text-xs shadow-none">
+            <Button type="submit" className="text-xs shadow-none">
               <CheckCircle2 className="h-4 w-4 mr-1.5" /> Agendar Servicio
             </Button>
           </DialogFooter>

@@ -56,10 +56,10 @@ export default function NutricionPro() {
 
       {/* Tabs Principales Sincronizadas con URL */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="bg-muted/60 p-1 rounded-2xl border border-border/60 h-auto grid grid-cols-2 max-w-md">
+        <TabsList className="bg-muted/60 p-1 border border-border/60 h-auto grid grid-cols-2 max-w-md">
           <TabsTrigger
             value="bioimpedancia"
-            className="rounded-xl text-xs sm:text-sm py-2 gap-2 data-[state=active]:bg-background data-[state=active]:text-emerald-600 data-[state=active]:shadow-sm"
+            className="text-xs sm:text-sm py-2 gap-2 data-[state=active]:bg-background data-[state=active]:text-emerald-600 data-[state=active]:shadow-sm"
           >
             <Scale className="h-4 w-4" />
             Bioimpedancia & Macros
@@ -67,7 +67,7 @@ export default function NutricionPro() {
 
           <TabsTrigger
             value="planificador"
-            className="rounded-xl text-xs sm:text-sm py-2 gap-2 data-[state=active]:bg-background data-[state=active]:text-emerald-600 data-[state=active]:shadow-sm"
+            className="text-xs sm:text-sm py-2 gap-2 data-[state=active]:bg-background data-[state=active]:text-emerald-600 data-[state=active]:shadow-sm"
           >
             <Utensils className="h-4 w-4" />
             Minutas & Dietética

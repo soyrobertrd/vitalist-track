@@ -73,7 +73,7 @@ export function EvaTab({ onGuardar }: EvaTabProps) {
                 <Button
                   key={b.val}
                   variant={evaDolor === b.val ? "default" : "outline"}
-                  className="rounded-xl text-xs h-9"
+                  className="text-xs h-9"
                   onClick={() => setEvaDolor(b.val)}
                 >
                   {b.label}
@@ -104,7 +104,7 @@ export function EvaTab({ onGuardar }: EvaTabProps) {
             </div>
 
             <Button
-              className="w-full rounded-xl shadow-none"
+              className="w-full shadow-none"
               onClick={() =>
                 onGuardar(
                   "Escala EVA",

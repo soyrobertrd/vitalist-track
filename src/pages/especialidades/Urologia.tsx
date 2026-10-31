@@ -274,7 +274,7 @@ export default function Urologia() {
         actions={
           <Button
             onClick={() => setModalNueva(true)}
-            className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-medium shadow-sm flex items-center gap-2"
+            className="bg-teal-600 hover:bg-teal-700 text-white font-medium shadow-sm flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
             Nueva Consulta Urológica
@@ -312,16 +312,16 @@ export default function Urologia() {
 
       {/* Tabs */}
       <Tabs defaultValue="consultas" className="w-full">
-        <TabsList className="bg-muted/70 p-1 rounded-xl">
-          <TabsTrigger value="consultas" className="rounded-lg text-xs font-semibold gap-2">
+        <TabsList className="bg-muted/70 p-1">
+          <TabsTrigger value="consultas" className="text-xs font-semibold gap-2">
             <FileText className="h-4 w-4" />
             Historial de Consultas Urológicas
           </TabsTrigger>
-          <TabsTrigger value="ipss" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="ipss" className="text-xs font-semibold gap-2">
             <Calculator className="h-4 w-4" />
             Score IPSS (Prostatismo / HPB)
           </TabsTrigger>
-          <TabsTrigger value="psa" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="psa" className="text-xs font-semibold gap-2">
             <Droplet className="h-4 w-4" />
             Ratio PSA Libre / Total
           </TabsTrigger>
@@ -337,11 +337,11 @@ export default function Urologia() {
                 placeholder="Buscar por paciente o diagnóstico clínico..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                className="pl-9 rounded-xl border-border/80"
+                className="pl-9 border-border/80"
               />
             </div>
             <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-              <SelectTrigger className="w-full sm:w-[240px] rounded-xl border-border/80">
+              <SelectTrigger className="w-full sm:w-[240px] border-border/80">
                 <SelectValue placeholder="Tipo de Patología" />
               </SelectTrigger>
               <SelectContent>
@@ -451,7 +451,7 @@ export default function Urologia() {
                   <div className="space-y-1">
                     <Label className="text-xs font-semibold">1. Sensación de vaciado incompleto:</Label>
                     <Select value={ipssVaciado.toString()} onValueChange={(v) => setIpssVaciado(Number(v))}>
-                      <SelectTrigger className="rounded-xl border-border/80">
+                      <SelectTrigger className="border-border/80">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -468,7 +468,7 @@ export default function Urologia() {
                   <div className="space-y-1">
                     <Label className="text-xs font-semibold">2. Frecuencia miccional (&lt; 2 horas):</Label>
                     <Select value={ipssFrecuencia.toString()} onValueChange={(v) => setIpssFrecuencia(Number(v))}>
-                      <SelectTrigger className="rounded-xl border-border/80">
+                      <SelectTrigger className="border-border/80">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -485,7 +485,7 @@ export default function Urologia() {
                   <div className="space-y-1">
                     <Label className="text-xs font-semibold">3. Intermitencia (se detiene y reanuda):</Label>
                     <Select value={ipssIntermitencia.toString()} onValueChange={(v) => setIpssIntermitencia(Number(v))}>
-                      <SelectTrigger className="rounded-xl border-border/80">
+                      <SelectTrigger className="border-border/80">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -502,7 +502,7 @@ export default function Urologia() {
                   <div className="space-y-1">
                     <Label className="text-xs font-semibold">4. Dificultad para posponer la micción (Urgencia):</Label>
                     <Select value={ipssUrgencia.toString()} onValueChange={(v) => setIpssUrgencia(Number(v))}>
-                      <SelectTrigger className="rounded-xl border-border/80">
+                      <SelectTrigger className="border-border/80">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -519,7 +519,7 @@ export default function Urologia() {
                   <div className="space-y-1">
                     <Label className="text-xs font-semibold">5. Chorro débil o con poca fuerza:</Label>
                     <Select value={ipssChorro.toString()} onValueChange={(v) => setIpssChorro(Number(v))}>
-                      <SelectTrigger className="rounded-xl border-border/80">
+                      <SelectTrigger className="border-border/80">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -556,7 +556,7 @@ export default function Urologia() {
 
                   <Button
                     variant="outline"
-                    className="w-full rounded-xl text-xs"
+                    className="w-full text-xs"
                     onClick={() => {
                       setFormIpss(ipssTotal.toString());
                       toast.info(`Puntuación IPSS (${ipssTotal} pts) transferida.`);
@@ -592,7 +592,7 @@ export default function Urologia() {
                       step="0.1"
                       value={psaTot}
                       onChange={(e) => setPsaTot(Number(e.target.value))}
-                      className="rounded-xl border-border/80"
+                      className="border-border/80"
                     />
                     <span className="text-[11px] text-muted-foreground block">
                       Valores de referencia normales: &lt; 4.0 ng/mL. Zona gris: 4.0 - 10.0 ng/mL.
@@ -606,7 +606,7 @@ export default function Urologia() {
                       step="0.05"
                       value={psaLib}
                       onChange={(e) => setPsaLib(Number(e.target.value))}
-                      className="rounded-xl border-border/80"
+                      className="border-border/80"
                     />
                   </div>
                 </div>
@@ -630,7 +630,7 @@ export default function Urologia() {
 
                   <Button
                     variant="outline"
-                    className="w-full rounded-xl text-xs"
+                    className="w-full text-xs"
                     onClick={() => {
                       setFormPsaTotal(psaTot.toString());
                       setFormPsaLibrePct(calcRatioPsa.toString());
@@ -667,7 +667,7 @@ export default function Urologia() {
                   placeholder="Ej: Danilo Ramos"
                   value={formNombre}
                   onChange={(e) => setFormNombre(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   required
                 />
               </div>
@@ -677,7 +677,7 @@ export default function Urologia() {
                   placeholder="Ej: 64a / M"
                   value={formEdadSexo}
                   onChange={(e) => setFormEdadSexo(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
             </div>
@@ -686,7 +686,7 @@ export default function Urologia() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Tipo de Patología:</Label>
                 <Select value={formTipo} onValueChange={(v) => setFormTipo(v as TipoConsultaUro)}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -706,7 +706,7 @@ export default function Urologia() {
                   placeholder="Ej: 55"
                   value={formVolumen}
                   onChange={(e) => setFormVolumen(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
             </div>
@@ -719,7 +719,7 @@ export default function Urologia() {
                   step="0.1"
                   value={formPsaTotal}
                   onChange={(e) => setFormPsaTotal(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
               <div className="space-y-1.5">
@@ -729,7 +729,7 @@ export default function Urologia() {
                   step="0.1"
                   value={formPsaLibrePct}
                   onChange={(e) => setFormPsaLibrePct(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
             </div>
@@ -741,7 +741,7 @@ export default function Urologia() {
                 value={formDiag}
                 onChange={(e) => setFormDiag(e.target.value)}
                 rows={2}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 required
               />
             </div>
@@ -753,15 +753,15 @@ export default function Urologia() {
                 value={formPlan}
                 onChange={(e) => setFormPlan(e.target.value)}
                 rows={3}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
             <DialogFooter className="pt-2">
-              <Button type="button" variant="outline" onClick={() => setModalNueva(false)} className="rounded-xl">
+              <Button type="button" variant="outline" onClick={() => setModalNueva(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-medium">
+              <Button type="submit" className="bg-teal-600 hover:bg-teal-700 text-white font-medium">
                 Guardar Consulta
               </Button>
             </DialogFooter>
@@ -818,10 +818,10 @@ export default function Urologia() {
             </div>
 
             <DialogFooter className="pt-2">
-              <Button variant="outline" onClick={() => window.print()} className="rounded-xl">
+              <Button variant="outline" onClick={() => window.print()}>
                 Imprimir Informe
               </Button>
-              <Button onClick={() => setConsultaDetalle(null)} className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white">
+              <Button onClick={() => setConsultaDetalle(null)} className="bg-teal-600 hover:bg-teal-700 text-white">
                 Cerrar
               </Button>
             </DialogFooter>

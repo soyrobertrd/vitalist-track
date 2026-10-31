@@ -285,7 +285,7 @@ export default function ProtocolosClinicos() {
           <Button
             onClick={() => setOpenCreate(true)}
             size="sm"
-            className="rounded-xl gap-1.5 bg-teal-600 hover:bg-teal-700 text-white"
+            className="gap-1.5 bg-teal-600 hover:bg-teal-700 text-white"
           >
             <Plus className="w-4 h-4" /> Nuevo Protocolo Clínico
           </Button>
@@ -333,12 +333,12 @@ export default function ProtocolosClinicos() {
               placeholder="Buscar por código (ej. PROT-SEP), patología, nombre..."
               value={filtro}
               onChange={(e) => setFiltro(e.target.value)}
-              className="pl-9 rounded-xl border-border/80 text-xs"
+              className="pl-9 border-border/80 text-xs"
             />
           </div>
 
           <Select value={filtroEsp} onValueChange={setFiltroEsp}>
-            <SelectTrigger className="w-[200px] rounded-xl border-border/80 text-xs">
+            <SelectTrigger className="w-[200px] border-border/80 text-xs">
               <SelectValue placeholder="Especialidad Médica" />
             </SelectTrigger>
             <SelectContent>
@@ -420,7 +420,7 @@ export default function ProtocolosClinicos() {
                   <Button
                     size="sm"
                     onClick={() => abrirModalAplicar(p)}
-                    className="h-8 text-xs px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white gap-1.5 shadow-sm"
+                    className="h-8 text-xs px-3 bg-teal-600 hover:bg-teal-700 text-white gap-1.5 shadow-sm"
                   >
                     <Play className="w-3.5 h-3.5" /> Aplicar a Paciente
                   </Button>
@@ -450,7 +450,7 @@ export default function ProtocolosClinicos() {
                 placeholder="Ej. Manuel Antonio Tavárez"
                 value={pacienteNombre}
                 onChange={(e) => setPacienteNombre(e.target.value)}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -493,12 +493,12 @@ export default function ProtocolosClinicos() {
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setOpenApply(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setOpenApply(false)}>
               Cancelar
             </Button>
             <Button
               onClick={handleFinalizarAplicacion}
-              className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white gap-1.5"
+              className="bg-teal-600 hover:bg-teal-700 text-white gap-1.5"
             >
               <CheckCircle2 className="w-4 h-4" /> Registrar Ejecución en Expediente
             </Button>
@@ -525,7 +525,7 @@ export default function ProtocolosClinicos() {
                 placeholder="PROT-XXX-01"
                 value={form.codigo}
                 onChange={(e) => setForm({ ...form, codigo: e.target.value })}
-                className="rounded-xl border-border/80 text-xs font-mono"
+                className="border-border/80 text-xs font-mono"
               />
             </div>
 
@@ -535,7 +535,7 @@ export default function ProtocolosClinicos() {
                 value={form.especialidad}
                 onValueChange={(v) => setForm({ ...form, especialidad: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Urgencias / UCI">Urgencias / UCI</SelectItem>
                   <SelectItem value="Cardiología">Cardiología</SelectItem>
@@ -553,7 +553,7 @@ export default function ProtocolosClinicos() {
                 placeholder="Ej. Manejo de Crisis Hipertensiva en Urgencias"
                 value={form.nombre}
                 onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -563,7 +563,7 @@ export default function ProtocolosClinicos() {
                 placeholder="Resumen del ámbito de aplicación y metas de seguridad..."
                 value={form.descripcion}
                 onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 rows={2}
               />
             </div>
@@ -574,19 +574,19 @@ export default function ProtocolosClinicos() {
                 placeholder={`1. Realizar ECG de 12 derivaciones\n2. Canalizar vía venosa periférica\n3. Administrar Labetalol 20mg IV en bolo`}
                 value={form.pasos}
                 onChange={(e) => setForm({ ...form, pasos: e.target.value })}
-                className="rounded-xl border-border/80 text-xs font-mono"
+                className="border-border/80 text-xs font-mono"
                 rows={4}
               />
             </div>
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setOpenCreate(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setOpenCreate(false)}>
               Cancelar
             </Button>
             <Button
               onClick={handleCrearProtocolo}
-              className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white"
+              className="bg-teal-600 hover:bg-teal-700 text-white"
             >
               Guardar Protocolo
             </Button>

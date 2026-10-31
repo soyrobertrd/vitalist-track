@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -170,9 +171,9 @@ export function ImprimirDocumentoDialog({
                       <p className="text-[11px] font-mono font-medium text-primary">RD$ {it.precioUnitario.toLocaleString()}</p>
                     )}
                   </div>
-                  <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => eliminarItem(idx)}>
+                  <IconButton label="Eliminar" size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => eliminarItem(idx)}>
                     <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
+                  </IconButton>
                 </div>
               ))}
             </div>

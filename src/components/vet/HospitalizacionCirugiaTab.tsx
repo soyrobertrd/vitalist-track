@@ -39,7 +39,7 @@ export function HospitalizacionCirugiaTab({ casos, onNuevoIngreso }: Hospitaliza
                 Monitoreo quirúrgico pre/intra/post-operatorio, jaulas activas y fluidoterapia
               </p>
             </div>
-            <Button size="sm" className="rounded-xl shadow-none gap-1.5" onClick={onNuevoIngreso}>
+            <Button size="sm" className="shadow-none gap-1.5" onClick={onNuevoIngreso}>
               <Plus className="h-4 w-4" /> Ingresar Paciente
             </Button>
           </div>
@@ -51,7 +51,7 @@ export function HospitalizacionCirugiaTab({ casos, onNuevoIngreso }: Hospitaliza
                 placeholder="Buscar por paciente, procedimiento o box..."
                 value={busqueda}
                 onChange={e => setBusqueda(e.target.value)}
-                className="pl-9 h-9 text-xs rounded-xl border-border/80"
+                className="pl-9 h-9 text-xs border-border/80"
               />
             </div>
             <div className="flex items-center gap-1.5">
@@ -59,7 +59,7 @@ export function HospitalizacionCirugiaTab({ casos, onNuevoIngreso }: Hospitaliza
                 type="button"
                 size="sm"
                 variant={filtroTipo === "todos" ? "default" : "outline"}
-                className="rounded-xl text-xs h-9 px-3"
+                className="text-xs h-9 px-3"
                 onClick={() => setFiltroTipo("todos")}
               >
                 Todos
@@ -68,7 +68,7 @@ export function HospitalizacionCirugiaTab({ casos, onNuevoIngreso }: Hospitaliza
                 type="button"
                 size="sm"
                 variant={filtroTipo === "cirugia" ? "default" : "outline"}
-                className="rounded-xl text-xs h-9 px-3 gap-1"
+                className="text-xs h-9 px-3 gap-1"
                 onClick={() => setFiltroTipo("cirugia")}
               >
                 <HeartPulse className="h-3.5 w-3.5 text-rose-500" />
@@ -78,7 +78,7 @@ export function HospitalizacionCirugiaTab({ casos, onNuevoIngreso }: Hospitaliza
                 type="button"
                 size="sm"
                 variant={filtroTipo === "hospitalizacion" ? "default" : "outline"}
-                className="rounded-xl text-xs h-9 px-3 gap-1"
+                className="text-xs h-9 px-3 gap-1"
                 onClick={() => setFiltroTipo("hospitalizacion")}
               >
                 <Bed className="h-3.5 w-3.5 text-blue-500" />

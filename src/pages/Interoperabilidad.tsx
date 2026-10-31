@@ -152,14 +152,14 @@ export default function Interoperabilidad() {
             <Button
               variant="outline"
               size="sm"
-              className="rounded-xl border-border/80 gap-1.5"
+              className="border-border/80 gap-1.5"
               onClick={() => setOpenMessage(true)}
             >
               <Upload className="h-4 w-4" /> Inyectar Mensaje HL7
             </Button>
             <Button
               size="sm"
-              className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl"
+              className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
               onClick={() => setOpenEndpoint(true)}
             >
               <Plus className="h-4 w-4" /> Configurar Endpoint
@@ -201,16 +201,16 @@ export default function Interoperabilidad() {
       </div>
 
       <Tabs defaultValue="fhir" className="space-y-4">
-        <TabsList className="bg-card border border-border/80 p-1 rounded-xl">
-          <TabsTrigger value="fhir" className="rounded-lg gap-2 text-xs sm:text-sm">
+        <TabsList className="bg-card border border-border/80 p-1">
+          <TabsTrigger value="fhir" className="gap-2 text-xs sm:text-sm">
             <FileJson className="h-4 w-4" />
             Recursos FHIR R4 ({resources.length})
           </TabsTrigger>
-          <TabsTrigger value="hl7" className="rounded-lg gap-2 text-xs sm:text-sm">
+          <TabsTrigger value="hl7" className="gap-2 text-xs sm:text-sm">
             <Activity className="h-4 w-4" />
             Mensajes HL7 v2 ({messages.length})
           </TabsTrigger>
-          <TabsTrigger value="endpoints" className="rounded-lg gap-2 text-xs sm:text-sm">
+          <TabsTrigger value="endpoints" className="gap-2 text-xs sm:text-sm">
             <Server className="h-4 w-4" />
             Endpoints de Integración ({endpoints.length})
           </TabsTrigger>
@@ -224,13 +224,13 @@ export default function Interoperabilidad() {
               <p className="text-xs text-muted-foreground">Estandarización de entidades clínicas para interoperar con redes de salud</p>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" className="rounded-xl text-xs gap-1.5" onClick={() => exportarFHIR("Patient")}>
+              <Button size="sm" variant="outline" className="text-xs gap-1.5" onClick={() => exportarFHIR("Patient")}>
                 <Download className="h-3.5 w-3.5" /> Exportar Pacientes
               </Button>
-              <Button size="sm" variant="outline" className="rounded-xl text-xs gap-1.5" onClick={() => exportarFHIR("Observation")}>
+              <Button size="sm" variant="outline" className="text-xs gap-1.5" onClick={() => exportarFHIR("Observation")}>
                 <Download className="h-3.5 w-3.5" /> Exportar Signos & Analíticas
               </Button>
-              <Button size="sm" variant="outline" className="rounded-xl text-xs gap-1.5" onClick={() => exportarFHIR("Condition")}>
+              <Button size="sm" variant="outline" className="text-xs gap-1.5" onClick={() => exportarFHIR("Condition")}>
                 <Download className="h-3.5 w-3.5" /> Exportar Diagnósticos CIE-10
               </Button>
             </div>
@@ -277,7 +277,7 @@ export default function Interoperabilidad() {
                 <CardTitle className="text-base font-bold">Bitácora de Mensajes HL7 v2</CardTitle>
                 <CardDescription className="text-xs">Tráfico de mensajes pipe-delimited entre subsistemas clínicos</CardDescription>
               </div>
-              <Button size="sm" variant="outline" className="rounded-xl text-xs" onClick={() => setOpenMessage(true)}>
+              <Button size="sm" variant="outline" className="text-xs" onClick={() => setOpenMessage(true)}>
                 <Upload className="h-3.5 w-3.5 mr-1" /> Cargar Mensaje
               </Button>
             </CardHeader>
@@ -365,7 +365,7 @@ export default function Interoperabilidad() {
             <div>
               <Label className="text-xs font-semibold">Nombre del Sistema *</Label>
               <Input
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={endpointForm.nombre}
                 onChange={(e) => setEndpointForm({ ...endpointForm, nombre: e.target.value })}
                 placeholder="Ej: LIS Hospitalario Roche / Abbott"
@@ -374,7 +374,7 @@ export default function Interoperabilidad() {
             <div>
               <Label className="text-xs font-semibold">Tipo de Sistema</Label>
               <Select value={endpointForm.tipo} onValueChange={(v) => setEndpointForm({ ...endpointForm, tipo: v })}>
-                <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="laboratorio">Laboratorio Clínico (LIS)</SelectItem>
                   <SelectItem value="pacs">PACS / Diagnóstico por Imágenes</SelectItem>
@@ -387,7 +387,7 @@ export default function Interoperabilidad() {
             <div>
               <Label className="text-xs font-semibold">URL / Host y Puerto</Label>
               <Input
-                className="rounded-xl mt-1 font-mono text-xs"
+                className="mt-1 font-mono text-xs"
                 value={endpointForm.url}
                 onChange={(e) => setEndpointForm({ ...endpointForm, url: e.target.value })}
                 placeholder="https://lis.hospital.rd/fhir o mllp://10.0.1.20:2575"
@@ -396,7 +396,7 @@ export default function Interoperabilidad() {
             <div>
               <Label className="text-xs font-semibold">Protocolo de Red</Label>
               <Select value={endpointForm.protocolo} onValueChange={(v) => setEndpointForm({ ...endpointForm, protocolo: v })}>
-                <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="https">HTTPS REST (FHIR R4)</SelectItem>
                   <SelectItem value="mllp">MLLP (Minimal Lower Layer Protocol - HL7 v2)</SelectItem>
@@ -405,7 +405,7 @@ export default function Interoperabilidad() {
                 </SelectContent>
               </Select>
             </div>
-            <Button onClick={crearEndpoint} className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
+            <Button onClick={crearEndpoint} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
               Guardar y Habilitar Canal
             </Button>
           </div>
@@ -428,7 +428,7 @@ export default function Interoperabilidad() {
               <div>
                 <Label className="text-xs font-semibold">Tipo (MSH-9.1)</Label>
                 <Input
-                  className="rounded-xl mt-1 font-mono text-xs"
+                  className="mt-1 font-mono text-xs"
                   value={msgForm.message_type}
                   onChange={(e) => setMsgForm({ ...msgForm, message_type: e.target.value })}
                   placeholder="ORU / ADT / ORM"
@@ -437,7 +437,7 @@ export default function Interoperabilidad() {
               <div>
                 <Label className="text-xs font-semibold">Evento (MSH-9.2)</Label>
                 <Input
-                  className="rounded-xl mt-1 font-mono text-xs"
+                  className="mt-1 font-mono text-xs"
                   value={msgForm.trigger_event}
                   onChange={(e) => setMsgForm({ ...msgForm, trigger_event: e.target.value })}
                   placeholder="R01 / A01 / O01"
@@ -446,7 +446,7 @@ export default function Interoperabilidad() {
               <div>
                 <Label className="text-xs font-semibold">Dirección</Label>
                 <Select value={msgForm.direccion} onValueChange={(v) => setMsgForm({ ...msgForm, direccion: v })}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="inbound">Entrante (Inbound)</SelectItem>
                     <SelectItem value="outbound">Saliente (Outbound)</SelectItem>
@@ -461,10 +461,10 @@ export default function Interoperabilidad() {
                 value={msgForm.raw_message}
                 onChange={(e) => setMsgForm({ ...msgForm, raw_message: e.target.value })}
                 placeholder="MSH|^~\&|LAB_CLINICO|HOSP_UNIVERSITARIO|VITALIST|CENTRAL|202610292200||ORU^R01|MSG001|P|2.5\nPID|1||101002239||RAMIREZ^JUAN||19820514|M\nOBR|1||ORD001|POTASIO_SERICO\nOBX|1|NM|K+||5.8|mEq/L|3.5-5.0|H|||F"
-                className="font-mono text-xs rounded-xl"
+                className="font-mono text-xs"
               />
             </div>
-            <Button onClick={guardarMensaje} className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
+            <Button onClick={guardarMensaje} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
               Procesar Trama HL7
             </Button>
           </div>

@@ -280,7 +280,7 @@ export function BioimpedanciaMetabolismo() {
                   placeholder="Ej. Laura Méndez"
                   value={pacienteNombre}
                   onChange={(e) => setPacienteNombre(e.target.value)}
-                  className="rounded-xl text-sm"
+                  className="text-sm"
                   required
                 />
               </div>
@@ -294,7 +294,7 @@ export function BioimpedanciaMetabolismo() {
                   max="110"
                   value={pacienteEdad}
                   onChange={(e) => setPacienteEdad(Number(e.target.value))}
-                  className="rounded-xl text-sm"
+                  className="text-sm"
                 />
               </div>
             </div>
@@ -303,7 +303,7 @@ export function BioimpedanciaMetabolismo() {
               <div className="space-y-1.5">
                 <Label className="text-xs">Sexo Biológico</Label>
                 <Select value={sexo} onValueChange={(v: "M" | "F") => setSexo(v)}>
-                  <SelectTrigger className="rounded-xl text-xs">
+                  <SelectTrigger className="text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -321,7 +321,7 @@ export function BioimpedanciaMetabolismo() {
                   step="0.1"
                   value={pesoKg}
                   onChange={(e) => setPesoKg(Number(e.target.value))}
-                  className="rounded-xl text-sm"
+                  className="text-sm"
                 />
               </div>
 
@@ -332,7 +332,7 @@ export function BioimpedanciaMetabolismo() {
                   type="number"
                   value={tallaCm}
                   onChange={(e) => setTallaCm(Number(e.target.value))}
-                  className="rounded-xl text-sm"
+                  className="text-sm"
                 />
               </div>
 
@@ -363,7 +363,7 @@ export function BioimpedanciaMetabolismo() {
                     step="0.1"
                     value={grasaPct}
                     onChange={(e) => setGrasaPct(Number(e.target.value))}
-                    className="rounded-lg text-xs h-8"
+                    className="text-xs h-8"
                   />
                 </div>
 
@@ -374,7 +374,7 @@ export function BioimpedanciaMetabolismo() {
                     type="number"
                     value={grasaVisceral}
                     onChange={(e) => setGrasaVisceral(Number(e.target.value))}
-                    className="rounded-lg text-xs h-8"
+                    className="text-xs h-8"
                   />
                 </div>
 
@@ -386,7 +386,7 @@ export function BioimpedanciaMetabolismo() {
                     step="0.1"
                     value={musculoPct}
                     onChange={(e) => setMusculoPct(Number(e.target.value))}
-                    className="rounded-lg text-xs h-8"
+                    className="text-xs h-8"
                   />
                 </div>
 
@@ -398,7 +398,7 @@ export function BioimpedanciaMetabolismo() {
                     step="0.1"
                     value={aguaPct}
                     onChange={(e) => setAguaPct(Number(e.target.value))}
-                    className="rounded-lg text-xs h-8"
+                    className="text-xs h-8"
                   />
                 </div>
               </div>
@@ -409,7 +409,7 @@ export function BioimpedanciaMetabolismo() {
               <div className="space-y-1.5">
                 <Label className="text-xs">Nivel de Actividad Física (PAL)</Label>
                 <Select value={String(actividad)} onValueChange={(v) => setActividad(Number(v))}>
-                  <SelectTrigger className="rounded-xl text-xs">
+                  <SelectTrigger className="text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -425,7 +425,7 @@ export function BioimpedanciaMetabolismo() {
               <div className="space-y-1.5">
                 <Label className="text-xs">Objetivo Nutricional</Label>
                 <Select value={objetivo} onValueChange={(v: any) => setObjetivo(v)}>
-                  <SelectTrigger className="rounded-xl text-xs">
+                  <SelectTrigger className="text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -441,7 +441,7 @@ export function BioimpedanciaMetabolismo() {
               <div className="space-y-1.5">
                 <Label className="text-xs">Profesional / Nutriólogo a Cargo</Label>
                 <Select value={profesional} onValueChange={setProfesional}>
-                  <SelectTrigger className="rounded-xl text-xs">
+                  <SelectTrigger className="text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -477,7 +477,7 @@ export function BioimpedanciaMetabolismo() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white gap-2 text-xs h-10">
+            <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-2 text-xs h-10">
               <CheckCircle2 className="h-4 w-4" />
               Guardar Evaluación & Generar Prescripción
             </Button>
@@ -551,7 +551,7 @@ export function BioimpedanciaMetabolismo() {
             <Button
               onClick={() => handleCopiarInforme(evaluacionSeleccionada)}
               variant="outline"
-              className="w-full rounded-xl gap-2 text-xs border-emerald-500/40 text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 h-9"
+              className="w-full gap-2 text-xs border-emerald-500/40 text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 h-9"
             >
               <Share2 className="h-3.5 w-3.5" />
               Copiar Informe Formateado para WhatsApp

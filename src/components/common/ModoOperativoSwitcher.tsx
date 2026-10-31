@@ -32,7 +32,7 @@ export function ModoOperativoSwitcher() {
         <Button
           variant="outline"
           size="sm"
-          className="h-8 gap-1.5 rounded-xl border-border/80 px-2.5 text-xs font-medium hover:border-primary/40 shadow-none transition-colors"
+          className="h-8 gap-1.5 border-border/80 px-2.5 text-xs font-medium hover:border-primary/40 shadow-none transition-colors"
           title={`Modo operativo: ${labelModo}`}
         >
           {isSolo ? (

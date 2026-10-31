@@ -200,7 +200,7 @@ export function AgendaDiaPanel() {
         <Button
           variant="ghost"
           size="sm"
-          className="w-full rounded-2xl text-xs font-semibold text-muted-foreground hover:text-foreground"
+          className="w-full text-xs font-semibold text-muted-foreground hover:text-foreground"
           onClick={() => navigate("/calendario")}
         >
           Ver agenda médica completa <ArrowRight className="ml-1.5 h-3.5 w-3.5" aria-hidden="true" />

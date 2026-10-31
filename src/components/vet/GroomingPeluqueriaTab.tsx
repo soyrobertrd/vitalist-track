@@ -44,7 +44,7 @@ export function GroomingPeluqueriaTab({
                 Control de baños medicados/cosméticos, cortes de raza, deslanado y estado de entrega
               </p>
             </div>
-            <Button size="sm" className="rounded-xl shadow-none gap-1.5" onClick={onNuevoServicio}>
+            <Button size="sm" className="shadow-none gap-1.5" onClick={onNuevoServicio}>
               <Plus className="h-4 w-4" /> Agendar Grooming
             </Button>
           </div>
@@ -55,7 +55,7 @@ export function GroomingPeluqueriaTab({
               placeholder="Buscar por mascota o estilista..."
               value={busqueda}
               onChange={e => setBusqueda(e.target.value)}
-              className="pl-9 h-9 text-xs rounded-xl border-border/80"
+              className="pl-9 h-9 text-xs border-border/80"
             />
           </div>
         </CardHeader>

@@ -184,7 +184,7 @@ export default function MembresiasGiftCardsSpa() {
           <CardContent className="p-4 pt-1 flex items-center gap-2">
             <Dialog open={openModalGift} onOpenChange={setOpenModalGift}>
               <DialogTrigger asChild>
-                <Button size="sm" className="rounded-xl gap-1.5 shadow-none bg-pink-600 hover:bg-pink-700 text-white">
+                <Button size="sm" className="gap-1.5 shadow-none bg-pink-600 hover:bg-pink-700 text-white">
                   <Plus className="h-4 w-4" /> Emitir Gift Card
                 </Button>
               </DialogTrigger>
@@ -202,7 +202,7 @@ export default function MembresiasGiftCardsSpa() {
                       placeholder="Ej. Laura Almonte"
                       value={formGift.beneficiario}
                       onChange={(e) => setFormGift({ ...formGift, beneficiario: e.target.value })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
                   <div>
@@ -211,7 +211,7 @@ export default function MembresiasGiftCardsSpa() {
                       placeholder="Ej. Carlos Mendoza"
                       value={formGift.comprador}
                       onChange={(e) => setFormGift({ ...formGift, comprador: e.target.value })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
                   <div>
@@ -220,10 +220,10 @@ export default function MembresiasGiftCardsSpa() {
                       type="number"
                       value={formGift.monto}
                       onChange={(e) => setFormGift({ ...formGift, monto: Number(e.target.value) })}
-                      className="rounded-xl mt-1 h-8 text-xs font-semibold"
+                      className="mt-1 h-8 text-xs font-semibold"
                     />
                   </div>
-                  <Button type="submit" className="w-full rounded-xl mt-2 bg-pink-600 hover:bg-pink-700 text-white">
+                  <Button type="submit" className="w-full mt-2 bg-pink-600 hover:bg-pink-700 text-white">
                     Generar Código Digital
                   </Button>
                 </form>
@@ -232,7 +232,7 @@ export default function MembresiasGiftCardsSpa() {
 
             <Dialog open={openModalCanje} onOpenChange={setOpenModalCanje}>
               <DialogTrigger asChild>
-                <Button size="sm" variant="outline" className="rounded-xl gap-1.5 border-border/80 shadow-none">
+                <Button size="sm" variant="outline" className="gap-1.5 border-border/80 shadow-none">
                   <CreditCard className="h-4 w-4" /> Canjear en Caja
                 </Button>
               </DialogTrigger>
@@ -250,7 +250,7 @@ export default function MembresiasGiftCardsSpa() {
                       placeholder="Ej. SPA-GIFT-5520"
                       value={canjeCodigo}
                       onChange={(e) => setCanjeCodigo(e.target.value)}
-                      className="rounded-xl mt-1 h-8 text-xs font-mono uppercase"
+                      className="mt-1 h-8 text-xs font-mono uppercase"
                     />
                   </div>
                   <div>
@@ -259,10 +259,10 @@ export default function MembresiasGiftCardsSpa() {
                       type="number"
                       value={canjeMonto}
                       onChange={(e) => setCanjeMonto(Number(e.target.value))}
-                      className="rounded-xl mt-1 h-8 text-xs font-bold"
+                      className="mt-1 h-8 text-xs font-bold"
                     />
                   </div>
-                  <Button type="submit" className="w-full rounded-xl mt-2 bg-purple-600 hover:bg-purple-700 text-white">
+                  <Button type="submit" className="w-full mt-2 bg-purple-600 hover:bg-purple-700 text-white">
                     Confirmar Descuento
                   </Button>
                 </form>

@@ -214,26 +214,26 @@ export default function Landing() {
         <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted border border-border text-xs font-semibold text-muted-foreground mb-8">
             <span className="size-2 rounded-full bg-primary" />
-            Diseñado para clínicas de atención domiciliaria en LATAM
+            Para hospitales, clínicas y consultorios en LATAM
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-balance leading-[1.05] mb-6">
-            Precisión clínica en cada visita domiciliaria.
+            Precisión clínica en cada consulta, en cualquier especialidad.
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground text-pretty max-w-2xl leading-relaxed mb-10">
-            Gestiona pacientes, coordina equipos en terreno y automatiza recordatorios desde una sola
-            plataforma. Multi-clínica, multi-país, segura y lista para escalar.
+            Gestiona pacientes, agenda, ficha clínica y facturación desde una sola plataforma, en consulta,
+            hospitalización o a domicilio cuando tu servicio lo ofrece. Multi-clínica, multi-país y segura.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <Button size="lg" className="h-12 px-8 rounded-full text-base" onClick={() => navigate("/auth")}>
+            <Button size="lg" className="h-12 px-8 text-base" onClick={() => navigate("/auth")}>
               Empezar gratis <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="h-12 px-8 rounded-full text-base"
+              className="h-12 px-8 text-base"
               onClick={() => document.getElementById("planes")?.scrollIntoView({ behavior: "smooth" })}
             >
               Ver planes
@@ -260,7 +260,7 @@ export default function Landing() {
           <FeatureCard
             icon={<Users className="h-5 w-5" />}
             title="Multi-clínica y multi-vertical"
-            description="Workspaces aislados, roles, permisos por categoría profesional y verticales: Dental, Estética, Visión, Recovery, Psicología."
+            description="Workspaces aislados, roles, permisos por categoría profesional y verticales: Dental, Estética, Visión, Recovery, Psicología y Veterinaria."
           />
           <FeatureCard
             icon={<Activity className="h-5 w-5" />}
@@ -275,7 +275,7 @@ export default function Landing() {
           <FeatureCard
             icon={<Shield className="h-5 w-5" />}
             title="Seguridad y compliance"
-            description="2FA para admins, exportación GDPR del paciente, RLS por ownership y auditoría inmutable. HIPAA-ready."
+            description="2FA para admins, exportación GDPR del paciente, aislamiento de datos por clínica y auditoría inmutable. HIPAA-ready."
           />
         </section>
 
@@ -727,13 +727,13 @@ export default function Landing() {
             Crea tu workspace en menos de 5 minutos. Sin tarjeta requerida.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="h-12 px-8 rounded-full" onClick={() => navigate("/auth")}>
+            <Button size="lg" className="h-12 px-8" onClick={() => navigate("/auth")}>
               Crear cuenta gratis
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="h-12 px-8 rounded-full"
+              className="h-12 px-8"
               onClick={() => document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" })}
             >
               Agendar demo

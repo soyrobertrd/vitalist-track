@@ -49,7 +49,7 @@ export function EspirometriaTab({
               step="0.05"
               value={espFvcBasal}
               onChange={(e) => setEspFvcBasal(Number(e.target.value))}
-              className="rounded-xl border-border/80"
+              className="border-border/80"
             />
           </div>
           <div className="space-y-1.5">
@@ -59,7 +59,7 @@ export function EspirometriaTab({
               step="0.05"
               value={espFev1Basal}
               onChange={(e) => setEspFev1Basal(Number(e.target.value))}
-              className="rounded-xl border-border/80"
+              className="border-border/80"
             />
           </div>
           <div className="space-y-1.5">
@@ -69,7 +69,7 @@ export function EspirometriaTab({
               step="0.05"
               value={espFev1Post}
               onChange={(e) => setEspFev1Post(Number(e.target.value))}
-              className="rounded-xl border-border/80"
+              className="border-border/80"
             />
           </div>
         </div>

@@ -159,7 +159,7 @@ ${objetivos}
             variant="outline"
             size="sm"
             onClick={() => window.print()}
-            className="rounded-xl h-9 text-xs gap-1.5 shadow-none"
+            className="h-9 text-xs gap-1.5 shadow-none"
           >
             <Printer className="h-3.5 w-3.5" />
             Imprimir Informe
@@ -168,7 +168,7 @@ ${objetivos}
           <Button
             size="sm"
             onClick={compartirWhatsApp}
-            className="rounded-xl h-9 text-xs gap-1.5 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="h-9 text-xs gap-1.5 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
           >
             <Share2 className="h-3.5 w-3.5" />
             Compartir WhatsApp
@@ -184,7 +184,7 @@ ${objetivos}
             <Input
               value={paciente.nombre}
               onChange={(e) => setPaciente({ ...paciente, nombre: e.target.value })}
-              className="h-9 text-xs rounded-xl"
+              className="h-9 text-xs"
             />
           </div>
           <div className="space-y-1">
@@ -193,7 +193,7 @@ ${objetivos}
               type="number"
               value={paciente.edad}
               onChange={(e) => setPaciente({ ...paciente, edad: parseInt(e.target.value) || 0 })}
-              className="h-9 text-xs rounded-xl"
+              className="h-9 text-xs"
             />
           </div>
           <div className="space-y-1 sm:col-span-1">
@@ -201,7 +201,7 @@ ${objetivos}
             <Input
               value={paciente.diagnosticoMedico}
               onChange={(e) => setPaciente({ ...paciente, diagnosticoMedico: e.target.value })}
-              className="h-9 text-xs rounded-xl"
+              className="h-9 text-xs"
             />
           </div>
         </CardContent>
@@ -226,7 +226,7 @@ ${objetivos}
               <div className="space-y-1">
                 <Label className="text-xs">Articulación y Movimiento</Label>
                 <Select value={articulacionKey} onValueChange={handleCambioArticulacion}>
-                  <SelectTrigger className="h-9 text-xs rounded-xl">
+                  <SelectTrigger className="h-9 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -246,7 +246,7 @@ ${objetivos}
               <div className="space-y-1">
                 <Label className="text-xs">Lado Evaluado</Label>
                 <Select value={lado} onValueChange={(v: any) => setLado(v)}>
-                  <SelectTrigger className="h-9 text-xs rounded-xl">
+                  <SelectTrigger className="h-9 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -303,7 +303,7 @@ ${objetivos}
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Fuerza Muscular (Escala de Daniels 0-5)</Label>
               <Select value={daniels.toString()} onValueChange={(v) => setDaniels(parseInt(v) || 0)}>
-                <SelectTrigger className="h-9 text-xs rounded-xl font-medium">
+                <SelectTrigger className="h-9 text-xs font-medium">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -343,7 +343,7 @@ ${objetivos}
             </div>
 
             <div className="flex justify-end pt-1">
-              <Button onClick={guardarEvaluacion} size="sm" className="rounded-xl h-8 text-xs gap-1.5">
+              <Button onClick={guardarEvaluacion} size="sm" className="h-8 text-xs gap-1.5">
                 <Save className="h-3.5 w-3.5" /> Registrar en Historial
               </Button>
             </div>
@@ -396,7 +396,7 @@ ${objetivos}
                 value={objetivos}
                 onChange={(e) => setObjetivos(e.target.value)}
                 rows={5}
-                className="text-xs rounded-xl leading-relaxed"
+                className="text-xs leading-relaxed"
                 placeholder="Metas a corto, mediano y largo plazo..."
               />
               <p className="text-[10px] text-muted-foreground">

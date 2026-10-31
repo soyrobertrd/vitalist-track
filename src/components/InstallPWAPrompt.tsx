@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Card } from "@/components/ui/card";
 import { Download, Share, X, Smartphone } from "lucide-react";
 
@@ -99,14 +100,14 @@ export const InstallPWAPrompt = () => {
               </Button>
             </div>
           </div>
-          <Button
+          <IconButton label="Cerrar"
             size="icon"
             variant="ghost"
             className="h-6 w-6 flex-shrink-0"
             onClick={handleDismiss}
           >
             <X className="h-3 w-3" />
-          </Button>
+          </IconButton>
         </div>
       </Card>
     </div>

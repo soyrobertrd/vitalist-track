@@ -110,7 +110,7 @@ export const EpicrisisConsentimientosTab: React.FC<EpicrisisConsentimientosTabPr
                   <Button
                     size="sm"
                     variant="outline"
-                    className="rounded-xl h-8 text-xs shrink-0"
+                    className="h-8 text-xs shrink-0"
                     onClick={handleDescargar}
                   >
                     <Download className="h-3.5 w-3.5 mr-1 text-primary" />
@@ -162,7 +162,7 @@ export const EpicrisisConsentimientosTab: React.FC<EpicrisisConsentimientosTabPr
                   <Button
                     size="sm"
                     variant="outline"
-                    className="rounded-xl h-8 text-xs shrink-0"
+                    className="h-8 text-xs shrink-0"
                     onClick={handleDescargar}
                   >
                     <Download className="h-3.5 w-3.5 mr-1" />

@@ -275,7 +275,7 @@ export default function NotasMedicas() {
           <div className="flex items-center gap-2">
             <Dialog open={modalOpen} onOpenChange={setModalOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-none">
+                <Button className="shadow-none">
                   <Plus className="h-4 w-4 mr-2" />
                   Nueva Nota Médica
                 </Button>
@@ -318,7 +318,7 @@ export default function NotasMedicas() {
                     <div>
                       <Label className="text-xs font-semibold">Paciente *</Label>
                       <Select value={form.paciente_id} onValueChange={v => setForm(f => ({ ...f, paciente_id: v }))}>
-                        <SelectTrigger className="rounded-xl mt-1"><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
+                        <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
                         <SelectContent className="rounded-xl">
                           {pacientes.map(p => (
                             <SelectItem key={p.id} value={p.id}>
@@ -332,7 +332,7 @@ export default function NotasMedicas() {
                     <div>
                       <Label className="text-xs font-semibold">Servicio / Especialidad</Label>
                       <Select value={form.servicio} onValueChange={v => setForm(f => ({ ...f, servicio: v }))}>
-                        <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                         <SelectContent className="rounded-xl">
                           {SERVICIOS_CLINICOS.map(s => (
                             <SelectItem key={s} value={s}>{s}</SelectItem>
@@ -344,7 +344,7 @@ export default function NotasMedicas() {
                     <div>
                       <Label className="text-xs font-semibold">Título o Tipo de Nota</Label>
                       <Input
-                        className="rounded-xl mt-1"
+                        className="mt-1"
                         value={form.titulo}
                         onChange={e => setForm(f => ({ ...f, titulo: e.target.value }))}
                         placeholder="Ej: Evolución Diaria, Pase de Guardia"
@@ -356,7 +356,7 @@ export default function NotasMedicas() {
                   <div>
                     <Label className="text-xs font-semibold">Médico / Profesional Responsable</Label>
                     <Input
-                      className="rounded-xl mt-1"
+                      className="mt-1"
                       value={form.profesional_principal}
                       onChange={e => setForm(f => ({ ...f, profesional_principal: e.target.value }))}
                       placeholder="Dr(a). Nombre y Especialidad"
@@ -382,7 +382,7 @@ export default function NotasMedicas() {
                               type="button"
                               size="sm"
                               variant={seleccionado ? "default" : "outline"}
-                              className="rounded-xl text-xs h-7 px-2.5 font-normal"
+                              className="text-xs h-7 px-2.5 font-normal"
                               onClick={() => toggleMiembroEquipo(rol)}
                             >
                               {seleccionado ? "✓ " : "+ "}
@@ -402,7 +402,7 @@ export default function NotasMedicas() {
                         <span className="text-[10px] text-muted-foreground">Motivo, dolor, cambios reportados</span>
                       </Label>
                       <Textarea
-                        className="rounded-xl mt-1 resize-none"
+                        className="mt-1 resize-none"
                         rows={2}
                         placeholder="Paciente refiere..."
                         value={form.subjetivo}
@@ -416,7 +416,7 @@ export default function NotasMedicas() {
                         <span className="text-[10px] text-muted-foreground">TA, FC, SpO2, hallazgos clínicos</span>
                       </Label>
                       <Textarea
-                        className="rounded-xl mt-1 resize-none"
+                        className="mt-1 resize-none"
                         rows={2}
                         placeholder="Signos vitales estables, examen por sistemas..."
                         value={form.objetivo}
@@ -428,7 +428,7 @@ export default function NotasMedicas() {
                       <div>
                         <Label className="text-xs font-semibold">Escalas Médicas Aplicadas (Opcional)</Label>
                         <Input
-                          className="rounded-xl mt-1"
+                          className="mt-1"
                           placeholder="Ej: Glasgow: 15/15 | Braden: 18/23 | EVA: 2/10"
                           value={form.escalas_asociadas}
                           onChange={e => setForm(f => ({ ...f, escalas_asociadas: e.target.value }))}
@@ -437,7 +437,7 @@ export default function NotasMedicas() {
                       <div>
                         <Label className="text-xs font-semibold">Diagnósticos Asociados (CIE-10)</Label>
                         <Input
-                          className="rounded-xl mt-1"
+                          className="mt-1"
                           placeholder="Ej: J18.9 Neumonía, I10 HTA"
                           value={form.diagnosticos_cie10}
                           onChange={e => setForm(f => ({ ...f, diagnosticos_cie10: e.target.value }))}
@@ -451,7 +451,7 @@ export default function NotasMedicas() {
                         <span className="text-[10px] text-muted-foreground">Diagnóstico diferencial, evolución patológica</span>
                       </Label>
                       <Textarea
-                        className="rounded-xl mt-1 resize-none"
+                        className="mt-1 resize-none"
                         rows={2}
                         placeholder="Paciente con adecuada respuesta terapéutica..."
                         value={form.analisis}
@@ -465,7 +465,7 @@ export default function NotasMedicas() {
                         <span className="text-[10px] text-muted-foreground">Fármacos, dieta, cuidados, interconsultas</span>
                       </Label>
                       <Textarea
-                        className="rounded-xl mt-1 resize-none"
+                        className="mt-1 resize-none"
                         rows={2}
                         placeholder="1. Continuar antibiótico...\n2. Control de enfermería cada 4h..."
                         value={form.plan}
@@ -476,10 +476,10 @@ export default function NotasMedicas() {
                 </div>
 
                 <DialogFooter className="pt-3 gap-2">
-                  <Button variant="outline" className="rounded-xl" onClick={() => handleGuardarNota(false)}>
+                  <Button variant="outline" onClick={() => handleGuardarNota(false)}>
                     Guardar como Borrador
                   </Button>
-                  <Button className="rounded-xl shadow-none" onClick={() => handleGuardarNota(true)}>
+                  <Button className="shadow-none" onClick={() => handleGuardarNota(true)}>
                     <CheckCircle2 className="h-4 w-4 mr-2" />
                     Firmar y Guardar Nota
                   </Button>
@@ -527,7 +527,7 @@ export default function NotasMedicas() {
         <div className="relative flex-1 min-w-[240px] max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            className="pl-9 rounded-xl border-border/80"
+            className="pl-9 border-border/80"
             placeholder="Buscar por paciente, profesional o servicio..."
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -536,7 +536,7 @@ export default function NotasMedicas() {
 
         <div className="flex items-center gap-2">
           <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-            <SelectTrigger className="w-[180px] rounded-xl border-border/80 text-xs">
+            <SelectTrigger className="w-[180px] border-border/80 text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
@@ -605,7 +605,7 @@ export default function NotasMedicas() {
                       <Button
                         size="sm"
                         variant="ghost"
-                        className="rounded-xl h-8 text-xs gap-1"
+                        className="h-8 text-xs gap-1"
                         onClick={() => {
                           navigator.clipboard.writeText(
                             `${n.titulo} - ${n.paciente_nombre}\nSubjetivo: ${n.subjetivo}\nObjetivo: ${n.objetivo}\nAnálisis: ${n.analisis}\nPlan: ${n.plan}`
@@ -619,7 +619,7 @@ export default function NotasMedicas() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="rounded-xl h-8 text-xs"
+                        className="h-8 text-xs"
                         onClick={() => setNotaExpandida(isExpanded ? null : n.id)}
                       >
                         {isExpanded ? (

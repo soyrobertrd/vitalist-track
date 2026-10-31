@@ -484,7 +484,7 @@ export default function ComisionesEmpleados() {
             <Button
               onClick={() => setNuevoModalOpen(true)}
               size="sm"
-              className="rounded-xl gap-1.5 shadow-sm bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="gap-1.5 shadow-sm bg-emerald-600 hover:bg-emerald-700 text-white"
             >
               <Plus className="w-4 h-4" /> Registrar Acto Médico
             </Button>
@@ -534,13 +534,13 @@ export default function ComisionesEmpleados() {
                 placeholder="Buscar médico, exequátur, paciente..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 rounded-xl border-border/80 text-sm"
+                className="pl-9 border-border/80 text-sm"
               />
             </div>
 
             <div className="flex flex-wrap gap-2 w-full md:w-auto">
               <Select value={especialidadFilter} onValueChange={setEspecialidadFilter}>
-                <SelectTrigger className="w-[180px] rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="w-[180px] border-border/80 text-xs">
                   <SelectValue placeholder="Especialidad" />
                 </SelectTrigger>
                 <SelectContent>
@@ -555,7 +555,7 @@ export default function ComisionesEmpleados() {
               </Select>
 
               <Select value={estadoFilter} onValueChange={setEstadoFilter}>
-                <SelectTrigger className="w-[140px] rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="w-[140px] border-border/80 text-xs">
                   <SelectValue placeholder="Estado" />
                 </SelectTrigger>
                 <SelectContent>
@@ -678,7 +678,7 @@ export default function ComisionesEmpleados() {
                               size="sm"
                               variant="outline"
                               onClick={() => aprobarLiquidacion(item)}
-                              className="h-7 text-xs px-2 rounded-lg border-emerald-500/40 text-emerald-600 hover:bg-emerald-50"
+                              className="h-7 text-xs px-2 border-emerald-500/40 text-emerald-600 hover:bg-emerald-50"
                               title="Aprobar para pago"
                             >
                               Aprobar
@@ -688,7 +688,7 @@ export default function ComisionesEmpleados() {
                             <Button
                               size="sm"
                               onClick={() => abrirPagoModal(item)}
-                              className="h-7 text-xs px-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white"
+                              className="h-7 text-xs px-2 bg-emerald-600 hover:bg-emerald-700 text-white"
                               title="Liquidar pago bancario"
                             >
                               <CreditCard className="w-3.5 h-3.5 mr-1" /> Pagar
@@ -698,7 +698,7 @@ export default function ComisionesEmpleados() {
                             size="sm"
                             variant="ghost"
                             onClick={() => verVoucher(item)}
-                            className="h-7 w-7 p-0 rounded-lg hover:bg-muted"
+                            className="h-7 w-7 p-0 hover:bg-muted"
                             title="Ver Volante y Comprobante Fiscal"
                           >
                             <Printer className="w-3.5 h-3.5 text-muted-foreground" />
@@ -733,7 +733,7 @@ export default function ComisionesEmpleados() {
                 placeholder="Ej. Dr. Félix Montalvo"
                 value={nuevoForm.medico_nombre}
                 onChange={(e) => setNuevoForm({ ...nuevoForm, medico_nombre: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -743,7 +743,7 @@ export default function ComisionesEmpleados() {
                 value={nuevoForm.especialidad}
                 onValueChange={(v: any) => setNuevoForm({ ...nuevoForm, especialidad: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="border-border/80 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -764,7 +764,7 @@ export default function ComisionesEmpleados() {
                 placeholder="Ej. 14209-20"
                 value={nuevoForm.exequatur}
                 onChange={(e) => setNuevoForm({ ...nuevoForm, exequatur: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -774,7 +774,7 @@ export default function ComisionesEmpleados() {
                 placeholder="Ej. 001-1829401-2"
                 value={nuevoForm.rnc_cedula}
                 onChange={(e) => setNuevoForm({ ...nuevoForm, rnc_cedula: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -784,7 +784,7 @@ export default function ComisionesEmpleados() {
                 placeholder="Ej. Consulta cardiológica + ECG de 12 derivaciones"
                 value={nuevoForm.descripcion_acto}
                 onChange={(e) => setNuevoForm({ ...nuevoForm, descripcion_acto: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -794,7 +794,7 @@ export default function ComisionesEmpleados() {
                 placeholder="Nombre del paciente"
                 value={nuevoForm.paciente_nombre}
                 onChange={(e) => setNuevoForm({ ...nuevoForm, paciente_nombre: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -804,7 +804,7 @@ export default function ComisionesEmpleados() {
                 value={nuevoForm.aseguradora}
                 onValueChange={(v: any) => setNuevoForm({ ...nuevoForm, aseguradora: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="border-border/80 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -823,7 +823,7 @@ export default function ComisionesEmpleados() {
                 type="number"
                 value={nuevoForm.cobertura_ars}
                 onChange={(e) => setNuevoForm({ ...nuevoForm, cobertura_ars: Number(e.target.value) })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -833,7 +833,7 @@ export default function ComisionesEmpleados() {
                 type="number"
                 value={nuevoForm.copago_paciente}
                 onChange={(e) => setNuevoForm({ ...nuevoForm, copago_paciente: Number(e.target.value) })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -843,7 +843,7 @@ export default function ComisionesEmpleados() {
                 value={String(nuevoForm.porcentaje_medico)}
                 onValueChange={(v) => setNuevoForm({ ...nuevoForm, porcentaje_medico: Number(v) })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="border-border/80 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -862,7 +862,7 @@ export default function ComisionesEmpleados() {
                 placeholder="Banco Popular · Cuenta Corriente"
                 value={nuevoForm.banco_destino}
                 onChange={(e) => setNuevoForm({ ...nuevoForm, banco_destino: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
           </div>
@@ -900,12 +900,12 @@ export default function ComisionesEmpleados() {
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setNuevoModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setNuevoModalOpen(false)}>
               Cancelar
             </Button>
             <Button
               onClick={handleCrearNuevoHonorario}
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
             >
               Guardar & Enviar a Auditoría
             </Button>
@@ -943,7 +943,7 @@ export default function ComisionesEmpleados() {
                   value={pagoForm.metodo_pago}
                   onValueChange={(v: any) => setPagoForm({ ...pagoForm, metodo_pago: v })}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                  <SelectTrigger className="border-border/80 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -959,7 +959,7 @@ export default function ComisionesEmpleados() {
                 <Input
                   value={pagoForm.banco}
                   onChange={(e) => setPagoForm({ ...pagoForm, banco: e.target.value })}
-                  className="rounded-xl border-border/80 text-xs"
+                  className="border-border/80 text-xs"
                 />
               </div>
 
@@ -969,19 +969,19 @@ export default function ComisionesEmpleados() {
                   placeholder="Ej. ACH-98214-2026"
                   value={pagoForm.referencia}
                   onChange={(e) => setPagoForm({ ...pagoForm, referencia: e.target.value })}
-                  className="rounded-xl border-border/80 text-xs font-mono"
+                  className="border-border/80 text-xs font-mono"
                 />
               </div>
             </div>
           )}
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setPagoModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setPagoModalOpen(false)}>
               Cancelar
             </Button>
             <Button
               onClick={confirmarPago}
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
             >
               Confirmar & Marcar como Pagado
             </Button>
@@ -1119,12 +1119,12 @@ export default function ComisionesEmpleados() {
           )}
 
           <DialogFooter className="gap-2 print:hidden">
-            <Button variant="outline" onClick={() => setVoucherModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setVoucherModalOpen(false)}>
               Cerrar
             </Button>
             <Button
               onClick={() => window.print()}
-              className="rounded-xl bg-neutral-900 text-white hover:bg-neutral-800 gap-1.5"
+              className="bg-neutral-900 text-white hover:bg-neutral-800 gap-1.5"
             >
               <Printer className="w-4 h-4" /> Imprimir Volante
             </Button>

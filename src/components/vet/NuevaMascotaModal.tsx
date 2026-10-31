@@ -86,7 +86,7 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
                 placeholder="Ej: Max, Luna, Toby..."
                 value={nombre}
                 onChange={e => setNombre(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
                 required
               />
             </div>
@@ -94,7 +94,7 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
             <div>
               <Label className="text-xs font-semibold">Especie *</Label>
               <Select value={especie} onValueChange={(v: EspecieVet) => setEspecie(v)}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">
                   {ESPECIES_VET.map(esp => (
                     <SelectItem key={esp} value={esp} className="capitalize">
@@ -113,14 +113,14 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
                 placeholder="Ej: Golden, Poodle, Siamés..."
                 value={raza}
                 onChange={e => setRaza(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
               />
             </div>
 
             <div>
               <Label className="text-xs font-semibold">Sexo</Label>
               <Select value={sexo} onValueChange={(v: any) => setSexo(v)}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="macho">Macho</SelectItem>
                   <SelectItem value="hembra">Hembra</SelectItem>
@@ -136,7 +136,7 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
                 placeholder="Ej: 14.5"
                 value={pesoKg}
                 onChange={e => setPesoKg(e.target.value)}
-                className="rounded-xl mt-1 text-xs font-mono font-bold"
+                className="mt-1 text-xs font-mono font-bold"
               />
             </div>
           </div>
@@ -148,7 +148,7 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
                 type="date"
                 value={fechaNacimiento}
                 onChange={e => setFechaNacimiento(e.target.value)}
-                className="rounded-xl mt-1 text-xs font-mono"
+                className="mt-1 text-xs font-mono"
               />
             </div>
 
@@ -158,7 +158,7 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
                 placeholder="15 dígitos ISO..."
                 value={microchip}
                 onChange={e => setMicrochip(e.target.value)}
-                className="rounded-xl mt-1 text-xs font-mono"
+                className="mt-1 text-xs font-mono"
               />
             </div>
 
@@ -168,7 +168,7 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
                 placeholder="Ej: Blanco con manchas café"
                 value={colorPelaje}
                 onChange={e => setColorPelaje(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
               />
             </div>
           </div>
@@ -196,7 +196,7 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
                   placeholder="Ej: Carmen Peña"
                   value={tutorNombre}
                   onChange={e => setTutorNombre(e.target.value)}
-                  className="rounded-xl mt-0.5 text-xs"
+                  className="mt-0.5 text-xs"
                   required
                 />
               </div>
@@ -208,7 +208,7 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
                   placeholder="809-555-0000"
                   value={tutorTelefono}
                   onChange={e => setTutorTelefono(e.target.value)}
-                  className="rounded-xl mt-0.5 text-xs font-mono"
+                  className="mt-0.5 text-xs font-mono"
                   required
                 />
               </div>
@@ -220,7 +220,7 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
                   placeholder="tutor@correo.com"
                   value={tutorEmail}
                   onChange={e => setTutorEmail(e.target.value)}
-                  className="rounded-xl mt-0.5 text-xs"
+                  className="mt-0.5 text-xs"
                 />
               </div>
             </div>
@@ -232,15 +232,15 @@ export function NuevaMascotaModal({ open, onOpenChange, onGuardar }: NuevaMascot
               placeholder="Ej: Alérgico a penicilina, displasia de cadera, etc."
               value={alergias}
               onChange={e => setAlergias(e.target.value)}
-              className="rounded-xl mt-1 text-xs"
+              className="mt-1 text-xs"
             />
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" className="rounded-xl text-xs" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" className="text-xs" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" className="rounded-xl text-xs shadow-none">
+            <Button type="submit" className="text-xs shadow-none">
               <CheckCircle2 className="h-4 w-4 mr-1.5" /> Registrar Mascota
             </Button>
           </DialogFooter>

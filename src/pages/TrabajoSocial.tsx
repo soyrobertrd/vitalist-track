@@ -227,14 +227,14 @@ export default function TrabajoSocial() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewRef(true)}
             >
               <ArrowRightLeft className="h-4 w-4 mr-1.5 text-rose-600" />
               Nuevo Referimiento
             </Button>
             <Button 
-              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-rose-600 hover:bg-rose-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewCaso(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -283,14 +283,14 @@ export default function TrabajoSocial() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por código, tipo de caso o descripción..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="w-full sm:w-56">
           <Select value={filterEstado} onValueChange={setFilterEstado}>
-            <SelectTrigger className="rounded-xl border-border/80 h-10">
+            <SelectTrigger className="border-border/80 h-10">
               <SelectValue placeholder="Estado del caso" />
             </SelectTrigger>
             <SelectContent>
@@ -306,16 +306,16 @@ export default function TrabajoSocial() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="casos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="casos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Heart className="h-4 w-4 mr-1.5 text-rose-500" />
             Casos Sociales ({casosFiltrados.length})
           </TabsTrigger>
-          <TabsTrigger value="referimientos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="referimientos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <ArrowRightLeft className="h-4 w-4 mr-1.5 text-purple-500" />
             Red de Referimientos ({referimientos.length})
           </TabsTrigger>
-          <TabsTrigger value="analitica" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="analitica" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <PieChartIcon className="h-4 w-4 mr-1.5 text-blue-500" />
             Analítica Sociodemográfica
           </TabsTrigger>
@@ -546,7 +546,7 @@ export default function TrabajoSocial() {
                 value={formDataCaso.tipo_caso} 
                 onValueChange={(val) => setFormDataCaso(p => ({ ...p, tipo_caso: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -566,7 +566,7 @@ export default function TrabajoSocial() {
                   value={formDataCaso.prioridad} 
                   onValueChange={(val) => setFormDataCaso(p => ({ ...p, prioridad: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -582,7 +582,7 @@ export default function TrabajoSocial() {
                   value={formDataCaso.nivel_socioeconomico} 
                   onValueChange={(val) => setFormDataCaso(p => ({ ...p, nivel_socioeconomico: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -599,7 +599,7 @@ export default function TrabajoSocial() {
               <Label>Descripción del Caso y Hallazgos Sociofamiliares *</Label>
               <Textarea
                 placeholder="Detalle de la situación económica, red de apoyo familiar, vivienda..."
-                className="rounded-xl border-border/80 resize-none h-24"
+                className="border-border/80 resize-none h-24"
                 value={formDataCaso.descripcion}
                 onChange={(e) => setFormDataCaso(p => ({ ...p, descripcion: e.target.value }))}
               />
@@ -609,7 +609,7 @@ export default function TrabajoSocial() {
               <Label>Plan de Intervención / Acciones Inmediatas</Label>
               <Input
                 placeholder="Ej. Gestionar medicamentos ante Promese/Cal, visita domiciliaria..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataCaso.plan_intervencion}
                 onChange={(e) => setFormDataCaso(p => ({ ...p, plan_intervencion: e.target.value }))}
               />
@@ -617,11 +617,11 @@ export default function TrabajoSocial() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewCaso(false)}>
+            <Button variant="outline" onClick={() => setShowNewCaso(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white" 
+              className="bg-rose-600 hover:bg-rose-700 text-white" 
               onClick={() => crearCaso.mutate()}
               disabled={crearCaso.isPending || !formDataCaso.descripcion}
             >
@@ -649,7 +649,7 @@ export default function TrabajoSocial() {
               <Label>Institución de Destino *</Label>
               <Input
                 placeholder="Ej. CONANI, CAID, Promese/Cal, Hospital Robert Reid Cabral..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataRef.institucion_destino}
                 onChange={(e) => setFormDataRef(p => ({ ...p, institucion_destino: e.target.value }))}
               />
@@ -659,7 +659,7 @@ export default function TrabajoSocial() {
               <Label>Motivo de la Derivación *</Label>
               <Textarea
                 placeholder="Explique el motivo, requisitos solicitados y objetivos del referimiento..."
-                className="rounded-xl border-border/80 resize-none h-24"
+                className="border-border/80 resize-none h-24"
                 value={formDataRef.motivo}
                 onChange={(e) => setFormDataRef(p => ({ ...p, motivo: e.target.value }))}
               />
@@ -667,11 +667,11 @@ export default function TrabajoSocial() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewRef(false)}>
+            <Button variant="outline" onClick={() => setShowNewRef(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white" 
+              className="bg-purple-600 hover:bg-purple-700 text-white" 
               onClick={() => crearReferimiento.mutate()}
               disabled={crearReferimiento.isPending || !formDataRef.institucion_destino || !formDataRef.motivo}
             >

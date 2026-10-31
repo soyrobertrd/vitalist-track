@@ -65,7 +65,7 @@ export default function MaternidadNeonatologia() {
             <Button
               size="sm"
               variant="outline"
-              className="rounded-xl"
+             
               onClick={() => setOpenCalculadora(true)}
             >
               <Activity className="h-4 w-4 mr-1.5 text-primary" />
@@ -73,7 +73,7 @@ export default function MaternidadNeonatologia() {
             </Button>
             <Button
               size="sm"
-              className="rounded-xl bg-pink-600 hover:bg-pink-700 text-white"
+              className="bg-pink-600 hover:bg-pink-700 text-white"
               onClick={() => setOpenPartograma(true)}
             >
               <Heart className="h-4 w-4 mr-1.5" />
@@ -160,7 +160,7 @@ export default function MaternidadNeonatologia() {
             </div>
             <Button
               size="sm"
-              className="rounded-xl bg-pink-600 hover:bg-pink-700 text-white"
+              className="bg-pink-600 hover:bg-pink-700 text-white"
               onClick={() => setOpenPartograma(true)}
             >
               Abrir Monitor de Curvas

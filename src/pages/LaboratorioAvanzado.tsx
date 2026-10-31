@@ -394,7 +394,7 @@ function AlertasTab() {
                 {!i.resuelto ? (
                   <Button
                     size="sm"
-                    className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs gap-1.5 shadow-sm"
+                    className="bg-rose-600 hover:bg-rose-700 text-white text-xs gap-1.5 shadow-sm"
                     onClick={() => setModalPanico(i)}
                   >
                     <PhoneCall className="h-4 w-4" /> Notificar Read-Back
@@ -435,7 +435,7 @@ function AlertasTab() {
                   placeholder="Ej: Dra. Sofía Rivas (Exeq: 12048-20)"
                   value={medicoReceptor}
                   onChange={(e) => setMedicoReceptor(e.target.value)}
-                  className="rounded-xl border-border/80 text-xs"
+                  className="border-border/80 text-xs"
                 />
               </div>
 
@@ -443,7 +443,7 @@ function AlertasTab() {
                 <div className="space-y-1.5">
                   <Label className="text-xs font-semibold">Servicio / Unidad:</Label>
                   <Select value={servicioReceptor} onValueChange={setServicioReceptor}>
-                    <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                    <SelectTrigger className="border-border/80 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -461,7 +461,7 @@ function AlertasTab() {
                     placeholder="Ej: Ext. 4022 / Cel"
                     value={telefonoContacto}
                     onChange={(e) => setTelefonoContacto(e.target.value)}
-                    className="rounded-xl border-border/80 text-xs"
+                    className="border-border/80 text-xs"
                   />
                 </div>
               </div>
@@ -487,19 +487,19 @@ function AlertasTab() {
                   value={notasReadback}
                   onChange={(e) => setNotasReadback(e.target.value)}
                   rows={2}
-                  className="rounded-xl border-border/80 text-xs"
+                  className="border-border/80 text-xs"
                 />
               </div>
             </div>
 
             <DialogFooter className="pt-2">
-              <Button variant="outline" onClick={() => setModalPanico(null)} className="rounded-xl">
+              <Button variant="outline" onClick={() => setModalPanico(null)}>
                 Cancelar
               </Button>
               <Button
                 onClick={guardarReadBack}
                 disabled={!confirmReadback || !medicoReceptor}
-                className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs gap-1.5"
+                className="bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs gap-1.5"
               >
                 <CheckCircle2 className="h-4 w-4" /> Registrar Comunicación Oficial
               </Button>

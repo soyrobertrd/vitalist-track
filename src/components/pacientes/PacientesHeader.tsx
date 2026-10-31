@@ -62,7 +62,7 @@ export function PacientesHeader({
   return (
     <div className="flex flex-wrap items-center gap-2">
       {onToggleFilters && (
-        <Button variant={showFilters ? "secondary" : "outline"} size="sm" className="rounded-full" onClick={onToggleFilters} aria-pressed={showFilters}>
+        <Button variant={showFilters ? "secondary" : "outline"} size="sm" onClick={onToggleFilters} aria-pressed={showFilters}>
           <Filter className="mr-1.5 h-4 w-4" aria-hidden="true" />
           Filtros
         </Button>

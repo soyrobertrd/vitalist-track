@@ -71,7 +71,7 @@ export function BarthelTab({ onGuardar }: BarthelTabProps) {
                       key={o.p}
                       type="button"
                       variant={barthelValores[item.key] === o.p ? "default" : "outline"}
-                      className="rounded-xl h-8 text-xs font-normal px-3"
+                      className="h-8 text-xs font-normal px-3"
                       onClick={() => setBarthelValores({ ...barthelValores, [item.key]: o.p })}
                     >
                       {o.l} ({o.p} pts)
@@ -104,7 +104,7 @@ export function BarthelTab({ onGuardar }: BarthelTabProps) {
             </div>
 
             <Button
-              className="w-full rounded-xl shadow-none"
+              className="w-full shadow-none"
               onClick={() =>
                 onGuardar(
                   "Índice de Barthel",

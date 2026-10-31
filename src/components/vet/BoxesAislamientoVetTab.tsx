@@ -186,7 +186,7 @@ export function BoxesAislamientoVetTab() {
             </p>
             <Dialog open={openModal} onOpenChange={setOpenModal}>
               <DialogTrigger asChild>
-                <Button size="sm" className="rounded-xl gap-1.5 shadow-none">
+                <Button size="sm" className="gap-1.5 shadow-none">
                   <Plus className="h-4 w-4" /> Ingresar Paciente
                 </Button>
               </DialogTrigger>
@@ -205,7 +205,7 @@ export function BoxesAislamientoVetTab() {
                         placeholder="Ej. BOX-CAN-03"
                         value={form.codigo}
                         onChange={(e) => setForm({ ...form, codigo: e.target.value })}
-                        className="rounded-xl mt-1 h-8 text-xs"
+                        className="mt-1 h-8 text-xs"
                       />
                     </div>
                     <div>
@@ -214,7 +214,7 @@ export function BoxesAislamientoVetTab() {
                         value={form.zona}
                         onValueChange={(val: any) => setForm({ ...form, zona: val })}
                       >
-                        <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                        <SelectTrigger className="mt-1 h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -233,7 +233,7 @@ export function BoxesAislamientoVetTab() {
                         placeholder="Ej. Thor (Pitbull 2a)"
                         value={form.mascotaNombre}
                         onChange={(e) => setForm({ ...form, mascotaNombre: e.target.value })}
-                        className="rounded-xl mt-1 h-8 text-xs"
+                        className="mt-1 h-8 text-xs"
                       />
                     </div>
                     <div>
@@ -242,7 +242,7 @@ export function BoxesAislamientoVetTab() {
                         placeholder="Ej. Manuel Peralta"
                         value={form.tutorNombre}
                         onChange={(e) => setForm({ ...form, tutorNombre: e.target.value })}
-                        className="rounded-xl mt-1 h-8 text-xs"
+                        className="mt-1 h-8 text-xs"
                       />
                     </div>
                   </div>
@@ -252,7 +252,7 @@ export function BoxesAislamientoVetTab() {
                       placeholder="Ej. Deshidratación 8%, gastroenteritis aguda..."
                       value={form.diagnostico}
                       onChange={(e) => setForm({ ...form, diagnostico: e.target.value })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -262,7 +262,7 @@ export function BoxesAislamientoVetTab() {
                         type="number"
                         value={form.bombaInfusionMlHora}
                         onChange={(e) => setForm({ ...form, bombaInfusionMlHora: Number(e.target.value) })}
-                        className="rounded-xl mt-1 h-8 text-xs"
+                        className="mt-1 h-8 text-xs"
                       />
                     </div>
                     <div>
@@ -272,11 +272,11 @@ export function BoxesAislamientoVetTab() {
                         step="0.1"
                         value={form.temperatura}
                         onChange={(e) => setForm({ ...form, temperatura: Number(e.target.value) })}
-                        className="rounded-xl mt-1 h-8 text-xs"
+                        className="mt-1 h-8 text-xs"
                       />
                     </div>
                   </div>
-                  <Button type="submit" className="w-full rounded-xl mt-2 bg-purple-600 hover:bg-purple-700 text-white">
+                  <Button type="submit" className="w-full mt-2 bg-purple-600 hover:bg-purple-700 text-white">
                     Confirmar Admisión
                   </Button>
                 </form>
@@ -370,7 +370,7 @@ export function BoxesAislamientoVetTab() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="w-full rounded-xl text-xs h-7 border-border/80 text-rose-600 hover:bg-rose-500/10"
+                      className="w-full text-xs h-7 border-border/80 text-rose-600 hover:bg-rose-500/10"
                       onClick={() => liberarBox(b.id)}
                     >
                       Dar Alta / Liberar Box
@@ -383,7 +383,7 @@ export function BoxesAislamientoVetTab() {
                   <p className="text-[10px]">Requiere protocolo con amonio cuaternario antes de nuevo ingreso.</p>
                   <Button
                     size="sm"
-                    className="w-full rounded-xl text-xs h-7 bg-amber-600 hover:bg-amber-700 text-white"
+                    className="w-full text-xs h-7 bg-amber-600 hover:bg-amber-700 text-white"
                     onClick={() => sanitizarBox(b.id)}
                   >
                     Confirmar Sanitización

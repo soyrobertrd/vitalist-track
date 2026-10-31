@@ -87,14 +87,14 @@ export default function MapaFacialInyectables() {
               variant="outline"
               size="sm"
               onClick={reiniciarPuntos}
-              className="rounded-xl h-8 text-xs gap-1.5 border-border/80"
+              className="h-8 text-xs gap-1.5 border-border/80"
             >
               <RotateCcw className="h-3.5 w-3.5" /> Restablecer
             </Button>
             <Button
               size="sm"
               onClick={() => toast.success("Mapa facial guardado en el expediente clínico")}
-              className="rounded-xl h-8 text-xs gap-1.5 bg-purple-600 hover:bg-purple-700 text-white shadow-none"
+              className="h-8 text-xs gap-1.5 bg-purple-600 hover:bg-purple-700 text-white shadow-none"
             >
               <CheckCircle2 className="h-3.5 w-3.5" /> Guardar Mapeo
             </Button>
@@ -110,7 +110,7 @@ export default function MapaFacialInyectables() {
             <Input
               value={pacienteNombre}
               onChange={(e) => setPacienteNombre(e.target.value)}
-              className="rounded-xl mt-0.5 h-7 text-xs font-medium"
+              className="mt-0.5 h-7 text-xs font-medium"
             />
           </div>
           <div>
@@ -118,7 +118,7 @@ export default function MapaFacialInyectables() {
             <Input
               value={medico}
               onChange={(e) => setMedico(e.target.value)}
-              className="rounded-xl mt-0.5 h-7 text-xs font-medium"
+              className="mt-0.5 h-7 text-xs font-medium"
             />
           </div>
           <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-between">
@@ -241,7 +241,7 @@ export default function MapaFacialInyectables() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="w-full rounded-xl text-xs h-7 border-destructive/40 text-destructive hover:bg-destructive/10"
+                        className="w-full text-xs h-7 border-destructive/40 text-destructive hover:bg-destructive/10"
                         onClick={() => handleEliminarPunto(puntoSeleccionado.id)}
                       >
                         Eliminar Punto
@@ -249,7 +249,7 @@ export default function MapaFacialInyectables() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="w-full rounded-xl text-xs h-7 border-border/80"
+                        className="w-full text-xs h-7 border-border/80"
                         onClick={() => setPuntoSeleccionado(null)}
                       >
                         Cerrar

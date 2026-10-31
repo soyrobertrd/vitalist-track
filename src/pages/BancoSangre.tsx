@@ -126,24 +126,24 @@ const BancoSangre = () => {
       </div>
 
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-          <TabsTrigger value="inventario" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 border border-border/70 h-auto">
+          <TabsTrigger value="inventario" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Droplets className="h-4 w-4 text-red-600" />
             Inventario de Unidades
           </TabsTrigger>
-          <TabsTrigger value="compatibilidad" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="compatibilidad" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <HeartPulse className="h-4 w-4 text-rose-600" />
             Compatibilidad Transfusional
           </TabsTrigger>
-          <TabsTrigger value="hemovigilancia" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="hemovigilancia" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <ShieldAlert className="h-4 w-4 text-amber-600" />
             Hemovigilancia & RAT
           </TabsTrigger>
-          <TabsTrigger value="donantes" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="donantes" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Heart className="h-4 w-4 text-teal-600" />
             Donantes
           </TabsTrigger>
-          <TabsTrigger value="solicitudes" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="solicitudes" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <AlertTriangle className="h-4 w-4 text-purple-600" />
             Solicitudes de Transfusión
           </TabsTrigger>

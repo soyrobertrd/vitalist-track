@@ -3,6 +3,7 @@ import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -101,7 +102,7 @@ export default function ChatInterno() {
         <div className="p-3 border-b flex items-center justify-between">
           <h2 className="font-semibold flex items-center gap-2"><MessageCircle className="h-4 w-4" /> Canales</h2>
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild><Button size="icon" variant="ghost" className="h-7 w-7"><Plus className="h-4 w-4" /></Button></DialogTrigger>
+            <DialogTrigger asChild><IconButton label="Agregar" size="icon" variant="ghost" className="h-7 w-7"><Plus className="h-4 w-4" /></IconButton></DialogTrigger>
             <DialogContent>
               <DialogHeader><DialogTitle>Nuevo canal</DialogTitle></DialogHeader>
               <div className="space-y-3">

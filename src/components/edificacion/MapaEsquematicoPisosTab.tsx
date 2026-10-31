@@ -29,7 +29,7 @@ export function MapaEsquematicoPisosTab({
             key={p.id}
             size="sm"
             variant={p.id === pisoActivo?.id ? "default" : "outline"}
-            className="rounded-xl text-xs h-9 px-3 gap-1.5"
+            className="text-xs h-9 px-3 gap-1.5"
             onClick={() => setPisoSeleccionadoId(p.id)}
           >
             <Layers className="h-3.5 w-3.5" />
@@ -127,7 +127,7 @@ export function MapaEsquematicoPisosTab({
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="w-full h-7 rounded-lg text-[11px] gap-1 text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/40"
+                            className="w-full h-7 text-[11px] gap-1 text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/40"
                             onClick={() => onIniciarTraslado(c)}
                           >
                             <ArrowLeftRight className="h-3 w-3" /> Trasladar

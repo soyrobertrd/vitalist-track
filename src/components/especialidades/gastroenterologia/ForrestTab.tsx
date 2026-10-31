@@ -42,7 +42,7 @@ export function ForrestTab({
             <Button
               key={f}
               variant={selForrest === f ? "default" : "outline"}
-              className={`rounded-xl text-xs font-bold py-5 ${
+              className={` text-xs font-bold py-5 ${
                 selForrest === f ? "bg-amber-600 hover:bg-amber-700 text-white" : ""
               }`}
               onClick={() => setSelForrest(f)}
@@ -76,7 +76,7 @@ export function ForrestTab({
           <Button
             variant="outline"
             size="sm"
-            className="rounded-xl text-xs"
+            className="text-xs"
             onClick={() => {
               onAsignarConsulta(selForrest);
               toast.info(`Clasificación Forrest ${selForrest} seleccionada para nueva consulta.`);

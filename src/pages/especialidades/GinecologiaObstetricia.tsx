@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -244,7 +245,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
           <Button
             onClick={() => setModalOpen(true)}
             size="sm"
-            className="rounded-xl gap-1.5 bg-rose-600 hover:bg-rose-700 text-white"
+            className="gap-1.5 bg-rose-600 hover:bg-rose-700 text-white"
           >
             <Plus className="w-4 h-4" /> Nueva Consulta Gineco-Obstétrica
           </Button>
@@ -285,19 +286,19 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
 
       {/* Pestañas de la Especialidad */}
       <Tabs value={tab} onValueChange={(v: any) => setTab(v)} className="space-y-4">
-        <TabsList className="bg-muted/40 p-1.5 rounded-2xl border border-border/70 flex flex-wrap gap-1 h-auto">
-          <TabsTrigger value="consultas" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+        <TabsList className="bg-muted/40 p-1.5 border border-border/70 flex flex-wrap gap-1 h-auto">
+          <TabsTrigger value="consultas" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <FileText className="h-4 w-4 text-rose-600" />
             Consultas Registradas
           </TabsTrigger>
           <TabsTrigger
             value="calculadora_gestacional"
-            className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5"
+            className="px-4 py-2 text-xs font-semibold gap-1.5"
           >
             <Calendar className="h-4 w-4 text-primary" />
             Calculadora Gestacional & Naegele
           </TabsTrigger>
-          <TabsTrigger value="score_bishop" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="score_bishop" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <Calculator className="h-4 w-4 text-amber-600" />
             Escala de Bishop (Maduración Cervical)
           </TabsTrigger>
@@ -313,12 +314,12 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                   placeholder="Buscar paciente, diagnóstico obstétrico..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 rounded-xl border-border/80 text-xs"
+                  className="pl-9 border-border/80 text-xs"
                 />
               </div>
 
               <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-                <SelectTrigger className="w-[200px] rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="w-[200px] border-border/80 text-xs">
                   <SelectValue placeholder="Tipo de Consulta" />
                 </SelectTrigger>
                 <SelectContent>
@@ -406,15 +407,15 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                             {c.plan_conducta}
                           </TableCell>
                           <TableCell className="text-right">
-                            <Button
+                            <IconButton label="Compartir"
                               onClick={() => handleCopiarInformeGineco(c)}
                               variant="ghost"
                               size="icon"
                               title="Copiar informe para WhatsApp"
-                              className="h-7 w-7 text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 rounded-lg"
+                              className="h-7 w-7 text-rose-600 hover:text-rose-700 hover:bg-rose-500/10"
                             >
                               <Share2 className="h-3.5 w-3.5" />
-                            </Button>
+                            </IconButton>
                           </TableCell>
                         </TableRow>
                       ))
@@ -446,7 +447,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                   type="date"
                   value={calcFum}
                   onChange={(e) => setCalcFum(e.target.value)}
-                  className="rounded-xl border-border/80 text-xs w-full sm:w-64"
+                  className="border-border/80 text-xs w-full sm:w-64"
                 />
               </div>
 
@@ -495,7 +496,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                     value={String(bishopDilatacion)}
                     onValueChange={(v) => setBishopDilatacion(Number(v))}
                   >
-                    <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                    <SelectTrigger className="border-border/80 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -513,7 +514,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                     value={String(bishopBorramiento)}
                     onValueChange={(v) => setBishopBorramiento(Number(v))}
                   >
-                    <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                    <SelectTrigger className="border-border/80 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -531,7 +532,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                     value={String(bishopEstacion)}
                     onValueChange={(v) => setBishopEstacion(Number(v))}
                   >
-                    <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                    <SelectTrigger className="border-border/80 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -549,7 +550,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                     value={String(bishopConsistencia)}
                     onValueChange={(v) => setBishopConsistencia(Number(v))}
                   >
-                    <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                    <SelectTrigger className="border-border/80 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -566,7 +567,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                     value={String(bishopPosicion)}
                     onValueChange={(v) => setBishopPosicion(Number(v))}
                   >
-                    <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                    <SelectTrigger className="border-border/80 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -623,7 +624,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                 placeholder="Ej. Ana Lucía Tavárez"
                 value={form.paciente_nombre}
                 onChange={(e) => setForm({ ...form, paciente_nombre: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -633,7 +634,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                 value={form.tipo_consulta}
                 onValueChange={(v: any) => setForm({ ...form, tipo_consulta: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="border-border/80 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -651,7 +652,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                 placeholder="110/70"
                 value={form.ta}
                 onChange={(e) => setForm({ ...form, ta: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -661,7 +662,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                 type="number"
                 value={form.peso_kg}
                 onChange={(e) => setForm({ ...form, peso_kg: Number(e.target.value) })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -673,7 +674,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                     type="number"
                     value={form.altura_uterina_cm}
                     onChange={(e) => setForm({ ...form, altura_uterina_cm: Number(e.target.value) })}
-                    className="rounded-xl border-border/80 text-xs"
+                    className="border-border/80 text-xs"
                   />
                 </div>
 
@@ -683,7 +684,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                     type="number"
                     value={form.fcf_lpm}
                     onChange={(e) => setForm({ ...form, fcf_lpm: Number(e.target.value) })}
-                    className="rounded-xl border-border/80 text-xs"
+                    className="border-border/80 text-xs"
                   />
                 </div>
               </>
@@ -695,7 +696,7 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                 placeholder="Ej. Embarazo 32 sem / Infección vaginal por cándida"
                 value={form.diagnostico}
                 onChange={(e) => setForm({ ...form, diagnostico: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -705,19 +706,19 @@ ${c.edad_gestacional_semanas ? `🤰 *Edad Gestacional:* ${c.edad_gestacional_se
                 placeholder="Indicaciones, suplementación con hierro/ácido fólico, fecha de próxima ecografía..."
                 value={form.plan_conducta}
                 onChange={(e) => setForm({ ...form, plan_conducta: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 rows={2}
               />
             </div>
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancelar
             </Button>
             <Button
               onClick={handleCrearConsulta}
-              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white"
+              className="bg-rose-600 hover:bg-rose-700 text-white"
             >
               Guardar Consulta
             </Button>

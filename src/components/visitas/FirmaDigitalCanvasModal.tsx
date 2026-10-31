@@ -136,7 +136,7 @@ export function FirmaDigitalCanvasModal({
               <Input
                 value={firmanteNombre}
                 onChange={e => setFirmanteNombre(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
               />
             </div>
             <div>
@@ -144,7 +144,7 @@ export function FirmaDigitalCanvasModal({
               <Input
                 value={parentesco}
                 onChange={e => setParentesco(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
                 placeholder="Titular, Hijo/a, Cuidador..."
               />
             </div>
@@ -175,7 +175,7 @@ export function FirmaDigitalCanvasModal({
               variant="ghost"
               size="sm"
               onClick={limpiarCanvas}
-              className="rounded-xl text-muted-foreground hover:text-foreground h-8 px-2 gap-1"
+              className="text-muted-foreground hover:text-foreground h-8 px-2 gap-1"
             >
               <RotateCcw className="h-3.5 w-3.5" /> Borrar y repetir
             </Button>
@@ -186,10 +186,10 @@ export function FirmaDigitalCanvasModal({
         </div>
 
         <DialogFooter className="pt-2">
-          <Button variant="outline" className="rounded-xl text-xs" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" className="text-xs" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button className="rounded-xl text-xs shadow-none gap-1.5" onClick={handleGuardar}>
+          <Button className="text-xs shadow-none gap-1.5" onClick={handleGuardar}>
             <CheckCircle2 className="h-4 w-4" /> Confirmar Firma
           </Button>
         </DialogFooter>

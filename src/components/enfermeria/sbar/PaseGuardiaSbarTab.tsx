@@ -123,7 +123,7 @@ export function PaseGuardiaSbarTab() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleImprimirReporte} className="rounded-xl text-xs gap-1.5">
+              <Button variant="outline" size="sm" onClick={handleImprimirReporte} className="text-xs gap-1.5">
                 <Printer className="h-3.5 w-3.5" />
                 Imprimir Acta
               </Button>
@@ -280,7 +280,7 @@ export function PaseGuardiaSbarTab() {
                 <Button
                   onClick={handleFirmarRecepcion}
                   size="sm"
-                  className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs w-full gap-2 mt-2"
+                  className="bg-teal-600 hover:bg-teal-700 text-white text-xs w-full gap-2 mt-2"
                 >
                   <FileCheck2 className="h-4 w-4" />
                   Firmar Recepción Conforme de Guardia

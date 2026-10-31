@@ -59,7 +59,7 @@ export function PanelesTab({ workspaceId, paneles, queryClient }: PanelesTabProp
           <h3 className="font-bold text-foreground">Catálogo de Perfiles Bioquímicos</h3>
           <p className="text-xs text-muted-foreground">Grupos de analíticas estandarizadas para solicitud en un clic</p>
         </div>
-        <Button size="sm" onClick={() => setShowNew(true)} className="rounded-xl gap-1.5 bg-teal-600 hover:bg-teal-700 text-white">
+        <Button size="sm" onClick={() => setShowNew(true)} className="gap-1.5 bg-teal-600 hover:bg-teal-700 text-white">
           <Plus className="h-4 w-4" /> Crear Perfil
         </Button>
       </div>
@@ -108,27 +108,27 @@ export function PanelesTab({ workspaceId, paneles, queryClient }: PanelesTabProp
           <div className="space-y-3 pt-2">
             <div>
               <Label className="text-xs font-semibold">Nombre del Perfil *</Label>
-              <Input className="rounded-xl mt-1" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Ej: Perfil Hepático Completo" />
+              <Input className="mt-1" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Ej: Perfil Hepático Completo" />
             </div>
             <div>
               <Label className="text-xs font-semibold">Código Mnemónico</Label>
-              <Input className="rounded-xl mt-1" value={codigo} onChange={(e) => setCodigo(e.target.value)} placeholder="Ej: LFT, CBC, IONO" />
+              <Input className="mt-1" value={codigo} onChange={(e) => setCodigo(e.target.value)} placeholder="Ej: LFT, CBC, IONO" />
             </div>
             <div>
               <Label className="text-xs font-semibold">Descripción Asistencial</Label>
-              <Textarea className="rounded-xl mt-1" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} rows={2} />
+              <Textarea className="mt-1" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} rows={2} />
             </div>
             <div>
               <Label className="text-xs font-semibold">Pruebas (nombre | categoría | rango ref)</Label>
               <Textarea
-                className="rounded-xl mt-1 font-mono text-xs"
+                className="mt-1 font-mono text-xs"
                 value={pruebasTexto}
                 onChange={(e) => setPruebasTexto(e.target.value)}
                 rows={5}
                 placeholder={"Bilirrubina Total | Química | 0.2 - 1.2 mg/dL\nALT / TGP | Química | 7 - 56 U/L\nAST / TGO | Química | 10 - 40 U/L\nFosfatasa Alcalina | Química | 44 - 147 U/L"}
               />
             </div>
-            <Button className="w-full rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold py-5" onClick={() => createPanel.mutate()} disabled={createPanel.isPending || !nombre}>
+            <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-5" onClick={() => createPanel.mutate()} disabled={createPanel.isPending || !nombre}>
               {createPanel.isPending ? "Creando..." : "Guardar Panel"}
             </Button>
           </div>

@@ -34,7 +34,7 @@ export function ConsultaClinicaVetTab({ consultas, onNuevaConsulta }: ConsultaCl
                 Exploración física sistemática, constantes fisiológicas y tratamiento médico veterinario
               </p>
             </div>
-            <Button size="sm" className="rounded-xl shadow-none gap-1.5" onClick={onNuevaConsulta}>
+            <Button size="sm" className="shadow-none gap-1.5" onClick={onNuevaConsulta}>
               <Plus className="h-4 w-4" /> Nueva Consulta
             </Button>
           </div>
@@ -45,7 +45,7 @@ export function ConsultaClinicaVetTab({ consultas, onNuevaConsulta }: ConsultaCl
               placeholder="Buscar por mascota, motivo de consulta o diagnóstico..."
               value={busqueda}
               onChange={e => setBusqueda(e.target.value)}
-              className="pl-9 h-9 text-xs rounded-xl border-border/80"
+              className="pl-9 h-9 text-xs border-border/80"
             />
           </div>
         </CardHeader>
@@ -87,7 +87,7 @@ export function ConsultaClinicaVetTab({ consultas, onNuevaConsulta }: ConsultaCl
                         {format(new Date(c.fecha), "dd MMM yyyy HH:mm", { locale: es })}
                       </span>
                     </div>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-xl">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                       {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                     </Button>
                   </div>

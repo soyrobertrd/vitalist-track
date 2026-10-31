@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -385,13 +386,13 @@ export function AusenciasProfesionalDialog({
                           <p className="text-xs text-muted-foreground mt-1">{ausencia.descripcion}</p>
                         )}
                       </div>
-                      <Button
+                      <IconButton label="Eliminar"
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDeleteAusencia(ausencia.id)}
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                      </IconButton>
                     </div>
                   ))}
                 </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -125,12 +126,12 @@ export function EvolucionesSOAP({ pacienteId }: { pacienteId: string }) {
                 )}
               </div>
               <div className="flex gap-1 shrink-0">
-                <Button size="icon" variant="ghost" onClick={() => setDialog({ open: true, data: e })}>
+                <IconButton label="Editar" size="icon" variant="ghost" onClick={() => setDialog({ open: true, data: e })}>
                   <Pencil className="h-4 w-4" />
-                </Button>
-                <Button size="icon" variant="ghost" onClick={() => remove(e.id)}>
+                </IconButton>
+                <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => remove(e.id)}>
                   <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
+                </IconButton>
               </div>
             </div>
 

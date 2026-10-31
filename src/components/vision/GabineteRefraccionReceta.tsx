@@ -158,7 +158,7 @@ Optometría & Oftalmología Especializada
             variant="outline"
             size="sm"
             onClick={() => window.print()}
-            className="rounded-xl h-9 text-xs gap-1.5 shadow-none"
+            className="h-9 text-xs gap-1.5 shadow-none"
           >
             <Printer className="h-3.5 w-3.5" />
             Imprimir Receta
@@ -167,7 +167,7 @@ Optometría & Oftalmología Especializada
           <Button
             size="sm"
             onClick={enviarRecetaWhatsApp}
-            className="rounded-xl h-9 text-xs gap-1.5 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="h-9 text-xs gap-1.5 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
           >
             <Send className="h-3.5 w-3.5" />
             Enviar Receta WhatsApp
@@ -183,7 +183,7 @@ Optometría & Oftalmología Especializada
             <Input
               value={paciente.nombre}
               onChange={(e) => setPaciente({ ...paciente, nombre: e.target.value })}
-              className="h-9 text-xs rounded-xl"
+              className="h-9 text-xs"
             />
           </div>
           <div className="space-y-1">
@@ -192,7 +192,7 @@ Optometría & Oftalmología Especializada
               type="number"
               value={paciente.edad}
               onChange={(e) => setPaciente({ ...paciente, edad: parseInt(e.target.value) || 0 })}
-              className="h-9 text-xs rounded-xl"
+              className="h-9 text-xs"
             />
           </div>
           <div className="space-y-1">
@@ -200,7 +200,7 @@ Optometría & Oftalmología Especializada
             <Input
               value={paciente.telefono}
               onChange={(e) => setPaciente({ ...paciente, telefono: e.target.value })}
-              className="h-9 text-xs rounded-xl"
+              className="h-9 text-xs"
             />
           </div>
           <div className="space-y-1">
@@ -208,7 +208,7 @@ Optometría & Oftalmología Especializada
             <Input
               value={paciente.ocupacion}
               onChange={(e) => setPaciente({ ...paciente, ocupacion: e.target.value })}
-              className="h-9 text-xs rounded-xl"
+              className="h-9 text-xs"
             />
           </div>
         </CardContent>
@@ -236,7 +236,7 @@ Optometría & Oftalmología Especializada
                   value={od.esfera}
                   onChange={(e) => setOd({ ...od, esfera: e.target.value })}
                   placeholder="-0.00 / +0.00"
-                  className="h-9 text-xs font-mono font-bold rounded-xl text-center"
+                  className="h-9 text-xs font-mono font-bold text-center"
                 />
               </div>
               <div className="space-y-1">
@@ -245,7 +245,7 @@ Optometría & Oftalmología Especializada
                   value={od.cilindro}
                   onChange={(e) => setOd({ ...od, cilindro: e.target.value })}
                   placeholder="-0.00"
-                  className="h-9 text-xs font-mono font-bold rounded-xl text-center"
+                  className="h-9 text-xs font-mono font-bold text-center"
                 />
               </div>
               <div className="space-y-1">
@@ -254,7 +254,7 @@ Optometría & Oftalmología Especializada
                   value={od.eje}
                   onChange={(e) => setOd({ ...od, eje: e.target.value })}
                   placeholder="0° - 180°"
-                  className="h-9 text-xs font-mono font-bold rounded-xl text-center"
+                  className="h-9 text-xs font-mono font-bold text-center"
                 />
               </div>
             </div>
@@ -266,7 +266,7 @@ Optometría & Oftalmología Especializada
                   value={od.adicion}
                   onChange={(e) => setOd({ ...od, adicion: e.target.value })}
                   placeholder="+0.00"
-                  className="h-9 text-xs font-mono rounded-xl text-center"
+                  className="h-9 text-xs font-mono text-center"
                 />
               </div>
               <div className="space-y-1">
@@ -275,7 +275,7 @@ Optometría & Oftalmología Especializada
                   value={od.dp}
                   onChange={(e) => setOd({ ...od, dp: e.target.value })}
                   placeholder="31.5"
-                  className="h-9 text-xs font-mono rounded-xl text-center"
+                  className="h-9 text-xs font-mono text-center"
                 />
               </div>
               <div className="space-y-1">
@@ -284,7 +284,7 @@ Optometría & Oftalmología Especializada
                   value={od.agudezaVisualSin}
                   onChange={(e) => setOd({ ...od, agudezaVisualSin: e.target.value })}
                   placeholder="20/60"
-                  className="h-9 text-xs font-mono rounded-xl text-center"
+                  className="h-9 text-xs font-mono text-center"
                 />
               </div>
             </div>
@@ -311,7 +311,7 @@ Optometría & Oftalmología Especializada
                   value={oi.esfera}
                   onChange={(e) => setOi({ ...oi, esfera: e.target.value })}
                   placeholder="-0.00 / +0.00"
-                  className="h-9 text-xs font-mono font-bold rounded-xl text-center"
+                  className="h-9 text-xs font-mono font-bold text-center"
                 />
               </div>
               <div className="space-y-1">
@@ -320,7 +320,7 @@ Optometría & Oftalmología Especializada
                   value={oi.cilindro}
                   onChange={(e) => setOi({ ...oi, cilindro: e.target.value })}
                   placeholder="-0.00"
-                  className="h-9 text-xs font-mono font-bold rounded-xl text-center"
+                  className="h-9 text-xs font-mono font-bold text-center"
                 />
               </div>
               <div className="space-y-1">
@@ -329,7 +329,7 @@ Optometría & Oftalmología Especializada
                   value={oi.eje}
                   onChange={(e) => setOi({ ...oi, eje: e.target.value })}
                   placeholder="0° - 180°"
-                  className="h-9 text-xs font-mono font-bold rounded-xl text-center"
+                  className="h-9 text-xs font-mono font-bold text-center"
                 />
               </div>
             </div>
@@ -341,7 +341,7 @@ Optometría & Oftalmología Especializada
                   value={oi.adicion}
                   onChange={(e) => setOi({ ...oi, adicion: e.target.value })}
                   placeholder="+0.00"
-                  className="h-9 text-xs font-mono rounded-xl text-center"
+                  className="h-9 text-xs font-mono text-center"
                 />
               </div>
               <div className="space-y-1">
@@ -350,7 +350,7 @@ Optometría & Oftalmología Especializada
                   value={oi.dp}
                   onChange={(e) => setOi({ ...oi, dp: e.target.value })}
                   placeholder="32.0"
-                  className="h-9 text-xs font-mono rounded-xl text-center"
+                  className="h-9 text-xs font-mono text-center"
                 />
               </div>
               <div className="space-y-1">
@@ -359,7 +359,7 @@ Optometría & Oftalmología Especializada
                   value={oi.agudezaVisualSin}
                   onChange={(e) => setOi({ ...oi, agudezaVisualSin: e.target.value })}
                   placeholder="20/80"
-                  className="h-9 text-xs font-mono rounded-xl text-center"
+                  className="h-9 text-xs font-mono text-center"
                 />
               </div>
             </div>
@@ -380,7 +380,7 @@ Optometría & Oftalmología Especializada
             <div className="space-y-1.5">
               <Label className="text-xs">Diseño Óptico Recomendado</Label>
               <Select value={tipoLente} onValueChange={setTipoLente}>
-                <SelectTrigger className="h-9 text-xs rounded-xl">
+                <SelectTrigger className="h-9 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -396,7 +396,7 @@ Optometría & Oftalmología Especializada
             <div className="space-y-1.5">
               <Label className="text-xs">Material del Lente / Índice de Refracción</Label>
               <Select value={material} onValueChange={setMaterial}>
-                <SelectTrigger className="h-9 text-xs rounded-xl">
+                <SelectTrigger className="h-9 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -464,7 +464,7 @@ Optometría & Oftalmología Especializada
               value={observaciones}
               onChange={(e) => setObservaciones(e.target.value)}
               rows={2}
-              className="text-xs rounded-xl"
+              className="text-xs"
             />
           </div>
         </CardContent>

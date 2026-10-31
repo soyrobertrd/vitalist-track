@@ -130,7 +130,7 @@ export const RecetasQrTab: React.FC<RecetasQrTabProps> = ({ recetas = DEFAULT_RE
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-8 text-xs rounded-xl"
+                    className="h-8 text-xs"
                     onClick={() => setQrModalItem(r)}
                   >
                     <QrCode className="h-3.5 w-3.5 mr-1 text-primary" />

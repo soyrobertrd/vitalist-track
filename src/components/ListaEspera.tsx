@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -188,9 +189,9 @@ export function ListaEspera() {
                           <Button size="icon" variant="ghost" title="Asignar" onClick={() => cambiarEstado(item.id, "asignada")}>
                             <CheckCircle2 className="h-4 w-4 text-green-600" />
                           </Button>
-                          <Button size="icon" variant="ghost" title="Cancelar" onClick={() => cambiarEstado(item.id, "cancelada")}>
+                          <IconButton label="Cerrar" size="icon" variant="ghost" title="Cancelar" onClick={() => cambiarEstado(item.id, "cancelada")}>
                             <X className="h-4 w-4 text-destructive" />
-                          </Button>
+                          </IconButton>
                         </>
                       )}
                     </div>

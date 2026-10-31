@@ -69,14 +69,14 @@ export function AccionesMenu({
             variant="ghost"
             size="icon"
             aria-label={label}
-            className={cn("h-8 w-8 shrink-0 rounded-full text-muted-foreground hover:text-foreground", className)}
+            className={cn("h-8 w-8 shrink-0 text-muted-foreground hover:text-foreground", className)}
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => e.stopPropagation()}
           >
             <MoreVertical className="h-4 w-4" />
           </Button>
         ) : (
-          <Button variant="outline" aria-label={label} className={cn("rounded-full", className)}>
+          <Button variant="outline" aria-label={label} className={cn("", className)}>
             <IconoBoton className="mr-1.5 h-4 w-4" aria-hidden="true" />
             {textoBoton}
           </Button>

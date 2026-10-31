@@ -675,16 +675,16 @@ const Visitas = () => {
       {/* Vista Desktop (>=640px) con Tabs completos */}
       <div className="hidden sm:block">
         <Tabs defaultValue="brigada" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 rounded-2xl bg-muted/40 p-1.5 h-auto border border-border/70">
-            <TabsTrigger value="brigada" className="rounded-xl font-semibold text-xs py-2 gap-1.5">
+          <TabsList className="grid w-full grid-cols-3 bg-muted/40 p-1.5 h-auto border border-border/70">
+            <TabsTrigger value="brigada" className="font-semibold text-xs py-2 gap-1.5">
               <Briefcase className="h-4 w-4 text-emerald-600" />
               Modo Brigada / En Campo
             </TabsTrigger>
-            <TabsTrigger value="agendadas" className="rounded-xl font-semibold text-xs py-2 gap-1.5">
+            <TabsTrigger value="agendadas" className="font-semibold text-xs py-2 gap-1.5">
               <Calendar className="h-4 w-4 text-blue-600" />
               Monitor & Agendadas ({visitasAgendadas.length})
             </TabsTrigger>
-            <TabsTrigger value="historial" className="rounded-xl font-semibold text-xs py-2 gap-1.5">
+            <TabsTrigger value="historial" className="font-semibold text-xs py-2 gap-1.5">
               <Clock className="h-4 w-4 text-muted-foreground" />
               Historial ({visitasHistorial.length})
             </TabsTrigger>

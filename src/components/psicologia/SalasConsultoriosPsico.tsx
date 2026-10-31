@@ -141,7 +141,7 @@ export default function SalasConsultoriosPsico() {
 
           <Dialog open={openModal} onOpenChange={setOpenModal}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl gap-1.5 shadow-none">
+              <Button size="sm" className="gap-1.5 shadow-none">
                 <Plus className="h-4 w-4" /> Agregar Espacio
               </Button>
             </DialogTrigger>
@@ -156,7 +156,7 @@ export default function SalasConsultoriosPsico() {
                     placeholder="Ej. Consultorio C - Gestalt"
                     value={nuevaSala.nombre}
                     onChange={(e) => setNuevaSala({ ...nuevaSala, nombre: e.target.value })}
-                    className="rounded-xl mt-1"
+                    className="mt-1"
                   />
                 </div>
                 <div>
@@ -165,7 +165,7 @@ export default function SalasConsultoriosPsico() {
                     value={nuevaSala.tipo}
                     onValueChange={(val: any) => setNuevaSala({ ...nuevaSala, tipo: val })}
                   >
-                    <SelectTrigger className="rounded-xl mt-1">
+                    <SelectTrigger className="mt-1">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -184,7 +184,7 @@ export default function SalasConsultoriosPsico() {
                     max="30"
                     value={nuevaSala.capacidadMax}
                     onChange={(e) => setNuevaSala({ ...nuevaSala, capacidadMax: Number(e.target.value) })}
-                    className="rounded-xl mt-1"
+                    className="mt-1"
                   />
                 </div>
                 <div>
@@ -193,10 +193,10 @@ export default function SalasConsultoriosPsico() {
                     placeholder="Aislamiento acústico, Sofá doble, Luz tenue..."
                     value={nuevaSala.caracteristicas}
                     onChange={(e) => setNuevaSala({ ...nuevaSala, caracteristicas: e.target.value })}
-                    className="rounded-xl mt-1"
+                    className="mt-1"
                   />
                 </div>
-                <Button type="submit" className="w-full rounded-xl mt-2">
+                <Button type="submit" className="w-full mt-2">
                   Guardar Consultorio
                 </Button>
               </form>
@@ -273,7 +273,7 @@ export default function SalasConsultoriosPsico() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="w-full rounded-xl text-xs h-7 border-border/80"
+                      className="w-full text-xs h-7 border-border/80"
                       onClick={() => alternarEstado(sala.id, "ocupado")}
                     >
                       Ocupar Sala
@@ -282,7 +282,7 @@ export default function SalasConsultoriosPsico() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="w-full rounded-xl text-xs h-7 border-border/80 text-emerald-600 dark:text-emerald-400"
+                      className="w-full text-xs h-7 border-border/80 text-emerald-600 dark:text-emerald-400"
                       onClick={() => alternarEstado(sala.id, "disponible")}
                     >
                       Liberar Sala

@@ -230,7 +230,7 @@ export default function Nefrologia() {
           <Button
             onClick={() => setModalOpen(true)}
             size="sm"
-            className="rounded-xl gap-1.5 bg-teal-600 hover:bg-teal-700 text-white"
+            className="gap-1.5 bg-teal-600 hover:bg-teal-700 text-white"
           >
             <Plus className="w-4 h-4" /> Registrar Consulta Nefrológica
           </Button>
@@ -271,16 +271,16 @@ export default function Nefrologia() {
 
       {/* Pestañas de la Especialidad */}
       <Tabs value={tab} onValueChange={(v: any) => setTab(v)} className="space-y-4">
-        <TabsList className="bg-muted/40 p-1.5 rounded-2xl border border-border/70 flex flex-wrap gap-1 h-auto">
-          <TabsTrigger value="consultas" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+        <TabsList className="bg-muted/40 p-1.5 border border-border/70 flex flex-wrap gap-1 h-auto">
+          <TabsTrigger value="consultas" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <FileText className="h-4 w-4 text-teal-600" />
             Consultas & Pacientes Renales
           </TabsTrigger>
-          <TabsTrigger value="calculadora_ckd_epi" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="calculadora_ckd_epi" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <Calculator className="h-4 w-4 text-primary" />
             Calculadora TFG CKD-EPI 2021
           </TabsTrigger>
-          <TabsTrigger value="hemodialisis" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="hemodialisis" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <Droplet className="h-4 w-4 text-blue-600" />
             Unidad de Hemodiálisis
           </TabsTrigger>
@@ -296,12 +296,12 @@ export default function Nefrologia() {
                   placeholder="Buscar paciente, diagnóstico renal, estadio..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 rounded-xl border-border/80 text-xs"
+                  className="pl-9 border-border/80 text-xs"
                 />
               </div>
 
               <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-                <SelectTrigger className="w-[200px] rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="w-[200px] border-border/80 text-xs">
                   <SelectValue placeholder="Tipo de Atención" />
                 </SelectTrigger>
                 <SelectContent>
@@ -433,7 +433,7 @@ export default function Nefrologia() {
                   step="0.1"
                   value={calcScr}
                   onChange={(e) => setCalcScr(Number(e.target.value))}
-                  className="rounded-xl border-border/80 text-xs"
+                  className="border-border/80 text-xs"
                 />
               </div>
 
@@ -443,14 +443,14 @@ export default function Nefrologia() {
                   type="number"
                   value={calcEdad}
                   onChange={(e) => setCalcEdad(Number(e.target.value))}
-                  className="rounded-xl border-border/80 text-xs"
+                  className="border-border/80 text-xs"
                 />
               </div>
 
               <div className="space-y-1">
                 <Label className="text-xs">Sexo Biológico *</Label>
                 <Select value={calcSexo} onValueChange={(v: any) => setCalcSexo(v)}>
-                  <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="M">Masculino</SelectItem>
                     <SelectItem value="F">Femenino</SelectItem>
@@ -464,7 +464,7 @@ export default function Nefrologia() {
                   type="number"
                   value={calcPesoKg}
                   onChange={(e) => setCalcPesoKg(Number(e.target.value))}
-                  className="rounded-xl border-border/80 text-xs"
+                  className="border-border/80 text-xs"
                 />
               </div>
             </div>
@@ -557,7 +557,7 @@ export default function Nefrologia() {
                 placeholder="Ej. Manuel Antonio Tavárez"
                 value={form.paciente_nombre}
                 onChange={(e) => setForm({ ...form, paciente_nombre: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -567,7 +567,7 @@ export default function Nefrologia() {
                 placeholder="Ej. 65a / M"
                 value={form.edad_sexo}
                 onChange={(e) => setForm({ ...form, edad_sexo: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -577,7 +577,7 @@ export default function Nefrologia() {
                 value={form.tipo_consulta}
                 onValueChange={(v: any) => setForm({ ...form, tipo_consulta: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="erc_estadios">ERC Estadios 1-5</SelectItem>
                   <SelectItem value="hemodialisis_cronica">Hemodiálisis Crónica</SelectItem>
@@ -595,7 +595,7 @@ export default function Nefrologia() {
                 step="0.1"
                 value={form.creatinina_mg_dl}
                 onChange={(e) => setForm({ ...form, creatinina_mg_dl: Number(e.target.value) })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -605,7 +605,7 @@ export default function Nefrologia() {
                 type="number"
                 value={form.urea_mg_dl}
                 onChange={(e) => setForm({ ...form, urea_mg_dl: Number(e.target.value) })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -615,7 +615,7 @@ export default function Nefrologia() {
                 value={form.tipo_acceso_vascular}
                 onValueChange={(v: any) => setForm({ ...form, tipo_acceso_vascular: v })}
               >
-                <SelectTrigger className="rounded-xl border-border/80 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-border/80 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Ninguno">Ninguno</SelectItem>
                   <SelectItem value="Fístula Arteriovenosa (FAV)">Fístula Arteriovenosa (FAV)</SelectItem>
@@ -632,7 +632,7 @@ export default function Nefrologia() {
                 step="0.1"
                 value={form.proteinuria_24h_g}
                 onChange={(e) => setForm({ ...form, proteinuria_24h_g: Number(e.target.value) })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -642,7 +642,7 @@ export default function Nefrologia() {
                 placeholder="Ej. ERC Estadio G4 por nefropatía hipertensiva"
                 value={form.diagnostico}
                 onChange={(e) => setForm({ ...form, diagnostico: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -652,19 +652,19 @@ export default function Nefrologia() {
                 placeholder="Ajuste de quelantes de fósforo, calcitriol, bicarbonato sódico, eritropoyetina..."
                 value={form.plan_conducta}
                 onChange={(e) => setForm({ ...form, plan_conducta: e.target.value })}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 rows={2}
               />
             </div>
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setModalOpen(false)} className="rounded-xl">
+            <Button variant="outline" onClick={() => setModalOpen(false)}>
               Cancelar
             </Button>
             <Button
               onClick={handleCrearConsulta}
-              className="rounded-xl bg-teal-600 hover:bg-teal-700 text-white"
+              className="bg-teal-600 hover:bg-teal-700 text-white"
             >
               Guardar Consulta
             </Button>

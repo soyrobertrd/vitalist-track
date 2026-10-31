@@ -106,7 +106,7 @@ export const CarnetVacunacionTab: React.FC<CarnetVacunacionTabProps> = ({
           <Button
             size="sm"
             onClick={handleDescargarCertificado}
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shrink-0"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white shrink-0"
           >
             <Download className="h-4 w-4 mr-1.5" />
             Descargar Certificado PDF

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { ShieldAlert, RefreshCw, Calendar, ExternalLink, AlertTriangle } from "lucide-react";
@@ -73,7 +74,7 @@ export default function ResumenAuditoria() {
                       <div className="text-muted-foreground">{new Date(a.created_at).toLocaleString("es-DO")}</div>
                     </div>
                     <Link to={`/auditoria?alerta=${a.id}`}>
-                      <Button size="icon" variant="ghost" className="h-6 w-6"><ExternalLink className="h-3 w-3" /></Button>
+                      <IconButton label="Abrir" size="icon" variant="ghost" className="h-6 w-6"><ExternalLink className="h-3 w-3" /></IconButton>
                     </Link>
                   </div>
                 ))}

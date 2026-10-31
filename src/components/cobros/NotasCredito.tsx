@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -170,9 +171,9 @@ export function NotasCredito({ pacienteId }: Props) {
                           <Button size="icon" variant="ghost" title="Aprobar" onClick={() => cambiarEstado(n.id, "aprobada")}>
                             <CheckCircle2 className="h-4 w-4 text-green-600" />
                           </Button>
-                          <Button size="icon" variant="ghost" title="Rechazar" onClick={() => cambiarEstado(n.id, "rechazada")}>
+                          <IconButton label="Cerrar" size="icon" variant="ghost" title="Rechazar" onClick={() => cambiarEstado(n.id, "rechazada")}>
                             <X className="h-4 w-4 text-destructive" />
-                          </Button>
+                          </IconButton>
                         </>
                       )}
                       {n.estado === "aprobada" && (

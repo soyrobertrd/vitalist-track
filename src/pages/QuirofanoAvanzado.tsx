@@ -197,14 +197,14 @@ export default function QuirofanoAvanzado() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setTab("checklist")}
             >
               <ListChecks className="h-4 w-4 mr-1.5 text-emerald-600" />
               Checklist OMS
             </Button>
             <Button 
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewCirugia(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -248,24 +248,24 @@ export default function QuirofanoAvanzado() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="programacion" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="programacion" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Activity className="h-4 w-4 mr-1.5 text-blue-600" />
             Tabla Quirúrgica ({programaciones.length})
           </TabsTrigger>
-          <TabsTrigger value="checklist" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="checklist" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <ListChecks className="h-4 w-4 mr-1.5 text-emerald-600" />
             Checklist Quirúrgico OMS (3 Fases)
           </TabsTrigger>
-          <TabsTrigger value="conteo" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="conteo" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <ShieldCheck className="h-4 w-4 mr-1.5 text-teal-600" />
             Conteo de Material Blanco & Gasas
           </TabsTrigger>
-          <TabsTrigger value="urpa" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="urpa" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <HeartPulse className="h-4 w-4 mr-1.5 text-purple-600" />
             Escala de Aldrete & URPA ({aldreteScoreTotal}/10)
           </TabsTrigger>
-          <TabsTrigger value="salas" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="salas" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <DoorClosed className="h-4 w-4 mr-1.5 text-slate-600" />
             Quirófanos ({salas.length})
           </TabsTrigger>
@@ -327,7 +327,7 @@ export default function QuirofanoAvanzado() {
                           <Button 
                             size="sm" 
                             variant="outline" 
-                            className="rounded-xl h-7 text-xs border-border/80"
+                            className="h-7 text-xs border-border/80"
                             onClick={() => {
                               setTab("checklist");
                               toast.info(`Cargado checklist para ${p.procedimiento}`);
@@ -577,7 +577,7 @@ export default function QuirofanoAvanzado() {
 
                 <div className="pt-3">
                   <Button 
-                    className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9"
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9"
                     onClick={() => toast.success("Checklist Quirúrgico OMS verificado y sellado con firma digital")}
                   >
                     <CheckCheck className="h-4 w-4 mr-1.5" />
@@ -624,7 +624,7 @@ export default function QuirofanoAvanzado() {
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="w-full text-xs h-7 rounded-lg"
+                      className="w-full text-xs h-7"
                       onClick={() => setConteo(p => ({ ...p, gasasIniciales: p.gasasIniciales + 10 }))}
                     >
                       + Abrir Pack (10)
@@ -655,7 +655,7 @@ export default function QuirofanoAvanzado() {
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="w-full text-xs h-7 rounded-lg"
+                      className="w-full text-xs h-7"
                       onClick={() => setConteo(p => ({ ...p, compresasIniciales: p.compresasIniciales + 5 }))}
                     >
                       + Abrir Pack (5)
@@ -682,7 +682,7 @@ export default function QuirofanoAvanzado() {
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="w-full text-xs h-7 rounded-lg"
+                      className="w-full text-xs h-7"
                       onClick={() => setConteo(p => ({ ...p, agujasIniciales: p.agujasIniciales + 1, agujasFinales: p.agujasFinales + 1 }))}
                     >
                       + Registrar Sutura
@@ -768,7 +768,7 @@ export default function QuirofanoAvanzado() {
               <Label>Procedimiento Quirúrgico *</Label>
               <Input
                 placeholder="Ej. Apendicectomía laparoscópica, Colecistectomía..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataCirugia.procedimiento}
                 onChange={(e) => setFormDataCirugia(p => ({ ...p, procedimiento: e.target.value }))}
               />
@@ -781,7 +781,7 @@ export default function QuirofanoAvanzado() {
                   value={formDataCirugia.quirofano_id} 
                   onValueChange={(val) => setFormDataCirugia(p => ({ ...p, quirofano_id: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue placeholder="Seleccione sala" />
                   </SelectTrigger>
                   <SelectContent>
@@ -797,7 +797,7 @@ export default function QuirofanoAvanzado() {
                   value={formDataCirugia.tipo_anestesia} 
                   onValueChange={(val) => setFormDataCirugia(p => ({ ...p, tipo_anestesia: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -816,7 +816,7 @@ export default function QuirofanoAvanzado() {
                 <Label>Fecha y Hora</Label>
                 <Input
                   type="datetime-local"
-                  className="rounded-xl border-border/80 font-mono text-xs"
+                  className="border-border/80 font-mono text-xs"
                   value={formDataCirugia.fecha_programada}
                   onChange={(e) => setFormDataCirugia(p => ({ ...p, fecha_programada: e.target.value }))}
                 />
@@ -826,7 +826,7 @@ export default function QuirofanoAvanzado() {
                 <Input
                   type="number"
                   step="15"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataCirugia.duracion_estimada_min}
                   onChange={(e) => setFormDataCirugia(p => ({ ...p, duracion_estimada_min: e.target.value }))}
                 />
@@ -835,11 +835,11 @@ export default function QuirofanoAvanzado() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewCirugia(false)}>
+            <Button variant="outline" onClick={() => setShowNewCirugia(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white" 
+              className="bg-emerald-600 hover:bg-emerald-700 text-white" 
               onClick={() => crearCirugia.mutate()}
               disabled={crearCirugia.isPending || !formDataCirugia.procedimiento}
             >

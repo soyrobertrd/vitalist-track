@@ -177,8 +177,8 @@ export default function VademecumInteracciones() {
 
       {/* Tabs */}
       <Tabs defaultValue="checker" className="space-y-4">
-        <TabsList className="bg-card border border-border/80 rounded-xl p-1">
-          <TabsTrigger value="checker" className="rounded-lg gap-2 text-xs">
+        <TabsList className="bg-card border border-border/80 p-1">
+          <TabsTrigger value="checker" className="gap-2 text-xs">
             <Sparkles className="w-4 h-4 text-primary" /> Verificador de Interacción
             {interaccionesDetectadas.length > 0 && (
               <Badge variant="destructive" className="ml-1.5 h-4 px-1 text-[10px]">
@@ -186,10 +186,10 @@ export default function VademecumInteracciones() {
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="meds" className="rounded-lg gap-2 text-xs">
+          <TabsTrigger value="meds" className="gap-2 text-xs">
             <Pill className="w-4 h-4 text-emerald-600" /> Catálogo de Medicamentos ({meds.length})
           </TabsTrigger>
-          <TabsTrigger value="todas" className="rounded-lg gap-2 text-xs">
+          <TabsTrigger value="todas" className="gap-2 text-xs">
             <Layers className="w-4 h-4 text-blue-600" /> Matriz Farmacológica ({interacciones.length})
           </TabsTrigger>
         </TabsList>
@@ -206,7 +206,7 @@ export default function VademecumInteracciones() {
                 <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Buscar principio activo..."
-                  className="pl-8 h-8 text-xs rounded-xl"
+                  className="pl-8 h-8 text-xs"
                   value={filtroPa}
                   onChange={(e) => setFiltroPa(e.target.value)}
                 />
@@ -350,7 +350,7 @@ export default function VademecumInteracciones() {
                 placeholder="Buscar por nombre, principio activo o grupo..."
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                className="pl-9 rounded-xl h-9 text-xs"
+                className="pl-9 h-9 text-xs"
               />
             </div>
             <span className="text-xs text-muted-foreground">
@@ -391,7 +391,7 @@ export default function VademecumInteracciones() {
                           <Button
                             size="sm"
                             variant={isSelected ? "secondary" : "outline"}
-                            className="rounded-xl h-7 text-xs"
+                            className="h-7 text-xs"
                             onClick={() => toggleMed(m.principio_activo)}
                           >
                             {isSelected ? "Quitar" : "Evaluar"}

@@ -92,7 +92,7 @@ export function CompatibilidadTransfusionalTab() {
               <div className="flex items-center gap-1.5">
                 <span className="text-xs text-muted-foreground whitespace-nowrap">Grupo Receptor:</span>
                 <Select value={grupoReceptor} onValueChange={(v: any) => setGrupoReceptor(v)}>
-                  <SelectTrigger className="w-28 h-9 rounded-xl font-bold font-mono text-red-600 bg-background">
+                  <SelectTrigger className="w-28 h-9 font-bold font-mono text-red-600 bg-background">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl font-mono">
@@ -108,7 +108,7 @@ export function CompatibilidadTransfusionalTab() {
               <div className="flex items-center gap-1.5">
                 <span className="text-xs text-muted-foreground whitespace-nowrap">Componente:</span>
                 <Select value={componente} onValueChange={(v: any) => setComponente(v)}>
-                  <SelectTrigger className="w-36 h-9 rounded-xl text-xs bg-background">
+                  <SelectTrigger className="w-36 h-9 text-xs bg-background">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">

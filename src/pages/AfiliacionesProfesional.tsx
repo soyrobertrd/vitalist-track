@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -165,9 +166,9 @@ export default function AfiliacionesProfesional() {
                     </div>
                   </div>
                   {a.estado === "activa" && (
-                    <Button variant="ghost" size="icon" onClick={() => eliminar(a.id)}>
+                    <IconButton label="Eliminar" variant="ghost" size="icon" onClick={() => eliminar(a.id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    </IconButton>
                   )}
                 </div>
               ))}

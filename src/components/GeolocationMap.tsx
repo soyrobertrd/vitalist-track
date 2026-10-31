@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -326,12 +327,12 @@ export function GeolocationMap({ profesionalId, fecha: initialFecha }: Geolocati
                             onChange={(e) => setCoordsForm(prev => ({ ...prev, lng: e.target.value }))}
                             className="w-28 h-7 text-xs"
                           />
-                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleSaveCoords(visita.id)}>
+                          <IconButton label="Confirmar" size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleSaveCoords(visita.id)}>
                             <Check className="h-3 w-3" />
-                          </Button>
-                          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditingCoords(null)}>
+                          </IconButton>
+                          <IconButton label="Cerrar" size="icon" variant="ghost" className="h-7 w-7" onClick={() => setEditingCoords(null)}>
                             <X className="h-3 w-3" />
-                          </Button>
+                          </IconButton>
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 mt-1">

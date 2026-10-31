@@ -153,7 +153,7 @@ export default function FacturacionElectronicaRD() {
           <div className="flex items-center gap-2 flex-wrap">
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-xl border-border/80 text-xs gap-1.5">
+                <Button variant="outline" className="border-border/80 text-xs gap-1.5">
                   <Plus className="h-4 w-4" /> Registrar Secuencia
                 </Button>
               </DialogTrigger>
@@ -171,7 +171,7 @@ export default function FacturacionElectronicaRD() {
                       value={form.tipo_ncf}
                       onValueChange={(v) => setForm({ ...form, tipo_ncf: v })}
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -188,7 +188,7 @@ export default function FacturacionElectronicaRD() {
                       <Label>Número Inicial</Label>
                       <Input
                         type="number"
-                        className="rounded-xl font-mono"
+                        className="font-mono"
                         value={form.inicio}
                         onChange={(e) => setForm({ ...form, inicio: +e.target.value })}
                       />
@@ -197,7 +197,7 @@ export default function FacturacionElectronicaRD() {
                       <Label>Número Final</Label>
                       <Input
                         type="number"
-                        className="rounded-xl font-mono"
+                        className="font-mono"
                         value={form.fin}
                         onChange={(e) => setForm({ ...form, fin: +e.target.value })}
                       />
@@ -207,17 +207,17 @@ export default function FacturacionElectronicaRD() {
                     <Label>Fecha de Vencimiento de la Autorización</Label>
                     <Input
                       type="date"
-                      className="rounded-xl font-mono"
+                      className="font-mono"
                       value={form.fecha_vencimiento}
                       onChange={(e) => setForm({ ...form, fecha_vencimiento: e.target.value })}
                     />
                   </div>
                 </div>
                 <DialogFooter className="gap-2">
-                  <Button variant="outline" onClick={() => setOpen(false)} className="rounded-xl">
+                  <Button variant="outline" onClick={() => setOpen(false)}>
                     Cancelar
                   </Button>
-                  <Button onClick={save} className="rounded-xl">
+                  <Button onClick={save}>
                     Guardar Secuencia
                   </Button>
                 </DialogFooter>
@@ -226,7 +226,7 @@ export default function FacturacionElectronicaRD() {
 
             <Dialog open={emitOpen} onOpenChange={setEmitOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-sm gap-2 bg-emerald-600 hover:bg-emerald-700">
+                <Button className="shadow-sm gap-2 bg-emerald-600 hover:bg-emerald-700">
                   <Receipt className="h-4 w-4" /> Emitir Comprobante
                 </Button>
               </DialogTrigger>
@@ -244,7 +244,7 @@ export default function FacturacionElectronicaRD() {
                       value={emitForm.tipo_ncf}
                       onValueChange={(v) => setEmitForm({ ...emitForm, tipo_ncf: v })}
                     >
-                      <SelectTrigger className="rounded-xl">
+                      <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -260,7 +260,7 @@ export default function FacturacionElectronicaRD() {
                     <Label>RNC o Cédula del Cliente (Opcional para B02)</Label>
                     <Input
                       placeholder="Ej: 131234567"
-                      className="rounded-xl font-mono"
+                      className="font-mono"
                       value={emitForm.rnc_cliente}
                       onChange={(e) => setEmitForm({ ...emitForm, rnc_cliente: e.target.value })}
                     />
@@ -271,7 +271,7 @@ export default function FacturacionElectronicaRD() {
                       type="number"
                       step="0.01"
                       placeholder="0.00"
-                      className="rounded-xl font-mono font-semibold"
+                      className="font-mono font-semibold"
                       value={emitForm.subtotal || ""}
                       onChange={(e) => setEmitForm({ ...emitForm, subtotal: +e.target.value })}
                     />
@@ -292,13 +292,13 @@ export default function FacturacionElectronicaRD() {
                   </div>
                 </div>
                 <DialogFooter className="gap-2">
-                  <Button variant="outline" onClick={() => setEmitOpen(false)} className="rounded-xl">
+                  <Button variant="outline" onClick={() => setEmitOpen(false)}>
                     Cancelar
                   </Button>
                   <Button
                     onClick={emitir}
                     disabled={emitting || !emitForm.subtotal}
-                    className="rounded-xl bg-emerald-600 hover:bg-emerald-700"
+                    className="bg-emerald-600 hover:bg-emerald-700"
                   >
                     {emitting ? "Emitiendo..." : "Confirmar Emisión"}
                   </Button>
@@ -343,14 +343,14 @@ export default function FacturacionElectronicaRD() {
 
       {/* Tabs */}
       <Tabs defaultValue="sec" className="space-y-4">
-        <TabsList className="bg-card border border-border/80 rounded-xl p-1">
-          <TabsTrigger value="sec" className="rounded-lg gap-2 text-xs">
+        <TabsList className="bg-card border border-border/80 p-1">
+          <TabsTrigger value="sec" className="gap-2 text-xs">
             <Receipt className="w-4 h-4" /> Secuencias Autorizadas ({secuencias.length})
           </TabsTrigger>
-          <TabsTrigger value="cf" className="rounded-lg gap-2 text-xs">
+          <TabsTrigger value="cf" className="gap-2 text-xs">
             <FileText className="w-4 h-4" /> Comprobantes Emitidos ({comprobantes.length})
           </TabsTrigger>
-          <TabsTrigger value="info" className="rounded-lg gap-2 text-xs">
+          <TabsTrigger value="info" className="gap-2 text-xs">
             <Building2 className="w-4 h-4" /> Configuración e-CF & DGII
           </TabsTrigger>
         </TabsList>

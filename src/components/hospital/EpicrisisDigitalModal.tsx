@@ -91,10 +91,10 @@ export function EpicrisisDigitalModal({ open, onOpenChange, datos }: EpicrisisDi
             </div>
 
             <div className="flex items-center gap-1.5 self-start sm:self-auto">
-              <Button size="sm" variant="outline" onClick={handleCompartir} className="h-8 rounded-xl text-xs gap-1">
+              <Button size="sm" variant="outline" onClick={handleCompartir} className="h-8 text-xs gap-1">
                 <Share2 className="h-3.5 w-3.5" /> Compartir
               </Button>
-              <Button size="sm" variant="outline" onClick={handleImprimir} className="h-8 rounded-xl text-xs gap-1">
+              <Button size="sm" variant="outline" onClick={handleImprimir} className="h-8 text-xs gap-1">
                 <Printer className="h-3.5 w-3.5" /> Imprimir
               </Button>
             </div>
@@ -205,7 +205,7 @@ export function EpicrisisDigitalModal({ open, onOpenChange, datos }: EpicrisisDi
         </div>
 
         <DialogFooter>
-          <Button size="sm" onClick={() => onOpenChange(false)} className="rounded-xl text-xs w-full sm:w-auto">
+          <Button size="sm" onClick={() => onOpenChange(false)} className="text-xs w-full sm:w-auto">
             Cerrar Informe
           </Button>
         </DialogFooter>

@@ -125,7 +125,7 @@ export default function ConsentimientoPsico({
               value={pacienteNombre}
               onChange={(e) => setPacienteNombre(e.target.value)}
               disabled={firmado}
-              className="rounded-xl mt-1 h-8 text-xs"
+              className="mt-1 h-8 text-xs"
             />
           </div>
           <div>
@@ -135,7 +135,7 @@ export default function ConsentimientoPsico({
               value={cedula}
               onChange={(e) => setCedula(e.target.value)}
               disabled={firmado}
-              className="rounded-xl mt-1 h-8 text-xs"
+              className="mt-1 h-8 text-xs"
             />
           </div>
         </div>
@@ -238,7 +238,7 @@ export default function ConsentimientoPsico({
             <div className="pt-2 flex justify-end gap-2">
               <Button
                 onClick={handleFirmar}
-                className="rounded-xl gap-2 shadow-none bg-purple-600 hover:bg-purple-700 text-white"
+                className="gap-2 shadow-none bg-purple-600 hover:bg-purple-700 text-white"
               >
                 <CheckCircle2 className="h-4 w-4" /> Validar y Firmar Documento
               </Button>
@@ -258,7 +258,7 @@ export default function ConsentimientoPsico({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-xl text-xs gap-1.5 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+              className="text-xs gap-1.5 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
               onClick={() => toast.info("Generando copia firmada en PDF...")}
             >
               <Download className="h-3.5 w-3.5" /> Descargar Copia

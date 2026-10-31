@@ -289,14 +289,14 @@ export default function Imagenologia() {
           <div className="flex gap-2">
             <Button
               variant="outline"
-              className="gap-2 rounded-xl border-border/80"
+              className="gap-2 border-border/80"
               onClick={() => navigate("/visor-dicom")}
             >
               <Eye className="h-4 w-4 text-indigo-600" /> Abrir Visor PACS DICOM
             </Button>
             <Button
               onClick={() => setDialogOpen(true)}
-              className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl"
+              className="gap-2 bg-indigo-600 hover:bg-indigo-700 text-white"
             >
               <Plus className="h-4 w-4" /> Solicitar Estudio
             </Button>
@@ -341,7 +341,7 @@ export default function Imagenologia() {
         <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            className="pl-9 bg-background/50 rounded-xl"
+            className="pl-9 bg-background/50"
             placeholder="Buscar por paciente, cédula, orden o tipo de estudio..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -349,7 +349,7 @@ export default function Imagenologia() {
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
           <Select value={filterEstado} onValueChange={setFilterEstado}>
-            <SelectTrigger className="w-[150px] rounded-xl"><SelectValue placeholder="Estado" /></SelectTrigger>
+            <SelectTrigger className="w-[150px]"><SelectValue placeholder="Estado" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todos los estados</SelectItem>
               <SelectItem value="solicitado">Solicitado</SelectItem>
@@ -360,7 +360,7 @@ export default function Imagenologia() {
             </SelectContent>
           </Select>
           <Select value={filterModalidad} onValueChange={setFilterModalidad}>
-            <SelectTrigger className="w-[170px] rounded-xl"><SelectValue placeholder="Modalidad" /></SelectTrigger>
+            <SelectTrigger className="w-[170px]"><SelectValue placeholder="Modalidad" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todas las modalidades</SelectItem>
               {MODALIDADES.map((m) => (
@@ -431,7 +431,7 @@ export default function Imagenologia() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="rounded-lg h-8 px-2 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-950"
+                            className="h-8 px-2 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-950"
                             title="Visualizar en visor DICOM / PACS"
                             onClick={() => navigate("/visor-dicom")}
                           >
@@ -443,7 +443,7 @@ export default function Imagenologia() {
                               <Button
                                 size="sm"
                                 variant="secondary"
-                                className="rounded-lg h-8 text-xs"
+                                className="h-8 text-xs"
                                 onClick={() => updateEstado(e.id, "en_proceso")}
                               >
                                 Adquirir
@@ -451,7 +451,7 @@ export default function Imagenologia() {
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                className="rounded-lg h-8 w-8 p-0 text-muted-foreground hover:text-rose-600"
+                                className="h-8 w-8 p-0 text-muted-foreground hover:text-rose-600"
                                 onClick={() => updateEstado(e.id, "cancelado")}
                               >
                                 <XCircle className="h-4 w-4" />
@@ -462,7 +462,7 @@ export default function Imagenologia() {
                           {e.estado === "en_proceso" && (
                             <Button
                               size="sm"
-                              className="rounded-lg h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white gap-1"
+                              className="h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white gap-1"
                               onClick={() => abrirInformeModal(e)}
                             >
                               <FileText className="h-3.5 w-3.5" /> Informar
@@ -474,7 +474,7 @@ export default function Imagenologia() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="rounded-lg h-8 text-xs gap-1"
+                                className="h-8 text-xs gap-1"
                                 onClick={() => abrirInformeModal(e)}
                               >
                                 <FileText className="h-3.5 w-3.5 text-indigo-600" /> Ver Informe
@@ -482,7 +482,7 @@ export default function Imagenologia() {
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                className="rounded-lg h-8 w-8 p-0"
+                                className="h-8 w-8 p-0"
                                 title="Imprimir Formato Oficial con QR"
                                 onClick={() => setReportePrint(e)}
                               >
@@ -534,14 +534,14 @@ export default function Imagenologia() {
               <div>
                 <Label className="text-xs font-semibold">Modalidad Radiológica</Label>
                 <Select value={form.modalidad} onValueChange={(v) => setForm((f) => ({ ...f, modalidad: v }))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>{MODALIDADES.map((m) => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
                 <Label className="text-xs font-semibold">Prioridad</Label>
                 <Select value={form.prioridad} onValueChange={(v) => setForm((f) => ({ ...f, prioridad: v }))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="rutina">Rutina (Programada)</SelectItem>
                     <SelectItem value="urgente">Urgente (&lt; 4 horas)</SelectItem>
@@ -554,7 +554,7 @@ export default function Imagenologia() {
               <div>
                 <Label className="text-xs font-semibold">Tipo de Estudio *</Label>
                 <Input
-                  className="rounded-xl mt-1"
+                  className="mt-1"
                   value={form.tipo_estudio}
                   onChange={(e) => setForm((f) => ({ ...f, tipo_estudio: e.target.value }))}
                   placeholder="Ej: TC Tórax con Contraste, Rx Tórax PA"
@@ -563,7 +563,7 @@ export default function Imagenologia() {
               <div>
                 <Label className="text-xs font-semibold">Región Anatómica</Label>
                 <Input
-                  className="rounded-xl mt-1"
+                  className="mt-1"
                   value={form.region_anatomica}
                   onChange={(e) => setForm((f) => ({ ...f, region_anatomica: e.target.value }))}
                   placeholder="Ej: Tórax, Encéfalo, Rodilla Derecha"
@@ -573,7 +573,7 @@ export default function Imagenologia() {
             <div>
               <Label className="text-xs font-semibold">Indicación Clínica / Motivo del Estudio</Label>
               <Textarea
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={form.indicacion_clinica}
                 onChange={(e) => setForm((f) => ({ ...f, indicacion_clinica: e.target.value }))}
                 placeholder="Ej: Sospecha de tromboembolismo pulmonar, disnea súbita y taquicardia sinusal"
@@ -592,7 +592,7 @@ export default function Imagenologia() {
                 Requiere medio de contraste intravenoso (Verificar tasa de filtración glomerular / Creatinina)
               </Label>
             </div>
-            <Button onClick={handleCreate} className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
+            <Button onClick={handleCreate} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
               Confirmar Solicitud de Imagen
             </Button>
           </div>
@@ -620,7 +620,7 @@ export default function Imagenologia() {
                   <Sparkles className="h-4 w-4" /> Asistente de Clasificación Internacional ({PLANTILLAS_CLASIFICACION[clasificacionTipo]?.sistema})
                 </div>
                 <Select value={clasificacionSeleccionada} onValueChange={setClasificacionSeleccionada}>
-                  <SelectTrigger className="rounded-xl bg-background"><SelectValue placeholder="Seleccionar categoría..." /></SelectTrigger>
+                  <SelectTrigger className="bg-background"><SelectValue placeholder="Seleccionar categoría..." /></SelectTrigger>
                   <SelectContent>
                     {PLANTILLAS_CLASIFICACION[clasificacionTipo]?.niveles.map((n) => (
                       <SelectItem key={n.valor} value={n.valor}>
@@ -635,7 +635,7 @@ export default function Imagenologia() {
             <div>
               <Label className="text-xs font-semibold">Técnica Empleada & Proyecciones</Label>
               <Input
-                className="rounded-xl mt-1"
+                className="mt-1"
                 value={informe.tecnica}
                 onChange={(e) => setInforme((f) => ({ ...f, tecnica: e.target.value }))}
                 placeholder="Ej: Adquisición volumétrica helicoidal desde vértices hasta bases con cortes a 1.25 mm"
@@ -646,7 +646,7 @@ export default function Imagenologia() {
             <div>
               <Label className="text-xs font-semibold">Hallazgos Radiológicos Detallados *</Label>
               <Textarea
-                className="rounded-xl mt-1 font-sans"
+                className="mt-1 font-sans"
                 rows={5}
                 value={informe.hallazgos}
                 onChange={(e) => setInforme((f) => ({ ...f, hallazgos: e.target.value }))}
@@ -658,7 +658,7 @@ export default function Imagenologia() {
             <div>
               <Label className="text-xs font-semibold">Conclusión / Diagnóstico Radiológico *</Label>
               <Textarea
-                className="rounded-xl mt-1 font-semibold"
+                className="mt-1 font-semibold"
                 rows={3}
                 value={informe.conclusion}
                 onChange={(e) => setInforme((f) => ({ ...f, conclusion: e.target.value }))}
@@ -670,7 +670,7 @@ export default function Imagenologia() {
             <div>
               <Label className="text-xs font-semibold">Impresión Diagnóstica / Recomendaciones</Label>
               <Textarea
-                className="rounded-xl mt-1"
+                className="mt-1"
                 rows={2}
                 value={informe.impresion_diagnostica}
                 onChange={(e) => setInforme((f) => ({ ...f, impresion_diagnostica: e.target.value }))}
@@ -680,14 +680,14 @@ export default function Imagenologia() {
             </div>
 
             {informeDialog?.estado !== "completado" ? (
-              <Button onClick={saveInforme} className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
+              <Button onClick={saveInforme} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-5">
                 Validar y Estampar Firma Radiológica
               </Button>
             ) : (
               <div className="flex justify-end gap-2 pt-2">
                 <Button
                   variant="outline"
-                  className="rounded-xl gap-2"
+                  className="gap-2"
                   onClick={() => { setReportePrint(informeDialog); setInformeDialog(null); }}
                 >
                   <Printer className="h-4 w-4" /> Generar Documento para Impresión
@@ -793,7 +793,7 @@ export default function Imagenologia() {
                 <div className="flex justify-end gap-2">
                   <Button
                     onClick={() => window.print()}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-2 text-xs"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 text-xs"
                   >
                     <Printer className="h-4 w-4" /> Imprimir Informe
                   </Button>

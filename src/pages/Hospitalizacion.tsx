@@ -127,7 +127,7 @@ export default function Hospitalizacion() {
             <Button
               variant="outline"
               onClick={() => navigate("/censo-camas")}
-              className="rounded-xl border-border/80 text-xs font-semibold"
+              className="border-border/80 text-xs font-semibold"
             >
               <BedDouble className="h-4 w-4 mr-1.5 text-teal-600" />
               Mapa de Camas
@@ -174,11 +174,11 @@ export default function Hospitalizacion() {
       {/* Pestañas y Filtros */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <TabsList className="bg-card border border-border/80 rounded-xl p-1">
-            <TabsTrigger value="activas" className="rounded-lg gap-2">
+          <TabsList className="bg-card border border-border/80 p-1">
+            <TabsTrigger value="activas" className="gap-2">
               <HeartPulse className="w-4 h-4 text-emerald-600" /> Pacientes Activos ({kpis.totalActivas})
             </TabsTrigger>
-            <TabsTrigger value="historico" className="rounded-lg gap-2">
+            <TabsTrigger value="historico" className="gap-2">
               <Clock className="w-4 h-4" /> Historial de Egresos
             </TabsTrigger>
           </TabsList>
@@ -188,14 +188,14 @@ export default function Hospitalizacion() {
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Buscar paciente, cédula o motivo..."
-                className="pl-9 rounded-xl h-9 text-xs"
+                className="pl-9 h-9 text-xs"
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
               />
             </div>
 
             <Select value={filtroServicio} onValueChange={setFiltroServicio}>
-              <SelectTrigger className="w-44 rounded-xl h-9 text-xs">
+              <SelectTrigger className="w-44 h-9 text-xs">
                 <SelectValue placeholder="Filtrar servicio" />
               </SelectTrigger>
               <SelectContent>
@@ -380,7 +380,7 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-xl shadow-sm gap-2">
+        <Button className="shadow-sm gap-2">
           <Plus className="h-4 w-4" /> Nueva Admisión
         </Button>
       </DialogTrigger>
@@ -401,7 +401,7 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
               value={form.paciente_id ?? ""}
               onValueChange={(v) => setForm({ ...form, paciente_id: v })}
             >
-              <SelectTrigger className="rounded-xl">
+              <SelectTrigger>
                 <SelectValue placeholder="Seleccione un paciente" />
               </SelectTrigger>
               <SelectContent>
@@ -421,7 +421,7 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
                 value={form.tipo}
                 onValueChange={(v) => setForm({ ...form, tipo: v })}
               >
-                <SelectTrigger className="rounded-xl">
+                <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -440,7 +440,7 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
                 value={form.cama_id ?? "none"}
                 onValueChange={(v) => setForm({ ...form, cama_id: v === "none" ? null : v })}
               >
-                <SelectTrigger className="rounded-xl">
+                <SelectTrigger>
                   <SelectValue placeholder="Sin cama asignada" />
                 </SelectTrigger>
                 <SelectContent>
@@ -459,7 +459,7 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
             <Label>Motivo de Ingreso *</Label>
             <Input
               placeholder="Ej: Dolor torácico agudo, apendicectomía programada..."
-              className="rounded-xl"
+             
               value={form.motivo_ingreso ?? ""}
               onChange={(e) => setForm({ ...form, motivo_ingreso: e.target.value })}
             />
@@ -469,7 +469,7 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
             <Label>Diagnóstico Inicial / Impresión Médica</Label>
             <Textarea
               placeholder="Detalles clínicos o antecedentes relevantes al ingreso..."
-              className="rounded-xl resize-none"
+              className="resize-none"
               rows={3}
               value={form.diagnostico_ingreso ?? ""}
               onChange={(e) => setForm({ ...form, diagnostico_ingreso: e.target.value })}
@@ -478,10 +478,10 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
         </div>
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => setOpen(false)} className="rounded-xl">
+          <Button variant="outline" onClick={() => setOpen(false)}>
             Cancelar
           </Button>
-          <Button onClick={submit} className="rounded-xl">
+          <Button onClick={submit}>
             Confirmar Ingreso
           </Button>
         </DialogFooter>
@@ -520,7 +520,7 @@ function DarAltaDialog({ admisionId, onDone }: { admisionId: string; onDone: () 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" className="rounded-xl gap-1 text-xs">
+        <Button size="sm" variant="outline" className="gap-1 text-xs">
           <LogOut className="h-3.5 w-3.5 text-muted-foreground" />
           Dar de Alta
         </Button>
@@ -539,7 +539,7 @@ function DarAltaDialog({ admisionId, onDone }: { admisionId: string; onDone: () 
           <div className="space-y-1.5">
             <Label>Tipo de Egreso</Label>
             <Select value={tipoAlta} onValueChange={setTipoAlta}>
-              <SelectTrigger className="rounded-xl">
+              <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -555,7 +555,7 @@ function DarAltaDialog({ admisionId, onDone }: { admisionId: string; onDone: () 
             <Label>Notas de Egreso o Epicrisis</Label>
             <Textarea
               placeholder="Tratamiento ambulatorio, recomendaciones o justificación del alta..."
-              className="rounded-xl resize-none"
+              className="resize-none"
               rows={3}
               value={notasAlta}
               onChange={(e) => setNotasAlta(e.target.value)}
@@ -564,10 +564,10 @@ function DarAltaDialog({ admisionId, onDone }: { admisionId: string; onDone: () 
         </div>
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => setOpen(false)} className="rounded-xl">
+          <Button variant="outline" onClick={() => setOpen(false)}>
             Cancelar
           </Button>
-          <Button onClick={procesarAlta} disabled={loading} className="rounded-xl bg-emerald-600 hover:bg-emerald-700">
+          <Button onClick={procesarAlta} disabled={loading} className="bg-emerald-600 hover:bg-emerald-700">
             {loading ? "Procesando..." : "Confirmar Egreso"}
           </Button>
         </DialogFooter>
@@ -603,7 +603,7 @@ function UciNotaDialog({ admisionId, pacienteId }: { admisionId: string; pacient
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" className="rounded-xl gap-1 text-xs border-rose-500/30 text-rose-700 dark:text-rose-400 hover:bg-rose-500/10">
+        <Button size="sm" variant="outline" className="gap-1 text-xs border-rose-500/30 text-rose-700 dark:text-rose-400 hover:bg-rose-500/10">
           <Activity className="h-3.5 w-3.5 text-rose-600" />
           Nota UCI
         </Button>
@@ -622,7 +622,7 @@ function UciNotaDialog({ admisionId, pacienteId }: { admisionId: string; pacient
               <Input
                 type="number"
                 placeholder="0-24"
-                className="rounded-xl font-mono text-xs"
+                className="font-mono text-xs"
                 value={form.sofa ?? ""}
                 onChange={(e) => setForm({ ...form, sofa: e.target.value })}
               />
@@ -632,7 +632,7 @@ function UciNotaDialog({ admisionId, pacienteId }: { admisionId: string; pacient
               <Input
                 type="number"
                 placeholder="0-71"
-                className="rounded-xl font-mono text-xs"
+                className="font-mono text-xs"
                 value={form.apache ?? ""}
                 onChange={(e) => setForm({ ...form, apache: e.target.value })}
               />
@@ -644,7 +644,7 @@ function UciNotaDialog({ admisionId, pacienteId }: { admisionId: string; pacient
                 max={15}
                 min={3}
                 placeholder="3-15"
-                className="rounded-xl font-mono text-xs"
+                className="font-mono text-xs"
                 value={form.glasgow ?? ""}
                 onChange={(e) => setForm({ ...form, glasgow: e.target.value })}
               />
@@ -654,7 +654,7 @@ function UciNotaDialog({ admisionId, pacienteId }: { admisionId: string; pacient
             <Label className="text-xs">Parámetros de Ventilación Mecánica</Label>
             <Input
               placeholder="Modo VCV/PCV, FiO2 40%, PEEP 6, VT 420..."
-              className="rounded-xl text-xs"
+              className="text-xs"
               value={form.ventilacion ?? ""}
               onChange={(e) => setForm({ ...form, ventilacion: e.target.value })}
             />
@@ -663,7 +663,7 @@ function UciNotaDialog({ admisionId, pacienteId }: { admisionId: string; pacient
             <Label className="text-xs">Comentarios Clínicos</Label>
             <Textarea
               placeholder="Estabilidad hemodinámica, soporte vasopresor, etc..."
-              className="rounded-xl resize-none text-xs"
+              className="resize-none text-xs"
               rows={2}
               value={form.notas ?? ""}
               onChange={(e) => setForm({ ...form, notas: e.target.value })}
@@ -671,10 +671,10 @@ function UciNotaDialog({ admisionId, pacienteId }: { admisionId: string; pacient
           </div>
         </div>
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => setOpen(false)} className="rounded-xl">
+          <Button variant="outline" onClick={() => setOpen(false)}>
             Cancelar
           </Button>
-          <Button onClick={save} className="rounded-xl">
+          <Button onClick={save}>
             Guardar Nota UCI
           </Button>
         </DialogFooter>

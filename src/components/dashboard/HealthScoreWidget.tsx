@@ -30,7 +30,7 @@ export function HealthScoreWidget() {
           variant="outline"
           size="sm"
           onClick={() => navigate("/pacientes")}
-          className="rounded-xl text-xs font-semibold gap-1 self-start sm:self-auto"
+          className="text-xs font-semibold gap-1 self-start sm:self-auto"
         >
           Ver Analíticas <ArrowUpRight className="h-3.5 w-3.5" />
         </Button>

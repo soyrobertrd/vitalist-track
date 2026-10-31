@@ -72,14 +72,14 @@ export function PhysicianProfileCard({
           variant="outline"
           size="sm"
           onClick={() => navigate("/calendario")}
-          className="h-9 rounded-xl text-xs font-semibold gap-1.5"
+          className="h-9 text-xs font-semibold gap-1.5"
         >
           <Calendar className="h-3.5 w-3.5" /> Agenda
         </Button>
         <Button
           size="sm"
           onClick={() => navigate("/recepcion")}
-          className="h-9 rounded-xl text-xs font-semibold gap-1.5 bg-primary text-primary-foreground"
+          className="h-9 text-xs font-semibold gap-1.5 bg-primary text-primary-foreground"
         >
           <MessageSquare className="h-3.5 w-3.5" /> Consulta
         </Button>

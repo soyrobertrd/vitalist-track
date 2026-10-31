@@ -256,7 +256,7 @@ export function ModoBrigadaCampo({
                     variant="outline"
                     onClick={handleSincronizarOutbox}
                     disabled={sincronizando}
-                    className="h-6 px-2 rounded-lg text-[10px] gap-1 bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300"
+                    className="h-6 px-2 text-[10px] gap-1 bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300"
                   >
                     <RefreshCw className={`h-2.5 w-2.5 ${sincronizando ? "animate-spin" : ""}`} />
                     Sincronizar ({pendientesOffline})
@@ -272,7 +272,7 @@ export function ModoBrigadaCampo({
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground whitespace-nowrap">Profesional de campo:</span>
             <Select value={profesionalActivoId} onValueChange={onCambiarProfesional}>
-              <SelectTrigger className="w-52 h-9 rounded-xl text-xs bg-card">
+              <SelectTrigger className="w-52 h-9 text-xs bg-card">
                 <SelectValue placeholder="Seleccionar profesional..." />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
@@ -376,7 +376,7 @@ export function ModoBrigadaCampo({
                   <Button
                     size="sm"
                     variant="outline"
-                    className="rounded-xl text-xs h-8 gap-1.5 border-border/80"
+                    className="text-xs h-8 gap-1.5 border-border/80"
                     onClick={() => handleAbrirGps(visita.direccion)}
                   >
                     <Navigation className="h-3.5 w-3.5 text-blue-600" />
@@ -387,7 +387,7 @@ export function ModoBrigadaCampo({
                     <Button
                       size="sm"
                       variant="outline"
-                      className="rounded-xl text-xs h-8 gap-1.5 border-border/80 text-emerald-700 dark:text-emerald-400"
+                      className="text-xs h-8 gap-1.5 border-border/80 text-emerald-700 dark:text-emerald-400"
                       onClick={() => handleVoyEnCamino(visita)}
                     >
                       <MessageCircle className="h-3.5 w-3.5 text-emerald-600" />
@@ -399,7 +399,7 @@ export function ModoBrigadaCampo({
                   {!isAtencion && !isDone && (
                     <Button
                       size="sm"
-                      className="rounded-xl text-xs h-8 gap-1.5 shadow-none ml-auto"
+                      className="text-xs h-8 gap-1.5 shadow-none ml-auto"
                       onClick={() => handleCheckIn(visita)}
                     >
                       <MapPin className="h-3.5 w-3.5" />
@@ -412,7 +412,7 @@ export function ModoBrigadaCampo({
                       <Button
                         size="sm"
                         variant="outline"
-                        className="rounded-xl text-xs h-8 gap-1.5 text-purple-600 border-purple-500/30 bg-purple-500/10"
+                        className="text-xs h-8 gap-1.5 text-purple-600 border-purple-500/30 bg-purple-500/10"
                         onClick={() => setVisitaParaFirmar(visita)}
                       >
                         <PenTool className="h-3.5 w-3.5" />
@@ -421,7 +421,7 @@ export function ModoBrigadaCampo({
 
                       <Button
                         size="sm"
-                        className="rounded-xl text-xs h-8 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-none"
+                        className="text-xs h-8 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-none"
                         onClick={() => handleCheckOut(visita)}
                       >
                         <CheckCircle2 className="h-3.5 w-3.5" />
@@ -450,7 +450,7 @@ export function ModoBrigadaCampo({
                           placeholder="120/80"
                           value={visita.signos_vitales?.pa || ""}
                           onChange={e => handleUpdateSignos(visita.id, "pa", e.target.value)}
-                          className="h-8 text-xs rounded-xl font-mono"
+                          className="h-8 text-xs font-mono"
                         />
                       </div>
                       <div>
@@ -459,7 +459,7 @@ export function ModoBrigadaCampo({
                           placeholder="75"
                           value={visita.signos_vitales?.fc || ""}
                           onChange={e => handleUpdateSignos(visita.id, "fc", e.target.value)}
-                          className="h-8 text-xs rounded-xl font-mono"
+                          className="h-8 text-xs font-mono"
                         />
                       </div>
                       <div>
@@ -468,7 +468,7 @@ export function ModoBrigadaCampo({
                           placeholder="98"
                           value={visita.signos_vitales?.spo2 || ""}
                           onChange={e => handleUpdateSignos(visita.id, "spo2", e.target.value)}
-                          className="h-8 text-xs rounded-xl font-mono"
+                          className="h-8 text-xs font-mono"
                         />
                       </div>
                       <div>
@@ -477,7 +477,7 @@ export function ModoBrigadaCampo({
                           placeholder="110"
                           value={visita.signos_vitales?.glucosa || ""}
                           onChange={e => handleUpdateSignos(visita.id, "glucosa", e.target.value)}
-                          className="h-8 text-xs rounded-xl font-mono"
+                          className="h-8 text-xs font-mono"
                         />
                       </div>
                     </div>

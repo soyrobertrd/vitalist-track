@@ -169,7 +169,7 @@ export default function EscalasMedicas() {
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground hidden sm:inline">Paciente activo:</span>
             <Select value={pacienteSeleccionado} onValueChange={setPacienteSeleccionado}>
-              <SelectTrigger className="w-56 rounded-xl border-border/80 text-xs">
+              <SelectTrigger className="w-56 border-border/80 text-xs">
                 <SelectValue placeholder="Seleccionar paciente..." />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
@@ -219,32 +219,32 @@ export default function EscalasMedicas() {
 
       {/* Contenido Principal con Tabs de Escalas */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-          <TabsTrigger value="glasgow" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 border border-border/70 h-auto">
+          <TabsTrigger value="glasgow" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <Brain className="h-4 w-4 text-purple-500" />
             Glasgow (GCS)
           </TabsTrigger>
-          <TabsTrigger value="braden" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="braden" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <ShieldAlert className="h-4 w-4 text-amber-500" />
             Braden (UPP)
           </TabsTrigger>
-          <TabsTrigger value="news2" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="news2" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <HeartPulse className="h-4 w-4 text-rose-500" />
             NEWS2 (Sepsis/Deterioro)
           </TabsTrigger>
-          <TabsTrigger value="eva" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="eva" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <Flame className="h-4 w-4 text-orange-500" />
             Dolor EVA (0-10)
           </TabsTrigger>
-          <TabsTrigger value="barthel" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="barthel" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <Activity className="h-4 w-4 text-emerald-500" />
             Barthel (Dependencia)
           </TabsTrigger>
-          <TabsTrigger value="especialidades" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="especialidades" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <Layers className="h-4 w-4 text-teal-500" />
             Por Especialidad (Cardio, Diabetes, Pedia...)
           </TabsTrigger>
-          <TabsTrigger value="historial" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="historial" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <History className="h-4 w-4 text-blue-500" />
             Historial de Evaluaciones ({historial.length})
           </TabsTrigger>
@@ -595,7 +595,7 @@ export default function EscalasMedicas() {
                       <Button
                         size="sm"
                         variant="ghost"
-                        className="rounded-xl h-8 w-8 p-0"
+                        className="h-8 w-8 p-0"
                         title="Copiar resumen"
                         onClick={() =>
                           handleCopiarResumen(

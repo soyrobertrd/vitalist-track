@@ -4,6 +4,7 @@ import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -143,10 +144,10 @@ export default function RRHH() {
         subtitle="Departamentos, puestos de trabajo, expedientes de personal y solicitudes de vacaciones o permisos"
         icon={Users}
       >
-        <Button variant="outline" className="rounded-xl border-border/80 shadow-none gap-2" onClick={() => setOpenDept(true)}>
+        <Button variant="outline" className="border-border/80 shadow-none gap-2" onClick={() => setOpenDept(true)}>
           <Plus className="h-4 w-4" /> Nuevo Depto
         </Button>
-        <Button className="rounded-xl shadow-none gap-2" onClick={() => setOpenPuesto(true)}>
+        <Button className="shadow-none gap-2" onClick={() => setOpenPuesto(true)}>
           <Plus className="h-4 w-4" /> Nuevo Puesto
         </Button>
       </ClinicalPageHeader>
@@ -180,24 +181,24 @@ export default function RRHH() {
       </div>
 
       <Tabs defaultValue="departamentos" className="space-y-4">
-        <TabsList className="w-full sm:w-auto flex justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-          <TabsTrigger value="departamentos" className="rounded-xl px-4 py-1.5 text-xs font-medium"><Building className="h-4 w-4 mr-1.5" /> Departamentos</TabsTrigger>
-          <TabsTrigger value="puestos" className="rounded-xl px-4 py-1.5 text-xs font-medium"><Briefcase className="h-4 w-4 mr-1.5" /> Puestos</TabsTrigger>
-          <TabsTrigger value="expedientes" className="rounded-xl px-4 py-1.5 text-xs font-medium"><FolderOpen className="h-4 w-4 mr-1.5" /> Expedientes</TabsTrigger>
-          <TabsTrigger value="permisos" className="rounded-xl px-4 py-1.5 text-xs font-medium"><CalendarDays className="h-4 w-4 mr-1.5" /> Vacaciones / Permisos</TabsTrigger>
+        <TabsList className="w-full sm:w-auto flex justify-start gap-1 p-1.5 bg-muted/40 border border-border/70 h-auto">
+          <TabsTrigger value="departamentos" className="px-4 py-1.5 text-xs font-medium"><Building className="h-4 w-4 mr-1.5" /> Departamentos</TabsTrigger>
+          <TabsTrigger value="puestos" className="px-4 py-1.5 text-xs font-medium"><Briefcase className="h-4 w-4 mr-1.5" /> Puestos</TabsTrigger>
+          <TabsTrigger value="expedientes" className="px-4 py-1.5 text-xs font-medium"><FolderOpen className="h-4 w-4 mr-1.5" /> Expedientes</TabsTrigger>
+          <TabsTrigger value="permisos" className="px-4 py-1.5 text-xs font-medium"><CalendarDays className="h-4 w-4 mr-1.5" /> Vacaciones / Permisos</TabsTrigger>
         </TabsList>
 
         {/* Departamentos */}
         <TabsContent value="departamentos" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Dialog open={openDept} onOpenChange={setOpenDept}>
-              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo departamento</Button></DialogTrigger>
+              <DialogTrigger asChild><Button size="sm" className="shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo departamento</Button></DialogTrigger>
               <DialogContent className="rounded-2xl">
                 <DialogHeader><DialogTitle>Nuevo departamento</DialogTitle></DialogHeader>
                 <div className="grid gap-3">
                   <div><Label>Nombre</Label><Input value={deptForm.nombre} onChange={(e) => setDeptForm({ ...deptForm, nombre: e.target.value })} /></div>
                   <div><Label>Descripción</Label><Textarea value={deptForm.descripcion} onChange={(e) => setDeptForm({ ...deptForm, descripcion: e.target.value })} /></div>
-                  <Button onClick={crearDept} className="rounded-xl">Guardar</Button>
+                  <Button onClick={crearDept}>Guardar</Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -223,7 +224,7 @@ export default function RRHH() {
         <TabsContent value="puestos" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Dialog open={openPuesto} onOpenChange={setOpenPuesto}>
-              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo puesto</Button></DialogTrigger>
+              <DialogTrigger asChild><Button size="sm" className="shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo puesto</Button></DialogTrigger>
               <DialogContent className="rounded-2xl">
                 <DialogHeader><DialogTitle>Nuevo puesto laboral</DialogTitle></DialogHeader>
                 <div className="grid gap-3">
@@ -240,7 +241,7 @@ export default function RRHH() {
                     <div><Label>Salario mín.</Label><Input type="number" value={puestoForm.salario_min} onChange={(e) => setPuestoForm({ ...puestoForm, salario_min: +e.target.value })} /></div>
                   </div>
                   <div><Label>Salario máx.</Label><Input type="number" value={puestoForm.salario_max} onChange={(e) => setPuestoForm({ ...puestoForm, salario_max: +e.target.value })} /></div>
-                  <Button onClick={crearPuesto} className="rounded-xl">Guardar</Button>
+                  <Button onClick={crearPuesto}>Guardar</Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -267,7 +268,7 @@ export default function RRHH() {
         <TabsContent value="expedientes" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Dialog open={openExpediente} onOpenChange={setOpenExpediente}>
-              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo expediente</Button></DialogTrigger>
+              <DialogTrigger asChild><Button size="sm" className="shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo expediente</Button></DialogTrigger>
               <DialogContent className="rounded-2xl">
                 <DialogHeader><DialogTitle>Nuevo expediente de personal</DialogTitle></DialogHeader>
                 <div className="grid gap-3">
@@ -301,7 +302,7 @@ export default function RRHH() {
                     <div><Label>Inicio contrato</Label><Input type="date" value={expForm.fecha_inicio_contrato} onChange={(e) => setExpForm({ ...expForm, fecha_inicio_contrato: e.target.value })} /></div>
                   </div>
                   <div><Label>Notas</Label><Textarea value={expForm.notas} onChange={(e) => setExpForm({ ...expForm, notas: e.target.value })} /></div>
-                  <Button onClick={crearExpediente} className="rounded-xl">Guardar</Button>
+                  <Button onClick={crearExpediente}>Guardar</Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -329,7 +330,7 @@ export default function RRHH() {
         <TabsContent value="permisos" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Dialog open={openPermiso} onOpenChange={setOpenPermiso}>
-              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" /> Nueva solicitud</Button></DialogTrigger>
+              <DialogTrigger asChild><Button size="sm" className="shadow-none"><Plus className="h-4 w-4 mr-1" /> Nueva solicitud</Button></DialogTrigger>
               <DialogContent className="rounded-2xl">
                 <DialogHeader><DialogTitle>Solicitar permiso / vacaciones</DialogTitle></DialogHeader>
                 <div className="grid gap-3">
@@ -355,7 +356,7 @@ export default function RRHH() {
                     <div><Label>Días</Label><Input type="number" value={permForm.dias} onChange={(e) => setPermForm({ ...permForm, dias: +e.target.value })} /></div>
                   </div>
                   <div><Label>Notas</Label><Textarea value={permForm.notas} onChange={(e) => setPermForm({ ...permForm, notas: e.target.value })} /></div>
-                  <Button onClick={crearPermiso} className="rounded-xl">Enviar solicitud</Button>
+                  <Button onClick={crearPermiso}>Enviar solicitud</Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -376,8 +377,8 @@ export default function RRHH() {
                     <TableCell className="text-right">
                       {p.estado === "solicitado" && (
                         <div className="flex justify-end gap-1">
-                          <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-emerald-500/10 text-emerald-600" onClick={() => cambiarEstadoPermiso(p.id, "aprobado")} title="Aprobar"><Check className="h-4 w-4" /></Button>
-                          <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-rose-500/10 text-rose-600" onClick={() => cambiarEstadoPermiso(p.id, "rechazado")} title="Rechazar"><X className="h-4 w-4" /></Button>
+                          <IconButton label="Confirmar" size="icon" variant="ghost" className="h-8 w-8 hover:bg-emerald-500/10 text-emerald-600" onClick={() => cambiarEstadoPermiso(p.id, "aprobado")} title="Aprobar"><Check className="h-4 w-4" /></IconButton>
+                          <IconButton label="Cerrar" size="icon" variant="ghost" className="h-8 w-8 hover:bg-rose-500/10 text-rose-600" onClick={() => cambiarEstadoPermiso(p.id, "rechazado")} title="Rechazar"><X className="h-4 w-4" /></IconButton>
                         </div>
                       )}
                     </TableCell>

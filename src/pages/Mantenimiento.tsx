@@ -245,14 +245,14 @@ export default function Mantenimiento() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewEquipo(true)}
             >
               <Cpu className="h-4 w-4 mr-1.5 text-amber-600" />
               Nuevo Equipo
             </Button>
             <Button 
-              className="rounded-xl bg-amber-600 hover:bg-amber-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-amber-600 hover:bg-amber-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewOrden(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -301,14 +301,14 @@ export default function Mantenimiento() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por código OT, equipo, serie o técnico..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="w-full sm:w-56">
           <Select value={filterEstado} onValueChange={setFilterEstado}>
-            <SelectTrigger className="rounded-xl border-border/80 h-10">
+            <SelectTrigger className="border-border/80 h-10">
               <SelectValue placeholder="Estado de la orden" />
             </SelectTrigger>
             <SelectContent>
@@ -323,20 +323,20 @@ export default function Mantenimiento() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="ordenes" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="ordenes" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Wrench className="h-4 w-4 mr-1.5 text-amber-600" />
             Órdenes de Trabajo ({ordenesFiltradas.length})
           </TabsTrigger>
-          <TabsTrigger value="equipos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="equipos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Cpu className="h-4 w-4 mr-1.5 text-blue-600" />
             Inventario Biomédico ({equiposFiltrados.length})
           </TabsTrigger>
-          <TabsTrigger value="metricas" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="metricas" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <PieChartIcon className="h-4 w-4 mr-1.5 text-purple-500" />
             Analítica de Mantenimiento
           </TabsTrigger>
-          <TabsTrigger value="estandares" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="estandares" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <ShieldCheck className="h-4 w-4 mr-1.5 text-emerald-600" />
             Protocolos de Seguridad Eléctrica
           </TabsTrigger>
@@ -597,7 +597,7 @@ export default function Mantenimiento() {
                 value={formDataOrden.equipo_id} 
                 onValueChange={(val) => setFormDataOrden(p => ({ ...p, equipo_id: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue placeholder="Seleccione el equipo averiado o a calibrar" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
@@ -617,7 +617,7 @@ export default function Mantenimiento() {
                   value={formDataOrden.tipo} 
                   onValueChange={(val) => setFormDataOrden(p => ({ ...p, tipo: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -634,7 +634,7 @@ export default function Mantenimiento() {
                   value={formDataOrden.prioridad} 
                   onValueChange={(val) => setFormDataOrden(p => ({ ...p, prioridad: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -650,7 +650,7 @@ export default function Mantenimiento() {
               <Label>Técnico Biomédico Asignado</Label>
               <Input
                 placeholder="Nombre del ingeniero o empresa externa..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataOrden.tecnico_asignado}
                 onChange={(e) => setFormDataOrden(p => ({ ...p, tecnico_asignado: e.target.value }))}
               />
@@ -660,7 +660,7 @@ export default function Mantenimiento() {
               <Label>Descripción de la Falla / Protocolo Solicitado *</Label>
               <Textarea
                 placeholder="Describa el comportamiento del equipo, códigos de error en pantalla..."
-                className="rounded-xl border-border/80 resize-none h-24"
+                className="border-border/80 resize-none h-24"
                 value={formDataOrden.descripcion}
                 onChange={(e) => setFormDataOrden(p => ({ ...p, descripcion: e.target.value }))}
               />
@@ -668,11 +668,11 @@ export default function Mantenimiento() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewOrden(false)}>
+            <Button variant="outline" onClick={() => setShowNewOrden(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-amber-600 hover:bg-amber-700 text-white" 
+              className="bg-amber-600 hover:bg-amber-700 text-white" 
               onClick={() => crearOrden.mutate()}
               disabled={crearOrden.isPending || !formDataOrden.descripcion}
             >
@@ -700,7 +700,7 @@ export default function Mantenimiento() {
               <Label>Nombre del Equipo *</Label>
               <Input
                 placeholder="Ej. Monitor Multiparámetro, Ventilador Mecánico..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataEquipo.nombre}
                 onChange={(e) => setFormDataEquipo(p => ({ ...p, nombre: e.target.value }))}
               />
@@ -711,7 +711,7 @@ export default function Mantenimiento() {
                 <Label>Marca</Label>
                 <Input
                   placeholder="Ej. Philips, Mindray, Dräger"
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataEquipo.marca}
                   onChange={(e) => setFormDataEquipo(p => ({ ...p, marca: e.target.value }))}
                 />
@@ -720,7 +720,7 @@ export default function Mantenimiento() {
                 <Label>Modelo</Label>
                 <Input
                   placeholder="Ej. IntelliVue MX40"
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataEquipo.modelo}
                   onChange={(e) => setFormDataEquipo(p => ({ ...p, modelo: e.target.value }))}
                 />
@@ -732,7 +732,7 @@ export default function Mantenimiento() {
                 <Label>Número de Serie (S/N)</Label>
                 <Input
                   placeholder="Ej. SN-89472891"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataEquipo.numero_serie}
                   onChange={(e) => setFormDataEquipo(p => ({ ...p, numero_serie: e.target.value }))}
                 />
@@ -741,7 +741,7 @@ export default function Mantenimiento() {
                 <Label>Ubicación / Sala</Label>
                 <Input
                   placeholder="Ej. Quirófano 02, UCI Cama 4"
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataEquipo.ubicacion}
                   onChange={(e) => setFormDataEquipo(p => ({ ...p, ubicacion: e.target.value }))}
                 />
@@ -750,11 +750,11 @@ export default function Mantenimiento() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewEquipo(false)}>
+            <Button variant="outline" onClick={() => setShowNewEquipo(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-amber-600 hover:bg-amber-700 text-white" 
+              className="bg-amber-600 hover:bg-amber-700 text-white" 
               onClick={() => crearEquipo.mutate()}
               disabled={crearEquipo.isPending || !formDataEquipo.nombre}
             >

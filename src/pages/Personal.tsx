@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Mail, Phone, Edit, Calendar } from "lucide-react";
@@ -332,7 +333,7 @@ const Personal = () => {
                   {p.nombre} {p.apellido}
                 </CardTitle>
                 <div className="flex gap-2">
-                  <Button
+                  <IconButton label="Calendario"
                     size="icon"
                     variant="ghost"
                     onClick={(e) => {
@@ -343,8 +344,8 @@ const Personal = () => {
                     title="Gestionar ausencias"
                   >
                     <Calendar className="h-4 w-4" />
-                  </Button>
-                  <Button
+                  </IconButton>
+                  <IconButton label="Editar"
                     size="icon"
                     variant="ghost"
                     onClick={(e) => {
@@ -355,7 +356,7 @@ const Personal = () => {
                     title="Editar"
                   >
                     <Edit className="h-4 w-4" />
-                  </Button>
+                  </IconButton>
                   <Badge variant={p.activo ? "default" : "secondary"}>
                     {p.activo ? "Activo" : "Inactivo"}
                   </Badge>

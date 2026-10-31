@@ -204,7 +204,7 @@ export const VisitaCardAgendada = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 flex-1 rounded-full bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
+            className="h-8 flex-1 bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
             onClick={(e) => { e.stopPropagation(); setRecordatorioOpen(true); }}
           >
             <Mail className="mr-1.5 h-4 w-4" aria-hidden="true" /> Recordatorio
@@ -212,20 +212,20 @@ export const VisitaCardAgendada = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 flex-1 rounded-full bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
+            className="h-8 flex-1 bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary"
             onClick={(e) => { e.stopPropagation(); setTicketOpen(true); }}
           >
             <Ticket className="mr-1.5 h-4 w-4" aria-hidden="true" /> Ticket
           </Button>
           {mainPhone && (
-            <Button asChild variant="ghost" size="icon" className="h-8 w-8 shrink-0 rounded-full">
+            <Button asChild variant="ghost" size="icon" className="h-8 w-8 shrink-0">
               <a href={`tel:${mainPhone.replace(/\D/g, "")}`} onClick={(e) => e.stopPropagation()} aria-label="Llamar al paciente" title="Llamar">
                 <Phone className="h-4 w-4" />
               </a>
             </Button>
           )}
           {whatsAppEnabled && whatsAppLink && (
-            <Button asChild variant="ghost" size="icon" className="h-8 w-8 shrink-0 rounded-full text-success hover:text-success">
+            <Button asChild variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-success hover:text-success">
               <a href={whatsAppLink} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} aria-label="Enviar mensaje por WhatsApp" title="WhatsApp">
                 <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4" />
               </a>

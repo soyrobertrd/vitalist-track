@@ -96,7 +96,7 @@ export function EnfermeriaPediatricaNeonatalTab() {
             </div>
 
             <Button
-              className="w-full rounded-xl text-xs shadow-none gap-1.5"
+              className="w-full text-xs shadow-none gap-1.5"
               onClick={() => {
                 setFototerapiaHoras(h => h + 1);
                 toast.success("Hora de fototerapia registrada.");
@@ -125,7 +125,7 @@ export function EnfermeriaPediatricaNeonatalTab() {
                 min="1"
                 value={pesoPediatrico}
                 onChange={e => setPesoPediatrico(e.target.value)}
-                className="rounded-xl mt-1 text-xs font-mono font-bold"
+                className="mt-1 text-xs font-mono font-bold"
               />
             </div>
 
@@ -189,7 +189,7 @@ export function EnfermeriaPediatricaNeonatalTab() {
                 <div key={item.k} className="flex justify-between items-center text-[11px] p-1.5 bg-muted/30 rounded-lg">
                   <span className="font-semibold">{item.l}:</span>
                   <select
-                    className="bg-card text-foreground border border-border/70 rounded-md text-[10px] px-1 py-0.5"
+                    className="bg-card text-foreground border border-border/70 rounded-control text-[10px] px-1 py-0.5"
                     value={flaccScores[item.k as keyof typeof flaccScores]}
                     onChange={e => setFlaccScores({ ...flaccScores, [item.k]: Number(e.target.value) })}
                   >
@@ -202,7 +202,7 @@ export function EnfermeriaPediatricaNeonatalTab() {
             </div>
 
             <Button
-              className="w-full rounded-xl text-xs shadow-none"
+              className="w-full text-xs shadow-none"
               onClick={() => toast.success(`Puntuación FLACC ${totalFlacc}/10 registrada en ficha pediátrica.`)}
             >
               Registrar Evaluación FLACC

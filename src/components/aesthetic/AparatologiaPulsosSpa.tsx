@@ -207,7 +207,7 @@ export default function AparatologiaPulsosSpa() {
         <div className="flex items-center gap-2">
           <Dialog open={openNuevoEquipoModal} onOpenChange={setOpenNuevoEquipoModal}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="rounded-xl h-9 text-xs gap-1.5 shadow-none">
+              <Button variant="outline" size="sm" className="h-9 text-xs gap-1.5 shadow-none">
                 <Plus className="h-3.5 w-3.5" />
                 Registrar Aparato
               </Button>
@@ -226,7 +226,7 @@ export default function AparatologiaPulsosSpa() {
                     placeholder="Ej. Láser Diodo Trio Ice"
                     value={nuevoEquipo.nombre}
                     onChange={(e) => setNuevoEquipo({ ...nuevoEquipo, nombre: e.target.value })}
-                    className="h-9 text-xs rounded-xl"
+                    className="h-9 text-xs"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -236,7 +236,7 @@ export default function AparatologiaPulsosSpa() {
                       value={nuevoEquipo.tipo}
                       onValueChange={(v: any) => setNuevoEquipo({ ...nuevoEquipo, tipo: v })}
                     >
-                      <SelectTrigger className="h-9 text-xs rounded-xl">
+                      <SelectTrigger className="h-9 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -254,7 +254,7 @@ export default function AparatologiaPulsosSpa() {
                       placeholder="SN-XXXX"
                       value={nuevoEquipo.numeroSerie}
                       onChange={(e) => setNuevoEquipo({ ...nuevoEquipo, numeroSerie: e.target.value })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                 </div>
@@ -265,7 +265,7 @@ export default function AparatologiaPulsosSpa() {
                       placeholder="Ej. Manípulo 808nm"
                       value={nuevoEquipo.cabezalActual}
                       onChange={(e) => setNuevoEquipo({ ...nuevoEquipo, cabezalActual: e.target.value })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                   <div className="space-y-1">
@@ -274,7 +274,7 @@ export default function AparatologiaPulsosSpa() {
                       type="number"
                       value={nuevoEquipo.disparosTotalesVida}
                       onChange={(e) => setNuevoEquipo({ ...nuevoEquipo, disparosTotalesVida: parseInt(e.target.value) || 0 })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                 </div>
@@ -285,7 +285,7 @@ export default function AparatologiaPulsosSpa() {
                       type="number"
                       value={nuevoEquipo.costoCabezalUSD}
                       onChange={(e) => setNuevoEquipo({ ...nuevoEquipo, costoCabezalUSD: parseFloat(e.target.value) || 0 })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                   <div className="space-y-1">
@@ -294,15 +294,15 @@ export default function AparatologiaPulsosSpa() {
                       placeholder="Cabina 1"
                       value={nuevoEquipo.cabinaAsignada}
                       onChange={(e) => setNuevoEquipo({ ...nuevoEquipo, cabinaAsignada: e.target.value })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                 </div>
                 <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenNuevoEquipoModal(false)} className="rounded-xl">
+                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenNuevoEquipoModal(false)}>
                     Cancelar
                   </Button>
-                  <Button type="submit" size="sm" className="rounded-xl">
+                  <Button type="submit" size="sm">
                     Guardar
                   </Button>
                 </div>
@@ -312,7 +312,7 @@ export default function AparatologiaPulsosSpa() {
 
           <Dialog open={openDisparoModal} onOpenChange={setOpenDisparoModal}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl h-9 text-xs gap-1.5 shadow-none bg-amber-600 hover:bg-amber-700 text-white">
+              <Button size="sm" className="h-9 text-xs gap-1.5 shadow-none bg-amber-600 hover:bg-amber-700 text-white">
                 <Activity className="h-3.5 w-3.5" />
                 Registrar Sesión & Pulsos
               </Button>
@@ -331,7 +331,7 @@ export default function AparatologiaPulsosSpa() {
                     placeholder="Nombre completo"
                     value={sesionForm.paciente}
                     onChange={(e) => setSesionForm({ ...sesionForm, paciente: e.target.value })}
-                    className="h-9 text-xs rounded-xl"
+                    className="h-9 text-xs"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -341,7 +341,7 @@ export default function AparatologiaPulsosSpa() {
                       value={sesionForm.zonaTratada}
                       onValueChange={(v) => setSesionForm({ ...sesionForm, zonaTratada: v })}
                     >
-                      <SelectTrigger className="h-9 text-xs rounded-xl">
+                      <SelectTrigger className="h-9 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -361,7 +361,7 @@ export default function AparatologiaPulsosSpa() {
                       min={1}
                       value={sesionForm.pulsosAplicados}
                       onChange={(e) => setSesionForm({ ...sesionForm, pulsosAplicados: parseInt(e.target.value) || 0 })}
-                      className="h-9 text-xs rounded-xl font-mono font-bold"
+                      className="h-9 text-xs font-mono font-bold"
                     />
                   </div>
                 </div>
@@ -371,7 +371,7 @@ export default function AparatologiaPulsosSpa() {
                     <Input
                       value={sesionForm.operador}
                       onChange={(e) => setSesionForm({ ...sesionForm, operador: e.target.value })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                   <div className="space-y-1">
@@ -380,7 +380,7 @@ export default function AparatologiaPulsosSpa() {
                       type="number"
                       value={sesionForm.fluenciaJ}
                       onChange={(e) => setSesionForm({ ...sesionForm, fluenciaJ: parseFloat(e.target.value) || 0 })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                 </div>
@@ -391,10 +391,10 @@ export default function AparatologiaPulsosSpa() {
                   </span>
                 </div>
                 <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenDisparoModal(false)} className="rounded-xl">
+                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenDisparoModal(false)}>
                     Cancelar
                   </Button>
-                  <Button type="submit" size="sm" className="rounded-xl bg-amber-600 hover:bg-amber-700 text-white">
+                  <Button type="submit" size="sm" className="bg-amber-600 hover:bg-amber-700 text-white">
                     Aplicar y Descontar
                   </Button>
                 </div>
@@ -522,7 +522,7 @@ export default function AparatologiaPulsosSpa() {
                   variant="outline"
                   size="sm"
                   onClick={() => resetearCabezal(equipoSeleccionado.id)}
-                  className="rounded-xl text-xs gap-1.5 h-8 border-border/70"
+                  className="text-xs gap-1.5 h-8 border-border/70"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
                   Instalar Nuevo Cabezal (Reset Contador)

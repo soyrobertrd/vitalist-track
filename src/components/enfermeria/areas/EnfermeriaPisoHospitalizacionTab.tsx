@@ -152,7 +152,7 @@ export function EnfermeriaPisoHospitalizacionTab() {
                   ) : (
                     <Button
                       size="sm"
-                      className="rounded-xl text-xs shadow-none gap-1.5"
+                      className="text-xs shadow-none gap-1.5"
                       onClick={() => handleAdministrar(k.id)}
                     >
                       <CheckCircle2 className="h-4 w-4" /> Administrar & Firmar
@@ -199,10 +199,10 @@ export function EnfermeriaPisoHospitalizacionTab() {
                 Grado 0: Sin dolor, sin eritema, sin induración. Vía permeable y apósito limpio transparente.
               </p>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="rounded-xl text-xs h-8" onClick={() => toast.success("Curación y cambio de apósito registrado.")}>
+                <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => toast.success("Curación y cambio de apósito registrado.")}>
                   Curación de Vía
                 </Button>
-                <Button size="sm" variant="outline" className="rounded-xl text-xs h-8 text-rose-600" onClick={() => toast.info("Retiro de catéter indicado.")}>
+                <Button size="sm" variant="outline" className="text-xs h-8 text-rose-600" onClick={() => toast.info("Retiro de catéter indicado.")}>
                   Retirar Catéter
                 </Button>
               </div>
@@ -241,7 +241,7 @@ export function EnfermeriaPisoHospitalizacionTab() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="rounded-xl text-xs h-7 px-2.5"
+                      className="text-xs h-7 px-2.5"
                       onClick={() => handleRegistrarPostural(idx)}
                     >
                       Registrar Cambio

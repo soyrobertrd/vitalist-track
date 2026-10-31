@@ -217,7 +217,7 @@ export default function AlertasClinicas() {
         icon={ShieldAlert}
         action={
           <Button 
-            className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-none text-xs md:text-sm font-medium" 
+            className="bg-rose-600 hover:bg-rose-700 text-white shadow-none text-xs md:text-sm font-medium" 
             onClick={() => setShowNewAlerta(true)}
             disabled={!canActHere && !!verticalProfesional}
           >
@@ -266,14 +266,14 @@ export default function AlertasClinicas() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por paciente, causa o tipo de alerta..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="w-full sm:w-56">
           <Select value={filtroEstado} onValueChange={setFiltroEstado}>
-            <SelectTrigger className="rounded-xl border-border/80 h-10">
+            <SelectTrigger className="border-border/80 h-10">
               <SelectValue placeholder="Estado de la alerta" />
             </SelectTrigger>
             <SelectContent>
@@ -289,16 +289,16 @@ export default function AlertasClinicas() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="alertas" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="alertas" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <BellRing className="h-4 w-4 mr-1.5 text-rose-500" />
             Monitor de Alertas ({alertasFiltradas.length})
           </TabsTrigger>
-          <TabsTrigger value="analitica" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="analitica" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <PieChartIcon className="h-4 w-4 mr-1.5 text-blue-500" />
             Analítica de Seguridad
           </TabsTrigger>
-          <TabsTrigger value="protocolos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="protocolos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <ShieldAlert className="h-4 w-4 mr-1.5 text-teal-600" />
             Protocolos de Código Rápido
           </TabsTrigger>
@@ -353,7 +353,7 @@ export default function AlertasClinicas() {
                           <Button 
                             size="sm" 
                             variant="outline" 
-                            className="rounded-xl border-border/80 h-8 text-xs font-medium"
+                            className="border-border/80 h-8 text-xs font-medium"
                             disabled={!canActHere && !!verticalProfesional}
                             onClick={() => actualizarEstado.mutate({ id: a.id, estado: "reconocida" })}
                           >
@@ -362,7 +362,7 @@ export default function AlertasClinicas() {
                           <Button 
                             size="sm" 
                             variant="ghost" 
-                            className="rounded-xl h-8 text-xs text-muted-foreground hover:bg-muted"
+                            className="h-8 text-xs text-muted-foreground hover:bg-muted"
                             disabled={!canActHere && !!verticalProfesional}
                             onClick={() => actualizarEstado.mutate({ id: a.id, estado: "descartada" })}
                           >
@@ -373,7 +373,7 @@ export default function AlertasClinicas() {
                       {a.estado === "reconocida" && (
                         <Button 
                           size="sm" 
-                          className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white h-8 text-xs font-medium"
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white h-8 text-xs font-medium"
                           disabled={!canActHere && !!verticalProfesional}
                           onClick={() => actualizarEstado.mutate({ id: a.id, estado: "atendida" })}
                         >
@@ -517,7 +517,7 @@ export default function AlertasClinicas() {
                 value={formData.paciente_id} 
                 onValueChange={(val) => setFormData(p => ({ ...p, paciente_id: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue placeholder="Seleccione un paciente (opcional)" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
@@ -537,7 +537,7 @@ export default function AlertasClinicas() {
                   value={formData.severidad} 
                   onValueChange={(val) => setFormData(p => ({ ...p, severidad: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -551,7 +551,7 @@ export default function AlertasClinicas() {
               <div className="space-y-2">
                 <Label>Módulo de Origen</Label>
                 <Input
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formData.modulo_origen}
                   onChange={(e) => setFormData(p => ({ ...p, modulo_origen: e.target.value }))}
                 />
@@ -562,7 +562,7 @@ export default function AlertasClinicas() {
               <Label>Título del Hallazgo Crítico *</Label>
               <Input
                 placeholder="Ej. Hipoxemia severa refractaria SatO2 82%..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formData.titulo}
                 onChange={(e) => setFormData(p => ({ ...p, titulo: e.target.value }))}
               />
@@ -572,7 +572,7 @@ export default function AlertasClinicas() {
               <Label>Descripción & Medidas de Emergencia</Label>
               <Textarea
                 placeholder="Detalle de los signos vitales, requerimiento de intubación o soporte inotrópico..."
-                className="rounded-xl border-border/80 resize-none h-20"
+                className="border-border/80 resize-none h-20"
                 value={formData.descripcion}
                 onChange={(e) => setFormData(p => ({ ...p, descripcion: e.target.value }))}
               />
@@ -580,11 +580,11 @@ export default function AlertasClinicas() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewAlerta(false)}>
+            <Button variant="outline" onClick={() => setShowNewAlerta(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white" 
+              className="bg-rose-600 hover:bg-rose-700 text-white" 
               onClick={() => crearAlerta.mutate()}
               disabled={crearAlerta.isPending || !formData.titulo}
             >

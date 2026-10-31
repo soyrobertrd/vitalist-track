@@ -429,16 +429,16 @@ export default function CatalogosClinicos() {
 
       {/* Pestañas Principales */}
       <Tabs value={tab} onValueChange={(v: any) => setTab(v)} className="space-y-4">
-        <TabsList className="bg-muted/40 p-1.5 rounded-2xl border border-border/70 flex flex-wrap gap-1 h-auto">
-          <TabsTrigger value="cie10" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+        <TabsList className="bg-muted/40 p-1.5 border border-border/70 flex flex-wrap gap-1 h-auto">
+          <TabsTrigger value="cie10" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <FileText className="h-4 w-4 text-teal-600" />
             CIE-10 (Diagnósticos OMS)
           </TabsTrigger>
-          <TabsTrigger value="cpt" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="cpt" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <Stethoscope className="h-4 w-4 text-blue-600" />
             CPT (Procedimientos & Cirugías)
           </TabsTrigger>
-          <TabsTrigger value="simo" className="rounded-xl px-4 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="simo" className="px-4 py-2 text-xs font-semibold gap-1.5">
             <Building2 className="h-4 w-4 text-purple-600" />
             SISALRIL / SIMO (Prestaciones ARS RD)
           </TabsTrigger>
@@ -454,13 +454,13 @@ export default function CatalogosClinicos() {
                   placeholder="Buscar diagnóstico por código (ej. I10) o nombre..."
                   value={qCie}
                   onChange={(e) => setQCie(e.target.value)}
-                  className="pl-9 rounded-xl border-border/80 text-xs"
+                  className="pl-9 border-border/80 text-xs"
                 />
               </div>
 
               <div className="flex flex-wrap gap-2 w-full md:w-auto">
                 <Select value={capituloFilter} onValueChange={setCapituloFilter}>
-                  <SelectTrigger className="w-[220px] rounded-xl border-border/80 text-xs">
+                  <SelectTrigger className="w-[220px] border-border/80 text-xs">
                     <SelectValue placeholder="Capítulo OMS" />
                   </SelectTrigger>
                   <SelectContent>
@@ -478,7 +478,7 @@ export default function CatalogosClinicos() {
                   variant={sinaveOnly ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSinaveOnly(!sinaveOnly)}
-                  className={`rounded-xl text-xs gap-1.5 ${
+                  className={` text-xs gap-1.5 ${
                     sinaveOnly ? "bg-rose-600 hover:bg-rose-700 text-white" : "border-border/80 text-rose-600"
                   }`}
                 >
@@ -557,7 +557,7 @@ export default function CatalogosClinicos() {
                               variant="ghost"
                               size="sm"
                               onClick={() => setSelectedCie(x)}
-                              className="h-7 text-xs rounded-lg hover:bg-muted"
+                              className="h-7 text-xs hover:bg-muted"
                             >
                               Ver Detalle
                             </Button>
@@ -582,12 +582,12 @@ export default function CatalogosClinicos() {
                   placeholder="Buscar procedimiento CPT (ej. 47562 o Colecistectomía)..."
                   value={qCpt}
                   onChange={(e) => setQCpt(e.target.value)}
-                  className="pl-9 rounded-xl border-border/80 text-xs"
+                  className="pl-9 border-border/80 text-xs"
                 />
               </div>
 
               <Select value={categoriaCptFilter} onValueChange={setCategoriaCptFilter}>
-                <SelectTrigger className="w-[200px] rounded-xl border-border/80 text-xs">
+                <SelectTrigger className="w-[200px] border-border/80 text-xs">
                   <SelectValue placeholder="Categoría" />
                 </SelectTrigger>
                 <SelectContent>
@@ -668,7 +668,7 @@ export default function CatalogosClinicos() {
                               variant="ghost"
                               size="sm"
                               onClick={() => setSelectedCpt(x)}
-                              className="h-7 text-xs rounded-lg hover:bg-muted"
+                              className="h-7 text-xs hover:bg-muted"
                             >
                               Detalle
                             </Button>
@@ -693,7 +693,7 @@ export default function CatalogosClinicos() {
                   placeholder="Buscar por código SIMO o prestación de aseguradora..."
                   value={qSimo}
                   onChange={(e) => setQSimo(e.target.value)}
-                  className="pl-9 rounded-xl border-border/80 text-xs"
+                  className="pl-9 border-border/80 text-xs"
                 />
               </div>
               <Badge variant="outline" className="text-xs bg-purple-500/10 text-purple-700 border-purple-500/30">

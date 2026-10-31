@@ -182,7 +182,7 @@ export default function ARAging() {
         icon={Receipt}
         badge="Tesorería & Facturación"
         action={
-          <Button onClick={guardarSnapshot} className="rounded-xl shadow-sm gap-2">
+          <Button onClick={guardarSnapshot} className="shadow-sm gap-2">
             <Camera className="h-4 w-4" /> Guardar Snapshot
           </Button>
         }
@@ -231,11 +231,11 @@ export default function ARAging() {
 
       {/* Vistas en Pestañas */}
       <Tabs defaultValue="analitica" className="space-y-4">
-        <TabsList className="bg-card border border-border/80 rounded-xl p-1">
-          <TabsTrigger value="analitica" className="rounded-lg gap-2">
+        <TabsList className="bg-card border border-border/80 p-1">
+          <TabsTrigger value="analitica" className="gap-2">
             <BarChart3 className="w-4 h-4" /> Distribución & Gráficos
           </TabsTrigger>
-          <TabsTrigger value="historico" className="rounded-lg gap-2">
+          <TabsTrigger value="historico" className="gap-2">
             <History className="w-4 h-4" /> Historial de Snapshots ({snapshots.length})
           </TabsTrigger>
         </TabsList>

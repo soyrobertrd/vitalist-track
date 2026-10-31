@@ -189,7 +189,7 @@ export const ControlCalidadAutoclaveTab: React.FC = () => {
 
         <Dialog open={openModal} onOpenChange={setOpenModal}>
           <DialogTrigger asChild>
-            <Button size="sm" className="rounded-xl shrink-0">
+            <Button size="sm" className="shrink-0">
               <Plus className="h-4 w-4 mr-1.5" />
               Nuevo Control de Autoclave
             </Button>

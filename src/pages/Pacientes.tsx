@@ -191,7 +191,7 @@ const Pacientes = () => {
             {/* Acciones principales agrupadas a la derecha del título */}
             <div className="flex flex-wrap items-center gap-2">
               <AgendarCitaButton size="sm" variant="outline" className="rounded-full" />
-              <Button size="sm" className="rounded-full" onClick={() => { if (canCreate("pacientes")) setOpen(true); }}>
+              <Button size="sm" onClick={() => { if (canCreate("pacientes")) setOpen(true); }}>
                 <Plus className="mr-1.5 h-4 w-4" aria-hidden="true" /> Nuevo paciente
               </Button>
             </div>

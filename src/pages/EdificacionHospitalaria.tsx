@@ -139,16 +139,16 @@ export default function EdificacionHospitalaria() {
 
       {/* Tabs Principales de Edificación */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-          <TabsTrigger value="censo" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 border border-border/70 h-auto">
+          <TabsTrigger value="censo" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Bed className="h-4 w-4 text-blue-600" />
             Censo Visual de Camas en Vivo ({todasLasCamas.length})
           </TabsTrigger>
-          <TabsTrigger value="directorio" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="directorio" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Building2 className="h-4 w-4 text-purple-600" />
             Directorio Tabular de Áreas & Servicios
           </TabsTrigger>
-          <TabsTrigger value="plano" className="rounded-xl px-3.5 py-2 text-xs font-semibold gap-1.5">
+          <TabsTrigger value="plano" className="px-3.5 py-2 text-xs font-semibold gap-1.5">
             <Layers className="h-4 w-4 text-emerald-600" />
             Plano Esquemático de Pisos & Traslados
           </TabsTrigger>

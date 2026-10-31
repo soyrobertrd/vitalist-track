@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { 
   ChevronLeft, 
@@ -353,15 +354,15 @@ export function CalendarView({ onEventClick }: CalendarViewProps) {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={navigatePrevious}>
+            <IconButton label="Anterior" variant="outline" size="icon" onClick={navigatePrevious}>
               <ChevronLeft className="h-4 w-4" />
-            </Button>
+            </IconButton>
             <span className="font-medium min-w-[180px] text-center capitalize">
               {getDateRangeLabel()}
             </span>
-            <Button variant="outline" size="icon" onClick={navigateNext}>
+            <IconButton label="Siguiente" variant="outline" size="icon" onClick={navigateNext}>
               <ChevronRight className="h-4 w-4" />
-            </Button>
+            </IconButton>
             <Button variant="outline" size="sm" onClick={() => setCurrentDate(new Date())}>
               Hoy
             </Button>

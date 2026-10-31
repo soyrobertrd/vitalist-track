@@ -180,7 +180,7 @@ export default function TrazabilidadLaboratorioDental() {
           </Badge>
           <Dialog open={openModal} onOpenChange={setOpenModal}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl gap-1.5 shadow-none">
+              <Button size="sm" className="gap-1.5 shadow-none">
                 <Plus className="h-4 w-4" /> Nueva Orden Protésica
               </Button>
             </DialogTrigger>
@@ -198,7 +198,7 @@ export default function TrazabilidadLaboratorioDental() {
                     placeholder="Ej. Camila Henríquez"
                     value={form.pacienteNombre}
                     onChange={(e) => setForm({ ...form, pacienteNombre: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -207,7 +207,7 @@ export default function TrazabilidadLaboratorioDental() {
                     <Input
                       value={form.doctorTratante}
                       onChange={(e) => setForm({ ...form, doctorTratante: e.target.value })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
                   <div>
@@ -215,7 +215,7 @@ export default function TrazabilidadLaboratorioDental() {
                     <Input
                       value={form.laboratorioNombre}
                       onChange={(e) => setForm({ ...form, laboratorioNombre: e.target.value })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
                 </div>
@@ -226,7 +226,7 @@ export default function TrazabilidadLaboratorioDental() {
                       value={form.tipoTrabajo}
                       onValueChange={(val: any) => setForm({ ...form, tipoTrabajo: val })}
                     >
-                      <SelectTrigger className="rounded-xl mt-1 h-8 text-xs">
+                      <SelectTrigger className="mt-1 h-8 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -244,7 +244,7 @@ export default function TrazabilidadLaboratorioDental() {
                       placeholder="Ej. A1, A2, A3, BL2"
                       value={form.colorGuiaVita}
                       onChange={(e) => setForm({ ...form, colorGuiaVita: e.target.value })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
                 </div>
@@ -255,7 +255,7 @@ export default function TrazabilidadLaboratorioDental() {
                       placeholder="Ej. 11, 21"
                       value={form.piezaDental}
                       onChange={(e) => setForm({ ...form, piezaDental: e.target.value })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
                   <div>
@@ -264,7 +264,7 @@ export default function TrazabilidadLaboratorioDental() {
                       type="number"
                       value={form.costoLaboratorio}
                       onChange={(e) => setForm({ ...form, costoLaboratorio: Number(e.target.value) })}
-                      className="rounded-xl mt-1 h-8 text-xs"
+                      className="mt-1 h-8 text-xs"
                     />
                   </div>
                 </div>
@@ -274,10 +274,10 @@ export default function TrazabilidadLaboratorioDental() {
                     placeholder="Borde incisal translúcido, ajuste pasivo..."
                     value={form.notasTecnicas}
                     onChange={(e) => setForm({ ...form, notasTecnicas: e.target.value })}
-                    className="rounded-xl mt-1 h-8 text-xs"
+                    className="mt-1 h-8 text-xs"
                   />
                 </div>
-                <Button type="submit" className="w-full rounded-xl mt-2 bg-amber-600 hover:bg-amber-700 text-white">
+                <Button type="submit" className="w-full mt-2 bg-amber-600 hover:bg-amber-700 text-white">
                   Registrar Orden de Laboratorio
                 </Button>
               </form>
@@ -332,7 +332,7 @@ export default function TrazabilidadLaboratorioDental() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="rounded-xl text-[11px] h-7 gap-1 border-border/80"
+                      className="text-[11px] h-7 gap-1 border-border/80"
                       onClick={() => avanzarEtapa(t.id)}
                     >
                       Avanzar <ArrowRight className="h-3 w-3" />

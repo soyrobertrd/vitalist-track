@@ -130,18 +130,18 @@ export default function Calendario() {
       {/* 3. Pestañas de Vista de Agenda */}
       <Tabs defaultValue="calendario" className="w-full space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <TabsList className="w-full sm:w-auto flex justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-            <TabsTrigger value="calendario" className="rounded-xl text-xs font-semibold px-4 py-2 gap-2">
+          <TabsList className="w-full sm:w-auto flex justify-start gap-1 p-1.5 bg-muted/40 border border-border/70 h-auto">
+            <TabsTrigger value="calendario" className="text-xs font-semibold px-4 py-2 gap-2">
               <CalendarIcon className="h-4 w-4" />
               Calendario General
             </TabsTrigger>
             {mostrarMapa && (
-              <TabsTrigger value="mapa" className="rounded-xl text-xs font-semibold px-4 py-2 gap-2">
+              <TabsTrigger value="mapa" className="text-xs font-semibold px-4 py-2 gap-2">
                 <MapPin className="h-4 w-4" />
                 Mapa de Rutas y Visitas
               </TabsTrigger>
             )}
-            <TabsTrigger value="disponibilidad" className="rounded-xl text-xs font-semibold px-4 py-2 gap-2">
+            <TabsTrigger value="disponibilidad" className="text-xs font-semibold px-4 py-2 gap-2">
               <UserCheck className="h-4 w-4" />
               Disponibilidad Médica
             </TabsTrigger>

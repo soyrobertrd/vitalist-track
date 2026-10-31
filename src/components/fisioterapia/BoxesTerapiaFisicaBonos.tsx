@@ -203,7 +203,7 @@ export default function BoxesTerapiaFisicaBonos() {
 
         <Dialog open={openNuevoBono} onOpenChange={setOpenNuevoBono}>
           <DialogTrigger asChild>
-            <Button size="sm" className="rounded-xl h-9 text-xs gap-1.5 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Button size="sm" className="h-9 text-xs gap-1.5 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white">
               <Plus className="h-3.5 w-3.5" />
               Nuevo Paquete de Sesiones
             </Button>
@@ -222,7 +222,7 @@ export default function BoxesTerapiaFisicaBonos() {
                   placeholder="Nombre completo"
                   value={nuevoBonoForm.paciente}
                   onChange={(e) => setNuevoBonoForm({ ...nuevoBonoForm, paciente: e.target.value })}
-                  className="h-9 text-xs rounded-xl"
+                  className="h-9 text-xs"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -232,7 +232,7 @@ export default function BoxesTerapiaFisicaBonos() {
                     placeholder="809-555-0000"
                     value={nuevoBonoForm.telefono}
                     onChange={(e) => setNuevoBonoForm({ ...nuevoBonoForm, telefono: e.target.value })}
-                    className="h-9 text-xs rounded-xl"
+                    className="h-9 text-xs"
                   />
                 </div>
                 <div className="space-y-1">
@@ -241,7 +241,7 @@ export default function BoxesTerapiaFisicaBonos() {
                     value={nuevoBonoForm.totalSesiones.toString()}
                     onValueChange={(v) => setNuevoBonoForm({ ...nuevoBonoForm, totalSesiones: parseInt(v) || 10 })}
                   >
-                    <SelectTrigger className="h-9 text-xs rounded-xl">
+                    <SelectTrigger className="h-9 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -259,7 +259,7 @@ export default function BoxesTerapiaFisicaBonos() {
                   placeholder="Ej. Lumbalgia mecánica, Post-LCA"
                   value={nuevoBonoForm.diagnostico}
                   onChange={(e) => setNuevoBonoForm({ ...nuevoBonoForm, diagnostico: e.target.value })}
-                  className="h-9 text-xs rounded-xl"
+                  className="h-9 text-xs"
                 />
               </div>
               <div className="space-y-1">
@@ -267,14 +267,14 @@ export default function BoxesTerapiaFisicaBonos() {
                 <Input
                   value={nuevoBonoForm.fisioterapeutaAsignado}
                   onChange={(e) => setNuevoBonoForm({ ...nuevoBonoForm, fisioterapeutaAsignado: e.target.value })}
-                  className="h-9 text-xs rounded-xl"
+                  className="h-9 text-xs"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
-                <Button type="button" variant="outline" size="sm" onClick={() => setOpenNuevoBono(false)} className="rounded-xl">
+                <Button type="button" variant="outline" size="sm" onClick={() => setOpenNuevoBono(false)}>
                   Cancelar
                 </Button>
-                <Button type="submit" size="sm" className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Button type="submit" size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
                   Crear Paquete
                 </Button>
               </div>
@@ -321,7 +321,7 @@ export default function BoxesTerapiaFisicaBonos() {
                       size="sm"
                       variant="ghost"
                       onClick={() => liberarBox(box.id)}
-                      className="h-7 text-[11px] rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+                      className="h-7 text-[11px] text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
                     >
                       Liberar
                     </Button>
@@ -394,7 +394,7 @@ export default function BoxesTerapiaFisicaBonos() {
                             size="sm"
                             variant="ghost"
                             onClick={() => registrarAsistenciaSesion(bono.id)}
-                            className="h-7 text-xs rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+                            className="h-7 text-xs text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
                           >
                             +1 Asistencia
                           </Button>
@@ -403,7 +403,7 @@ export default function BoxesTerapiaFisicaBonos() {
                           size="sm"
                           variant="outline"
                           onClick={() => enviarWhatsAppRutina(bono)}
-                          className="h-7 text-xs rounded-lg border-border/70 gap-1"
+                          className="h-7 text-xs border-border/70 gap-1"
                         >
                           <Share2 className="h-3 w-3" /> WA
                         </Button>

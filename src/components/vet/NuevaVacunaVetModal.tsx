@@ -121,7 +121,7 @@ export function NuevaVacunaVetModal({
             <div>
               <Label className="text-xs font-semibold">Mascota Paciente *</Label>
               <Select value={pacienteId} onValueChange={setPacienteId}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs">
+                <SelectTrigger className="mt-1 text-xs">
                   <SelectValue placeholder="Seleccionar mascota..." />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -137,7 +137,7 @@ export function NuevaVacunaVetModal({
             <div>
               <Label className="text-xs font-semibold">Tipo de Tratamiento *</Label>
               <Select value={tipo} onValueChange={(v: any) => handleCambioTipo(v)}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="vacuna">Vacuna / Inmunización</SelectItem>
                   <SelectItem value="desparasitacion_interna">Desparasitación Interna</SelectItem>
@@ -153,7 +153,7 @@ export function NuevaVacunaVetModal({
               placeholder="Ej: Antirrábica, Séxtuple, Bravecto, etc."
               value={producto}
               onChange={e => setProducto(e.target.value)}
-              className="rounded-xl mt-1 text-xs"
+              className="mt-1 text-xs"
             />
             {/* Sugerencias Rápidas */}
             <div className="flex flex-wrap gap-1 mt-1.5">
@@ -161,7 +161,7 @@ export function NuevaVacunaVetModal({
                 <button
                   key={i}
                   type="button"
-                  className="text-[10px] bg-muted/60 hover:bg-muted text-foreground/80 px-2 py-0.5 rounded-md border border-border/60 transition-colors"
+                  className="text-[10px] bg-muted/60 hover:bg-muted text-foreground/80 px-2 py-0.5 rounded-control border border-border/60 transition-colors"
                   onClick={() => setProducto(sug)}
                 >
                   + {sug.split("(")[0]}
@@ -177,7 +177,7 @@ export function NuevaVacunaVetModal({
                 type="date"
                 value={fechaAplicada}
                 onChange={e => setFechaAplicada(e.target.value)}
-                className="rounded-xl mt-1 text-xs font-mono"
+                className="mt-1 text-xs font-mono"
               />
             </div>
 
@@ -187,7 +187,7 @@ export function NuevaVacunaVetModal({
                 type="date"
                 value={proximaDosis}
                 onChange={e => setProximaDosis(e.target.value)}
-                className="rounded-xl mt-1 text-xs font-mono font-bold"
+                className="mt-1 text-xs font-mono font-bold"
               />
             </div>
           </div>
@@ -199,7 +199,7 @@ export function NuevaVacunaVetModal({
                 placeholder="Ej: VAC-2024-883"
                 value={lote}
                 onChange={e => setLote(e.target.value)}
-                className="rounded-xl mt-1 text-xs font-mono"
+                className="mt-1 text-xs font-mono"
               />
             </div>
 
@@ -208,7 +208,7 @@ export function NuevaVacunaVetModal({
               <Input
                 value={veterinario}
                 onChange={e => setVeterinario(e.target.value)}
-                className="rounded-xl mt-1 text-xs"
+                className="mt-1 text-xs"
               />
             </div>
           </div>
@@ -219,15 +219,15 @@ export function NuevaVacunaVetModal({
               placeholder="Tolerancia, vía de administración, peso al momento..."
               value={observaciones}
               onChange={e => setObservaciones(e.target.value)}
-              className="rounded-xl mt-1 text-xs"
+              className="mt-1 text-xs"
             />
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" className="rounded-xl text-xs" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" className="text-xs" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" className="rounded-xl text-xs shadow-none">
+            <Button type="submit" className="text-xs shadow-none">
               <CheckCircle2 className="h-4 w-4 mr-1.5" /> Registrar en Carnet
             </Button>
           </DialogFooter>

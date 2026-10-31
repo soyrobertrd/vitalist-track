@@ -3,6 +3,7 @@ import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -211,7 +212,7 @@ const Compras = () => {
                           <p className="text-sm font-medium py-2">${(item.cantidad_solicitada * item.precio_unitario).toFixed(2)}</p>
                         </div>
                         <div className="col-span-1">
-                          <Button size="icon" variant="ghost" onClick={() => removeItem(i)}><XCircle className="h-4 w-4 text-destructive" /></Button>
+                          <IconButton label="Cerrar" size="icon" variant="ghost" onClick={() => removeItem(i)}><XCircle className="h-4 w-4 text-destructive" /></IconButton>
                         </div>
                       </div>
                     ))}

@@ -106,7 +106,7 @@ export function HemovigilanciaReaccionesTab() {
         <Button
           size="sm"
           onClick={() => setOpenNuevo(true)}
-          className="rounded-xl text-xs bg-red-600 hover:bg-red-700 text-white gap-1.5 flex-shrink-0 self-end md:self-auto"
+          className="text-xs bg-red-600 hover:bg-red-700 text-white gap-1.5 flex-shrink-0 self-end md:self-auto"
         >
           <Plus className="h-4 w-4" /> Notificar Reacción (RAT)
         </Button>
@@ -126,7 +126,7 @@ export function HemovigilanciaReaccionesTab() {
                 placeholder="Nombre completo"
                 value={form.paciente || ""}
                 onChange={e => setForm({ ...form, paciente: e.target.value })}
-                className="h-8 text-xs rounded-xl mt-1"
+                className="h-8 text-xs mt-1"
               />
             </div>
             <div>
@@ -135,7 +135,7 @@ export function HemovigilanciaReaccionesTab() {
                 placeholder="Cama 304"
                 value={form.cama || ""}
                 onChange={e => setForm({ ...form, cama: e.target.value })}
-                className="h-8 text-xs rounded-xl mt-1"
+                className="h-8 text-xs mt-1"
               />
             </div>
             <div>
@@ -144,7 +144,7 @@ export function HemovigilanciaReaccionesTab() {
                 placeholder="CGR-2024-XXXX"
                 value={form.unidadLote || ""}
                 onChange={e => setForm({ ...form, unidadLote: e.target.value })}
-                className="h-8 text-xs font-mono rounded-xl mt-1"
+                className="h-8 text-xs font-mono mt-1"
               />
             </div>
 
@@ -154,7 +154,7 @@ export function HemovigilanciaReaccionesTab() {
                 value={form.tipoReaccion}
                 onValueChange={(v: any) => setForm({ ...form, tipoReaccion: v })}
               >
-                <SelectTrigger className="h-8 text-xs rounded-xl mt-1 bg-background">
+                <SelectTrigger className="h-8 text-xs mt-1 bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -174,7 +174,7 @@ export function HemovigilanciaReaccionesTab() {
                 value={form.severidad}
                 onValueChange={(v: any) => setForm({ ...form, severidad: v })}
               >
-                <SelectTrigger className="h-8 text-xs rounded-xl mt-1 bg-background">
+                <SelectTrigger className="h-8 text-xs mt-1 bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -192,7 +192,7 @@ export function HemovigilanciaReaccionesTab() {
                 placeholder="CGR / Plasma / Plaquetas"
                 value={form.componente || ""}
                 onChange={e => setForm({ ...form, componente: e.target.value })}
-                className="h-8 text-xs rounded-xl mt-1"
+                className="h-8 text-xs mt-1"
               />
             </div>
           </div>
@@ -205,7 +205,7 @@ export function HemovigilanciaReaccionesTab() {
                 placeholder="Fiebre, dolor lumbar, escalofríos, broncoespasmo..."
                 value={form.sintomas || ""}
                 onChange={e => setForm({ ...form, sintomas: e.target.value })}
-                className="text-xs rounded-xl"
+                className="text-xs"
               />
             </div>
             <div>
@@ -215,16 +215,16 @@ export function HemovigilanciaReaccionesTab() {
                 placeholder="Suspensión de infusión, medicamentos administrados, muestras enviadas..."
                 value={form.accionesTomadas || ""}
                 onChange={e => setForm({ ...form, accionesTomadas: e.target.value })}
-                className="text-xs rounded-xl"
+                className="text-xs"
               />
             </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button size="sm" variant="outline" onClick={() => setOpenNuevo(false)} className="rounded-xl text-xs">
+            <Button size="sm" variant="outline" onClick={() => setOpenNuevo(false)} className="text-xs">
               Cancelar
             </Button>
-            <Button size="sm" onClick={handleGuardar} className="rounded-xl text-xs bg-red-600 hover:bg-red-700 text-white">
+            <Button size="sm" onClick={handleGuardar} className="text-xs bg-red-600 hover:bg-red-700 text-white">
               Guardar Reporte RAT
             </Button>
           </div>

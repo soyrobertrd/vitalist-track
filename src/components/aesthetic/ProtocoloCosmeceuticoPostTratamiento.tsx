@@ -178,7 +178,7 @@ Cualquier duda o molestia imprevista, escríbenos directamente por esta vía. ¡
             variant="outline"
             size="sm"
             onClick={imprimirProtocolo}
-            className="rounded-xl h-9 text-xs gap-1.5 shadow-none"
+            className="h-9 text-xs gap-1.5 shadow-none"
           >
             <Printer className="h-3.5 w-3.5" />
             Imprimir Hoja
@@ -187,7 +187,7 @@ Cualquier duda o molestia imprevista, escríbenos directamente por esta vía. ¡
           <Button
             size="sm"
             onClick={enviarWhatsApp}
-            className="rounded-xl h-9 text-xs gap-1.5 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="h-9 text-xs gap-1.5 shadow-none bg-emerald-600 hover:bg-emerald-700 text-white"
           >
             <Send className="h-3.5 w-3.5" />
             Enviar por WhatsApp
@@ -204,7 +204,7 @@ Cualquier duda o molestia imprevista, escríbenos directamente por esta vía. ¡
               value={pacienteNombre}
               onChange={(e) => setPacienteNombre(e.target.value)}
               placeholder="Nombre del paciente"
-              className="h-9 text-xs rounded-xl"
+              className="h-9 text-xs"
             />
           </div>
 
@@ -214,14 +214,14 @@ Cualquier duda o molestia imprevista, escríbenos directamente por esta vía. ¡
               value={telefonoWhatsApp}
               onChange={(e) => setTelefonoWhatsApp(e.target.value)}
               placeholder="Ej. 809-555-0142"
-              className="h-9 text-xs rounded-xl"
+              className="h-9 text-xs"
             />
           </div>
 
           <div className="space-y-1.5">
             <Label className="text-xs">Tipo de Tratamiento Realizado</Label>
             <Select value={tipoSeleccionado} onValueChange={handleCambioTipo}>
-              <SelectTrigger className="h-9 text-xs rounded-xl">
+              <SelectTrigger className="h-9 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -328,7 +328,7 @@ Cualquier duda o molestia imprevista, escríbenos directamente por esta vía. ¡
             value={notasAdicionales}
             onChange={(e) => setNotasAdicionales(e.target.value)}
             rows={2}
-            className="text-xs rounded-xl"
+            className="text-xs"
             placeholder="Escriba aquí notas personalizadas para este paciente..."
           />
         </CardContent>

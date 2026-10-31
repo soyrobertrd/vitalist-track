@@ -164,14 +164,14 @@ export function EnfermeriaEmergenciasTab() {
           {codigoAzulActivo ? (
             <Button
               variant="secondary"
-              className="rounded-xl font-bold text-xs bg-white text-red-700 hover:bg-slate-100 shadow-none"
+              className="font-bold text-xs bg-white text-red-700 hover:bg-slate-100 shadow-none"
               onClick={handleDesactivarCodigoAzul}
             >
               Desactivar / Paciente Estable
             </Button>
           ) : (
             <Button
-              className="rounded-xl font-bold text-xs bg-red-600 hover:bg-red-700 text-white shadow-none gap-1.5"
+              className="font-bold text-xs bg-red-600 hover:bg-red-700 text-white shadow-none gap-1.5"
               onClick={handleActivarCodigoAzul}
             >
               <Radio className="h-4 w-4 animate-ping" /> Activar Código Azul STAT
@@ -247,14 +247,14 @@ export function EnfermeriaEmergenciasTab() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="rounded-xl text-xs h-8 border-border/80"
+                      className="text-xs h-8 border-border/80"
                       onClick={() => toast.success(`Paciente ${p.paciente_nombre} asignado a Box de Reanimación`)}
                     >
                       Asignar Box
                     </Button>
                     <Button
                       size="sm"
-                      className="rounded-xl text-xs h-8 shadow-none"
+                      className="text-xs h-8 shadow-none"
                       onClick={() => {
                         setPacienteStat(p.paciente_nombre);
                         toast.info(`Seleccionado ${p.paciente_nombre} para administración STAT`);
@@ -286,7 +286,7 @@ export function EnfermeriaEmergenciasTab() {
             <div>
               <Label className="text-xs font-semibold">Paciente</Label>
               <Select value={pacienteStat} onValueChange={setPacienteStat}>
-                <SelectTrigger className="rounded-xl mt-1 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="mt-1 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl">
                   {pacientesTriage.map(p => (
                     <SelectItem key={p.id} value={p.paciente_nombre}>
@@ -304,10 +304,10 @@ export function EnfermeriaEmergenciasTab() {
                   placeholder="Ej: Fentanilo 100mcg IV bolo lento, Amiodarona 300mg en 20ml D5%..."
                   value={nuevoFarmacoStat}
                   onChange={e => setNuevoFarmacoStat(e.target.value)}
-                  className="rounded-xl mt-1 text-xs font-mono"
+                  className="mt-1 text-xs font-mono"
                 />
               </div>
-              <Button className="rounded-xl text-xs shadow-none shrink-0" onClick={handleRegistrarStat}>
+              <Button className="text-xs shadow-none shrink-0" onClick={handleRegistrarStat}>
                 <CheckCircle2 className="h-4 w-4 mr-1.5" /> Registrar STAT
               </Button>
             </div>

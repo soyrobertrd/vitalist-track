@@ -18,6 +18,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -265,7 +266,7 @@ export function PlanificadorMinutasDietas() {
           <Button
             onClick={() => setModalNuevoPlan(!modalNuevoPlan)}
             variant="outline"
-            className="rounded-xl text-xs gap-1.5 h-9"
+            className="text-xs gap-1.5 h-9"
           >
             <Plus className="h-3.5 w-3.5" />
             Nuevo Plan Dieta
@@ -273,7 +274,7 @@ export function PlanificadorMinutasDietas() {
 
           <Button
             onClick={handleCompartirWhatsApp}
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs gap-1.5 h-9"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs gap-1.5 h-9"
           >
             <Share2 className="h-3.5 w-3.5" />
             Exportar Menú WhatsApp
@@ -298,7 +299,7 @@ export function PlanificadorMinutasDietas() {
                 placeholder="Ej. Roberto Gómez"
                 value={nombrePaciente}
                 onChange={(e) => setNombrePaciente(e.target.value)}
-                className="rounded-xl text-xs h-8"
+                className="text-xs h-8"
                 required
               />
             </div>
@@ -309,7 +310,7 @@ export function PlanificadorMinutasDietas() {
                 placeholder="Ej. Bajar Grasa Visceral / Bariatría"
                 value={objetivoPlan}
                 onChange={(e) => setObjetivoPlan(e.target.value)}
-                className="rounded-xl text-xs h-8"
+                className="text-xs h-8"
               />
             </div>
             <div className="space-y-1">
@@ -319,11 +320,11 @@ export function PlanificadorMinutasDietas() {
                 placeholder="Ej. Creatina, Omega 3, Whey"
                 value={suplementos}
                 onChange={(e) => setSuplementos(e.target.value)}
-                className="rounded-xl text-xs h-8"
+                className="text-xs h-8"
               />
             </div>
           </div>
-          <Button type="submit" className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-8 w-full">
+          <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-8 w-full">
             Crear Plan y Comenzar a Cargar Comidas
           </Button>
         </form>
@@ -394,14 +395,14 @@ export function PlanificadorMinutasDietas() {
                         <Badge variant="outline" className="text-[10px] text-emerald-600 border-emerald-500/30">
                           ~{tiempo.caloriasAprox} kcal
                         </Badge>
-                        <Button
+                        <IconButton label="Eliminar"
                           variant="ghost"
                           size="icon"
                           onClick={() => handleEliminarTiempo(tiempo.id)}
-                          className="h-7 w-7 text-muted-foreground hover:text-rose-600 rounded-lg"
+                          className="h-7 w-7 text-muted-foreground hover:text-rose-600"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
+                        </IconButton>
                       </div>
                     </div>
 
@@ -446,7 +447,7 @@ export function PlanificadorMinutasDietas() {
                 <div className="space-y-1">
                   <Label className="text-xs">Tiempo</Label>
                   <Select value={nuevoNombre} onValueChange={setNuevoNombre}>
-                    <SelectTrigger className="rounded-xl text-xs h-8">
+                    <SelectTrigger className="text-xs h-8">
                       <SelectValue placeholder="Seleccione..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -466,7 +467,7 @@ export function PlanificadorMinutasDietas() {
                     id={horaId}
                     value={nuevaHora}
                     onChange={(e) => setNuevaHora(e.target.value)}
-                    className="rounded-xl text-xs h-8"
+                    className="text-xs h-8"
                     placeholder="08:00 AM"
                   />
                 </div>
@@ -479,7 +480,7 @@ export function PlanificadorMinutasDietas() {
                   value={nuevoPlato}
                   onChange={(e) => setNuevoPlato(e.target.value)}
                   placeholder="Ej. Pechuga de pavo con batatas asadas"
-                  className="rounded-xl text-xs h-8"
+                  className="text-xs h-8"
                   required
                 />
               </div>
@@ -491,7 +492,7 @@ export function PlanificadorMinutasDietas() {
                   value={nuevasPorciones}
                   onChange={(e) => setNuevasPorciones(e.target.value)}
                   placeholder="Ej. 150g pavo + 100g batata + ensalada verde libre"
-                  className="rounded-xl text-xs h-8"
+                  className="text-xs h-8"
                 />
               </div>
 
@@ -503,14 +504,14 @@ export function PlanificadorMinutasDietas() {
                     type="number"
                     value={nuevasCalorias}
                     onChange={(e) => setNuevasCalorias(Number(e.target.value))}
-                    className="rounded-xl text-xs h-8"
+                    className="text-xs h-8"
                   />
                 </div>
 
                 <div className="space-y-1">
                   <Label className="text-xs">Icono</Label>
                   <Select value={nuevoIcono} onValueChange={(v: any) => setNuevoIcono(v)}>
-                    <SelectTrigger className="rounded-xl text-xs h-8">
+                    <SelectTrigger className="text-xs h-8">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -530,11 +531,11 @@ export function PlanificadorMinutasDietas() {
                   value={nuevaBebida}
                   onChange={(e) => setNuevaBebida(e.target.value)}
                   placeholder="Ej. Té verde sin azúcar o agua de coco"
-                  className="rounded-xl text-xs h-8"
+                  className="text-xs h-8"
                 />
               </div>
 
-              <Button type="submit" className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 gap-1.5 mt-2">
+              <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 gap-1.5 mt-2">
                 <Plus className="h-4 w-4" />
                 Agregar Tiempo al Menú
               </Button>

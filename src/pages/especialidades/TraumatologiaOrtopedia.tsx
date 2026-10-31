@@ -288,7 +288,7 @@ export default function TraumatologiaOrtopedia() {
         actions={
           <Button
             onClick={() => setModalNueva(true)}
-            className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-medium shadow-sm flex items-center gap-2"
+            className="bg-orange-600 hover:bg-orange-700 text-white font-medium shadow-sm flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
             Nueva Consulta Ortopédica
@@ -326,20 +326,20 @@ export default function TraumatologiaOrtopedia() {
 
       {/* Tabs */}
       <Tabs defaultValue="consultas" className="w-full">
-        <TabsList className="bg-muted/70 p-1 rounded-xl">
-          <TabsTrigger value="consultas" className="rounded-lg text-xs font-semibold gap-2">
+        <TabsList className="bg-muted/70 p-1">
+          <TabsTrigger value="consultas" className="text-xs font-semibold gap-2">
             <FileText className="h-4 w-4" />
             Historial de Pacientes & Casos
           </TabsTrigger>
-          <TabsTrigger value="gustilo" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="gustilo" className="text-xs font-semibold gap-2">
             <ShieldAlert className="h-4 w-4" />
             Gustilo-Anderson (Fracturas Abiertas)
           </TabsTrigger>
-          <TabsTrigger value="garden" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="garden" className="text-xs font-semibold gap-2">
             <Bone className="h-4 w-4" />
             Escala Garden (Cuello Femoral)
           </TabsTrigger>
-          <TabsTrigger value="womac" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="womac" className="text-xs font-semibold gap-2">
             <Calculator className="h-4 w-4" />
             Índice WOMAC (Artrosis)
           </TabsTrigger>
@@ -355,11 +355,11 @@ export default function TraumatologiaOrtopedia() {
                 placeholder="Buscar por paciente, diagnóstico o lateralidad..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                className="pl-9 rounded-xl border-border/80"
+                className="pl-9 border-border/80"
               />
             </div>
             <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-              <SelectTrigger className="w-full sm:w-[240px] rounded-xl border-border/80">
+              <SelectTrigger className="w-full sm:w-[240px] border-border/80">
                 <SelectValue placeholder="Tipo de Patología" />
               </SelectTrigger>
               <SelectContent>
@@ -464,7 +464,7 @@ export default function TraumatologiaOrtopedia() {
                   <Button
                     key={g}
                     variant={selGustilo === g ? "default" : "outline"}
-                    className={`rounded-xl text-xs font-bold py-5 ${
+                    className={` text-xs font-bold py-5 ${
                       selGustilo === g ? "bg-orange-600 hover:bg-orange-700 text-white" : ""
                     }`}
                     onClick={() => setSelGustilo(g)}
@@ -500,7 +500,7 @@ export default function TraumatologiaOrtopedia() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="rounded-xl text-xs"
+                  className="text-xs"
                   onClick={() => {
                     setFormGustilo(selGustilo);
                     toast.info(`Grado Gustilo ${selGustilo} seleccionado para nueva consulta.`);
@@ -531,7 +531,7 @@ export default function TraumatologiaOrtopedia() {
                   <Button
                     key={g}
                     variant={selGarden === g ? "default" : "outline"}
-                    className={`rounded-xl text-xs font-bold py-5 ${
+                    className={` text-xs font-bold py-5 ${
                       selGarden === g ? "bg-orange-600 hover:bg-orange-700 text-white" : ""
                     }`}
                     onClick={() => setSelGarden(g)}
@@ -561,7 +561,7 @@ export default function TraumatologiaOrtopedia() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="rounded-xl text-xs"
+                  className="text-xs"
                   onClick={() => {
                     setFormGarden(selGarden);
                     toast.info(`Estadio Garden ${selGarden} asignado.`);
@@ -597,7 +597,7 @@ export default function TraumatologiaOrtopedia() {
                       max={20}
                       value={wDolor}
                       onChange={(e) => setWDolor(Number(e.target.value))}
-                      className="rounded-xl border-border/80"
+                      className="border-border/80"
                     />
                     <span className="text-[11px] text-muted-foreground block">
                       Dolor al caminar en llano, subir escaleras, de noche en cama, sentado y de pie.
@@ -612,7 +612,7 @@ export default function TraumatologiaOrtopedia() {
                       max={8}
                       value={wRigidez}
                       onChange={(e) => setWRigidez(Number(e.target.value))}
-                      className="rounded-xl border-border/80"
+                      className="border-border/80"
                     />
                     <span className="text-[11px] text-muted-foreground block">
                       Rigidez tras levantarse de la cama y tras sentarse o descansar.
@@ -627,7 +627,7 @@ export default function TraumatologiaOrtopedia() {
                       max={68}
                       value={wFuncion}
                       onChange={(e) => setWFuncion(Number(e.target.value))}
-                      className="rounded-xl border-border/80"
+                      className="border-border/80"
                     />
                     <span className="text-[11px] text-muted-foreground block">
                       Dificultad para calzarse, bajar del coche, agacharse o labores domésticas.
@@ -657,7 +657,7 @@ export default function TraumatologiaOrtopedia() {
 
                   <Button
                     variant="outline"
-                    className="w-full rounded-xl text-xs"
+                    className="w-full text-xs"
                     onClick={() => {
                       setFormWomac(womacTotalCalc.toString());
                       toast.info(`WOMAC (${womacTotalCalc} pts) transferido a nueva consulta.`);
@@ -693,7 +693,7 @@ export default function TraumatologiaOrtopedia() {
                   placeholder="Ej: Rafael Tejada"
                   value={formNombre}
                   onChange={(e) => setFormNombre(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   required
                 />
               </div>
@@ -703,7 +703,7 @@ export default function TraumatologiaOrtopedia() {
                   placeholder="Ej: 52a / M"
                   value={formEdadSexo}
                   onChange={(e) => setFormEdadSexo(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
             </div>
@@ -712,7 +712,7 @@ export default function TraumatologiaOrtopedia() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Tipo de Patología / Lesión:</Label>
                 <Select value={formTipo} onValueChange={(v) => setFormTipo(v as TipoConsultaTrauma)}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -728,7 +728,7 @@ export default function TraumatologiaOrtopedia() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Lateralidad Anatómica:</Label>
                 <Select value={formLateralidad} onValueChange={setFormLateralidad}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -744,7 +744,7 @@ export default function TraumatologiaOrtopedia() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Grado Gustilo-Anderson:</Label>
                 <Select value={formGustilo} onValueChange={setFormGustilo}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -760,7 +760,7 @@ export default function TraumatologiaOrtopedia() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Estadio de Garden:</Label>
                 <Select value={formGarden} onValueChange={setFormGarden}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -780,7 +780,7 @@ export default function TraumatologiaOrtopedia() {
                   max={96}
                   value={formWomac}
                   onChange={(e) => setFormWomac(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
             )}
@@ -792,7 +792,7 @@ export default function TraumatologiaOrtopedia() {
                 value={formDiag}
                 onChange={(e) => setFormDiag(e.target.value)}
                 rows={2}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 required
               />
             </div>
@@ -804,15 +804,15 @@ export default function TraumatologiaOrtopedia() {
                 value={formPlan}
                 onChange={(e) => setFormPlan(e.target.value)}
                 rows={3}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
             <DialogFooter className="pt-2">
-              <Button type="button" variant="outline" onClick={() => setModalNueva(false)} className="rounded-xl">
+              <Button type="button" variant="outline" onClick={() => setModalNueva(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-medium">
+              <Button type="submit" className="bg-orange-600 hover:bg-orange-700 text-white font-medium">
                 Guardar Consulta
               </Button>
             </DialogFooter>
@@ -869,10 +869,10 @@ export default function TraumatologiaOrtopedia() {
             </div>
 
             <DialogFooter className="pt-2">
-              <Button variant="outline" onClick={() => window.print()} className="rounded-xl">
+              <Button variant="outline" onClick={() => window.print()}>
                 Imprimir Informe
               </Button>
-              <Button onClick={() => setConsultaDetalle(null)} className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white">
+              <Button onClick={() => setConsultaDetalle(null)} className="bg-orange-600 hover:bg-orange-700 text-white">
                 Cerrar
               </Button>
             </DialogFooter>

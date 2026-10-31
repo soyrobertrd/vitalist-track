@@ -252,7 +252,7 @@ export default function Rehabilitacion() {
             {selectedPlanId && (
               <Button 
                 variant="outline" 
-                className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+                className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
                 onClick={() => setShowNewSesion(true)}
               >
                 <Plus className="h-4 w-4 mr-1.5 text-purple-600" />
@@ -260,7 +260,7 @@ export default function Rehabilitacion() {
               </Button>
             )}
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-purple-600 hover:bg-purple-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewPlan(true)}
             >
               <HeartHandshake className="h-4 w-4 mr-1.5" />
@@ -308,7 +308,7 @@ export default function Rehabilitacion() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por código de plan o nombre de paciente..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={searchPac}
             onChange={(e) => setSearchPac(e.target.value)}
           />
@@ -317,20 +317,20 @@ export default function Rehabilitacion() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="planes" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="planes" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Dumbbell className="h-4 w-4 mr-1.5" />
             Planes de Tratamiento ({planesFiltrados.length})
           </TabsTrigger>
-          <TabsTrigger value="sesiones" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="sesiones" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Calendar className="h-4 w-4 mr-1.5" />
             Sesiones de Evolución {planActual ? `(${planActual.numero})` : ""}
           </TabsTrigger>
-          <TabsTrigger value="graficos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="graficos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <TrendingUp className="h-4 w-4 mr-1.5 text-purple-600" />
             Curva de Dolor EVA & Progreso
           </TabsTrigger>
-          <TabsTrigger value="escala_eva" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="escala_eva" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Activity className="h-4 w-4 mr-1.5 text-blue-500" />
             Escala EVA & Protocolos
           </TabsTrigger>
@@ -413,7 +413,7 @@ export default function Rehabilitacion() {
                             {p.fecha_inicio ? new Date(p.fecha_inicio + "T12:00:00").toLocaleDateString("es-DO") : "—"}
                           </TableCell>
                           <TableCell className="pr-6 text-right">
-                            <Button size="sm" variant="ghost" className="rounded-xl h-8 px-2 text-xs text-purple-600">
+                            <Button size="sm" variant="ghost" className="h-8 px-2 text-xs text-purple-600">
                               Ver Sesiones <ArrowRight className="h-3.5 w-3.5 ml-1" />
                             </Button>
                           </TableCell>
@@ -436,7 +436,7 @@ export default function Rehabilitacion() {
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
                 Para consultar o registrar las sesiones individuales de fisioterapia, seleccione primero un paciente en la pestaña Planes.
               </p>
-              <Button variant="outline" className="rounded-xl" onClick={() => setTab("planes")}>
+              <Button variant="outline" onClick={() => setTab("planes")}>
                 Ir a Lista de Planes
               </Button>
             </Card>
@@ -454,7 +454,7 @@ export default function Rehabilitacion() {
                 </div>
                 <Button 
                   size="sm" 
-                  className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white"
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
                   onClick={() => setShowNewSesion(true)}
                 >
                   <Plus className="h-4 w-4 mr-1.5" />
@@ -689,7 +689,7 @@ export default function Rehabilitacion() {
                 value={formDataPlan.paciente_id} 
                 onValueChange={(val) => setFormDataPlan(p => ({ ...p, paciente_id: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue placeholder="Seleccione un paciente" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
@@ -708,7 +708,7 @@ export default function Rehabilitacion() {
                 value={formDataPlan.tipo} 
                 onValueChange={(val) => setFormDataPlan(p => ({ ...p, tipo: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -725,7 +725,7 @@ export default function Rehabilitacion() {
                 <Input
                   type="number"
                   placeholder="Ej. 6"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataPlan.duracion_semanas}
                   onChange={(e) => setFormDataPlan(p => ({ ...p, duracion_semanas: e.target.value }))}
                 />
@@ -735,7 +735,7 @@ export default function Rehabilitacion() {
                 <Input
                   type="number"
                   placeholder="Ej. 3"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataPlan.sesiones_por_semana}
                   onChange={(e) => setFormDataPlan(p => ({ ...p, sesiones_por_semana: e.target.value }))}
                 />
@@ -746,7 +746,7 @@ export default function Rehabilitacion() {
               <Label>Diagnóstico Terapéutico / Funcional</Label>
               <Input
                 placeholder="Ej. Post-operatorio LCA rodilla derecha"
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataPlan.diagnostico_terapeutico}
                 onChange={(e) => setFormDataPlan(p => ({ ...p, diagnostico_terapeutico: e.target.value }))}
               />
@@ -756,7 +756,7 @@ export default function Rehabilitacion() {
               <Label>Objetivos Terapéuticos</Label>
               <Textarea
                 placeholder="Ej. Recuperar rango articular 120°, fortalecer cuádriceps, deambulación sin muletas..."
-                className="rounded-xl border-border/80 resize-none h-20"
+                className="border-border/80 resize-none h-20"
                 value={formDataPlan.objetivos}
                 onChange={(e) => setFormDataPlan(p => ({ ...p, objetivos: e.target.value }))}
               />
@@ -764,11 +764,11 @@ export default function Rehabilitacion() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewPlan(false)}>
+            <Button variant="outline" onClick={() => setShowNewPlan(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white" 
+              className="bg-purple-600 hover:bg-purple-700 text-white" 
               onClick={() => crearPlan.mutate()}
               disabled={crearPlan.isPending || !formDataPlan.paciente_id}
             >
@@ -797,7 +797,7 @@ export default function Rehabilitacion() {
                 <Label>Fecha de Sesión</Label>
                 <Input
                   type="date"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataSesion.fecha}
                   onChange={(e) => setFormDataSesion(p => ({ ...p, fecha: e.target.value }))}
                 />
@@ -806,7 +806,7 @@ export default function Rehabilitacion() {
                 <Label>Duración (Minutos)</Label>
                 <Input
                   type="number"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataSesion.duracion_minutos}
                   onChange={(e) => setFormDataSesion(p => ({ ...p, duracion_minutos: e.target.value }))}
                 />
@@ -820,7 +820,7 @@ export default function Rehabilitacion() {
                   type="number"
                   min="0"
                   max="10"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataSesion.dolor_antes}
                   onChange={(e) => setFormDataSesion(p => ({ ...p, dolor_antes: e.target.value }))}
                 />
@@ -831,7 +831,7 @@ export default function Rehabilitacion() {
                   type="number"
                   min="0"
                   max="10"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataSesion.dolor_despues}
                   onChange={(e) => setFormDataSesion(p => ({ ...p, dolor_despues: e.target.value }))}
                 />
@@ -845,7 +845,7 @@ export default function Rehabilitacion() {
                   type="number"
                   min="0"
                   max="100"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataSesion.progreso_pct}
                   onChange={(e) => setFormDataSesion(p => ({ ...p, progreso_pct: e.target.value }))}
                 />
@@ -856,7 +856,7 @@ export default function Rehabilitacion() {
                   value={formDataSesion.asistio ? "si" : "no"} 
                   onValueChange={(val) => setFormDataSesion(p => ({ ...p, asistio: val === "si" }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -871,7 +871,7 @@ export default function Rehabilitacion() {
               <Label>Notas de Evolución y Técnicas Aplicadas</Label>
               <Textarea
                 placeholder="Ej. Electroterapia 15 min, fortalecimiento isométrico, buena tolerancia..."
-                className="rounded-xl border-border/80 resize-none h-20"
+                className="border-border/80 resize-none h-20"
                 value={formDataSesion.notas_evolucion}
                 onChange={(e) => setFormDataSesion(p => ({ ...p, notas_evolucion: e.target.value }))}
               />
@@ -879,11 +879,11 @@ export default function Rehabilitacion() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewSesion(false)}>
+            <Button variant="outline" onClick={() => setShowNewSesion(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white" 
+              className="bg-purple-600 hover:bg-purple-700 text-white" 
               onClick={() => crearSesion.mutate()}
               disabled={crearSesion.isPending}
             >

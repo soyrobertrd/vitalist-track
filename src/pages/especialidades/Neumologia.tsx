@@ -318,7 +318,7 @@ export default function Neumologia() {
         actions={
           <Button
             onClick={() => setModalNueva(true)}
-            className="rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-medium shadow-sm flex items-center gap-2"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium shadow-sm flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
             Nueva Consulta Respiratoria
@@ -356,20 +356,20 @@ export default function Neumologia() {
 
       {/* Pestañas de Trabajo */}
       <Tabs defaultValue="consultas" className="w-full">
-        <TabsList className="bg-muted/70 p-1 rounded-xl">
-          <TabsTrigger value="consultas" className="rounded-lg text-xs font-semibold gap-2">
+        <TabsList className="bg-muted/70 p-1">
+          <TabsTrigger value="consultas" className="text-xs font-semibold gap-2">
             <FileText className="h-4 w-4" />
             Historial de Consultas & Casos
           </TabsTrigger>
-          <TabsTrigger value="gold_bode" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="gold_bode" className="text-xs font-semibold gap-2">
             <Calculator className="h-4 w-4" />
             Calculadora EPOC GOLD & ABE
           </TabsTrigger>
-          <TabsTrigger value="espirometria" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="espirometria" className="text-xs font-semibold gap-2">
             <Wind className="h-4 w-4" />
             Espirometría & Reversibilidad
           </TabsTrigger>
-          <TabsTrigger value="curb65" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="curb65" className="text-xs font-semibold gap-2">
             <Stethoscope className="h-4 w-4" />
             Score CURB-65 Neumonía
           </TabsTrigger>
@@ -385,11 +385,11 @@ export default function Neumologia() {
                 placeholder="Buscar por paciente, diagnóstico CIE-10 o tratamiento..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                className="pl-9 rounded-xl border-border/80"
+                className="pl-9 border-border/80"
               />
             </div>
             <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-              <SelectTrigger className="w-full sm:w-[230px] rounded-xl border-border/80">
+              <SelectTrigger className="w-full sm:w-[230px] border-border/80">
                 <SelectValue placeholder="Tipo de Patología" />
               </SelectTrigger>
               <SelectContent>
@@ -573,7 +573,7 @@ export default function Neumologia() {
                   placeholder="Ej: Carmen Rosario"
                   value={formNombre}
                   onChange={(e) => setFormNombre(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   required
                 />
               </div>
@@ -583,7 +583,7 @@ export default function Neumologia() {
                   placeholder="Ej: 64a / F"
                   value={formEdadSexo}
                   onChange={(e) => setFormEdadSexo(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
             </div>
@@ -592,7 +592,7 @@ export default function Neumologia() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Tipo de Patología / Consulta:</Label>
                 <Select value={formTipo} onValueChange={(v) => setFormTipo(v as TipoConsultaNeumo)}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -613,7 +613,7 @@ export default function Neumologia() {
                   max={100}
                   value={formSpO2}
                   onChange={(e) => setFormSpO2(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
             </div>
@@ -631,7 +631,7 @@ export default function Neumologia() {
                       type="number"
                       value={formFEV1}
                       onChange={(e) => setFormFEV1(e.target.value)}
-                      className="rounded-lg h-8 text-xs border-border/80"
+                      className="h-8 text-xs border-border/80"
                     />
                   </div>
                   <div>
@@ -641,7 +641,7 @@ export default function Neumologia() {
                       step="0.05"
                       value={formFEV1Litros}
                       onChange={(e) => setFormFEV1Litros(e.target.value)}
-                      className="rounded-lg h-8 text-xs border-border/80"
+                      className="h-8 text-xs border-border/80"
                     />
                   </div>
                   <div>
@@ -651,7 +651,7 @@ export default function Neumologia() {
                       step="0.05"
                       value={formFVC}
                       onChange={(e) => setFormFVC(e.target.value)}
-                      className="rounded-lg h-8 text-xs border-border/80"
+                      className="h-8 text-xs border-border/80"
                     />
                   </div>
                 </div>
@@ -664,7 +664,7 @@ export default function Neumologia() {
                       max={4}
                       value={formMMRC}
                       onChange={(e) => setFormMMRC(e.target.value)}
-                      className="rounded-lg h-8 text-xs border-border/80"
+                      className="h-8 text-xs border-border/80"
                     />
                   </div>
                   <div className="flex items-center gap-2 mt-4">
@@ -689,7 +689,7 @@ export default function Neumologia() {
                 placeholder="Ej: Cánula binasal continua 2 LPM / Venturi al 28%"
                 value={formO2}
                 onChange={(e) => setFormO2(e.target.value)}
-                className="rounded-xl border-border/80"
+                className="border-border/80"
               />
             </div>
 
@@ -700,7 +700,7 @@ export default function Neumologia() {
                 value={formDiag}
                 onChange={(e) => setFormDiag(e.target.value)}
                 rows={2}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 required
               />
             </div>
@@ -712,15 +712,15 @@ export default function Neumologia() {
                 value={formPlan}
                 onChange={(e) => setFormPlan(e.target.value)}
                 rows={3}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
             <DialogFooter className="pt-2">
-              <Button type="button" variant="outline" onClick={() => setModalNueva(false)} className="rounded-xl">
+              <Button type="button" variant="outline" onClick={() => setModalNueva(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" className="rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-medium">
+              <Button type="submit" className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium">
                 Guardar Consulta
               </Button>
             </DialogFooter>
@@ -798,10 +798,10 @@ export default function Neumologia() {
             </div>
 
             <DialogFooter className="pt-2">
-              <Button variant="outline" onClick={() => window.print()} className="rounded-xl">
+              <Button variant="outline" onClick={() => window.print()}>
                 Imprimir Informe
               </Button>
-              <Button onClick={() => setConsultaDetalle(null)} className="rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white">
+              <Button onClick={() => setConsultaDetalle(null)} className="bg-cyan-600 hover:bg-cyan-700 text-white">
                 Cerrar
               </Button>
             </DialogFooter>

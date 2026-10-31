@@ -163,7 +163,7 @@ export function ConsentimientoQuirurgicoModal({
                 value={tipoProcedimiento}
                 onValueChange={(v: any) => setTipoProcedimiento(v)}
               >
-                <SelectTrigger className="h-8 text-xs rounded-xl mt-1 bg-background">
+                <SelectTrigger className="h-8 text-xs mt-1 bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
@@ -180,7 +180,7 @@ export function ConsentimientoQuirurgicoModal({
               <Input
                 value={nombreProcedimiento}
                 onChange={e => setNombreProcedimiento(e.target.value)}
-                className="h-8 text-xs rounded-xl mt-1 bg-background"
+                className="h-8 text-xs mt-1 bg-background"
               />
             </div>
 
@@ -189,7 +189,7 @@ export function ConsentimientoQuirurgicoModal({
               <Input
                 value={medicoResponsable}
                 onChange={e => setMedicoResponsable(e.target.value)}
-                className="h-8 text-xs rounded-xl mt-1 bg-background"
+                className="h-8 text-xs mt-1 bg-background"
               />
             </div>
 
@@ -198,7 +198,7 @@ export function ConsentimientoQuirurgicoModal({
               <Input
                 value={testigoNombre}
                 onChange={e => setTestigoNombre(e.target.value)}
-                className="h-8 text-xs rounded-xl mt-1 bg-background"
+                className="h-8 text-xs mt-1 bg-background"
               />
             </div>
           </div>
@@ -243,7 +243,7 @@ export function ConsentimientoQuirurgicoModal({
               <Input
                 value={firmanteNombre}
                 onChange={e => setFirmanteNombre(e.target.value)}
-                className="h-8 text-xs rounded-xl mt-1"
+                className="h-8 text-xs mt-1"
               />
             </div>
             <div>
@@ -252,7 +252,7 @@ export function ConsentimientoQuirurgicoModal({
                 value={parentesco}
                 onChange={e => setParentesco(e.target.value)}
                 placeholder="Paciente / Cónyuge / Tutor Legal"
-                className="h-8 text-xs rounded-xl mt-1"
+                className="h-8 text-xs mt-1"
               />
             </div>
           </div>
@@ -299,14 +299,14 @@ export function ConsentimientoQuirurgicoModal({
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} className="rounded-xl text-xs">
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} className="text-xs">
             Cancelar
           </Button>
           <Button
             size="sm"
             onClick={handleGuardar}
             disabled={!hasSignature || !aceptaRiesgos || !aceptaAlternativas}
-            className="rounded-xl text-xs bg-teal-600 hover:bg-teal-700 text-white gap-1.5"
+            className="text-xs bg-teal-600 hover:bg-teal-700 text-white gap-1.5"
           >
             <ShieldCheck className="h-4 w-4" />
             Certificar Consentimiento Quirúrgico

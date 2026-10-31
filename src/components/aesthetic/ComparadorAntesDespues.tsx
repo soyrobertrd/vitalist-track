@@ -138,7 +138,7 @@ export default function ComparadorAntesDespues() {
 
         <div className="flex items-center gap-2">
           <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
-            <SelectTrigger className="w-[140px] rounded-xl h-9 text-xs">
+            <SelectTrigger className="w-[140px] h-9 text-xs">
               <SelectValue placeholder="Categoría" />
             </SelectTrigger>
             <SelectContent>
@@ -152,7 +152,7 @@ export default function ComparadorAntesDespues() {
 
           <Dialog open={openNuevoModal} onOpenChange={setOpenNuevoModal}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl h-9 text-xs gap-1.5 shadow-none">
+              <Button size="sm" className="h-9 text-xs gap-1.5 shadow-none">
                 <Upload className="h-3.5 w-3.5" />
                 Cargar Caso
               </Button>
@@ -171,7 +171,7 @@ export default function ComparadorAntesDespues() {
                     placeholder="Nombre completo"
                     value={nuevoForm.paciente}
                     onChange={(e) => setNuevoForm({ ...nuevoForm, paciente: e.target.value })}
-                    className="h-9 text-xs rounded-xl"
+                    className="h-9 text-xs"
                   />
                 </div>
 
@@ -182,7 +182,7 @@ export default function ComparadorAntesDespues() {
                       placeholder="Ej. Toxina Botulínica"
                       value={nuevoForm.procedimiento}
                       onChange={(e) => setNuevoForm({ ...nuevoForm, procedimiento: e.target.value })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -191,7 +191,7 @@ export default function ComparadorAntesDespues() {
                       value={nuevoForm.categoria}
                       onValueChange={(v: any) => setNuevoForm({ ...nuevoForm, categoria: v })}
                     >
-                      <SelectTrigger className="h-9 text-xs rounded-xl">
+                      <SelectTrigger className="h-9 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -211,7 +211,7 @@ export default function ComparadorAntesDespues() {
                       type="date"
                       value={nuevoForm.fechaAntes}
                       onChange={(e) => setNuevoForm({ ...nuevoForm, fechaAntes: e.target.value })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -220,7 +220,7 @@ export default function ComparadorAntesDespues() {
                       type="date"
                       value={nuevoForm.fechaDespues}
                       onChange={(e) => setNuevoForm({ ...nuevoForm, fechaDespues: e.target.value })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -230,7 +230,7 @@ export default function ComparadorAntesDespues() {
                       min={1}
                       value={nuevoForm.semanasEvolucion}
                       onChange={(e) => setNuevoForm({ ...nuevoForm, semanasEvolucion: parseInt(e.target.value) || 1 })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                 </div>
@@ -241,7 +241,7 @@ export default function ComparadorAntesDespues() {
                     placeholder="Ej. Cantidad de sesiones, dosis, cabezal, respuesta cutánea"
                     value={nuevoForm.notaClinica}
                     onChange={(e) => setNuevoForm({ ...nuevoForm, notaClinica: e.target.value })}
-                    className="h-9 text-xs rounded-xl"
+                    className="h-9 text-xs"
                   />
                 </div>
 
@@ -270,10 +270,10 @@ export default function ComparadorAntesDespues() {
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenNuevoModal(false)} className="rounded-xl">
+                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenNuevoModal(false)}>
                     Cancelar
                   </Button>
-                  <Button type="submit" size="sm" className="rounded-xl">
+                  <Button type="submit" size="sm">
                     Guardar Caso
                   </Button>
                 </div>
@@ -389,7 +389,7 @@ export default function ComparadorAntesDespues() {
                   variant="outline"
                   size="sm"
                   onClick={() => compartirWhatsApp(casoSeleccionado)}
-                  className="rounded-xl text-xs gap-1.5 h-8 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+                  className="text-xs gap-1.5 h-8 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
                 >
                   <Share2 className="h-3.5 w-3.5" />
                   Compartir Reporte WhatsApp

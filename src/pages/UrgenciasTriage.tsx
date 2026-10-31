@@ -116,7 +116,7 @@ export default function UrgenciasTriage() {
           <Button
             size="sm"
             variant="outline"
-            className="h-7 text-xs bg-white/10 hover:bg-white/20 text-white border-white/30 rounded-xl"
+            className="h-7 text-xs bg-white/10 hover:bg-white/20 text-white border-white/30"
             onClick={() => setAlertaActiva(null)}
           >
             Reconocer y Desactivar
@@ -135,14 +135,14 @@ export default function UrgenciasTriage() {
             <Button
               variant="outline"
               size="sm"
-              className="gap-1.5 border-rose-500/40 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl"
+              className="gap-1.5 border-rose-500/40 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40"
               onClick={() => handleActivarCodigo("azul")}
             >
               <Zap className="h-4 w-4" /> Código Azul STAT
             </Button>
             <Button
               size="sm"
-              className="gap-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl"
+              className="gap-2 bg-rose-600 hover:bg-rose-700 text-white"
               onClick={() => setIsModalOpen(true)}
             >
               <Plus className="h-4 w-4" /> Clasificar Paciente
@@ -189,7 +189,7 @@ export default function UrgenciasTriage() {
         <Button
           size="sm"
           variant={filtroNivel === "todos" ? "default" : "outline"}
-          className="h-8 text-xs rounded-xl"
+          className="h-8 text-xs"
           onClick={() => setFiltroNivel("todos")}
         >
           Todos ({pacientes.length})
@@ -204,7 +204,7 @@ export default function UrgenciasTriage() {
               size="sm"
               variant="outline"
               onClick={() => setFiltroNivel(lvl)}
-              className={`h-8 text-xs rounded-xl gap-1.5 transition-all ${
+              className={`h-8 text-xs gap-1.5 transition-all ${
                 isActivo
                   ? `${cfg.badgeClass} ring-2 ring-primary font-semibold`
                   : "border-border/60 hover:bg-muted"
@@ -219,16 +219,16 @@ export default function UrgenciasTriage() {
 
       <Tabs defaultValue="espera" className="space-y-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <TabsList className="bg-card border border-border/80 p-1 rounded-xl">
-            <TabsTrigger value="espera" className="rounded-lg gap-2 text-xs sm:text-sm">
+          <TabsList className="bg-card border border-border/80 p-1">
+            <TabsTrigger value="espera" className="gap-2 text-xs sm:text-sm">
               <Clock className="h-4 w-4" />
               Lista de Triaje y Tiempos ({pacientesFiltrados.length})
             </TabsTrigger>
-            <TabsTrigger value="boxes" className="rounded-lg gap-2 text-xs sm:text-sm">
+            <TabsTrigger value="boxes" className="gap-2 text-xs sm:text-sm">
               <BedDouble className="h-4 w-4" />
               Boxes & Shock Room ({BOXES_URGENCIAS.length})
             </TabsTrigger>
-            <TabsTrigger value="guia" className="rounded-lg gap-2 text-xs sm:text-sm">
+            <TabsTrigger value="guia" className="gap-2 text-xs sm:text-sm">
               <ShieldAlert className="h-4 w-4" />
               Guía de Discriminadores MTS
             </TabsTrigger>
@@ -240,7 +240,7 @@ export default function UrgenciasTriage() {
               placeholder="Buscar por paciente, motivo..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              className="pl-9 h-9 text-xs rounded-xl bg-background/50"
+              className="pl-9 h-9 text-xs bg-background/50"
             />
           </div>
         </div>
@@ -375,7 +375,7 @@ export default function UrgenciasTriage() {
                         <Button
                           size="sm"
                           variant="default"
-                          className="h-8 text-xs rounded-xl bg-primary text-white"
+                          className="h-8 text-xs bg-primary text-white"
                           onClick={() => handleActualizarEstado(p.id, "en_atencion", "Box de Urgencias")}
                         >
                           <Stethoscope className="h-3.5 w-3.5 mr-1" />
@@ -387,7 +387,7 @@ export default function UrgenciasTriage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="h-8 text-xs rounded-xl text-amber-600 border-amber-500/30"
+                            className="h-8 text-xs text-amber-600 border-amber-500/30"
                             onClick={() => handleActualizarEstado(p.id, "observacion", "Box Observación")}
                           >
                             <BedDouble className="h-3.5 w-3.5 mr-1" />
@@ -396,7 +396,7 @@ export default function UrgenciasTriage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="h-8 text-xs rounded-xl text-emerald-600 border-emerald-500/30"
+                            className="h-8 text-xs text-emerald-600 border-emerald-500/30"
                             onClick={() => handleActualizarEstado(p.id, "egresado")}
                           >
                             <CheckCircle2 className="h-3.5 w-3.5 mr-1" />

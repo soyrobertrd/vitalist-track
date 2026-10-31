@@ -39,7 +39,7 @@ export function VitalStatsCards() {
             variant="outline"
             size="sm"
             onClick={() => navigate("/pacientes")}
-            className="mt-3.5 h-8 w-full rounded-xl text-xs font-semibold"
+            className="mt-3.5 h-8 w-full text-xs font-semibold"
           >
             Ver Registro
           </Button>
@@ -70,7 +70,7 @@ export function VitalStatsCards() {
             variant="outline"
             size="sm"
             onClick={() => navigate("/pacientes")}
-            className="mt-3.5 h-8 w-full rounded-xl text-xs font-semibold"
+            className="mt-3.5 h-8 w-full text-xs font-semibold"
           >
             Historial PA
           </Button>
@@ -101,7 +101,7 @@ export function VitalStatsCards() {
             variant="outline"
             size="sm"
             onClick={() => navigate("/calendario")}
-            className="mt-3.5 h-8 w-full rounded-xl text-xs font-semibold"
+            className="mt-3.5 h-8 w-full text-xs font-semibold"
           >
             Ver Agenda
           </Button>
@@ -132,7 +132,7 @@ export function VitalStatsCards() {
             variant="outline"
             size="sm"
             onClick={() => navigate("/app/citas")}
-            className="mt-3.5 h-8 w-full rounded-xl text-xs font-semibold"
+            className="mt-3.5 h-8 w-full text-xs font-semibold"
           >
             Recetas Activas
           </Button>

@@ -292,7 +292,7 @@ export const PartogramaInteractivoModal: React.FC<PartogramaInteractivoModalProp
                 </Select>
               </div>
 
-              <Button size="sm" onClick={handleAgregarPunto} className="w-full text-xs h-7 rounded-lg mt-1">
+              <Button size="sm" onClick={handleAgregarPunto} className="w-full text-xs h-7 mt-1">
                 Añadir al Partograma
               </Button>
             </div>

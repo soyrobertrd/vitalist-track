@@ -52,7 +52,7 @@ export function News2Tab({ onGuardar }: News2TabProps) {
               <div>
                 <Label className="text-xs font-semibold">Frecuencia Respiratoria (rpm)</Label>
                 <Select value={String(newsFr)} onValueChange={v => setNewsFr(Number(v))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="3">≤ 8 rpm (3 pts)</SelectItem>
                     <SelectItem value="1">9 - 11 rpm (1 pt)</SelectItem>
@@ -66,7 +66,7 @@ export function News2Tab({ onGuardar }: News2TabProps) {
               <div>
                 <Label className="text-xs font-semibold">Saturación de Oxígeno (SpO2 %)</Label>
                 <Select value={String(newsSat)} onValueChange={v => setNewsSat(Number(v))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="0">≥ 96% (0 pts - Normal)</SelectItem>
                     <SelectItem value="1">94 - 95% (1 pt)</SelectItem>
@@ -79,7 +79,7 @@ export function News2Tab({ onGuardar }: News2TabProps) {
               <div>
                 <Label className="text-xs font-semibold">Soporte de Oxígeno</Label>
                 <Select value={String(newsOxigeno)} onValueChange={v => setNewsOxigeno(Number(v))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="0">Aire ambiente (0 pts)</SelectItem>
                     <SelectItem value="2">Oxígeno suplementario (2 pts)</SelectItem>
@@ -90,7 +90,7 @@ export function News2Tab({ onGuardar }: News2TabProps) {
               <div>
                 <Label className="text-xs font-semibold">Presión Arterial Sistólica (mmHg)</Label>
                 <Select value={String(newsPas)} onValueChange={v => setNewsPas(Number(v))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="3">≤ 90 mmHg (3 pts)</SelectItem>
                     <SelectItem value="2">91 - 100 mmHg (2 pts)</SelectItem>
@@ -104,7 +104,7 @@ export function News2Tab({ onGuardar }: News2TabProps) {
               <div>
                 <Label className="text-xs font-semibold">Frecuencia Cardíaca (lpm)</Label>
                 <Select value={String(newsFc)} onValueChange={v => setNewsFc(Number(v))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="3">≤ 40 lpm (3 pts)</SelectItem>
                     <SelectItem value="1">41 - 50 lpm (1 pt)</SelectItem>
@@ -119,7 +119,7 @@ export function News2Tab({ onGuardar }: News2TabProps) {
               <div>
                 <Label className="text-xs font-semibold">Nivel de Conciencia (AVPU)</Label>
                 <Select value={String(newsConciencia)} onValueChange={v => setNewsConciencia(Number(v))}>
-                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="0">Alerta (A) - (0 pts)</SelectItem>
                     <SelectItem value="3">Voz (V), Dolor (P) o Inconsciente (U) - (3 pts)</SelectItem>
@@ -159,7 +159,7 @@ export function News2Tab({ onGuardar }: News2TabProps) {
             </div>
 
             <Button
-              className="w-full rounded-xl shadow-none"
+              className="w-full shadow-none"
               onClick={() =>
                 onGuardar(
                   "NEWS2",

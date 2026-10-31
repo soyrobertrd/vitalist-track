@@ -213,7 +213,7 @@ export default function OrdenesMedicas() {
         icon={ClipboardList}
         action={
           <Button 
-            className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-none text-xs md:text-sm font-medium" 
+            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-none text-xs md:text-sm font-medium" 
             onClick={() => setShowNewOrden(true)}
             disabled={!canActHere && !!verticalProfesional}
           >
@@ -275,14 +275,14 @@ export default function OrdenesMedicas() {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar por paciente, prescripción o módulo..."
-            className="pl-9 rounded-xl border-border/80 bg-background/50 h-10"
+            className="pl-9 border-border/80 bg-background/50 h-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="w-full sm:w-56">
           <Select value={filtroEstado} onValueChange={setFiltroEstado}>
-            <SelectTrigger className="rounded-xl border-border/80 h-10">
+            <SelectTrigger className="border-border/80 h-10">
               <SelectValue placeholder="Estado de la orden" />
             </SelectTrigger>
             <SelectContent>
@@ -299,12 +299,12 @@ export default function OrdenesMedicas() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="ordenes" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="ordenes" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <ClipboardList className="h-4 w-4 mr-1.5" />
             Censo de Prescripciones ({ordenesFiltradas.length})
           </TabsTrigger>
-          <TabsTrigger value="analitica" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="analitica" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <PieChartIcon className="h-4 w-4 mr-1.5 text-blue-500" />
             Flujo CPOE & Tiempos
           </TabsTrigger>
@@ -387,7 +387,7 @@ export default function OrdenesMedicas() {
                                 <Button 
                                   size="sm" 
                                   variant="outline" 
-                                  className="rounded-lg h-7 text-xs border-border/80"
+                                  className="h-7 text-xs border-border/80"
                                   onClick={() => cambiarEstado.mutate({ id: o.id, nuevoEstado: "aceptada" })}
                                   disabled={cambiarEstado.isPending || (!canActHere && !!verticalProfesional)}
                                 >
@@ -398,7 +398,7 @@ export default function OrdenesMedicas() {
                                 <Button 
                                   size="sm" 
                                   variant="outline" 
-                                  className="rounded-lg h-7 text-xs bg-purple-500/10 text-purple-700 border-purple-500/30"
+                                  className="h-7 text-xs bg-purple-500/10 text-purple-700 border-purple-500/30"
                                   onClick={() => cambiarEstado.mutate({ id: o.id, nuevoEstado: "en_proceso" })}
                                   disabled={cambiarEstado.isPending || (!canActHere && !!verticalProfesional)}
                                 >
@@ -408,7 +408,7 @@ export default function OrdenesMedicas() {
                               {o.estado === "en_proceso" && (
                                 <Button 
                                   size="sm" 
-                                  className="rounded-lg h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                                  className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
                                   onClick={() => cambiarEstado.mutate({ id: o.id, nuevoEstado: "completada" })}
                                   disabled={cambiarEstado.isPending || (!canActHere && !!verticalProfesional)}
                                 >
@@ -419,7 +419,7 @@ export default function OrdenesMedicas() {
                                 <Button 
                                   size="sm" 
                                   variant="ghost" 
-                                  className="rounded-lg h-7 text-xs text-destructive hover:bg-destructive/10"
+                                  className="h-7 text-xs text-destructive hover:bg-destructive/10"
                                   onClick={() => cambiarEstado.mutate({ id: o.id, nuevoEstado: "cancelada" })}
                                   disabled={cambiarEstado.isPending || (!canActHere && !!verticalProfesional)}
                                 >
@@ -527,7 +527,7 @@ export default function OrdenesMedicas() {
                 value={formData.paciente_id} 
                 onValueChange={(val) => setFormData(p => ({ ...p, paciente_id: val }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue placeholder="Seleccione un paciente" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
@@ -547,7 +547,7 @@ export default function OrdenesMedicas() {
                   value={formData.modulo_destino} 
                   onValueChange={(val) => setFormData(p => ({ ...p, modulo_destino: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -563,7 +563,7 @@ export default function OrdenesMedicas() {
                   value={formData.prioridad} 
                   onValueChange={(val) => setFormData(p => ({ ...p, prioridad: val }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -579,7 +579,7 @@ export default function OrdenesMedicas() {
               <Label>Prescripción / Indicación Detallada *</Label>
               <Textarea
                 placeholder="Ej. Hemograma completo, Electrolitos séricos, o Ceftriaxona 1g IV c/12h..."
-                className="rounded-xl border-border/80 resize-none h-24"
+                className="border-border/80 resize-none h-24"
                 value={formData.descripcion}
                 onChange={(e) => setFormData(p => ({ ...p, descripcion: e.target.value }))}
               />
@@ -589,7 +589,7 @@ export default function OrdenesMedicas() {
               <Label>Justificación Diagnóstica / Sospecha Clínica</Label>
               <Input
                 placeholder="Ej. Sospecha de sepsis, control postquirúrgico..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formData.justificacion_diagnostica}
                 onChange={(e) => setFormData(p => ({ ...p, justificacion_diagnostica: e.target.value }))}
               />
@@ -597,11 +597,11 @@ export default function OrdenesMedicas() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewOrden(false)}>
+            <Button variant="outline" onClick={() => setShowNewOrden(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground" 
+              className="bg-primary hover:bg-primary/90 text-primary-foreground" 
               onClick={() => crearOrden.mutate()}
               disabled={crearOrden.isPending || !formData.paciente_id || !formData.descripcion}
             >

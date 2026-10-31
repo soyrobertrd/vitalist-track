@@ -66,7 +66,7 @@ export function BradenTab({ onGuardar }: BradenTabProps) {
                         key={pts}
                         type="button"
                         variant={grupo.val === pts ? "default" : "outline"}
-                        className="h-auto py-2 px-2.5 text-xs text-left justify-start rounded-xl font-normal"
+                        className="h-auto py-2 px-2.5 text-xs text-left justify-start font-normal"
                         onClick={() => grupo.set(pts)}
                       >
                         <span className="font-bold mr-1.5">{pts} pt</span> {opt.split("(")[0]}
@@ -112,7 +112,7 @@ export function BradenTab({ onGuardar }: BradenTabProps) {
             </p>
 
             <Button
-              className="w-full rounded-xl shadow-none"
+              className="w-full shadow-none"
               onClick={() =>
                 onGuardar(
                   "Braden",

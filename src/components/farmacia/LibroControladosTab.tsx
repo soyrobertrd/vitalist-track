@@ -133,13 +133,13 @@ export const LibroControladosTab: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="outline" onClick={() => window.print()} className="h-8 text-xs rounded-xl">
+          <Button size="sm" variant="outline" onClick={() => window.print()} className="h-8 text-xs">
             <Printer className="h-3.5 w-3.5 mr-1" /> Imprimir Folio
           </Button>
 
           <Dialog open={openModal} onOpenChange={setOpenModal}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl h-8 bg-rose-600 hover:bg-rose-700 text-white text-xs">
+              <Button size="sm" className="h-8 bg-rose-600 hover:bg-rose-700 text-white text-xs">
                 <Plus className="h-3.5 w-3.5 mr-1" />
                 Asentar Despacho
               </Button>

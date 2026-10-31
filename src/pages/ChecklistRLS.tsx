@@ -306,7 +306,7 @@ CREATE POLICY "audit_logs_select_tenant" ON audit_logs
             size="sm"
             onClick={ejecutarTodo}
             disabled={running}
-            className="rounded-xl bg-primary text-primary-foreground"
+            className="bg-primary text-primary-foreground"
           >
             {running ? (
               <>
@@ -469,7 +469,7 @@ CREATE POLICY "audit_logs_select_tenant" ON audit_logs
                   Ejecuta este script en el editor SQL de tu instancia Supabase para aplicar las políticas definitivas.
                 </CardDescription>
               </div>
-              <Button size="sm" variant="outline" onClick={handleCopiarSql} className="h-8 text-xs rounded-xl">
+              <Button size="sm" variant="outline" onClick={handleCopiarSql} className="h-8 text-xs">
                 <Copy className="h-3.5 w-3.5 mr-1" /> Copiar SQL
               </Button>
             </CardHeader>

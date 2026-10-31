@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -130,9 +131,9 @@ export function EscalasEnfermeriaManager({ pacienteId, visitaId }: { pacienteId:
                 {it.observaciones && <p className="text-xs text-muted-foreground mt-1">{it.observaciones}</p>}
                 <p className="text-xs text-muted-foreground">{new Date(it.fecha).toLocaleString("es-DO")}</p>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => eliminar(it.id)}>
+              <IconButton label="Eliminar" variant="ghost" size="icon" onClick={() => eliminar(it.id)}>
                 <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              </IconButton>
             </div>
           ))}
         </div>

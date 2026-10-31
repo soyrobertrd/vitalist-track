@@ -144,7 +144,7 @@ export function Curb65Tab({
 
             <Button
               variant="outline"
-              className="w-full rounded-xl text-xs"
+              className="w-full text-xs"
               onClick={() => {
                 onUsarPuntaje(calcCurbTotal);
                 toast.info(`Puntuación CURB-65 (${calcCurbTotal} pts) transferida al formulario.`);

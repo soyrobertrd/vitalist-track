@@ -213,12 +213,12 @@ function DentalCareProContent() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <ClinicalPageHeader title="DentalCare Pro" subtitle="Gestión integral dental — General, Ortodoncia, Implantología, Endodoncia, Odontopediatría" icon={SmilePlus} />
         <div className="flex items-center gap-2.5">
-          <Button variant="outline" className="rounded-xl border-primary/30 text-primary hover:bg-primary/10 gap-2 shadow-none" asChild>
+          <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/10 gap-2 shadow-none" asChild>
             <Link to="/odontograma">
               <Sparkles className="h-4 w-4" /> Odontograma Digital
             </Link>
           </Button>
-          <Button className="rounded-xl gap-2 shadow-none" onClick={() => setOpenPresup(true)}>
+          <Button className="gap-2 shadow-none" onClick={() => setOpenPresup(true)}>
             <Plus className="h-4 w-4" /> Nuevo Presupuesto
           </Button>
         </div>
@@ -299,50 +299,50 @@ function DentalCareProContent() {
       </div>
 
       <Tabs value={tab || "resumen"} onValueChange={setTab} className="space-y-4">
-        <TabsList className="w-full flex justify-start gap-1 overflow-x-auto p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-          <TabsTrigger value="resumen" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Resumen</TabsTrigger>
-          <TabsTrigger value="planes" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Tratamientos</TabsTrigger>
-          <TabsTrigger value="ortodoncia" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Ortodoncia</TabsTrigger>
-          <TabsTrigger value="laboratorio" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Laboratorio CAD/CAM</TabsTrigger>
-          <TabsTrigger value="consentimiento" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Shield className="h-3.5 w-3.5 mr-1" />Consentimiento</TabsTrigger>
-          <TabsTrigger value="sillones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Sillones</TabsTrigger>
-          <TabsTrigger value="presupuestos" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Presup. Sonrisa</TabsTrigger>
-          <TabsTrigger value="comisiones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Comisiones</TabsTrigger>
-          <TabsTrigger value="recordatorios" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Fidelización</TabsTrigger>
-          <TabsTrigger value="pacientes" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Users className="h-3.5 w-3.5 mr-1" />Pacientes</TabsTrigger>
-          <TabsTrigger value="citas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><CalendarDays className="h-3.5 w-3.5 mr-1" />Citas</TabsTrigger>
-          <TabsTrigger value="personal" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Users className="h-3.5 w-3.5 mr-1" />Doctores</TabsTrigger>
-          <TabsTrigger value="facturacion" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><DollarSign className="h-3.5 w-3.5 mr-1" />Facturación</TabsTrigger>
-          <TabsTrigger value="nomina" className="rounded-xl px-3.5 py-1.5 text-xs font-medium"><Calculator className="h-3.5 w-3.5 mr-1" />Nómina</TabsTrigger>
-          <TabsTrigger value="sucursales" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Sucursales</TabsTrigger>
-          <TabsTrigger value="leads" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">CRM Leads</TabsTrigger>
-          <TabsTrigger value="marketing" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Marketing</TabsTrigger>
-          <TabsTrigger value="pagos_online" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Pagos Online</TabsTrigger>
-          <TabsTrigger value="portal" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Portal</TabsTrigger>
-          <TabsTrigger value="bi" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">BI</TabsTrigger>
-          <TabsTrigger value="telemedicina" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Telemedicina</TabsTrigger>
-          <TabsTrigger value="recetas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Recetas</TabsTrigger>
-          <TabsTrigger value="ecf" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">e-CF / DGII</TabsTrigger>
-          <TabsTrigger value="integraciones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Integraciones</TabsTrigger>
-          <TabsTrigger value="inventario_v" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Inventario</TabsTrigger>
-          <TabsTrigger value="kpis" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">KPIs</TabsTrigger>
-          <TabsTrigger value="onboarding" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Setup</TabsTrigger>
-          <TabsTrigger value="pwa" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">PWA</TabsTrigger>
-          <TabsTrigger value="roles_permisos" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Roles</TabsTrigger>
-          <TabsTrigger value="agenda_ia" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Agenda IA</TabsTrigger>
-          <TabsTrigger value="comunicaciones" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Comunicaciones</TabsTrigger>
-          <TabsTrigger value="finanzas_avz" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Finanzas</TabsTrigger>
-          <TabsTrigger value="documentos_v" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Documentos</TabsTrigger>
-          <TabsTrigger value="workflows" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Workflows</TabsTrigger>
-          <TabsTrigger value="idioma_acc" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">i18n / A11y</TabsTrigger>
-          <TabsTrigger value="marketplace" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Marketplace</TabsTrigger>
-          <TabsTrigger value="telemed_avz" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Telemedicina Avz</TabsTrigger>
-          <TabsTrigger value="ia_predictiva" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">IA Predictiva</TabsTrigger>
-          <TabsTrigger value="iot" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">IoT</TabsTrigger>
-          <TabsTrigger value="camas" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Camas</TabsTrigger>
-          <TabsTrigger value="regulatorio" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">Regulatorio</TabsTrigger>
-          <TabsTrigger value="crm_fideliz" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">CRM / Fidelización</TabsTrigger>
-          <TabsTrigger value="api_gateway" className="rounded-xl px-3.5 py-1.5 text-xs font-medium">API Gateway</TabsTrigger>
+        <TabsList className="w-full flex justify-start gap-1 overflow-x-auto p-1.5 bg-muted/40 border border-border/70 h-auto">
+          <TabsTrigger value="resumen" className="px-3.5 py-1.5 text-xs font-medium">Resumen</TabsTrigger>
+          <TabsTrigger value="planes" className="px-3.5 py-1.5 text-xs font-medium">Tratamientos</TabsTrigger>
+          <TabsTrigger value="ortodoncia" className="px-3.5 py-1.5 text-xs font-medium">Ortodoncia</TabsTrigger>
+          <TabsTrigger value="laboratorio" className="px-3.5 py-1.5 text-xs font-medium">Laboratorio CAD/CAM</TabsTrigger>
+          <TabsTrigger value="consentimiento" className="px-3.5 py-1.5 text-xs font-medium"><Shield className="h-3.5 w-3.5 mr-1" />Consentimiento</TabsTrigger>
+          <TabsTrigger value="sillones" className="px-3.5 py-1.5 text-xs font-medium">Sillones</TabsTrigger>
+          <TabsTrigger value="presupuestos" className="px-3.5 py-1.5 text-xs font-medium">Presup. Sonrisa</TabsTrigger>
+          <TabsTrigger value="comisiones" className="px-3.5 py-1.5 text-xs font-medium">Comisiones</TabsTrigger>
+          <TabsTrigger value="recordatorios" className="px-3.5 py-1.5 text-xs font-medium">Fidelización</TabsTrigger>
+          <TabsTrigger value="pacientes" className="px-3.5 py-1.5 text-xs font-medium"><Users className="h-3.5 w-3.5 mr-1" />Pacientes</TabsTrigger>
+          <TabsTrigger value="citas" className="px-3.5 py-1.5 text-xs font-medium"><CalendarDays className="h-3.5 w-3.5 mr-1" />Citas</TabsTrigger>
+          <TabsTrigger value="personal" className="px-3.5 py-1.5 text-xs font-medium"><Users className="h-3.5 w-3.5 mr-1" />Doctores</TabsTrigger>
+          <TabsTrigger value="facturacion" className="px-3.5 py-1.5 text-xs font-medium"><DollarSign className="h-3.5 w-3.5 mr-1" />Facturación</TabsTrigger>
+          <TabsTrigger value="nomina" className="px-3.5 py-1.5 text-xs font-medium"><Calculator className="h-3.5 w-3.5 mr-1" />Nómina</TabsTrigger>
+          <TabsTrigger value="sucursales" className="px-3.5 py-1.5 text-xs font-medium">Sucursales</TabsTrigger>
+          <TabsTrigger value="leads" className="px-3.5 py-1.5 text-xs font-medium">CRM Leads</TabsTrigger>
+          <TabsTrigger value="marketing" className="px-3.5 py-1.5 text-xs font-medium">Marketing</TabsTrigger>
+          <TabsTrigger value="pagos_online" className="px-3.5 py-1.5 text-xs font-medium">Pagos Online</TabsTrigger>
+          <TabsTrigger value="portal" className="px-3.5 py-1.5 text-xs font-medium">Portal</TabsTrigger>
+          <TabsTrigger value="bi" className="px-3.5 py-1.5 text-xs font-medium">BI</TabsTrigger>
+          <TabsTrigger value="telemedicina" className="px-3.5 py-1.5 text-xs font-medium">Telemedicina</TabsTrigger>
+          <TabsTrigger value="recetas" className="px-3.5 py-1.5 text-xs font-medium">Recetas</TabsTrigger>
+          <TabsTrigger value="ecf" className="px-3.5 py-1.5 text-xs font-medium">e-CF / DGII</TabsTrigger>
+          <TabsTrigger value="integraciones" className="px-3.5 py-1.5 text-xs font-medium">Integraciones</TabsTrigger>
+          <TabsTrigger value="inventario_v" className="px-3.5 py-1.5 text-xs font-medium">Inventario</TabsTrigger>
+          <TabsTrigger value="kpis" className="px-3.5 py-1.5 text-xs font-medium">KPIs</TabsTrigger>
+          <TabsTrigger value="onboarding" className="px-3.5 py-1.5 text-xs font-medium">Setup</TabsTrigger>
+          <TabsTrigger value="pwa" className="px-3.5 py-1.5 text-xs font-medium">PWA</TabsTrigger>
+          <TabsTrigger value="roles_permisos" className="px-3.5 py-1.5 text-xs font-medium">Roles</TabsTrigger>
+          <TabsTrigger value="agenda_ia" className="px-3.5 py-1.5 text-xs font-medium">Agenda IA</TabsTrigger>
+          <TabsTrigger value="comunicaciones" className="px-3.5 py-1.5 text-xs font-medium">Comunicaciones</TabsTrigger>
+          <TabsTrigger value="finanzas_avz" className="px-3.5 py-1.5 text-xs font-medium">Finanzas</TabsTrigger>
+          <TabsTrigger value="documentos_v" className="px-3.5 py-1.5 text-xs font-medium">Documentos</TabsTrigger>
+          <TabsTrigger value="workflows" className="px-3.5 py-1.5 text-xs font-medium">Workflows</TabsTrigger>
+          <TabsTrigger value="idioma_acc" className="px-3.5 py-1.5 text-xs font-medium">i18n / A11y</TabsTrigger>
+          <TabsTrigger value="marketplace" className="px-3.5 py-1.5 text-xs font-medium">Marketplace</TabsTrigger>
+          <TabsTrigger value="telemed_avz" className="px-3.5 py-1.5 text-xs font-medium">Telemedicina Avz</TabsTrigger>
+          <TabsTrigger value="ia_predictiva" className="px-3.5 py-1.5 text-xs font-medium">IA Predictiva</TabsTrigger>
+          <TabsTrigger value="iot" className="px-3.5 py-1.5 text-xs font-medium">IoT</TabsTrigger>
+          <TabsTrigger value="camas" className="px-3.5 py-1.5 text-xs font-medium">Camas</TabsTrigger>
+          <TabsTrigger value="regulatorio" className="px-3.5 py-1.5 text-xs font-medium">Regulatorio</TabsTrigger>
+          <TabsTrigger value="crm_fideliz" className="px-3.5 py-1.5 text-xs font-medium">CRM / Fidelización</TabsTrigger>
+          <TabsTrigger value="api_gateway" className="px-3.5 py-1.5 text-xs font-medium">API Gateway</TabsTrigger>
         </TabsList>
 
         <TabsContent value="resumen" className="space-y-4">
@@ -358,7 +358,7 @@ function DentalCareProContent() {
                       Inspecciona la dentición permanente o temporal, registra caries, obturaciones, coronas y endodoncias por superficie dental.
                     </p>
                   </div>
-                  <Button className="rounded-xl gap-2 shrink-0 shadow-none" asChild>
+                  <Button className="gap-2 shrink-0 shadow-none" asChild>
                     <Link to="/odontograma">
                       Abrir Odontograma <ArrowRight className="h-4 w-4" />
                     </Link>
@@ -393,7 +393,7 @@ function DentalCareProContent() {
                     <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
                       <Armchair className="h-4 w-4 text-primary" /> Sillones Dentales
                     </h3>
-                    <Button variant="ghost" size="sm" className="h-7 text-xs rounded-lg px-2" onClick={() => setTab("sillones")}>
+                    <Button variant="ghost" size="sm" className="h-7 text-xs px-2" onClick={() => setTab("sillones")}>
                       Ver todos
                     </Button>
                   </div>
@@ -415,7 +415,7 @@ function DentalCareProContent() {
                   </div>
                 </div>
 
-                <Button variant="outline" size="sm" className="w-full mt-3 rounded-xl border-dashed border-border text-xs" onClick={() => setOpenSillon(true)}>
+                <Button variant="outline" size="sm" className="w-full mt-3 border-dashed border-border text-xs" onClick={() => setOpenSillon(true)}>
                   <Plus className="h-3.5 w-3.5 mr-1" /> Agregar sillón
                 </Button>
               </CardContent>
@@ -526,7 +526,7 @@ function DentalCareProContent() {
         <TabsContent value="presupuestos" className="mt-4 space-y-4">
           <div className="flex justify-end">
             <Dialog open={openPresup} onOpenChange={setOpenPresup}>
-              <DialogTrigger asChild><Button size="sm" className="rounded-xl shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo presupuesto</Button></DialogTrigger>
+              <DialogTrigger asChild><Button size="sm" className="shadow-none"><Plus className="h-4 w-4 mr-1" /> Nuevo presupuesto</Button></DialogTrigger>
               <DialogContent className="rounded-2xl">
                 <DialogHeader><DialogTitle>Cotización sonrisa</DialogTitle></DialogHeader>
                 <div className="grid gap-3">
@@ -539,7 +539,7 @@ function DentalCareProContent() {
                   </div>
                   <div><Label>Monto total</Label><Input type="number" value={presupForm.monto_total} onChange={e => setPresupForm({ ...presupForm, monto_total: +e.target.value })} /></div>
                   <div><Label>Notas</Label><Input value={presupForm.notas} onChange={e => setPresupForm({ ...presupForm, notas: e.target.value })} /></div>
-                  <Button onClick={crearPresupuesto} className="rounded-xl">Crear presupuesto</Button>
+                  <Button onClick={crearPresupuesto}>Crear presupuesto</Button>
                 </div>
               </DialogContent>
             </Dialog>

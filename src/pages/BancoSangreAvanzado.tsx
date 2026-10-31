@@ -184,14 +184,14 @@ export default function BancoSangreAvanzado() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewPrueba(true)}
             >
               <TestTube className="h-4 w-4 mr-1.5 text-rose-600" />
               Prueba Cruzada
             </Button>
             <Button 
-              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-rose-600 hover:bg-rose-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewDonante(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -236,24 +236,24 @@ export default function BancoSangreAvanzado() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="stock" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="stock" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Droplet className="h-4 w-4 mr-1.5 text-rose-600" />
             Stock por Grupo ABO / Rh
           </TabsTrigger>
-          <TabsTrigger value="pruebas" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="pruebas" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <TestTube className="h-4 w-4 mr-1.5 text-purple-600" />
             Pruebas Cruzadas & Coombs
           </TabsTrigger>
-          <TabsTrigger value="serologia" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="serologia" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <ShieldCheck className="h-4 w-4 mr-1.5 text-emerald-600" />
             Tamizaje Serológico Obligatorio
           </TabsTrigger>
-          <TabsTrigger value="hemovigilancia" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="hemovigilancia" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <HeartCrack className="h-4 w-4 mr-1.5 text-orange-500" />
             Hemovigilancia & Reacciones
           </TabsTrigger>
-          <TabsTrigger value="donantes" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="donantes" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Users className="h-4 w-4 mr-1.5 text-blue-600" />
             Donantes ({donantesFiltrados.length})
           </TabsTrigger>
@@ -404,7 +404,7 @@ export default function BancoSangreAvanzado() {
 
               <div className="pt-2 text-right">
                 <Button 
-                  className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs h-9"
+                  className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9"
                   onClick={() => setShowNewPrueba(true)}
                 >
                   <Plus className="h-4 w-4 mr-1.5" /> Nueva Prueba Cruzada
@@ -497,7 +497,7 @@ export default function BancoSangreAvanzado() {
               <div className="pt-2 text-right">
                 <Button 
                   variant="outline" 
-                  className="rounded-xl border-border/80 text-xs h-9"
+                  className="border-border/80 text-xs h-9"
                   onClick={() => setShowNewReaccion(true)}
                 >
                   <HeartCrack className="h-4 w-4 mr-1.5 text-rose-600" />
@@ -584,7 +584,7 @@ export default function BancoSangreAvanzado() {
                 <Label>Nombre *</Label>
                 <Input
                   placeholder="Ej. Roberto"
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataDonante.nombre}
                   onChange={(e) => setFormDataDonante(p => ({ ...p, nombre: e.target.value }))}
                 />
@@ -593,7 +593,7 @@ export default function BancoSangreAvanzado() {
                 <Label>Apellido *</Label>
                 <Input
                   placeholder="Ej. Guzmán"
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   value={formDataDonante.apellido}
                   onChange={(e) => setFormDataDonante(p => ({ ...p, apellido: e.target.value }))}
                 />
@@ -605,7 +605,7 @@ export default function BancoSangreAvanzado() {
                 <Label>Cédula *</Label>
                 <Input
                   placeholder="001-XXXXXXX-X"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataDonante.cedula}
                   onChange={(e) => setFormDataDonante(p => ({ ...p, cedula: e.target.value }))}
                 />
@@ -614,7 +614,7 @@ export default function BancoSangreAvanzado() {
                 <Label>Teléfono</Label>
                 <Input
                   placeholder="809-XXX-XXXX"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataDonante.telefono}
                   onChange={(e) => setFormDataDonante(p => ({ ...p, telefono: e.target.value }))}
                 />
@@ -628,7 +628,7 @@ export default function BancoSangreAvanzado() {
                   value={formDataDonante.tipo_sangre} 
                   onValueChange={(v) => setFormDataDonante(p => ({ ...p, tipo_sangre: v }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80 font-bold text-rose-600">
+                  <SelectTrigger className="border-border/80 font-bold text-rose-600">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -643,7 +643,7 @@ export default function BancoSangreAvanzado() {
                 <Input
                   type="number"
                   step="0.1"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataDonante.hemoglobina_gdL}
                   onChange={(e) => setFormDataDonante(p => ({ ...p, hemoglobina_gdL: e.target.value }))}
                 />
@@ -652,11 +652,11 @@ export default function BancoSangreAvanzado() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewDonante(false)}>
+            <Button variant="outline" onClick={() => setShowNewDonante(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white" 
+              className="bg-rose-600 hover:bg-rose-700 text-white" 
               onClick={() => crearDonante.mutate()}
               disabled={crearDonante.isPending || !formDataDonante.nombre || !formDataDonante.cedula}
             >
@@ -684,7 +684,7 @@ export default function BancoSangreAvanzado() {
               <Label>Nombre del Paciente Receptor *</Label>
               <Input
                 placeholder="Nombre del receptor..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataPrueba.receptor_nombre}
                 onChange={(e) => setFormDataPrueba(p => ({ ...p, receptor_nombre: e.target.value }))}
               />
@@ -697,7 +697,7 @@ export default function BancoSangreAvanzado() {
                   value={formDataPrueba.tipo_sangre_receptor} 
                   onValueChange={(v) => setFormDataPrueba(p => ({ ...p, tipo_sangre_receptor: v }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -713,7 +713,7 @@ export default function BancoSangreAvanzado() {
                   value={formDataPrueba.tipo_sangre_donante} 
                   onValueChange={(v) => setFormDataPrueba(p => ({ ...p, tipo_sangre_donante: v }))}
                 >
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -732,11 +732,11 @@ export default function BancoSangreAvanzado() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewPrueba(false)}>
+            <Button variant="outline" onClick={() => setShowNewPrueba(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white" 
+              className="bg-purple-600 hover:bg-purple-700 text-white" 
               onClick={() => {
                 toast.success("Prueba cruzada realizada con éxito: COMPATIBLE");
                 setShowNewPrueba(false);
@@ -767,7 +767,7 @@ export default function BancoSangreAvanzado() {
               <Label>Nombre del Paciente *</Label>
               <Input
                 placeholder="Nombre del paciente que presentó el evento..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataReaccion.paciente_nombre}
                 onChange={(e) => setFormDataReaccion(p => ({ ...p, paciente_nombre: e.target.value }))}
               />
@@ -779,7 +779,7 @@ export default function BancoSangreAvanzado() {
                 value={formDataReaccion.tipo_reaccion} 
                 onValueChange={(v) => setFormDataReaccion(p => ({ ...p, tipo_reaccion: v }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -796,7 +796,7 @@ export default function BancoSangreAvanzado() {
             <div className="space-y-1.5">
               <Label>Manejo Clínico Aplicado</Label>
               <Textarea
-                className="rounded-xl border-border/80 resize-none h-20"
+                className="border-border/80 resize-none h-20"
                 value={formDataReaccion.manejo_aplicado}
                 onChange={(e) => setFormDataReaccion(p => ({ ...p, manejo_aplicado: e.target.value }))}
               />
@@ -804,11 +804,11 @@ export default function BancoSangreAvanzado() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewReaccion(false)}>
+            <Button variant="outline" onClick={() => setShowNewReaccion(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-rose-600 hover:bg-rose-700 text-white" 
+              className="bg-rose-600 hover:bg-rose-700 text-white" 
               onClick={() => {
                 toast.success("Incidente de hemovigilancia archivado y notificado al Comité");
                 setShowNewReaccion(false);

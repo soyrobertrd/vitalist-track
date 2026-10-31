@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -115,9 +116,9 @@ export function DiagnosticosManager({ pacienteId, visitaId }: { pacienteId: stri
                 </div>
                 {d.notas && <p className="text-xs text-muted-foreground mt-1">{d.notas}</p>}
               </div>
-              <Button variant="ghost" size="icon" onClick={() => eliminar(d.id)}>
+              <IconButton label="Eliminar" variant="ghost" size="icon" onClick={() => eliminar(d.id)}>
                 <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              </IconButton>
             </div>
           ))}
         </div>

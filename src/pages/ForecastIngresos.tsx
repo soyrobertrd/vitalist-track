@@ -3,6 +3,7 @@ import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -198,7 +199,7 @@ export default function ForecastIngresos() {
         action={
           <div className="flex items-center gap-2 flex-wrap">
             <Select value={anio.toString()} onValueChange={(v) => setAnio(parseInt(v))}>
-              <SelectTrigger className="w-32 bg-card border-border/80 rounded-xl">
+              <SelectTrigger className="w-32 bg-card border-border/80">
                 <Calendar className="w-4 h-4 mr-2 text-muted-foreground" />
                 <SelectValue />
               </SelectTrigger>
@@ -213,7 +214,7 @@ export default function ForecastIngresos() {
 
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-xl shadow-sm gap-2">
+                <Button className="shadow-sm gap-2">
                   <Plus className="h-4 w-4" /> Nueva Proyección
                 </Button>
               </DialogTrigger>
@@ -228,7 +229,7 @@ export default function ForecastIngresos() {
                     <div className="space-y-1.5">
                       <Label>Mes Proyectado</Label>
                       <Select value={form.mes} onValueChange={(v) => setForm({ ...form, mes: v })}>
-                        <SelectTrigger className="rounded-xl">
+                        <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -247,7 +248,7 @@ export default function ForecastIngresos() {
                         value={form.categoria}
                         onValueChange={(v) => setForm({ ...form, categoria: v })}
                       >
-                        <SelectTrigger className="rounded-xl">
+                        <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -266,7 +267,7 @@ export default function ForecastIngresos() {
                     <Input
                       type="number"
                       placeholder="0.00"
-                      className="rounded-xl font-mono"
+                      className="font-mono"
                       value={form.monto_estimado}
                       onChange={(e) => setForm({ ...form, monto_estimado: e.target.value })}
                     />
@@ -277,7 +278,7 @@ export default function ForecastIngresos() {
                     <Input
                       type="number"
                       placeholder="0.00"
-                      className="rounded-xl font-mono"
+                      className="font-mono"
                       value={form.monto_real}
                       onChange={(e) => setForm({ ...form, monto_real: e.target.value })}
                     />
@@ -287,17 +288,17 @@ export default function ForecastIngresos() {
                     <Label>Notas u Observaciones</Label>
                     <Input
                       placeholder="Ej: Campaña de chequeos anuales"
-                      className="rounded-xl"
+                     
                       value={form.notas}
                       onChange={(e) => setForm({ ...form, notas: e.target.value })}
                     />
                   </div>
                 </div>
                 <DialogFooter className="gap-2">
-                  <Button variant="outline" onClick={() => setOpen(false)} className="rounded-xl">
+                  <Button variant="outline" onClick={() => setOpen(false)}>
                     Cancelar
                   </Button>
-                  <Button onClick={guardar} className="rounded-xl">
+                  <Button onClick={guardar}>
                     Guardar Pronóstico
                   </Button>
                 </DialogFooter>
@@ -342,11 +343,11 @@ export default function ForecastIngresos() {
       {/* Vistas en Pestañas */}
       <Tabs defaultValue="graficos" className="space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-3">
-          <TabsList className="bg-card border border-border/80 rounded-xl p-1">
-            <TabsTrigger value="graficos" className="rounded-lg gap-2">
+          <TabsList className="bg-card border border-border/80 p-1">
+            <TabsTrigger value="graficos" className="gap-2">
               <BarChart3 className="w-4 h-4" /> Analítica & Gráficos
             </TabsTrigger>
-            <TabsTrigger value="tabla" className="rounded-lg gap-2">
+            <TabsTrigger value="tabla" className="gap-2">
               <FileSpreadsheet className="w-4 h-4" /> Detalle Presupuestario
             </TabsTrigger>
           </TabsList>
@@ -525,7 +526,7 @@ export default function ForecastIngresos() {
                 </div>
                 <div className="w-56">
                   <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
-                    <SelectTrigger className="rounded-xl h-9">
+                    <SelectTrigger className="h-9">
                       <SelectValue placeholder="Filtrar categoría" />
                     </SelectTrigger>
                     <SelectContent>
@@ -603,15 +604,15 @@ export default function ForecastIngresos() {
                           {r.notas || "—"}
                         </TableCell>
                         <TableCell className="text-center">
-                          <Button
+                          <IconButton label="Eliminar"
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-muted-foreground hover:text-rose-600 rounded-lg"
+                            className="h-8 w-8 text-muted-foreground hover:text-rose-600"
                             onClick={() => eliminar(r.id)}
                             title="Eliminar registro"
                           >
                             <Trash2 className="h-4 w-4" />
-                          </Button>
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     );

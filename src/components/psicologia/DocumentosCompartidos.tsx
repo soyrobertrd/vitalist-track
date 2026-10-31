@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/integrations/db/client";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Upload, FileText, Download, Trash2 } from "lucide-react";
@@ -92,13 +93,13 @@ export default function DocumentosCompartidos({ teleconsultaId, workspaceId, pac
           <div key={d.id} className="flex items-center gap-2 text-sm border-b pb-1">
             <FileText className="h-4 w-4 text-muted-foreground" />
             <span className="flex-1 truncate">{d.nombre}</span>
-            <Button size="icon" variant="ghost" onClick={() => descargar(d)}>
+            <IconButton label="Descargar" size="icon" variant="ghost" onClick={() => descargar(d)}>
               <Download className="h-3 w-3" />
-            </Button>
+            </IconButton>
             {!readOnly && (
-              <Button size="icon" variant="ghost" onClick={() => eliminar(d)}>
+              <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => eliminar(d)}>
                 <Trash2 className="h-3 w-3 text-destructive" />
-              </Button>
+              </IconButton>
             )}
           </div>
         ))}

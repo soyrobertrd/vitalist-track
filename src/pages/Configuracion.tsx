@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -398,9 +399,9 @@ const Configuracion = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/app")}>
+        <IconButton label="Volver" variant="ghost" size="icon" onClick={() => navigate("/app")}>
           <ArrowLeft className="h-5 w-5" />
-        </Button>
+        </IconButton>
         <ClinicalPageHeader title="Configuración" subtitle="Gestiona tu información personal, seguridad y preferencias" />
       </div>
 

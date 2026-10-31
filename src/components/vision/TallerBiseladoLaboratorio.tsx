@@ -175,7 +175,7 @@ export default function TallerBiseladoLaboratorio() {
 
         <div className="flex items-center gap-2">
           <Select value={filtroEtapa} onValueChange={setFiltroEtapa}>
-            <SelectTrigger className="w-[160px] h-9 text-xs rounded-xl">
+            <SelectTrigger className="w-[160px] h-9 text-xs">
               <SelectValue placeholder="Filtrar por etapa" />
             </SelectTrigger>
             <SelectContent>
@@ -191,7 +191,7 @@ export default function TallerBiseladoLaboratorio() {
 
           <Dialog open={openNuevaOrden} onOpenChange={setOpenNuevaOrden}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl h-9 text-xs gap-1.5 shadow-none">
+              <Button size="sm" className="h-9 text-xs gap-1.5 shadow-none">
                 <Plus className="h-3.5 w-3.5" />
                 Nueva Orden Taller
               </Button>
@@ -210,7 +210,7 @@ export default function TallerBiseladoLaboratorio() {
                     placeholder="Nombre completo"
                     value={nuevaOrden.paciente}
                     onChange={(e) => setNuevaOrden({ ...nuevaOrden, paciente: e.target.value })}
-                    className="h-9 text-xs rounded-xl"
+                    className="h-9 text-xs"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -220,7 +220,7 @@ export default function TallerBiseladoLaboratorio() {
                       placeholder="809-555-0000"
                       value={nuevaOrden.telefono}
                       onChange={(e) => setNuevaOrden({ ...nuevaOrden, telefono: e.target.value })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                   <div className="space-y-1">
@@ -229,7 +229,7 @@ export default function TallerBiseladoLaboratorio() {
                       type="date"
                       value={nuevaOrden.fechaPrometida}
                       onChange={(e) => setNuevaOrden({ ...nuevaOrden, fechaPrometida: e.target.value })}
-                      className="h-9 text-xs rounded-xl"
+                      className="h-9 text-xs"
                     />
                   </div>
                 </div>
@@ -239,7 +239,7 @@ export default function TallerBiseladoLaboratorio() {
                     placeholder="Ej. Ray-Ban RX5154 Carey"
                     value={nuevaOrden.montura}
                     onChange={(e) => setNuevaOrden({ ...nuevaOrden, montura: e.target.value })}
-                    className="h-9 text-xs rounded-xl"
+                    className="h-9 text-xs"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -249,7 +249,7 @@ export default function TallerBiseladoLaboratorio() {
                       value={nuevaOrden.tipoBiselado}
                       onValueChange={(v: any) => setNuevaOrden({ ...nuevaOrden, tipoBiselado: v })}
                     >
-                      <SelectTrigger className="h-9 text-xs rounded-xl">
+                      <SelectTrigger className="h-9 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -266,7 +266,7 @@ export default function TallerBiseladoLaboratorio() {
                       value={nuevaOrden.garantiaDias.toString()}
                       onValueChange={(v) => setNuevaOrden({ ...nuevaOrden, garantiaDias: parseInt(v) || 30 })}
                     >
-                      <SelectTrigger className="h-9 text-xs rounded-xl">
+                      <SelectTrigger className="h-9 text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -282,14 +282,14 @@ export default function TallerBiseladoLaboratorio() {
                   <Input
                     value={nuevaOrden.disenoLente}
                     onChange={(e) => setNuevaOrden({ ...nuevaOrden, disenoLente: e.target.value })}
-                    className="h-9 text-xs rounded-xl"
+                    className="h-9 text-xs"
                   />
                 </div>
                 <div className="flex justify-end gap-2 pt-2">
-                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenNuevaOrden(false)} className="rounded-xl">
+                  <Button type="button" variant="outline" size="sm" onClick={() => setOpenNuevaOrden(false)}>
                     Cancelar
                   </Button>
-                  <Button type="submit" size="sm" className="rounded-xl">
+                  <Button type="submit" size="sm">
                     Enviar al Taller
                   </Button>
                 </div>
@@ -393,7 +393,7 @@ export default function TallerBiseladoLaboratorio() {
                         size="sm"
                         variant="outline"
                         onClick={() => notificarWhatsAppListo(trabajo)}
-                        className="h-7 text-xs rounded-lg text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 gap-1"
+                        className="h-7 text-xs text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 gap-1"
                       >
                         <Send className="h-3 w-3" /> Avisar WA
                       </Button>
@@ -402,7 +402,7 @@ export default function TallerBiseladoLaboratorio() {
                         size="sm"
                         variant="ghost"
                         onClick={() => avanzarEtapa(trabajo.id, trabajo.etapa)}
-                        className="h-7 text-xs rounded-lg text-primary hover:bg-primary/10 gap-1"
+                        className="h-7 text-xs text-primary hover:bg-primary/10 gap-1"
                       >
                         Avanzar <ArrowRight className="h-3 w-3" />
                       </Button>

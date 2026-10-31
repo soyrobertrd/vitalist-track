@@ -4,6 +4,7 @@ import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -136,7 +137,7 @@ export default function CuestionariosPreSesion({ pacientes }: { pacientes: Pacie
                       <Card key={p.id}><CardContent className="py-3 space-y-2">
                         <div className="flex items-center gap-2">
                           <Input placeholder={`Pregunta ${i + 1}`} value={p.texto} onChange={e => updPregunta(i, { texto: e.target.value })} />
-                          <Button size="icon" variant="ghost" onClick={() => delPregunta(i)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                          <IconButton label="Eliminar" size="icon" variant="ghost" onClick={() => delPregunta(i)}><Trash2 className="h-4 w-4 text-destructive" /></IconButton>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                           <Select value={p.tipo} onValueChange={(v: any) => updPregunta(i, { tipo: v })}>

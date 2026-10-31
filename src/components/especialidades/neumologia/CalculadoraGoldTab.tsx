@@ -56,7 +56,7 @@ export function CalculadoraGoldTab({
                   max={120}
                   value={goldFev1Pct}
                   onChange={(e) => setGoldFev1Pct(Number(e.target.value))}
-                  className="rounded-xl border-border/80 w-32"
+                  className="border-border/80 w-32"
                 />
                 <span className="text-xs text-muted-foreground">% (Normal ≥ 80%)</span>
               </div>
@@ -65,7 +65,7 @@ export function CalculadoraGoldTab({
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Grado de Disnea mMRC (0 a 4):</Label>
               <Select value={goldMmrc.toString()} onValueChange={(v) => setGoldMmrc(Number(v))}>
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -86,7 +86,7 @@ export function CalculadoraGoldTab({
                 max={12}
                 value={goldExacAnuales}
                 onChange={(e) => setGoldExacAnuales(Number(e.target.value))}
-                className="rounded-xl border-border/80 w-32"
+                className="border-border/80 w-32"
               />
             </div>
 

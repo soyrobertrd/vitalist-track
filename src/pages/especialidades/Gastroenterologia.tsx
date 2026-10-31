@@ -332,7 +332,7 @@ export default function Gastroenterologia() {
         actions={
           <Button
             onClick={() => setModalNueva(true)}
-            className="rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-medium shadow-sm flex items-center gap-2"
+            className="bg-amber-600 hover:bg-amber-700 text-white font-medium shadow-sm flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
             Nueva Consulta Digestiva
@@ -370,20 +370,20 @@ export default function Gastroenterologia() {
 
       {/* Pestañas Clínicas */}
       <Tabs defaultValue="consultas" className="w-full">
-        <TabsList className="bg-muted/70 p-1 rounded-xl">
-          <TabsTrigger value="consultas" className="rounded-lg text-xs font-semibold gap-2">
+        <TabsList className="bg-muted/70 p-1">
+          <TabsTrigger value="consultas" className="text-xs font-semibold gap-2">
             <FileText className="h-4 w-4" />
             Consultas & Endoscopias
           </TabsTrigger>
-          <TabsTrigger value="forrest" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="forrest" className="text-xs font-semibold gap-2">
             <Flame className="h-4 w-4" />
             Clasificación de Forrest (HDA)
           </TabsTrigger>
-          <TabsTrigger value="child_pugh" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="child_pugh" className="text-xs font-semibold gap-2">
             <Calculator className="h-4 w-4" />
             Escala Child-Pugh Cirrosis
           </TabsTrigger>
-          <TabsTrigger value="meld" className="rounded-lg text-xs font-semibold gap-2">
+          <TabsTrigger value="meld" className="text-xs font-semibold gap-2">
             <Stethoscope className="h-4 w-4" />
             Calculadora MELD-Na
           </TabsTrigger>
@@ -399,11 +399,11 @@ export default function Gastroenterologia() {
                 placeholder="Buscar por paciente, diagnóstico o hallazgo endoscópico..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                className="pl-9 rounded-xl border-border/80"
+                className="pl-9 border-border/80"
               />
             </div>
             <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-              <SelectTrigger className="w-full sm:w-[240px] rounded-xl border-border/80">
+              <SelectTrigger className="w-full sm:w-[240px] border-border/80">
                 <SelectValue placeholder="Tipo de Patología" />
               </SelectTrigger>
               <SelectContent>
@@ -572,7 +572,7 @@ export default function Gastroenterologia() {
                   placeholder="Ej: Rafael Tejada"
                   value={formNombre}
                   onChange={(e) => setFormNombre(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                   required
                 />
               </div>
@@ -582,7 +582,7 @@ export default function Gastroenterologia() {
                   placeholder="Ej: 52a / M"
                   value={formEdadSexo}
                   onChange={(e) => setFormEdadSexo(e.target.value)}
-                  className="rounded-xl border-border/80"
+                  className="border-border/80"
                 />
               </div>
             </div>
@@ -591,7 +591,7 @@ export default function Gastroenterologia() {
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold">Tipo de Consulta / Patología:</Label>
                 <Select value={formTipo} onValueChange={(v) => setFormTipo(v as TipoConsultaGastro)}>
-                  <SelectTrigger className="rounded-xl border-border/80">
+                  <SelectTrigger className="border-border/80">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -609,7 +609,7 @@ export default function Gastroenterologia() {
                 <div className="space-y-1.5">
                   <Label className="text-xs font-semibold">Clasificación de Forrest:</Label>
                   <Select value={formForrest} onValueChange={setFormForrest}>
-                    <SelectTrigger className="rounded-xl border-border/80">
+                    <SelectTrigger className="border-border/80">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -626,7 +626,7 @@ export default function Gastroenterologia() {
                 <div className="space-y-1.5">
                   <Label className="text-xs font-semibold">Clase Child-Pugh:</Label>
                   <Select value={formChildClase} onValueChange={setFormChildClase}>
-                    <SelectTrigger className="rounded-xl border-border/80">
+                    <SelectTrigger className="border-border/80">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -645,7 +645,7 @@ export default function Gastroenterologia() {
                     max={23}
                     value={formBlatchford}
                     onChange={(e) => setFormBlatchford(e.target.value)}
-                    className="rounded-xl border-border/80"
+                    className="border-border/80"
                   />
                 </div>
               )}
@@ -658,7 +658,7 @@ export default function Gastroenterologia() {
                 value={formEndoscopia}
                 onChange={(e) => setFormEndoscopia(e.target.value)}
                 rows={2}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
@@ -669,7 +669,7 @@ export default function Gastroenterologia() {
                 value={formDiag}
                 onChange={(e) => setFormDiag(e.target.value)}
                 rows={2}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
                 required
               />
             </div>
@@ -681,15 +681,15 @@ export default function Gastroenterologia() {
                 value={formPlan}
                 onChange={(e) => setFormPlan(e.target.value)}
                 rows={3}
-                className="rounded-xl border-border/80 text-xs"
+                className="border-border/80 text-xs"
               />
             </div>
 
             <DialogFooter className="pt-2">
-              <Button type="button" variant="outline" onClick={() => setModalNueva(false)} className="rounded-xl">
+              <Button type="button" variant="outline" onClick={() => setModalNueva(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" className="rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-medium">
+              <Button type="submit" className="bg-amber-600 hover:bg-amber-700 text-white font-medium">
                 Guardar Consulta
               </Button>
             </DialogFooter>
@@ -753,10 +753,10 @@ export default function Gastroenterologia() {
             </div>
 
             <DialogFooter className="pt-2">
-              <Button variant="outline" onClick={() => window.print()} className="rounded-xl">
+              <Button variant="outline" onClick={() => window.print()}>
                 Imprimir Informe
               </Button>
-              <Button onClick={() => setConsultaDetalle(null)} className="rounded-xl bg-amber-600 hover:bg-amber-700 text-white">
+              <Button onClick={() => setConsultaDetalle(null)} className="bg-amber-600 hover:bg-amber-700 text-white">
                 Cerrar
               </Button>
             </DialogFooter>

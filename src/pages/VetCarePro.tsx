@@ -169,7 +169,7 @@ export default function VetCarePro() {
             <Button
               variant="outline"
               size="sm"
-              className="rounded-xl border-border/80 gap-1.5 text-xs shadow-none"
+              className="border-border/80 gap-1.5 text-xs shadow-none"
               onClick={() => {
                 setMascotaSeleccionada(null);
                 setModalVacunaOpen(true);
@@ -179,7 +179,7 @@ export default function VetCarePro() {
             </Button>
             <Button
               size="sm"
-              className="rounded-xl gap-1.5 text-xs shadow-none"
+              className="gap-1.5 text-xs shadow-none"
               onClick={() => setModalMascotaOpen(true)}
             >
               <Plus className="h-3.5 w-3.5" /> Nueva Mascota
@@ -227,32 +227,32 @@ export default function VetCarePro() {
         onValueChange={t => setParams({ tab: t }, { replace: true })}
         className="space-y-4"
       >
-        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border/70 h-auto">
-          <TabsTrigger value="mascotas" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+        <TabsList className="w-full flex-wrap justify-start gap-1 p-1.5 bg-muted/40 border border-border/70 h-auto">
+          <TabsTrigger value="mascotas" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <PawPrint className="h-4 w-4 text-emerald-600" />
             Mascotas ({mascotas.length})
           </TabsTrigger>
-          <TabsTrigger value="vacunas" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="vacunas" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <Syringe className="h-4 w-4 text-blue-600" />
             Vacunas & Desparasitación ({vacunas.length})
           </TabsTrigger>
-          <TabsTrigger value="consultas" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="consultas" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <Stethoscope className="h-4 w-4 text-purple-600" />
             Consultas Clínicas ({consultas.length})
           </TabsTrigger>
-          <TabsTrigger value="hospitalizacion" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="hospitalizacion" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <Bed className="h-4 w-4 text-amber-600" />
             Cirugía & Hospitalización ({hospitalizacion.length})
           </TabsTrigger>
-          <TabsTrigger value="grooming" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="grooming" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <Scissors className="h-4 w-4 text-rose-500" />
             Estética & Grooming ({grooming.length})
           </TabsTrigger>
-          <TabsTrigger value="calculadora" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="calculadora" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <Calculator className="h-4 w-4 text-teal-600" />
             Calculadora Dosis Ponderal
           </TabsTrigger>
-          <TabsTrigger value="boxes" className="rounded-xl text-xs font-semibold px-3.5 py-2 gap-1.5">
+          <TabsTrigger value="boxes" className="text-xs font-semibold px-3.5 py-2 gap-1.5">
             <ShieldAlert className="h-4 w-4 text-rose-600" />
             Boxes & Aislamiento Bioseguro
           </TabsTrigger>

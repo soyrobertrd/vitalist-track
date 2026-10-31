@@ -247,14 +247,14 @@ export default function Oncologia() {
           <div className="flex gap-2">
             <Button 
               variant="outline" 
-              className="rounded-xl border-border/80 shadow-none text-xs md:text-sm font-medium" 
+              className="border-border/80 shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewToxicidad(true)}
             >
               <AlertTriangle className="h-4 w-4 mr-1.5 text-orange-500" />
               Registrar Toxicidad
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white shadow-none text-xs md:text-sm font-medium" 
+              className="bg-purple-600 hover:bg-purple-700 text-white shadow-none text-xs md:text-sm font-medium" 
               onClick={() => setShowNewCiclo(true)}
             >
               <Plus className="h-4 w-4 mr-1.5" />
@@ -299,24 +299,24 @@ export default function Oncologia() {
 
       {/* Pestañas */}
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList className="bg-muted/60 p-1 rounded-xl border border-border/60">
-          <TabsTrigger value="ciclos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+        <TabsList className="bg-muted/60 p-1 border border-border/60">
+          <TabsTrigger value="ciclos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Activity className="h-4 w-4 mr-1.5 text-purple-600" />
             Ciclos de Quimioterapia ({ciclos.length})
           </TabsTrigger>
-          <TabsTrigger value="calculadora" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="calculadora" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Calculator className="h-4 w-4 mr-1.5 text-blue-500" />
             Calculadora BSA & Calvert
           </TabsTrigger>
-          <TabsTrigger value="sillones" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="sillones" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Armchair className="h-4 w-4 mr-1.5 text-emerald-600" />
             Sala de Infusión ({sillones.length})
           </TabsTrigger>
-          <TabsTrigger value="toxicidades" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="toxicidades" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <AlertTriangle className="h-4 w-4 mr-1.5 text-orange-500" />
             Toxicidades CTCAE ({toxicidades.length})
           </TabsTrigger>
-          <TabsTrigger value="protocolos" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-xs">
+          <TabsTrigger value="protocolos" className="data-[state=active]:bg-background data-[state=active]:shadow-xs">
             <Layers className="h-4 w-4 mr-1.5 text-purple-500" />
             Esquemas Oncológicos ({protocolos.length})
           </TabsTrigger>
@@ -409,7 +409,7 @@ export default function Oncologia() {
                       step="0.5"
                       value={calcPeso}
                       onChange={(e) => setCalcPeso(parseFloat(e.target.value) || 0)}
-                      className="rounded-xl border-border/80 font-mono"
+                      className="border-border/80 font-mono"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -418,7 +418,7 @@ export default function Oncologia() {
                       type="number"
                       value={calcTalla}
                       onChange={(e) => setCalcTalla(parseFloat(e.target.value) || 0)}
-                      className="rounded-xl border-border/80 font-mono"
+                      className="border-border/80 font-mono"
                     />
                   </div>
                 </div>
@@ -430,13 +430,13 @@ export default function Oncologia() {
                       type="number"
                       value={calcEdad}
                       onChange={(e) => setCalcEdad(parseInt(e.target.value) || 0)}
-                      className="rounded-xl border-border/80 font-mono"
+                      className="border-border/80 font-mono"
                     />
                   </div>
                   <div className="space-y-1.5">
                     <Label>Sexo</Label>
                     <Select value={calcSexo} onValueChange={(v: any) => setCalcSexo(v)}>
-                      <SelectTrigger className="rounded-xl border-border/80">
+                      <SelectTrigger className="border-border/80">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -452,7 +452,7 @@ export default function Oncologia() {
                       step="0.1"
                       value={calcCreatinina}
                       onChange={(e) => setCalcCreatinina(parseFloat(e.target.value) || 0.1)}
-                      className="rounded-xl border-border/80 font-mono"
+                      className="border-border/80 font-mono"
                     />
                   </div>
                 </div>
@@ -460,7 +460,7 @@ export default function Oncologia() {
                 <div className="space-y-1.5 pt-2 border-t border-border/60">
                   <Label>AUC Deseado (Carboplatino)</Label>
                   <Select value={calcAuc.toString()} onValueChange={(v) => setCalcAuc(parseInt(v))}>
-                    <SelectTrigger className="rounded-xl border-border/80 font-mono">
+                    <SelectTrigger className="border-border/80 font-mono">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -691,7 +691,7 @@ export default function Oncologia() {
                 <Input
                   type="number"
                   min="1"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataCiclo.numero_ciclo}
                   onChange={(e) => setFormDataCiclo(p => ({ ...p, numero_ciclo: e.target.value }))}
                 />
@@ -700,7 +700,7 @@ export default function Oncologia() {
                 <Label>Fecha Programada</Label>
                 <Input
                   type="date"
-                  className="rounded-xl border-border/80 font-mono"
+                  className="border-border/80 font-mono"
                   value={formDataCiclo.fecha_programada}
                   onChange={(e) => setFormDataCiclo(p => ({ ...p, fecha_programada: e.target.value }))}
                 />
@@ -713,7 +713,7 @@ export default function Oncologia() {
                 type="number"
                 step="0.01"
                 placeholder="Ej. 1.82"
-                className="rounded-xl border-border/80 font-mono"
+                className="border-border/80 font-mono"
                 value={formDataCiclo.bsa_m2}
                 onChange={(e) => setFormDataCiclo(p => ({ ...p, bsa_m2: e.target.value }))}
               />
@@ -721,11 +721,11 @@ export default function Oncologia() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewCiclo(false)}>
+            <Button variant="outline" onClick={() => setShowNewCiclo(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-purple-600 hover:bg-purple-700 text-white" 
+              className="bg-purple-600 hover:bg-purple-700 text-white" 
               onClick={() => crearCiclo.mutate()}
               disabled={crearCiclo.isPending}
             >
@@ -753,7 +753,7 @@ export default function Oncologia() {
               <Label>Tipo de Toxicidad *</Label>
               <Input
                 placeholder="Ej. Neutropenia Febril, Neuropatía, Emesis refractaria..."
-                className="rounded-xl border-border/80"
+                className="border-border/80"
                 value={formDataToxicidad.tipo_toxicidad}
                 onChange={(e) => setFormDataToxicidad(p => ({ ...p, tipo_toxicidad: e.target.value }))}
               />
@@ -765,7 +765,7 @@ export default function Oncologia() {
                 value={formDataToxicidad.grado_ctcae.toString()} 
                 onValueChange={(v) => setFormDataToxicidad(p => ({ ...p, grado_ctcae: parseInt(v) }))}
               >
-                <SelectTrigger className="rounded-xl border-border/80">
+                <SelectTrigger className="border-border/80">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -782,7 +782,7 @@ export default function Oncologia() {
               <Label>Manejo Clínico / Ajuste de Dosis *</Label>
               <Textarea
                 placeholder="Detalle si se reduce dosis al 75%, uso de filgrastim, suspensión temporal..."
-                className="rounded-xl border-border/80 resize-none h-20"
+                className="border-border/80 resize-none h-20"
                 value={formDataToxicidad.manejo}
                 onChange={(e) => setFormDataToxicidad(p => ({ ...p, manejo: e.target.value }))}
               />
@@ -790,11 +790,11 @@ export default function Oncologia() {
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" className="rounded-xl" onClick={() => setShowNewToxicidad(false)}>
+            <Button variant="outline" onClick={() => setShowNewToxicidad(false)}>
               Cancelar
             </Button>
             <Button 
-              className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white" 
+              className="bg-orange-600 hover:bg-orange-700 text-white" 
               onClick={() => crearToxicidad.mutate()}
               disabled={crearToxicidad.isPending || !formDataToxicidad.tipo_toxicidad}
             >

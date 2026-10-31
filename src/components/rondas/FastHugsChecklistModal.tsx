@@ -128,16 +128,16 @@ export function FastHugsChecklistModal({
               value={notasRonda}
               onChange={e => setNotasRonda(e.target.value)}
               placeholder="Conducta médica acordada en ronda (medicación, retiro de sondas, solicitud de laboratorios, movilización fuera de cama)..."
-              className="text-xs rounded-xl"
+              className="text-xs"
             />
           </div>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} className="rounded-xl text-xs">
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} className="text-xs">
             Cancelar
           </Button>
-          <Button size="sm" onClick={handleGuardar} className="rounded-xl text-xs bg-teal-600 hover:bg-teal-700 text-white gap-1.5">
+          <Button size="sm" onClick={handleGuardar} className="text-xs bg-teal-600 hover:bg-teal-700 text-white gap-1.5">
             <CheckCircle2 className="h-4 w-4" />
             Certificar Ronda Médica
           </Button>
