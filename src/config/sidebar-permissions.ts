@@ -27,13 +27,13 @@ export const SIDEBAR_RULES: Record<string, SidebarModulePermission> = {
   // 1. Dashboard principal (Visible en todos los planes)
   dashboard: {
     moduleKey: "dashboard",
-    minPlan: "solo",
+    minPlan: "free",
   },
 
   // 2. Agenda y Calendario
   agenda: {
     moduleKey: "agenda",
-    minPlan: "solo",
+    minPlan: "free",
   },
   visitas: {
     moduleKey: "visitas",
@@ -44,7 +44,7 @@ export const SIDEBAR_RULES: Record<string, SidebarModulePermission> = {
   // 3. Pacientes y Fichas Clínicas
   pacientes: {
     moduleKey: "pacientes",
-    minPlan: "solo",
+    minPlan: "free",
   },
   odontograma: {
     moduleKey: "odontograma",
@@ -184,7 +184,7 @@ export const SIDEBAR_RULES: Record<string, SidebarModulePermission> = {
   },
   soporte: {
     moduleKey: "soporte",
-    minPlan: "solo",
+    minPlan: "free",
   },
   subdominios_custom_url: {
     moduleKey: "subdominios_custom_url",
@@ -232,6 +232,7 @@ export const SUBITEM_PLAN_RULES: Record<string, PlanCodigo> = {
 export function isSidebarItemVisible({
   moduleKey,
   path,
+  minPlan,
   verticales,
   adminOnly,
   currentPlanCodigo,
@@ -240,6 +241,7 @@ export function isSidebarItemVisible({
 }: {
   moduleKey?: string;
   path?: string;
+  minPlan?: PlanCodigo; // plan mínimo propio del ítem (menús de vertical)
   verticales?: VerticalTipo[];
   adminOnly?: boolean;
   currentPlanCodigo?: string;
@@ -260,6 +262,10 @@ export function isSidebarItemVisible({
 
   const effectivePlan: PlanCodigo = (currentPlanCodigo as PlanCodigo) || "solo";
   const userPlanLevel = PLAN_HIERARCHY[effectivePlan] ?? 1;
+
+  if (minPlan && userPlanLevel < PLAN_HIERARCHY[minPlan]) {
+    return false;
+  }
 
   // 3. Chequeo de sub-ruta específica si tiene restricción de plan
   if (path && SUBITEM_PLAN_RULES[path]) {

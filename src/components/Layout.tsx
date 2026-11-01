@@ -88,6 +88,7 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ThemeCustomizer } from "@/components/ThemeCustomizer";
 import { VERTICAL_LABELS, VERTICAL_ICONS, VERTICAL_ROOTS } from "@/config/verticales";
+import { MENUS_VERTICALES } from "@/config/verticalSidebarMenus";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
 import { SucursalSwitcher } from "@/components/SucursalSwitcher";
@@ -118,7 +119,7 @@ const Layout = ({ children }: LayoutProps) => {
   const [themeCustomizerOpen, setThemeCustomizerOpen] = useState(false);
 
   // Código de plan del workspace activo
-  const planCodigo = currentWorkspace?.plan_codigo || "solo";
+  const planCodigo = isFree ? "free" : currentWorkspace?.plan_codigo || "solo";
 
   // Enable automatic notifications for suspect patients
   useNotificacionesSospechosos();
@@ -128,6 +129,14 @@ const Layout = ({ children }: LayoutProps) => {
   const verticalLabel = VERTICAL_LABELS;
   const verticalIcon = VERTICAL_ICONS;
   const verticalRoot = VERTICAL_ROOTS;
+  const menuVerticalBase = va !== "todas" ? MENUS_VERTICALES[va] : null;
+  // Opciones de la vertical según plan y rol; sin minPlan se exige "solo"
+  const menuVerticalActivo = menuVerticalBase && {
+    ...menuVerticalBase,
+    items: menuVerticalBase.items.filter((it) =>
+      isSidebarItemVisible({ minPlan: it.minPlan ?? "solo", adminOnly: it.adminOnly, currentPlanCodigo: planCodigo, isAdmin })
+    ),
+  };
 
   const menuItems: any[] = [
     { path: "/app", icon: LayoutDashboard, label: "Dashboard", moduleKey: "dashboard" },
@@ -150,47 +159,6 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/pacientes", label: va === "aesthetic" ? "Lista de Clientes" : va === "veterinaria" ? "Lista de Mascotas" : va === "recovery" ? "Huéspedes Recovery" : "Lista de Pacientes" },
         { path: "/sospechosos", label: "Sospechosos", verticales: ["clinica"] },
         { path: "/atencion-paciente", label: va === "aesthetic" ? "Atención al Cliente" : "Atención al Paciente", icon: Stethoscope, excludeVerticales: ["veterinaria", "recovery"] },
-        // Específicos por vertical integrados aquí:
-        { path: "/odontograma", label: "Odontograma", icon: SmilePlus, verticales: ["dental"] },
-        { path: "/dental-care?tab=planes", label: "Planes de tratamiento", verticales: ["dental"] },
-        { path: "/dental-care?tab=ortodoncia", label: "Ortodoncia", verticales: ["dental"] },
-        { path: "/dental-care?tab=presupuestos", label: "Presupuestos sonrisa", verticales: ["dental"] },
-        { path: "/dental-care?tab=consentimiento", label: "Consentimiento quirúrgico", icon: ShieldCheck, verticales: ["dental"] },
-        { path: "/aesthetic-pro?tab=evaluaciones", label: "Evaluaciones estéticas", verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=ficha_biotipo", label: "Ficha Cutánea & Bonos", icon: Sparkles, verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=mapa_facial", label: "Face Mapping / Toxina", icon: Syringe, verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=viales", label: "Trazabilidad Viales/Botox", icon: Syringe, verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=fotos", label: "Fotos evolución & Split", icon: Camera, verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=cuidados_post", label: "Cuidados & Rutina en Casa", icon: Sparkles, verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=gift_cards", label: "Gift Cards & Membresías", icon: Heart, verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=membresias", label: "Membresías Spa", icon: Heart, verticales: ["aesthetic"] },
-        { path: "/vision-care?tab=recetas", label: "Recetas ópticas", icon: FileText, verticales: ["vision"] },
-        { path: "/vision-care?tab=gabinete_refraccion", label: "Gabinete & Refracción", icon: Eye, verticales: ["vision"] },
-        { path: "/vet-care?tab=mascotas", label: "Fichas de mascotas", verticales: ["veterinaria"] },
-        { path: "/vet-care?tab=vacunas", label: "Calendario de vacunas", verticales: ["veterinaria"] },
-        { path: "/vet-care?tab=boxes", label: "Boxes & Aislamiento", icon: BedDouble, verticales: ["veterinaria"] },
-        { path: "/recovery-care?tab=planes", label: "Planes de cuidado", verticales: ["recovery"] },
-        { path: "/recovery-care?tab=seguimiento", label: "Drenajes & Signos", icon: Heart, verticales: ["recovery"] },
-        { path: "/recovery-care?tab=concierge", label: "Concierge médico", verticales: ["recovery"] },
-        { path: "/recovery-care?tab=alertas", label: "Alertas Recovery", verticales: ["recovery"] },
-        { path: "/psicologia-pro?tab=fichas", label: "Fichas psico", verticales: ["psicologia"] },
-        { path: "/psicologia-pro?tab=salas", label: "Consultorios & Salas", icon: Building2, verticales: ["psicologia"] },
-        { path: "/psicologia-pro?tab=sesiones", label: "Sesiones", verticales: ["psicologia"] },
-        { path: "/psicologia-pro?tab=notas", label: "Notas clínicas", verticales: ["psicologia"] },
-        { path: "/psicologia-pro?tab=evaluaciones", label: "Tests/Escalas", verticales: ["psicologia"] },
-        { path: "/psicologia-pro?tab=consentimiento", label: "Consentimiento ético", icon: ShieldCheck, verticales: ["psicologia"] },
-        { path: "/psicologia-pro?tab=seguimiento", label: "Seguimiento emocional", verticales: ["psicologia"] },
-        { path: "/psicologia-pro?tab=psiquiatria", label: "Psiquiatría", verticales: ["psicologia"] },
-        { path: "/psicologia-pro?tab=tareas", label: "Tareas terapéuticas", verticales: ["psicologia"] },
-        { path: "/psicologia-pro?tab=paquetes", label: "Paquetes/Bonos", verticales: ["psicologia"] },
-        { path: "/fisioterapia-pro?tab=goniometria", label: "Goniometría & Daniels", icon: Dumbbell, verticales: ["fisioterapia"] },
-        { path: "/fisioterapia-pro?tab=ejercicios_hep", label: "Ejercicios HEP Domicilio", icon: Activity, verticales: ["fisioterapia"] },
-        { path: "/fisioterapia-pro?tab=puntos_gatillo", label: "Puntos Gatillo & Punción", icon: Zap, verticales: ["fisioterapia"] },
-        { path: "/fisioterapia-pro?tab=boxes_sesiones", label: "Boxes & Paquetes Terapia", icon: Building2, verticales: ["fisioterapia"] },
-        { path: "/nutricion-pro?tab=bioimpedancia", label: "Bioimpedancia & Metabolismo", icon: Apple, verticales: ["nutricion"] },
-        { path: "/nutricion-pro?tab=antropometria_isak", label: "Pliegues ISAK & Perímetros", icon: Activity, verticales: ["nutricion"] },
-        { path: "/nutricion-pro?tab=planificador", label: "Planificador de Minutas & Dietas", icon: Utensils, verticales: ["nutricion"] },
-        { path: "/nutricion-pro?tab=bariatria", label: "Protocolo Bariátrico (% EWL)", icon: Heart, verticales: ["nutricion"] },
       ]
     },
 
@@ -214,6 +182,8 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/diabetes-endocrinologia", label: "Diabetes & FINDRISC" },
         { path: "/pediatria", label: "Pediatría & Puericultura" },
         { path: "/ginecologia-obstetricia", label: "Ginecología & Obstetricia" },
+        { path: "/fisioterapia", label: "Fisioterapia & Kinesiología" },
+        { path: "/nutricion", label: "Nutrición & Dietética" },
         { path: "/neurologia", label: "Neurología & Escala NIHSS" },
         { path: "/nefrologia", label: "Nefrología & TFG CKD-EPI" },
         { path: "/neumologia", label: "Neumología & EPOC GOLD" },
@@ -261,22 +231,6 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/seguridad-fisica", label: "Seguridad Física", icon: ShieldCheck, verticales: ["clinica"] },
         { path: "/trabajo-social", label: "Trabajo Social", icon: Heart, verticales: ["clinica"] },
         { path: "/docencia", label: "Docencia e Investigación", icon: GraduationCap, verticales: ["clinica"] },
-        // Recursos específicos por vertical:
-        { path: "/dental-care?tab=sillones", label: "Sillones / Boxes", icon: Building2, verticales: ["dental"] },
-        { path: "/dental-care?tab=laboratorio", label: "Laboratorio dental", icon: Microscope, verticales: ["dental"] },
-        { path: "/aesthetic-pro?tab=cabinas", label: "Cabinas", icon: Building2, verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=procedimientos", label: "Procedimientos", verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=paquetes", label: "Paquetes", icon: Boxes, verticales: ["aesthetic"] },
-        { path: "/aesthetic-pro?tab=aparatologia", label: "Aparatología & Pulsos", icon: Zap, verticales: ["aesthetic"] },
-        { path: "/vision-care?tab=inventario", label: "Inventario óptico", icon: Boxes, verticales: ["vision"] },
-        { path: "/vision-care?tab=ordenes", label: "Órdenes de laboratorio", verticales: ["vision"] },
-        { path: "/vision-care?tab=taller_biselado", label: "Taller & Biselado", icon: Wrench, verticales: ["vision"] },
-        { path: "/vision-care?tab=combos", label: "Combos lentes", verticales: ["vision"] },
-        { path: "/vision-care?tab=garantias", label: "Garantías", verticales: ["vision"] },
-        { path: "/recovery-care?tab=habitaciones", label: "Habitaciones", icon: BedDouble, verticales: ["recovery"] },
-        { path: "/recovery-care?tab=reservas", label: "Reservas", verticales: ["recovery"] },
-        { path: "/fisioterapia-pro?tab=boxes_sesiones", label: "Boxes & Gimnasio Fisioterapia", icon: Building2, verticales: ["fisioterapia"] },
-        { path: "/nutricion-pro?tab=planificador", label: "Alimentos & Equivalencias", icon: Apple, verticales: ["nutricion"] },
       ]
     },
 
@@ -598,8 +552,53 @@ const Layout = ({ children }: LayoutProps) => {
         {sidebarCollapsed && isMobile && <Activity className="h-6 w-6 text-primary" />}
       </div>
 
+      {/* Selector de Vertical Principal */}
+      <div className={cn("p-2 border-b border-sidebar-border bg-sidebar-accent/10", sidebarCollapsed && "flex justify-center")}>
+        <VerticalSwitcher collapsed={sidebarCollapsed} />
+      </div>
+
       {/* Navigation */}
       <nav className="flex-1 p-2 space-y-1 overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Menú de la Vertical Activa en el Sidebar */}
+        {menuVerticalActivo && (
+          <div className="mb-3 pb-3 border-b border-sidebar-border">
+            {!sidebarCollapsed && (
+              <div className="px-3 pb-2 flex items-center justify-between">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-sidebar-foreground/75 flex items-center gap-1.5 truncate">
+                  <menuVerticalActivo.icon className={cn("h-3.5 w-3.5 shrink-0", menuVerticalActivo.colorClass)} />
+                  <span className="truncate">{menuVerticalActivo.titulo}</span>
+                </span>
+                <span className={cn("text-[9px] px-1.5 py-0.5 rounded-md font-medium border", menuVerticalActivo.badgeColor)}>
+                  Activo
+                </span>
+              </div>
+            )}
+            <div className="space-y-0.5">
+              {menuVerticalActivo.items.map((vItem) => {
+                const ItemIcon = vItem.icon || menuVerticalActivo.icon;
+                const active = isSubItemActive(vItem.path);
+                return (
+                  <Link
+                    key={vItem.path}
+                    to={vItem.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      "flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-colors",
+                      active
+                        ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    )}
+                    title={sidebarCollapsed ? vItem.label : undefined}
+                  >
+                    <ItemIcon className={cn("h-4 w-4 shrink-0", active ? "text-primary-foreground" : menuVerticalActivo.colorClass)} />
+                    {!sidebarCollapsed && <span className="truncate">{vItem.label}</span>}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {visibleMenuItems.filter(item => !item.adminOnly || (item.adminOnly && isAdmin)).map((item, idx, lista) => (
           <div key={item.path}>
             {/* Etiquetas de sección (MENÚ / CLÍNICA / GESTIÓN / OTROS), como en las referencias */}
@@ -678,9 +677,6 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="p-2 border-t border-sidebar-border space-y-2">
         {/* Workspace Switcher */}
         <WorkspaceSwitcher collapsed={sidebarCollapsed} />
-        <div className={sidebarCollapsed ? "flex justify-center" : ""}>
-          <VerticalSwitcher collapsed={sidebarCollapsed} />
-        </div>
 
         {/* User Profile Dropdown */}
         {profile && (
