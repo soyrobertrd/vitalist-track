@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node scripts/seed-local-environment.mjs && node scripts/verify-local-user-auth.mjs",
+    "test": "node scripts/seed-local-environment.mjs && node scripts/verify-local-user-auth.mjs && tsx scripts/test-motor-sql.ts",
     "seed:local": "node scripts/seed-local-environment.mjs",
     "verify:auth": "node scripts/verify-local-user-auth.mjs",
     "export:turso": "node scripts/export-supabase-to-turso.mjs",

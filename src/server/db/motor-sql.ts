@@ -93,14 +93,43 @@ function filtroSql(tabla: string, f: Filtro): Sql {
 const TABLAS_CUENTA = new Set(["workspaces", "workspace_members", "profiles"]);
 const ROLES_ADMIN = new Set(["owner", "admin"]);
 
+/** Únicas tablas sin clínica que cualquier usuario puede leer (catálogos compartidos, solo lectura). */
+const CATALOGOS = new Set([
+  "catalogo_cie10", "catalogo_cpt", "catalogo_medicamentos", "cie10_codigos", "enfermedades_notificables",
+  "especialidades_medicas", "interacciones_farmacologicas", "modulos_catalogo", "module_permissions",
+  "plan_module_access", "especialidad_categoria_module_access", "planes", "plantillas_servicio_vertical",
+  "vacunas_catalogo", "dias_no_laborables", "alas", "pisos", "edificios",
+]);
+
+/** FK que el esquema no declara pero que atan la fila a una clínica (p. ej. escalas_clinicas.paciente_id). */
+const PADRES_IMPLICITOS: Record<string, string> = {
+  paciente_id: "pacientes",
+  paciente_principal_id: "pacientes",
+  sucursal_id: "sucursales",
+  profesional_id: "personal_salud",
+};
+const FK_ACCESO: [string, string, string][] = [
+  ...FK,
+  ...Object.keys(ESQUEMA).flatMap((t) =>
+    ESQUEMA[t].workspace_id
+      ? []
+      : Object.entries(PADRES_IMPLICITOS)
+          .filter(([col, padre]) => col in ESQUEMA[t] && ESQUEMA[padre]?.workspace_id && !FK.some(([a, c]) => a === t && c === col))
+          .map(([col, padre]): [string, string, string] => [t, col, padre]),
+  ),
+];
+
+/** Tabla personal: sin clínica pero con user_id; cada usuario solo ve y escribe sus filas. */
+const esPersonal = (tabla: string) => !!ESQUEMA[tabla]?.user_id && !ESQUEMA[tabla]?.workspace_id && !caminoWorkspace(tabla);
+
 /** Camino de una tabla sin workspace_id hasta una que sí lo tiene (vía FK, hasta 2 saltos). */
 function caminoWorkspace(tabla: string, prof = 0): { col: string; padre: string; sub?: ReturnType<typeof caminoWorkspace> } | null {
   if (prof > 2) return null;
-  for (const [t, col, padre] of FK) {
+  for (const [t, col, padre] of FK_ACCESO) {
     if (t !== tabla || padre === tabla) continue;
     if (ESQUEMA[padre]?.workspace_id) return { col, padre };
   }
-  for (const [t, col, padre] of FK) {
+  for (const [t, col, padre] of FK_ACCESO) {
     if (t !== tabla || padre === tabla) continue;
     const sub = caminoWorkspace(padre, prof + 1);
     if (sub) return { col, padre, sub };
@@ -113,7 +142,7 @@ function listaWs(ctx: ContextoAcceso): Sql {
   return ids.length ? { sql: ids.map(() => "?").join(","), args: ids } : { sql: "NULL", args: [] };
 }
 
-/** Condición SQL que limita una tabla a lo que el usuario puede ver. null = tabla de catálogo global (lectura libre). */
+/** Condición SQL que limita una tabla a lo que el usuario puede ver. null = catálogo global (lectura libre); el resto se deniega. */
 function alcance(tabla: string, ctx: ContextoAcceso): Sql | null {
   const ws = listaWs(ctx);
   if (tabla === "workspaces") return { sql: `"id" IN (${ws.sql})`, args: ws.args };
@@ -124,7 +153,11 @@ function alcance(tabla: string, ctx: ContextoAcceso): Sql | null {
     };
   if (ESQUEMA[tabla]?.workspace_id) return { sql: `"workspace_id" IN (${ws.sql})`, args: ws.args };
   const camino = caminoWorkspace(tabla);
-  if (!camino) return null;
+  if (!camino) {
+    if (CATALOGOS.has(tabla)) return null;
+    if (esPersonal(tabla)) return { sql: `"user_id" = ?`, args: [ctx.userId] };
+    throw new ErrorAcceso(`Sin acceso a la tabla ${tabla}.`);
+  }
   const sub = (c: NonNullable<ReturnType<typeof caminoWorkspace>>): string =>
     c.sub
       ? `SELECT "id" FROM ${q(c.padre)} WHERE ${q(c.sub.col)} IN (${sub(c.sub)})`
@@ -148,6 +181,10 @@ async function verificarEscritura(db: Client, tabla: string, filas: Fila[], ctx:
     }
     if (ESQUEMA[tabla]?.workspace_id) {
       if (!ctx.roles.has(String(f.workspace_id))) throw new ErrorAcceso("No perteneces a esa clínica.");
+      continue;
+    }
+    if (esPersonal(tabla)) {
+      if (f.user_id !== ctx.userId) throw new ErrorAcceso("Solo puedes modificar tus propios datos.");
       continue;
     }
     const camino = caminoWorkspace(tabla);
@@ -311,6 +348,13 @@ export async function ejecutarDescriptor(db: Client, d: Descriptor, ctx: Context
             });
             if (existentes.rows.length) {
               const actual = filaApp(tabla, existentes.rows[0] as unknown as Fila);
+              if (tabla === "workspaces") {
+                // verificarEscritura no cubre clínicas existentes: el upsert por slug o id debe exigir rol en ESA clínica
+                const rol = ctx.roles.get(String(actual.id));
+                if (!rol || !ROLES_ADMIN.has(rol)) throw new ErrorAcceso("Solo un administrador puede hacer este cambio.");
+                if (("owner_id" in v && v.owner_id !== actual.owner_id) || ("id" in v && v.id !== actual.id))
+                  throw new ErrorAcceso("No se puede cambiar el dueño ni el id de la clínica.");
+              }
               await verificarEscritura(db, tabla, [actual, { ...actual, ...v }], ctx);
               await actualizar(db, tabla, [existentes.rows[0]._r], v);
               actualizadas.push({ ...actual, ...v });
