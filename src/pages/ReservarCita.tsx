@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { db } from "@/integrations/db/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,8 @@ export default function ReservarCita() {
   const [profesionales, setProfesionales] = useState<Profesional[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [requiereCedula, setRequiereCedula] = useState(false);
-  const [profId, setProfId] = useState("");
+  const [params] = useSearchParams();
+  const [profId, setProfId] = useState(params.get("profesional") ?? "");
   const [fecha, setFecha] = useState(hoy());
   const [slots, setSlots] = useState<string[] | null>(null);
   const [hora, setHora] = useState("");

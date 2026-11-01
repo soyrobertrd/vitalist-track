@@ -16,6 +16,11 @@ import {
   MapPin,
   Sparkles,
   HelpCircle,
+  Building2,
+  SmilePlus,
+  BedDouble,
+  Eye,
+  Clock,
 } from "lucide-react";
 import { db } from "@/integrations/db/client";
 import type { Plan } from "@/contexts/WorkspaceContext";
@@ -71,7 +76,7 @@ const FAQS = [
   },
   {
     q: "¿Mis datos clínicos están seguros?",
-    a: "Sí. Cada workspace está aislado con Row-Level Security, todas las acciones quedan auditadas, y guardamos consentimiento informado por paciente con IP y firmante.",
+    a: "Sí. Cada clínica está aislada en el servidor: nadie de otro centro puede leer ni modificar tus datos. Los cambios quedan auditados y guardamos consentimiento informado por paciente con IP y firmante.",
   },
   {
     q: "¿Puedo migrar mis pacientes desde Excel?",
@@ -90,6 +95,53 @@ const FAQS = [
     a: "Sí, sin contratos. Cancelas desde tu panel y tus datos quedan disponibles para exportar durante 90 días.",
   },
 ];
+
+const VERTICALES = [
+  { to: "/clinica", icon: Building2, titulo: "Clínicas y Hospitales", texto: "Hospitalización, quirófano, UCI, urgencias." },
+  { to: "/odontologia", icon: SmilePlus, titulo: "Odontología", texto: "Odontograma, sillones, presupuestos por fases." },
+  { to: "/aesthetic", icon: Sparkles, titulo: "Estética", texto: "Fichas, antes/después, paquetes, CRM VIP." },
+  { to: "/recovery", icon: BedDouble, titulo: "Recovery", texto: "Post-operatorio, rehabilitación, cuidado prolongado." },
+  { to: "/vision", icon: Eye, titulo: "Visión & Óptica", texto: "Recetas, exámenes, tienda óptica." },
+];
+const OTRAS_ESPECIALIDADES = ["Psicología", "Veterinaria", "Fisioterapia", "Nutrición", "Ginecología", "Pediatría"];
+
+/** Maqueta de la agenda con datos de ejemplo: muestra el resultado (el día organizado). */
+function HeroPreview() {
+  const citas = [
+    { hora: "08:30", paciente: "María Pérez", motivo: "Control prenatal", estado: "Confirmada", tono: "text-success bg-success/10" },
+    { hora: "09:15", paciente: "Luis Gómez", motivo: "Limpieza dental", estado: "En sala", tono: "text-info bg-info/10" },
+    { hora: "10:00", paciente: "Ana Rosario", motivo: "Evaluación PHQ-9", estado: "Pendiente", tono: "text-warning bg-warning/10" },
+  ];
+  const resumen = [["12", "citas"], ["3", "por confirmar"], ["0", "conflictos"]];
+  return (
+    <div className="mt-16 mx-auto max-w-4xl rounded-2xl border bg-card p-4 md:p-6 text-left" aria-label="Vista previa de la agenda (datos de ejemplo)">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div className="flex items-center gap-2 font-semibold">
+          <Calendar className="h-4 w-4 text-primary" /> Agenda de hoy
+        </div>
+        <div className="flex flex-wrap gap-2 text-xs">
+          {resumen.map(([n, l]) => (
+            <span key={l} className="rounded-lg border px-2.5 py-1 text-muted-foreground">
+              <strong className="text-foreground tabular-nums">{n}</strong> {l}
+            </span>
+          ))}
+        </div>
+      </div>
+      <ul className="divide-y">
+        {citas.map((c) => (
+          <li key={c.hora} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3 text-sm">
+            <span className="inline-flex items-center gap-1.5 tabular-nums text-muted-foreground w-16">
+              <Clock className="h-3.5 w-3.5" /> {c.hora}
+            </span>
+            <span className="font-medium min-w-[8rem]">{c.paciente}</span>
+            <span className="text-muted-foreground flex-1">{c.motivo}</span>
+            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${c.tono}`}>{c.estado}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -198,6 +250,9 @@ export default function Landing() {
           <a href="#contacto" className="text-muted-foreground hover:text-foreground transition-colors">
             Contacto
           </a>
+          <Link to="/directorio" className="text-muted-foreground hover:text-foreground transition-colors">
+            Buscar médico
+          </Link>
         </nav>
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={() => navigate("/auth")}>
@@ -239,11 +294,25 @@ export default function Landing() {
               Ver planes
             </Button>
           </div>
+          <Link to="/directorio" className="mt-4 text-sm text-primary hover:underline underline-offset-4">
+            ¿Eres paciente? Busca tu médico y agenda una cita →
+          </Link>
 
           <p className="mt-6 text-xs text-muted-foreground">
             Sin tarjeta de crédito · Configuración en menos de 5 minutos
           </p>
         </div>
+
+        {/* Vista previa del producto: el resultado (el día organizado), no una captura genérica */}
+        <HeroPreview />
+
+        <ul className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+          {["11 especialidades en una sola cuenta", "Datos aislados por clínica", "Multi-país y multi-moneda", "Funciona en móvil como app"].map((t) => (
+            <li key={t} className="inline-flex items-center gap-2">
+              <Check className="h-4 w-4 text-success" /> {t}
+            </li>
+          ))}
+        </ul>
 
         {/* Problem → Solution band */}
         <section id="plataforma" className="mt-32 grid md:grid-cols-3 gap-6">
@@ -275,7 +344,7 @@ export default function Landing() {
           <FeatureCard
             icon={<Shield className="h-5 w-5" />}
             title="Seguridad y compliance"
-            description="2FA para admins, exportación GDPR del paciente, aislamiento de datos por clínica y auditoría inmutable. HIPAA-ready."
+            description="2FA para admins, exportación GDPR del paciente, aislamiento de datos por clínica y auditoría de cambios."
           />
         </section>
 
@@ -287,38 +356,27 @@ export default function Landing() {
               Elige tu tipo de centro y obtén una experiencia diseñada específicamente para tu operación.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <Link to="/clinica" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
-              <Activity className="h-8 w-8 text-primary mb-3" />
-              <h3 className="font-semibold">Clínicas y Hospitales</h3>
-              <p className="text-sm text-muted-foreground mt-1">Hospitalización, quirófano, UCI, urgencias.</p>
-              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
-            </Link>
-            <Link to="/odontologia" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
-              <Sparkles className="h-8 w-8 text-primary mb-3" />
-              <h3 className="font-semibold">Odontología</h3>
-              <p className="text-sm text-muted-foreground mt-1">Odontograma, sillones, presupuestos por fases.</p>
-              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
-            </Link>
-            <Link to="/aesthetic" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
-              <Sparkles className="h-8 w-8 text-primary mb-3" />
-              <h3 className="font-semibold">Estética</h3>
-              <p className="text-sm text-muted-foreground mt-1">Fichas, before/after, paquetes, CRM VIP.</p>
-              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
-            </Link>
-            <Link to="/recovery" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
-              <Activity className="h-8 w-8 text-primary mb-3" />
-              <h3 className="font-semibold">Recovery</h3>
-              <p className="text-sm text-muted-foreground mt-1">Post-operatorio, rehabilitación, cuidado prolongado.</p>
-              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
-            </Link>
-            <Link to="/vision" className="group rounded-2xl border p-6 hover:border-primary hover:shadow-md transition">
-              <Activity className="h-8 w-8 text-primary mb-3" />
-              <h3 className="font-semibold">Visión & Óptica</h3>
-              <p className="text-sm text-muted-foreground mt-1">Recetas, exámenes, tienda óptica.</p>
-              <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">Ver más <ArrowRight className="h-3 w-3" /></span>
-            </Link>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {VERTICALES.map(({ to, icon: Icon, titulo, texto }) => (
+              <Link
+                key={to}
+                to={to}
+                className="group rounded-2xl border bg-card p-6 hover:border-primary/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <span className="inline-flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary mb-4">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <h3 className="font-semibold">{titulo}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{texto}</p>
+                <span className="text-sm text-primary inline-flex items-center gap-1 mt-3 group-hover:gap-2 transition-all">
+                  Ver más <ArrowRight className="h-3 w-3" />
+                </span>
+              </Link>
+            ))}
           </div>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            También: {OTRAS_ESPECIALIDADES.join(" · ")}
+          </p>
         </section>
 
         {/* Pricing */}
@@ -339,7 +397,7 @@ export default function Landing() {
                 onClick={() => setBillingCycle("mensual")}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   billingCycle === "mensual"
-                    ? "bg-primary text-primary-foreground shadow"
+                    ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -350,7 +408,7 @@ export default function Landing() {
                 onClick={() => setBillingCycle("anual")}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors inline-flex items-center gap-2 ${
                   billingCycle === "anual"
-                    ? "bg-primary text-primary-foreground shadow"
+                    ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -386,27 +444,23 @@ export default function Landing() {
                   <div
                     key={plan.codigo}
                     className={`relative flex flex-col rounded-2xl border bg-card p-6 ${
-                      isPro
-                        ? "border-primary shadow-lg shadow-primary/10"
-                        : isPlus
-                        ? "border-purple-500/60 shadow-lg shadow-purple-500/10"
-                        : "border-border"
+                      isPro ? "border-primary ring-1 ring-primary" : isPlus ? "border-primary/40" : "border-border"
                     }`}
                   >
                     {isPro && (
-                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-primary text-primary-foreground text-[11px] font-bold tracking-wide shadow-sm">
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-primary text-primary-foreground text-[11px] font-bold tracking-wide">
                         MÁS POPULAR
                       </span>
                     )}
                     {isPlus && (
-                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-purple-600 text-white text-[11px] font-bold tracking-wide shadow-sm">
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-foreground text-background text-[11px] font-bold tracking-wide">
                         RECOMENDADO CLÍNICAS
                       </span>
                     )}
                     <h3 className="text-lg font-semibold">{plan.nombre}</h3>
                     <p className="text-sm text-muted-foreground mt-1 min-h-[40px]">{plan.descripcion}</p>
                     <div className="mt-4">
-                      <span className="text-4xl font-bold">
+                      <span className="text-4xl font-bold tabular-nums">
                         ${isAnual ? anualMensualizado : mensual}
                       </span>
                       <span className="text-muted-foreground"> /mes</span>
@@ -416,7 +470,7 @@ export default function Landing() {
                         </p>
                       )}
                       <div className="mt-2">
-                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 px-2.5 py-0.5 rounded-full">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-success bg-success/10 border border-success/30 px-2.5 py-0.5 rounded-full">
                           ✓ 30 días gratis de prueba
                         </span>
                       </div>
@@ -471,13 +525,7 @@ export default function Landing() {
                         }
                       }}
                     >
-                      {plan.codigo === "solo"
-                        ? "Probar Básico (Solo Doctor) 30 días"
-                        : plan.codigo === "pro"
-                        ? "Probar Pro Consultorios 30 días"
-                        : plan.codigo === "plus"
-                        ? "Probar Clínica Plus 30 días"
-                        : "Hablar con ventas"}
+                      {plan.codigo === "business" || plan.codigo === "enterprise" ? "Hablar con ventas" : "Probar 30 días gratis"}
                     </Button>
                   </div>
                 );
@@ -500,14 +548,14 @@ export default function Landing() {
               Datos clínicos protegidos por diseño.
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              Aislamiento por workspace, Row-Level Security en todas las tablas clínicas, auditoría
-              inmutable de cada cambio, consentimiento informado del paciente y backups automáticos.
+              Cada clínica aislada en el servidor, auditoría de cambios, consentimiento informado del
+              paciente y backups automáticos.
               Preparado para HIPAA, GDPR y la Ley 172-13 de RD.
             </p>
             <div className="mt-8 grid sm:grid-cols-3 gap-4 text-sm">
               <div className="rounded-xl bg-card border p-4">
                 <Check className="h-4 w-4 text-primary mb-2" />
-                <strong className="block">Auditoría inmutable</strong>
+                <strong className="block">Auditoría de cambios</strong>
                 <span className="text-muted-foreground">Quién cambió qué y cuándo, en cada tabla clínica.</span>
               </div>
               <div className="rounded-xl bg-card border p-4">

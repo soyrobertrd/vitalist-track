@@ -19,6 +19,9 @@ async function llamar(ruta: string, init?: RequestInit): Promise<any> {
   }
 }
 
+/** Funciones sin sesión que atiende /api/v1/publico (directorio y reservas). */
+const FUNCIONES_PUBLICAS: Record<string, Record<string, string>> = { "reservar-cita": {}, "directorio-medico": { accion: "directorio" } };
+
 const ejecutarRemoto = (d: Descriptor): Promise<Resultado> =>
   llamar("/db", { method: "POST", body: JSON.stringify(d) }).then((r) => ({
     data: r.data ?? null,
@@ -100,7 +103,13 @@ export const clienteRemoto = {
   from: (t: string) => new Consulta(t, ejecutarRemoto),
   auth,
   rpc: async (nombre: string, _args?: unknown) => pendiente(`La función "${nombre}"`),
-  functions: { invoke: async (nombre: string, _o?: unknown) => pendiente(`"${nombre}"`) },
+  functions: {
+    invoke: async (nombre: string, o?: { body?: Record<string, unknown> }) => {
+      if (!FUNCIONES_PUBLICAS[nombre]) return pendiente(`"${nombre}"`);
+      const data = await llamar("/publico", { method: "POST", body: JSON.stringify({ ...o?.body, ...FUNCIONES_PUBLICAS[nombre] }) });
+      return { data, error: null };
+    },
+  },
   storage: {
     from: (_b: string) => ({
       upload: async (..._a: unknown[]) => pendiente("El almacenamiento de archivos"),

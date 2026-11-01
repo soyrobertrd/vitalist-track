@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { WorkspaceLocaleEditor } from "@/components/WorkspaceLocaleEditor";
 import { Sparkles, Building2, Plus, X, Copy } from "lucide-react";
@@ -47,6 +48,7 @@ export function AdminGeneralTab({
     currentWorkspace?.configuracion?.clinicas_asociadas || []
   );
   const [nuevaClinica, setNuevaClinica] = useState("");
+  const [reservasPublicas, setReservasPublicas] = useState<boolean>(currentWorkspace?.configuracion?.reservas_publicas === true);
   const [savingGeneral, setSavingGeneral] = useState(false);
 
   useEffect(() => {
@@ -60,6 +62,7 @@ export function AdminGeneralTab({
       if (currentWorkspace.configuracion.vertical_principal) {
         setVerticalPrincipal(currentWorkspace.configuracion.vertical_principal);
       }
+      setReservasPublicas(currentWorkspace.configuracion.reservas_publicas === true);
       if (Array.isArray(currentWorkspace.configuracion.clinicas_asociadas)) {
         setClinicasAsociadas(currentWorkspace.configuracion.clinicas_asociadas);
       }
@@ -96,6 +99,7 @@ export function AdminGeneralTab({
         formato_fecha: formatoFecha,
         vertical_principal: verticalPrincipal,
         clinicas_asociadas: clinicasAsociadas,
+        reservas_publicas: reservasPublicas,
       };
 
       const { error } = await db
@@ -290,6 +294,17 @@ export function AdminGeneralTab({
                 <SelectItem value="mm/dd/yyyy">MM/DD/YYYY (10/26/2026)</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="flex items-start justify-between gap-4 pt-2 border-t">
+            <div className="space-y-1">
+              <Label htmlFor="reservasPublicas">Directorio médico y reservas en línea</Label>
+              <p className="text-xs text-muted-foreground">
+                Tus médicos activos aparecen en el directorio público con nombre, especialidad y centro, y los pacientes pueden
+                pedir cita en /reservar/{currentWorkspace?.slug ?? "tu-centro"}.
+              </p>
+            </div>
+            <Switch id="reservasPublicas" checked={reservasPublicas} onCheckedChange={setReservasPublicas} />
           </div>
 
           {/* Selector de Clínicas de Origen (Pro Consultorios: hasta 3 clínicas asociadas) */}

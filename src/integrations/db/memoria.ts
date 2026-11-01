@@ -6,6 +6,7 @@
  */
 import relaciones from "./relaciones.js";
 import { sembrarDatos } from "./seed.js";
+import { reservasPublicas } from "./reservas-publicas.js";
 import { Consulta, parsearSelect, type Campo, type Descriptor, type Filtro, type Resultado } from "./consulta.js";
 
 type Fila = Record<string, any>;
@@ -388,7 +389,12 @@ const storage = {
 
 // ---------- funciones de servidor y realtime ----------
 const functions = {
-  async invoke(nombre: string, _o?: any) {
+  async invoke(nombre: string, o?: any) {
+    if (nombre === "reservar-cita" || nombre === "directorio-medico") {
+      const body = nombre === "directorio-medico" ? { ...o?.body, accion: "directorio" } : (o?.body ?? {});
+      const { data } = await reservasPublicas((t) => new Consulta(t, ejecutarEnMemoria), body);
+      return { data, error: null };
+    }
     return { data: null, error: { message: `"${nombre}" requiere el backend; no está disponible en modo mockup` } };
   },
 };

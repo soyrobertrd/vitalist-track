@@ -89,6 +89,7 @@ const ChatInterno = lazy(() => import("./pages/ChatInterno"));
 const FirmasDigitales = lazy(() => import("./pages/FirmasDigitales"));
 const Triaje = lazy(() => import("./pages/Triaje"));
 const ApiPublicaCitas = lazy(() => import("./pages/ApiPublicaCitas"));
+const DirectorioMedico = lazy(() => import("./pages/DirectorioMedico"));
 const PortalPublicoDisponibilidad = lazy(() => import("./pages/PortalPublicoDisponibilidad"));
 const ReservarCita = lazy(() => import("./pages/ReservarCita"));
 const VetCarePro = lazy(() => import("./pages/VetCarePro"));
@@ -311,6 +312,7 @@ const App = () => {
                 <Route path="/ticket/:token" element={<TicketPublico />} />
                 <Route path="/sala/:token" element={<SalaVirtual />} />
                 <Route path="/portal-citas" element={<PortalPublicoDisponibilidad />} />
+                <Route path="/directorio" element={<DirectorioMedico />} />
                 <Route path="/reservar/:slug" element={<ReservarCita />} />
                 <Route path="/cuestionario/:token" element={<CuestionarioPublico />} />
                 <Route path="/portal-psico/:token" element={<PortalPacientePsico />} />
