@@ -226,7 +226,7 @@ export default function FacturacionElectronicaRD() {
 
             <Dialog open={emitOpen} onOpenChange={setEmitOpen}>
               <DialogTrigger asChild>
-                <Button className="shadow-sm gap-2 bg-emerald-600 hover:bg-emerald-700">
+                <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
                   <Receipt className="h-4 w-4" /> Emitir Comprobante
                 </Button>
               </DialogTrigger>
@@ -357,7 +357,7 @@ export default function FacturacionElectronicaRD() {
 
         {/* Tab 1: Secuencias */}
         <TabsContent value="sec" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/60">
               <CardTitle className="text-base font-semibold">Secuencias Fiscales Registradas</CardTitle>
               <CardDescription>Monitoreo del rango de consumo y porcentaje remanente de NCFs</CardDescription>
@@ -426,7 +426,7 @@ export default function FacturacionElectronicaRD() {
 
         {/* Tab 2: Comprobantes */}
         <TabsContent value="cf" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/60">
               <CardTitle className="text-base font-semibold">Historial de Comprobantes Emitidos</CardTitle>
               <CardDescription>Registro cronológico de NCFs y estado de radicación ante DGII</CardDescription>
@@ -497,7 +497,7 @@ export default function FacturacionElectronicaRD() {
 
         {/* Tab 3: Configuración DGII */}
         <TabsContent value="info" className="mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm p-6 space-y-4">
+          <Card className="rounded-2xl border-border/80 p-6 space-y-4">
             <CardHeader className="p-0 pb-2">
               <CardTitle className="flex items-center gap-2 text-base font-semibold">
                 <Building2 className="h-5 w-5 text-emerald-600" />

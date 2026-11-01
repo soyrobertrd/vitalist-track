@@ -34,6 +34,8 @@ import { NewPatientsWidget } from "@/components/dashboard/NewPatientsWidget";
 import { PhysicianProfileCard } from "@/components/dashboard/PhysicianProfileCard";
 import { HealthScoreWidget } from "@/components/dashboard/HealthScoreWidget";
 import { OperationalEfficiencyCards } from "@/components/dashboard/OperationalEfficiencyCards";
+import { ExaminationsWidget } from "@/components/dashboard/ExaminationsWidget";
+import { ActiveTreatmentWidget } from "@/components/dashboard/ActiveTreatmentWidget";
 import {
   CalendarDays,
   BarChart3,
@@ -397,21 +399,21 @@ const Dashboard = () => {
           <TabsList className="h-11 w-full sm:w-auto p-1 bg-muted/50 rounded-2xl border border-border/50 gap-1">
             <TabsTrigger
               value="operativo"
-              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs md:text-sm font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs md:text-sm font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-primary"
             >
               <CalendarDays className="h-4 w-4" />
               <span>Operativo & Consultas</span>
             </TabsTrigger>
             <TabsTrigger
               value="analitica"
-              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs md:text-sm font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs md:text-sm font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-primary"
             >
               <BarChart3 className="h-4 w-4" />
               <span>Analítica & Rendimiento</span>
             </TabsTrigger>
             <TabsTrigger
               value="especialidad"
-              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs md:text-sm font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+              className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs md:text-sm font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-primary"
             >
               <Stethoscope className="h-4 w-4" />
               <span>Especialidad & Calidad</span>
@@ -436,13 +438,16 @@ const Dashboard = () => {
             <div className="min-w-0 space-y-6">
               {/* Citas Programadas para Hoy */}
               <TodayAppointmentsTable />
+
+              {/* Monitoreo Clínico de Diagnósticos & Exámenes */}
+              <ExaminationsWidget />
             </div>
 
             {/* Columna Lateral Derecha */}
             <aside className="space-y-6 xl:sticky xl:top-20 xl:self-start">
               <AgendaDiaPanel />
-              <PhysicianProfileCard />
               <DoctorScheduleWidget />
+              <PhysicianProfileCard nombre={nombreUsuario ? `Dr. ${nombreUsuario}` : undefined} />
             </aside>
           </div>
         </TabsContent>
@@ -494,6 +499,9 @@ const Dashboard = () => {
         <TabsContent value="especialidad" className="space-y-6 focus-visible:outline-none">
           {/* Métricas Especializadas por Vertical Médica Activa */}
           <VerticalMetricsWidget />
+
+          {/* Prescripciones y Tratamientos Pautados */}
+          <ActiveTreatmentWidget />
 
           {/* Score Clínico de Salud */}
           <HealthScoreWidget />

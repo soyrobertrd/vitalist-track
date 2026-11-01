@@ -446,7 +446,7 @@ export default function CatalogosClinicos() {
 
         {/* TAB: CIE-10 */}
         <TabsContent value="cie10" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm p-4">
+          <Card className="rounded-2xl border-border/80 p-4">
             <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
               <div className="relative w-full md:w-96">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -489,7 +489,7 @@ export default function CatalogosClinicos() {
             </div>
           </Card>
 
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="bg-muted/20 px-6 py-3.5 border-b border-border/80 flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <FileText className="h-4 w-4 text-teal-600" /> Diagnósticos Clasificados
@@ -574,7 +574,7 @@ export default function CatalogosClinicos() {
 
         {/* TAB: CPT */}
         <TabsContent value="cpt" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm p-4">
+          <Card className="rounded-2xl border-border/80 p-4">
             <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
               <div className="relative w-full md:w-96">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -601,7 +601,7 @@ export default function CatalogosClinicos() {
             </div>
           </Card>
 
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="bg-muted/20 px-6 py-3.5 border-b border-border/80 flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <Stethoscope className="h-4 w-4 text-blue-600" /> Procedimientos & Aranceles CPT
@@ -685,7 +685,7 @@ export default function CatalogosClinicos() {
 
         {/* TAB: SIMO / SISALRIL */}
         <TabsContent value="simo" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm p-4">
+          <Card className="rounded-2xl border-border/80 p-4">
             <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
               <div className="relative w-full md:w-96">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -702,7 +702,7 @@ export default function CatalogosClinicos() {
             </div>
           </Card>
 
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="bg-muted/20 px-6 py-3.5 border-b border-border/80 flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-purple-600" /> Nomenclador Dominicano SISALRIL (SIMO)

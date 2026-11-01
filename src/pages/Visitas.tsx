@@ -542,7 +542,7 @@ const Visitas = () => {
       {/* Stats Cards - Modo B Plano sin sombras */}
       {/* Stats Cards - Diseño Clínico Moderno */}
       <div className="hidden md:grid gap-4 grid-cols-1 md:grid-cols-4">
-        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-sm">
+        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40">
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Total Citas</p>
             <p className="text-2xl font-bold tabular-nums text-foreground mt-0.5">{stats.totalVisitas}</p>
@@ -553,7 +553,7 @@ const Visitas = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-sm">
+        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40">
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Pendientes</p>
             <p className="text-2xl font-bold tabular-nums text-amber-600 dark:text-amber-400 mt-0.5">{stats.pendientes}</p>
@@ -564,7 +564,7 @@ const Visitas = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-sm">
+        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40">
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Completadas</p>
             <p className="text-2xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400 mt-0.5">{stats.realizadas}</p>
@@ -575,7 +575,7 @@ const Visitas = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-sm">
+        <div className="flex items-center justify-between rounded-2xl border border-border/80 bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40">
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">No-Show / Canceladas</p>
             <p className="text-2xl font-bold tabular-nums text-rose-600 dark:text-rose-400 mt-0.5">{stats.canceladas}</p>

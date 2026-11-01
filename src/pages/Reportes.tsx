@@ -287,7 +287,7 @@ const Reportes = () => {
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold">Reporte de Control de Llamadas y Visitas</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Reporte de Control de Llamadas y Visitas</h1>
             <p className="text-muted-foreground mt-1">
               Período: {dateRange.from && format(dateRange.from, "dd 'de' MMMM yyyy", { locale: es })} - {dateRange.to && format(dateRange.to, "dd 'de' MMMM yyyy", { locale: es })}
             </p>

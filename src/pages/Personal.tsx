@@ -326,7 +326,7 @@ const Personal = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {personal.map((p) => (
-          <Card key={p.id} className="hover:shadow-lg transition-shadow">
+          <Card key={p.id} className="hover:border-primary/40 transition-colors">
             <CardHeader>
               <div className="flex justify-between items-start">
                 <CardTitle className="text-lg">

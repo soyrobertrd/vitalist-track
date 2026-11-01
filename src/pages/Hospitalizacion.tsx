@@ -246,7 +246,7 @@ function AdmisionCard({ a, onUpdated }: { a: Admision; onUpdated: () => void }) 
   const esProlongada = a.estado === "activa" && diasEstancia >= 7;
 
   return (
-    <Card className="rounded-2xl border-border/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+    <Card className="rounded-2xl border-border/80 hover:border-primary/40 transition-all flex flex-col justify-between">
       <CardHeader className="pb-3 border-b border-border/60">
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-1">
@@ -380,7 +380,7 @@ function NuevaAdmisionDialog({ onCreated }: { onCreated: () => void }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="shadow-sm gap-2">
+        <Button className="gap-2">
           <Plus className="h-4 w-4" /> Nueva Admisión
         </Button>
       </DialogTrigger>

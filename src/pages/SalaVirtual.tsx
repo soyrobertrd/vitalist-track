@@ -167,7 +167,7 @@ export default function SalaVirtual() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-background flex items-center justify-center p-4">
-      <Card className="max-w-lg w-full shadow-xl">
+      <Card className="max-w-lg w-full">
         <CardHeader className="text-center">
           <div className="mx-auto h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center mb-2">
             <Video className="h-7 w-7 text-primary" />

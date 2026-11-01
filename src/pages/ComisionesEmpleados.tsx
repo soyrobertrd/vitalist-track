@@ -487,7 +487,7 @@ export default function ComisionesEmpleados() {
             <Button
               onClick={() => setNuevoModalOpen(true)}
               size="sm"
-              className="gap-1.5 shadow-sm bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
             >
               <Plus className="w-4 h-4" /> Registrar Acto Médico
             </Button>
@@ -528,7 +528,7 @@ export default function ComisionesEmpleados() {
       </div>
 
       {/* Filtros y Búsqueda */}
-      <Card className="rounded-2xl border-border/80 shadow-sm">
+      <Card className="rounded-2xl border-border/80">
         <CardContent className="p-4 space-y-4">
           <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
             <div className="relative w-full md:w-80">
@@ -574,7 +574,7 @@ export default function ComisionesEmpleados() {
       </Card>
 
       {/* Tabla de Liquidaciones */}
-      <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+      <Card className="rounded-2xl border-border/80 overflow-hidden">
         <CardHeader className="bg-muted/30 px-6 py-4 border-b border-border/80 flex flex-row items-center justify-between">
           <div>
             <CardTitle className="text-base font-semibold flex items-center gap-2">
@@ -713,6 +713,12 @@ export default function ComisionesEmpleados() {
                 )}
               </TableBody>
             </Table>
+          </div>
+
+          {/* Footer de respiro y totalizador para evitar filas pegadas a la curva de la card */}
+          <div className="flex items-center justify-between border-t border-border/60 px-6 py-3.5 bg-muted/10 text-xs text-muted-foreground rounded-b-2xl">
+            <span>Mostrando {filtered.length} liquidaciones de honorarios médicos</span>
+            <span className="font-mono text-[11px] text-muted-foreground/80">Retención ISR 10% Ley 11-92 (DGII)</span>
           </div>
         </CardContent>
       </Card>

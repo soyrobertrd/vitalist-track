@@ -341,14 +341,15 @@ export default function Nutricion() {
 
         {/* Tab 1: Evaluaciones */}
         <TabsContent value="evaluaciones">
-          <Card className="rounded-2xl border-border/80 shadow-xs">
+          <Card className="rounded-2xl border-border/80 shadow-xs overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/50">
               <CardTitle className="text-base font-semibold">Censo de Evaluaciones Nutricionales</CardTitle>
               <CardDescription>Monitoreo antropométrico periódico, peso, talla e índice de masa corporal</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <Table>
-                <TableHeader>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead className="pl-6">Paciente</TableHead>
                     <TableHead>Fecha</TableHead>
@@ -409,20 +410,26 @@ export default function Nutricion() {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </div>
+            <div className="flex items-center justify-between border-t border-border/50 px-6 py-3 bg-muted/10 text-xs text-muted-foreground rounded-b-2xl">
+              <span>Registros evaluados: {evalFiltradas.length}</span>
+              <span className="font-mono text-[11px]">Nutrición & Tamizaje Antropométrico</span>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
 
         {/* Tab 2: Dietas */}
         <TabsContent value="dietas">
-          <Card className="rounded-2xl border-border/80 shadow-xs">
+          <Card className="rounded-2xl border-border/80 shadow-xs overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/50">
               <CardTitle className="text-base font-semibold">Dietas Hospitalarias y Regímenes Prescritos</CardTitle>
               <CardDescription>Control de dietoterapia, consistencia alimenticia y requerimientos de soporte</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <Table>
-                <TableHeader>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead className="pl-6">Paciente</TableHead>
                     <TableHead>Régimen Dietoterápico</TableHead>
@@ -487,9 +494,14 @@ export default function Nutricion() {
                   )}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </div>
+            <div className="flex items-center justify-between border-t border-border/50 px-6 py-3 bg-muted/10 text-xs text-muted-foreground rounded-b-2xl">
+              <span>Dietas activas: {dietasFiltradas.length}</span>
+              <span className="font-mono text-[11px]">Soporte Hospitalario & Cocina</span>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
 
         {/* Tab 3: Calculadora Antropométrica Reutilizable */}
         <TabsContent value="calculadora">

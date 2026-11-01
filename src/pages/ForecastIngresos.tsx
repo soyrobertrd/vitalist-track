@@ -214,7 +214,7 @@ export default function ForecastIngresos() {
 
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button className="shadow-sm gap-2">
+                <Button className="gap-2">
                   <Plus className="h-4 w-4" /> Nueva Proyección
                 </Button>
               </DialogTrigger>
@@ -356,7 +356,7 @@ export default function ForecastIngresos() {
         {/* Tab 1: Gráficos Recharts */}
         <TabsContent value="graficos" className="space-y-6 mt-0">
           {/* Gráfico 1: Área de Tendencia Mensual */}
-          <Card className="rounded-2xl border-border/80 shadow-sm">
+          <Card className="rounded-2xl border-border/80">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <div>
@@ -424,7 +424,7 @@ export default function ForecastIngresos() {
           {/* Grilla de 2 Gráficos: Barras por Categoría y Distribución de Ingreso Real */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Gráfico 2: Barras agrupadas por categoría */}
-            <Card className="rounded-2xl border-border/80 shadow-sm">
+            <Card className="rounded-2xl border-border/80">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-primary" /> Ejecución por Línea de Servicio
@@ -467,7 +467,7 @@ export default function ForecastIngresos() {
             </Card>
 
             {/* Gráfico 3: Distribución Pie de Ingresos Reales */}
-            <Card className="rounded-2xl border-border/80 shadow-sm">
+            <Card className="rounded-2xl border-border/80">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                   <PieChartIcon className="w-4 h-4 text-emerald-600" /> Mezcla de Ingresos Reales
@@ -517,7 +517,7 @@ export default function ForecastIngresos() {
 
         {/* Tab 2: Tabla de Datos */}
         <TabsContent value="tabla" className="mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/60">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>

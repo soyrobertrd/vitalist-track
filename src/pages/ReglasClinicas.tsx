@@ -384,7 +384,7 @@ export default function ReglasClinicas() {
       </div>
 
       {/* Barra de Filtros y Búsqueda */}
-      <Card className="rounded-2xl border-border/80 shadow-sm p-4">
+      <Card className="rounded-2xl border-border/80 p-4">
         <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -440,7 +440,7 @@ export default function ReglasClinicas() {
             return (
               <Card
                 key={r.id}
-                className={`rounded-2xl border-border/80 shadow-sm transition-all bg-card/70 flex flex-col justify-between ${
+                className={`rounded-2xl border-border/80  transition-all bg-card/70 flex flex-col justify-between ${
                   !r.activo ? "opacity-60" : style.borderClass
                 }`}
               >

@@ -263,21 +263,21 @@ function PsicologiaProContent() {
           </CardContent>
         </Card>
 
-        <Card className={`rounded-2xl shadow-none transition-colors ${alertasRiesgo > 0 ? "border-rose-500/40 bg-rose-500/[0.03]" : "border-border/80 hover:border-rose-500/40"}`}>
+        <Card className={`rounded-2xl shadow-none transition-colors ${alertasRiesgo > 0 ? "border-destructive/40 bg-destructive/[0.03]" : "border-border/80 hover:border-destructive/40"}`}>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${alertasRiesgo > 0 ? "bg-rose-500/20 text-rose-600 dark:text-rose-400" : "bg-rose-500/10 text-rose-600 dark:text-rose-400"}`}>
+            <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${alertasRiesgo > 0 ? "bg-destructive/20 text-destructive " : "bg-destructive/10 text-destructive "}`}>
               <AlertTriangle className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-bold tabular-nums leading-none text-rose-600 dark:text-rose-400">{alertasRiesgo}</p>
+              <p className="text-2xl font-bold tabular-nums leading-none text-destructive">{alertasRiesgo}</p>
               <p className="text-xs text-muted-foreground mt-1">Alertas riesgo</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-border/80 shadow-none hover:border-amber-500/40 transition-colors">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-warning/40 transition-colors">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-warning/10 text-warning flex items-center justify-center shrink-0">
               <Activity className="h-5 w-5" />
             </div>
             <div>
@@ -287,9 +287,9 @@ function PsicologiaProContent() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-border/80 shadow-none hover:border-teal-500/40 transition-colors">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <ListChecks className="h-5 w-5" />
             </div>
             <div>
@@ -299,9 +299,9 @@ function PsicologiaProContent() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-border/80 shadow-none hover:border-purple-500/40 transition-colors">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <Pill className="h-5 w-5" />
             </div>
             <div>
@@ -311,9 +311,9 @@ function PsicologiaProContent() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-border/80 shadow-none hover:border-blue-500/40 transition-colors">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <Heart className="h-5 w-5" />
             </div>
             <div>
@@ -402,7 +402,7 @@ function PsicologiaProContent() {
           {pacientesPsico.length === 0 ? (
             <Card className="rounded-2xl border-border/80 shadow-none"><CardContent className="py-8 text-center text-muted-foreground">Aún no hay fichas psicológicas</CardContent></Card>
           ) : pacientesPsico.map((p:any)=>(
-            <Card key={p.id} className="rounded-2xl border-border/80 shadow-none hover:border-purple-500/40 transition-colors">
+            <Card key={p.id} className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
               <CardContent className="py-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
@@ -515,7 +515,7 @@ function PsicologiaProContent() {
           </div>
           {notas.length === 0 ? <Card className="rounded-2xl border-border/80 shadow-none"><CardContent className="py-8 text-center text-muted-foreground">Sin notas</CardContent></Card>
           : notas.map((n:any)=>(
-            <Card key={n.id} className="rounded-2xl border-border/80 shadow-none hover:border-purple-500/40 transition-colors">
+            <Card key={n.id} className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
               <CardContent className="py-4">
                 <div className="flex items-center justify-between mb-2">
                   <p className="font-medium text-foreground flex items-center gap-2">

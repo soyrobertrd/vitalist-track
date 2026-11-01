@@ -131,13 +131,13 @@ export default function HubPaciente360() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
       <Tabs defaultValue="timeline" className="min-w-0">
         <TabsList className="bg-muted/60 p-1 border border-border/60 h-auto grid grid-cols-3 max-w-lg">
-          <TabsTrigger value="timeline" className="text-xs sm:text-sm py-2 gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+          <TabsTrigger value="timeline" className="text-xs sm:text-sm py-2 gap-1.5 data-[state=active]:bg-background">
             <Activity className="h-4 w-4" /> Línea de Tiempo
           </TabsTrigger>
-          <TabsTrigger value="multidisciplinar" className="text-xs sm:text-sm py-2 gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+          <TabsTrigger value="multidisciplinar" className="text-xs sm:text-sm py-2 gap-1.5 data-[state=active]:bg-background">
             <Sparkles className="h-4 w-4 text-emerald-600" /> Especialidades 360°
           </TabsTrigger>
-          <TabsTrigger value="auditoria" className="text-xs sm:text-sm py-2 gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+          <TabsTrigger value="auditoria" className="text-xs sm:text-sm py-2 gap-1.5 data-[state=active]:bg-background">
             <ShieldAlert className="h-4 w-4" /> Auditoría
           </TabsTrigger>
         </TabsList>
@@ -153,7 +153,7 @@ export default function HubPaciente360() {
 
         {/* TAB MULTIDISCIPLINAR 360: TODAS LAS ESPECIALIDADES CONVIVIENDO */}
         <TabsContent value="multidisciplinar" className="mt-4 space-y-5">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-2xl bg-card border border-border/80 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-2xl bg-card border border-border/80">
             <div>
               <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-emerald-600" />
@@ -194,9 +194,22 @@ export default function HubPaciente360() {
             </Button>
           </div>
 
+          {/* Banner de Seguridad Clínica & Convivencia Interdisciplinar */}
+          <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-xs">
+            <ShieldAlert className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <span className="font-semibold text-amber-800 dark:text-amber-400">
+                Seguridad & Convivencia Interdisciplinar Activa
+              </span>
+              <p className="text-amber-700/90 dark:text-amber-300/90 leading-relaxed text-[11px]">
+                El sistema sincroniza automáticamente antecedentes de todas las consultas: fármacos prescritos en Odontología o Fisioterapia son visibles al instante en Nutrición, Ginecología y Medicina Estética para evitar interacciones, incompatibilidades o contraindicaciones durante el embarazo y lactancia.
+              </p>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* 1. Odontología */}
-            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-cyan-500/50 transition-all">
+            <div className="p-4 rounded-2xl bg-card border border-border/80 space-y-3 hover:border-cyan-500/50 transition-all">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600">
@@ -223,7 +236,7 @@ export default function HubPaciente360() {
             </div>
 
             {/* 2. Óptica & Oftalmología */}
-            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-indigo-500/50 transition-all">
+            <div className="p-4 rounded-2xl bg-card border border-border/80 space-y-3 hover:border-indigo-500/50 transition-all">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600">
@@ -250,7 +263,7 @@ export default function HubPaciente360() {
             </div>
 
             {/* 3. Fisioterapia & Rehabilitación */}
-            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-teal-500/50 transition-all">
+            <div className="p-4 rounded-2xl bg-card border border-border/80 space-y-3 hover:border-teal-500/50 transition-all">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-teal-500/10 text-teal-600">
@@ -277,7 +290,7 @@ export default function HubPaciente360() {
             </div>
 
             {/* 4. Nutrición & Dietética */}
-            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-emerald-500/50 transition-all">
+            <div className="p-4 rounded-2xl bg-card border border-border/80 space-y-3 hover:border-emerald-500/50 transition-all">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600">
@@ -304,7 +317,7 @@ export default function HubPaciente360() {
             </div>
 
             {/* 5. Medicina Estética & Spa */}
-            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-pink-500/50 transition-all">
+            <div className="p-4 rounded-2xl bg-card border border-border/80 space-y-3 hover:border-pink-500/50 transition-all">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-pink-500/10 text-pink-600">
@@ -331,7 +344,7 @@ export default function HubPaciente360() {
             </div>
 
             {/* 6. Psicología & Salud Mental */}
-            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-purple-500/50 transition-all">
+            <div className="p-4 rounded-2xl bg-card border border-border/80 space-y-3 hover:border-purple-500/50 transition-all">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600">
@@ -358,7 +371,7 @@ export default function HubPaciente360() {
             </div>
 
             {/* 7. Ginecología & Obstetricia */}
-            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-rose-500/50 transition-all">
+            <div className="p-4 rounded-2xl bg-card border border-border/80 space-y-3 hover:border-rose-500/50 transition-all">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-rose-500/10 text-rose-600">
@@ -385,7 +398,7 @@ export default function HubPaciente360() {
             </div>
 
             {/* 8. Pediatría & Puericultura */}
-            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-sky-500/50 transition-all">
+            <div className="p-4 rounded-2xl bg-card border border-border/80 space-y-3 hover:border-sky-500/50 transition-all">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-xl bg-sky-500/10 text-sky-600">
@@ -492,7 +505,7 @@ export default function HubPaciente360() {
       {/* Panel derecho: información general + notas importantes */}
       <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
         {/* Acciones Clínicas Rápidas */}
-        <section className="rounded-2xl border border-border/80 bg-card p-5 space-y-3 shadow-sm">
+        <section className="rounded-2xl border border-border/80 bg-card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-foreground">Acciones Clínicas</h2>
             <Sparkles className="h-4 w-4 text-primary" />
@@ -539,6 +552,16 @@ export default function HubPaciente360() {
                 Interconsultas & Especialidades
               </span>
               <div className="grid grid-cols-2 gap-1.5">
+                <Button asChild variant="ghost" size="sm" className="justify-start text-[11px] gap-1.5 h-7 px-2 hover:bg-rose-500/10 text-rose-700 dark:text-rose-400">
+                  <Link to="/ginecologia-obstetricia">
+                    <Heart className="h-3.5 w-3.5" /> Ginecología
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm" className="justify-start text-[11px] gap-1.5 h-7 px-2 hover:bg-sky-500/10 text-sky-700 dark:text-sky-400">
+                  <Link to="/pediatria">
+                    <Baby className="h-3.5 w-3.5" /> Pediatría
+                  </Link>
+                </Button>
                 <Button asChild variant="ghost" size="sm" className="justify-start text-[11px] gap-1.5 h-7 px-2 hover:bg-teal-500/10 text-teal-700 dark:text-teal-400">
                   <Link to="/fisioterapia-pro">
                     <Dumbbell className="h-3.5 w-3.5" /> Fisioterapia
@@ -557,6 +580,16 @@ export default function HubPaciente360() {
                 <Button asChild variant="ghost" size="sm" className="justify-start text-[11px] gap-1.5 h-7 px-2 hover:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400">
                   <Link to="/vision-care">
                     <Eye className="h-3.5 w-3.5" /> VisionCare
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm" className="justify-start text-[11px] gap-1.5 h-7 px-2 hover:bg-pink-500/10 text-pink-700 dark:text-pink-400">
+                  <Link to="/aesthetic-pro">
+                    <Sparkles className="h-3.5 w-3.5" /> Estética
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm" className="justify-start text-[11px] gap-1.5 h-7 px-2 hover:bg-purple-500/10 text-purple-700 dark:text-purple-400">
+                  <Link to="/psicologia-pro">
+                    <Brain className="h-3.5 w-3.5" /> Psicología
                   </Link>
                 </Button>
               </div>

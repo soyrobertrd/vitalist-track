@@ -226,7 +226,7 @@ export default function CosteoServicios() {
 
             <Dialog open={openCS} onOpenChange={setOpenCS}>
               <DialogTrigger asChild>
-                <Button className="shadow-sm gap-2">
+                <Button className="gap-2">
                   <Plus className="h-4 w-4" /> Nuevo Costeo
                 </Button>
               </DialogTrigger>
@@ -374,7 +374,7 @@ export default function CosteoServicios() {
 
         {/* Tab 1: Tabla de Servicios */}
         <TabsContent value="costeo" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/60">
               <CardTitle className="text-base font-semibold">Catálogo y Rentabilidad por Procedimiento</CardTitle>
               <CardDescription>
@@ -450,7 +450,7 @@ export default function CosteoServicios() {
 
         {/* Tab 2: Gráficos de Costos */}
         <TabsContent value="graficos" className="space-y-6 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm">
+          <Card className="rounded-2xl border-border/80">
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-semibold flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-primary" /> Estructura de Costos vs. Precio de Venta (Top Servicios)
@@ -498,7 +498,7 @@ export default function CosteoServicios() {
         <TabsContent value="centros" className="space-y-4 mt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {centros.map((c) => (
-              <Card key={c.id} className="rounded-2xl border-border/80 shadow-sm p-5 hover:shadow-md transition-shadow">
+              <Card key={c.id} className="rounded-2xl border-border/80 p-5 hover:border-primary/40 transition-colors">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center">

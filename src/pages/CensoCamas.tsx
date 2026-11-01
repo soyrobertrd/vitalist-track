@@ -356,7 +356,7 @@ export default function CensoCamas() {
       </div>
 
       {/* Barra de Filtros y Búsqueda */}
-      <Card className="rounded-2xl border-border/80 shadow-sm p-4">
+      <Card className="rounded-2xl border-border/80 p-4">
         <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -428,7 +428,7 @@ export default function CensoCamas() {
                 {piso.habitaciones.map((hab) => (
                   <Card
                     key={hab.id}
-                    className="rounded-2xl border-border/80 shadow-sm overflow-hidden bg-card/60 hover:border-emerald-500/40 transition-colors"
+                    className="rounded-2xl border-border/80 overflow-hidden bg-card/60 hover:border-emerald-500/40 transition-colors"
                   >
                     <CardHeader className="bg-muted/30 px-4 py-3 border-b border-border/80 flex flex-row items-center justify-between">
                       <div className="flex items-center gap-2">

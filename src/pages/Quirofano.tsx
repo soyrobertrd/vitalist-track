@@ -283,7 +283,7 @@ export default function Quirofano() {
         </TabsList>
 
         <TabsContent value="agenda">
-          <Card className="rounded-2xl border-border/80 overflow-hidden shadow-sm">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardContent className="p-0">
               <ScrollArea className="max-h-[550px]">
                 <Table>
@@ -412,7 +412,7 @@ export default function Quirofano() {
             {salas.map((s) => {
               const enUso = cirugias.find((c) => c.sala_id === s.id && c.estado === "en_curso");
               return (
-                <Card key={s.id} className={`rounded-2xl border-border/80 shadow-sm ${enUso ? "border-rose-500/60 bg-rose-500/5" : ""}`}>
+                <Card key={s.id} className={`rounded-2xl border-border/80  ${enUso ? "border-rose-500/60 bg-rose-500/5" : ""}`}>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base font-bold flex items-center justify-between">
                       <span>{s.nombre}</span>
@@ -454,7 +454,7 @@ export default function Quirofano() {
 
         <TabsContent value="checklists">
           <div className="grid gap-6 md:grid-cols-2">
-            <Card className="rounded-2xl border-border/80 shadow-sm">
+            <Card className="rounded-2xl border-border/80">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base font-bold">
                   <CheckSquare className="h-5 w-5 text-indigo-600" />
@@ -478,7 +478,7 @@ export default function Quirofano() {
               </CardContent>
             </Card>
 
-            <Card className="rounded-2xl border-border/80 shadow-sm">
+            <Card className="rounded-2xl border-border/80">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base font-bold">
                   <CheckSquare className="h-5 w-5 text-indigo-600" />

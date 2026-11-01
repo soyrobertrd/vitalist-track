@@ -197,7 +197,7 @@ const Encuestas = () => {
               });
               setDialogOpen(true);
             }}
-            className="shadow-sm gap-2"
+            className="gap-2"
           >
             <Plus className="h-4 w-4" /> Nueva Encuesta
           </Button>

@@ -224,7 +224,7 @@ const Odontograma = () => {
                 className="pl-9"
               />
               {!!resultados?.length && (
-                <ul className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border bg-popover shadow-lg">
+                <ul className="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border bg-popover">
                   {resultados.map((p) => (
                     <li key={p.id}>
                       <button

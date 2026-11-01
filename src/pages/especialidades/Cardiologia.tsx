@@ -305,7 +305,7 @@ export default function Cardiologia() {
           {consultasFiltradas.map((c) => {
             const tipoInfo = TIPOS_CONSULTA_CARDIO.find((t) => t.id === c.tipo_consulta);
             return (
-              <Card key={c.id} className="border-border/80 hover:shadow-sm transition-all">
+              <Card key={c.id} className="border-border/80 hover:border-primary/40 transition-all">
                 <CardContent className="p-4 space-y-3">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
                     <div>

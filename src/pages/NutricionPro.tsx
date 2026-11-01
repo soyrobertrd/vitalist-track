@@ -34,7 +34,7 @@ export default function NutricionPro() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border/80">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 shadow-sm">
+            <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
               <Apple className="h-6 w-6" />
             </div>
             <div>
@@ -84,7 +84,7 @@ export default function NutricionPro() {
           <TabsList className="bg-muted/60 p-1 border border-border/60 h-auto inline-flex flex-wrap gap-1 rounded-2xl">
             <TabsTrigger
               value="bioimpedancia"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 font-semibold"
             >
               <Scale className="h-3.5 w-3.5" />
               Bioimpedancia & Macros
@@ -92,7 +92,7 @@ export default function NutricionPro() {
 
             <TabsTrigger
               value="antropometria_isak"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 font-semibold"
             >
               <Activity className="h-3.5 w-3.5" />
               Pliegues ISAK & Perímetros
@@ -100,7 +100,7 @@ export default function NutricionPro() {
 
             <TabsTrigger
               value="planificador"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 font-semibold"
             >
               <Utensils className="h-3.5 w-3.5" />
               Minutas & Dietética
@@ -108,7 +108,7 @@ export default function NutricionPro() {
 
             <TabsTrigger
               value="bariatria"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 font-semibold"
             >
               <HeartPulse className="h-3.5 w-3.5" />
               Protocolo Bariátrico (% EWL)
@@ -116,7 +116,7 @@ export default function NutricionPro() {
 
             <TabsTrigger
               value="pacientes"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 font-semibold"
             >
               <Users className="h-3.5 w-3.5" />
               Pacientes
@@ -124,7 +124,7 @@ export default function NutricionPro() {
 
             <TabsTrigger
               value="citas"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 font-semibold"
             >
               <CalendarDays className="h-3.5 w-3.5" />
               Citas & Agenda
@@ -132,7 +132,7 @@ export default function NutricionPro() {
 
             <TabsTrigger
               value="personal"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 font-semibold"
             >
               <Users className="h-3.5 w-3.5" />
               Nutricionistas
@@ -140,7 +140,7 @@ export default function NutricionPro() {
 
             <TabsTrigger
               value="facturacion"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-emerald-700 font-semibold"
             >
               <DollarSign className="h-3.5 w-3.5" />
               Facturación & Planes

@@ -108,7 +108,7 @@ export default function UrgenciasTriage() {
     <div className="space-y-6">
       {/* Alerta de Código Hospitalario */}
       {alertaActiva && (
-        <div className="p-3.5 bg-red-600 text-white rounded-2xl flex items-center justify-between shadow-sm animate-pulse border border-red-700">
+        <div className="p-3.5 bg-red-600 text-white rounded-2xl flex items-center justify-between animate-pulse border border-red-700">
           <div className="flex items-center gap-2.5 text-xs font-semibold">
             <Radio className="h-5 w-5 shrink-0" />
             <span>ALERTA DE EMERGENCIA: {alertaActiva}</span>
@@ -265,7 +265,7 @@ export default function UrgenciasTriage() {
               return (
                 <Card
                   key={p.id}
-                  className={`rounded-2xl transition-all shadow-sm ${
+                  className={`rounded-2xl transition-all  ${
                     p.nivel === 1
                       ? "border-red-600 bg-red-600/5"
                       : p.nivel === 2
@@ -420,7 +420,7 @@ export default function UrgenciasTriage() {
               return (
                 <Card
                   key={b.id}
-                  className={`rounded-2xl border-border/80 shadow-sm ${
+                  className={`rounded-2xl border-border/80  ${
                     estaOcupado ? "border-amber-500/40 bg-amber-500/5" : ""
                   }`}
                 >
@@ -457,7 +457,7 @@ export default function UrgenciasTriage() {
 
         {/* Tab 3: Guía y Algoritmo Manchester (MTS) */}
         <TabsContent value="guia" className="space-y-4">
-          <Card className="rounded-2xl border-border/80 shadow-sm">
+          <Card className="rounded-2xl border-border/80">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2 font-bold">
                 <ShieldAlert className="h-5 w-5 text-rose-500" />

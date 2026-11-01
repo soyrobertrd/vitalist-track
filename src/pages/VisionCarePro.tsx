@@ -278,7 +278,7 @@ function VisionCareProContent() {
                 <p className="text-sm text-muted-foreground mt-1">{c.descripcion || ""}</p>
                 <div className="flex gap-2 mt-2">
                   <span className="text-sm line-through text-muted-foreground">{fmt(c.precio_regular)}</span>
-                  <span className="text-lg font-bold text-green-600">{fmt(c.precio_combo)}</span>
+                  <span className="text-lg font-bold text-success">{fmt(c.precio_combo)}</span>
                 </div>
                 <div className="flex gap-1 mt-2">
                   {c.incluye_montura && <Badge variant="outline" className="text-xs">Montura</Badge>}

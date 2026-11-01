@@ -566,7 +566,7 @@ export default function Oncologia() {
                 return (
                   <Card 
                     key={s.id} 
-                    className={`rounded-2xl border ${estConfig.color} shadow-xs p-4 text-center cursor-pointer hover:shadow-sm transition-all`}
+                    className={`rounded-2xl border ${estConfig.color} shadow-xs p-4 text-center cursor-pointer hover:border-primary/40 transition-all`}
                     onClick={() => toggleSillon.mutate({ id: s.id, estado: s.estado })}
                   >
                     <Armchair className="h-7 w-7 mx-auto mb-2" />

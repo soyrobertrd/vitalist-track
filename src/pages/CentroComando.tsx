@@ -98,7 +98,7 @@ export default function CentroComando() {
           const Icon = t.icon;
           return (
             <Link key={t.title} to={t.to}>
-              <Card className={`hover:shadow-md transition cursor-pointer ${t.tone || ""}`}>
+              <Card className={`hover:border-primary/40 transition cursor-pointer ${t.tone || ""}`}>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium">{t.title}</CardTitle>
                   <Icon className="h-4 w-4 text-muted-foreground" />

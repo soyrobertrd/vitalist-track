@@ -337,7 +337,7 @@ export default function AltaHospitalaria() {
             <p className="text-xs text-muted-foreground py-6 text-center">No hay altas registradas con este criterio.</p>
           ) : (
             altasFiltradas.map((a: any) => (
-              <Card key={a.id} className="border-border/80 hover:shadow-sm transition-all rounded-xl">
+              <Card key={a.id} className="border-border/80 hover:border-primary/40 transition-all rounded-xl">
                 <CardHeader className="p-3.5 pb-2">
                   <div className="flex items-start justify-between flex-wrap gap-2">
                     <div className="flex items-center gap-2">

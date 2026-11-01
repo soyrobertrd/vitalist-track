@@ -394,7 +394,7 @@ function AlertasTab() {
                 {!i.resuelto ? (
                   <Button
                     size="sm"
-                    className="bg-rose-600 hover:bg-rose-700 text-white text-xs gap-1.5 shadow-sm"
+                    className="bg-rose-600 hover:bg-rose-700 text-white text-xs gap-1.5"
                     onClick={() => setModalPanico(i)}
                   >
                     <PhoneCall className="h-4 w-4" /> Notificar Read-Back

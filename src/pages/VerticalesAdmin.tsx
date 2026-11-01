@@ -113,7 +113,7 @@ export default function VerticalesAdmin() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="inline-block h-3 w-3 rounded-full bg-primary shrink-0 shadow-sm" />
+                        <span className="inline-block h-3 w-3 rounded-full bg-primary shrink-0" />
                         <p className="font-semibold text-sm">{v.label}</p>
                       </div>
                       <Badge variant="outline" className="text-[10px] mt-0.5 border-primary/30 text-primary">

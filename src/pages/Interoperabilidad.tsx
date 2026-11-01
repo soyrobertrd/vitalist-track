@@ -236,7 +236,7 @@ export default function Interoperabilidad() {
             </div>
           </div>
 
-          <Card className="rounded-2xl border-border/80 shadow-sm">
+          <Card className="rounded-2xl border-border/80">
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-bold">Catálogo de Entidades FHIR Almacenadas</CardTitle>
               <CardDescription className="text-xs">Estructuras JSON conformes con el estándar HL7 FHIR Release 4</CardDescription>
@@ -271,7 +271,7 @@ export default function Interoperabilidad() {
 
         {/* Tab HL7 v2 */}
         <TabsContent value="hl7" className="space-y-4">
-          <Card className="rounded-2xl border-border/80 shadow-sm">
+          <Card className="rounded-2xl border-border/80">
             <CardHeader className="pb-3 flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-base font-bold">Bitácora de Mensajes HL7 v2</CardTitle>
@@ -320,7 +320,7 @@ export default function Interoperabilidad() {
         <TabsContent value="endpoints" className="space-y-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {endpoints.map((e) => (
-              <Card key={e.id} className="rounded-2xl border-border/80 shadow-sm">
+              <Card key={e.id} className="rounded-2xl border-border/80">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-bold text-foreground">{e.nombre}</CardTitle>

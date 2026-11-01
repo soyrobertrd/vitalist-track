@@ -182,7 +182,7 @@ export default function ARAging() {
         icon={Receipt}
         badge="Tesorería & Facturación"
         action={
-          <Button onClick={guardarSnapshot} className="shadow-sm gap-2">
+          <Button onClick={guardarSnapshot} className="gap-2">
             <Camera className="h-4 w-4" /> Guardar Snapshot
           </Button>
         }
@@ -244,7 +244,7 @@ export default function ARAging() {
         <TabsContent value="analitica" className="space-y-6 mt-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Gráfico 1: Barras por Rango */}
-            <Card className="rounded-2xl border-border/80 shadow-sm">
+            <Card className="rounded-2xl border-border/80">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-primary" /> Monto por Cubeta de Vencimiento
@@ -281,7 +281,7 @@ export default function ARAging() {
             </Card>
 
             {/* Gráfico 2: Composición Porcentual */}
-            <Card className="rounded-2xl border-border/80 shadow-sm">
+            <Card className="rounded-2xl border-border/80">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                   <PieChartIcon className="w-4 h-4 text-amber-600" /> Proporción de la Cartera
@@ -330,7 +330,7 @@ export default function ARAging() {
           </div>
 
           {/* Tabla de Cartera Actual */}
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/60">
               <CardTitle className="text-base font-semibold">Detalle de Cartera por Período de Vencimiento</CardTitle>
               <CardDescription>Resumen de montos, cantidad de documentos y participación</CardDescription>
@@ -399,7 +399,7 @@ export default function ARAging() {
         {/* Tab 2: Histórico de Snapshots */}
         <TabsContent value="historico" className="space-y-6 mt-0">
           {dataHistorica.length > 0 && (
-            <Card className="rounded-2xl border-border/80 shadow-sm">
+            <Card className="rounded-2xl border-border/80">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                   <TrendingDown className="w-4 h-4 text-primary" /> Curva Histórica de Morosidad
@@ -436,7 +436,7 @@ export default function ARAging() {
             </Card>
           )}
 
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/60">
               <CardTitle className="text-base font-semibold">Registro Histórico de Cortes de Cartera</CardTitle>
               <CardDescription>Cortes almacenados para auditoría y seguimiento financiero</CardDescription>

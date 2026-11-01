@@ -42,7 +42,7 @@ export default function FisioterapiaPro() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border/80">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-teal-500/10 text-teal-600 border border-teal-500/20 shadow-sm">
+            <div className="p-3 rounded-2xl bg-teal-500/10 text-teal-600 border border-teal-500/20">
               <Dumbbell className="h-6 w-6" />
             </div>
             <div>
@@ -92,7 +92,7 @@ export default function FisioterapiaPro() {
           <TabsList className="bg-muted/60 p-1 border border-border/60 h-auto inline-flex flex-wrap gap-1 rounded-2xl">
             <TabsTrigger
               value="goniometria"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 font-semibold"
             >
               <Activity className="h-3.5 w-3.5" />
               Goniometría & Daniels
@@ -100,7 +100,7 @@ export default function FisioterapiaPro() {
 
             <TabsTrigger
               value="ejercicios_hep"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 font-semibold"
             >
               <Dumbbell className="h-3.5 w-3.5" />
               Ejercicios HEP
@@ -108,7 +108,7 @@ export default function FisioterapiaPro() {
 
             <TabsTrigger
               value="puntos_gatillo"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 font-semibold"
             >
               <Crosshair className="h-3.5 w-3.5" />
               Puntos Gatillo & Punción
@@ -116,7 +116,7 @@ export default function FisioterapiaPro() {
 
             <TabsTrigger
               value="boxes_sesiones"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 font-semibold"
             >
               <Building2 className="h-3.5 w-3.5" />
               Boxes & Paquetes
@@ -124,7 +124,7 @@ export default function FisioterapiaPro() {
 
             <TabsTrigger
               value="pacientes"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 font-semibold"
             >
               <Users className="h-3.5 w-3.5" />
               Pacientes
@@ -132,7 +132,7 @@ export default function FisioterapiaPro() {
 
             <TabsTrigger
               value="citas"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 font-semibold"
             >
               <CalendarDays className="h-3.5 w-3.5" />
               Citas & Agenda
@@ -140,7 +140,7 @@ export default function FisioterapiaPro() {
 
             <TabsTrigger
               value="personal"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 font-semibold"
             >
               <Users className="h-3.5 w-3.5" />
               Terapeutas
@@ -148,7 +148,7 @@ export default function FisioterapiaPro() {
 
             <TabsTrigger
               value="facturacion"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 font-semibold"
             >
               <DollarSign className="h-3.5 w-3.5" />
               Facturación
@@ -156,7 +156,7 @@ export default function FisioterapiaPro() {
 
             <TabsTrigger
               value="nomina"
-              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 data-[state=active]:shadow-sm font-semibold"
+              className="text-xs py-2 px-3 gap-1.5 rounded-xl data-[state=active]:bg-background data-[state=active]:text-teal-700 font-semibold"
             >
               <Calculator className="h-3.5 w-3.5" />
               Nómina

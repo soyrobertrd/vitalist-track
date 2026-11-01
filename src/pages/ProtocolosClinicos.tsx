@@ -325,7 +325,7 @@ export default function ProtocolosClinicos() {
       </div>
 
       {/* Barra de Filtros */}
-      <Card className="rounded-2xl border-border/80 shadow-sm p-4">
+      <Card className="rounded-2xl border-border/80 p-4">
         <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -362,7 +362,7 @@ export default function ProtocolosClinicos() {
           filtrados.map((p) => (
             <Card
               key={p.id}
-              className="rounded-2xl border-border/80 shadow-sm hover:border-teal-500/40 transition-colors bg-card/70 flex flex-col justify-between"
+              className="rounded-2xl border-border/80 hover:border-teal-500/40 transition-colors bg-card/70 flex flex-col justify-between"
             >
               <CardHeader className="p-5 pb-2">
                 <div className="flex items-start justify-between gap-2">
@@ -420,7 +420,7 @@ export default function ProtocolosClinicos() {
                   <Button
                     size="sm"
                     onClick={() => abrirModalAplicar(p)}
-                    className="h-8 text-xs px-3 bg-teal-600 hover:bg-teal-700 text-white gap-1.5 shadow-sm"
+                    className="h-8 text-xs px-3 bg-teal-600 hover:bg-teal-700 text-white gap-1.5"
                   >
                     <Play className="w-3.5 h-3.5" /> Aplicar a Paciente
                   </Button>

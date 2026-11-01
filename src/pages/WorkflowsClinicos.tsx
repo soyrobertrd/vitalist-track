@@ -455,7 +455,7 @@ export default function WorkflowsClinicos() {
             onClick={() => {
               if (plantillas.length > 0) abrirEjecucion(plantillas[0]);
             }}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium flex items-center gap-2 shadow-sm"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium flex items-center gap-2"
           >
             <Play className="h-4 w-4" />
             Ejecutar Workflow en Paciente
@@ -538,7 +538,7 @@ export default function WorkflowsClinicos() {
               </div>
             ) : (
               plantillasFiltradas.map((p) => (
-                <Card key={p.id} className="rounded-2xl border-border/80 hover:shadow-md transition bg-card flex flex-col justify-between">
+                <Card key={p.id} className="rounded-2xl border-border/80 hover:border-primary/40 transition bg-card flex flex-col justify-between">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
                       <div>

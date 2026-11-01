@@ -65,7 +65,7 @@ export default function Triaje() {
                 <Badge className={n.className + " mb-2"}>{n.label} ({grupo.length})</Badge>
                 <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
                   {grupo.map(t => (
-                    <Card key={t.id} className="hover:shadow-md">
+                    <Card key={t.id} className="hover:border-primary/40">
                       <CardContent className="pt-4 space-y-2">
                         <div className="flex items-start justify-between">
                           <strong className="text-sm">{t.pacientes?.nombre} {t.pacientes?.apellido}</strong>

@@ -372,7 +372,7 @@ export default function Imagenologia() {
       </div>
 
       {/* Tabla de Estudios */}
-      <Card className="rounded-2xl border-border/80 overflow-hidden shadow-sm">
+      <Card className="rounded-2xl border-border/80 overflow-hidden">
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted/40">

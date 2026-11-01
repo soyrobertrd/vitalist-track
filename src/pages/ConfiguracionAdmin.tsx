@@ -266,7 +266,7 @@ const ConfiguracionAdmin = () => {
             Usuarios: {usuarios.length} / {userLimit}
           </Badge>
           {trialDays !== null && trialDays >= 0 && (
-            <Badge variant="secondary" className="bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300">
+            <Badge variant="secondary" className="bg-warning/15 text-warning">
               Prueba: {trialDays} días
             </Badge>
           )}

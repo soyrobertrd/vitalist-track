@@ -318,7 +318,7 @@ export default function Neumologia() {
         actions={
           <Button
             onClick={() => setModalNueva(true)}
-            className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium shadow-sm flex items-center gap-2"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
             Nueva Consulta Respiratoria
@@ -413,7 +413,7 @@ export default function Neumologia() {
               consultasFiltradas.map((c) => (
                 <Card
                   key={c.id}
-                  className="rounded-2xl border-border/80 hover:shadow-md transition-all cursor-pointer bg-card"
+                  className="rounded-2xl border-border/80 hover:border-primary/40 transition-all cursor-pointer bg-card"
                   onClick={() => setConsultaDetalle(c)}
                 >
                   <CardContent className="p-5 space-y-3.5">

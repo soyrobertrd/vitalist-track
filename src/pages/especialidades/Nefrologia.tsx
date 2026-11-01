@@ -288,7 +288,7 @@ export default function Nefrologia() {
 
         {/* TAB 1: CONSULTAS */}
         <TabsContent value="consultas" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm p-4">
+          <Card className="rounded-2xl border-border/80 p-4">
             <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
               <div className="relative w-full md:w-96">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -316,7 +316,7 @@ export default function Nefrologia() {
             </div>
           </Card>
 
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="bg-muted/20 px-6 py-3.5 border-b border-border/80 flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <Droplet className="h-4 w-4 text-teal-600" /> Registro de Atenciones Nefrológicas
@@ -406,7 +406,7 @@ export default function Nefrologia() {
 
         {/* TAB 2: CALCULADORA CKD-EPI 2021 */}
         <TabsContent value="calculadora_ckd_epi" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm p-6 space-y-4">
+          <Card className="rounded-2xl border-border/80 p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/80 pb-3">
               <div>
                 <h3 className="text-base font-bold text-foreground flex items-center gap-2">
@@ -510,7 +510,7 @@ export default function Nefrologia() {
 
         {/* TAB 3: UNIDAD DE HEMODIÁLISIS */}
         <TabsContent value="hemodialisis" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm p-6 space-y-3">
+          <Card className="rounded-2xl border-border/80 p-6 space-y-3">
             <div>
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                 <Droplet className="w-5 h-5 text-blue-600" /> Protocolo de Prescripción Dialítica

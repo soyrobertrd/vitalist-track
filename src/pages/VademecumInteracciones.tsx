@@ -196,7 +196,7 @@ export default function VademecumInteracciones() {
 
         {/* Tab 1: Verificador */}
         <TabsContent value="checker" className="space-y-4 mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm p-4 space-y-3">
+          <Card className="rounded-2xl border-border/80 p-4 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="text-sm font-semibold flex items-center gap-2">
                 <Search className="h-4 w-4 text-muted-foreground" />
@@ -222,7 +222,7 @@ export default function VademecumInteracciones() {
                     variant={activo ? "default" : "outline"}
                     className={`cursor-pointer text-xs transition-all ${
                       activo
-                        ? "bg-primary text-primary-foreground shadow-sm"
+                        ? "bg-primary text-primary-foreground "
                         : "hover:bg-muted/80 text-foreground"
                     }`}
                     onClick={() => toggleMed(pa)}
@@ -296,7 +296,7 @@ export default function VademecumInteracciones() {
               return (
                 <Card
                   key={i.id}
-                  className={`rounded-2xl border p-4 space-y-3 shadow-sm transition-all ${conf.cardClass}`}
+                  className={`rounded-2xl border p-4 space-y-3  transition-all ${conf.cardClass}`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1">
@@ -358,7 +358,7 @@ export default function VademecumInteracciones() {
             </span>
           </div>
 
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -415,7 +415,7 @@ export default function VademecumInteracciones() {
 
         {/* Tab 3: Matriz de Interacciones */}
         <TabsContent value="todas" className="mt-0">
-          <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-border/80 overflow-hidden">
             <CardHeader className="pb-3 border-b border-border/60">
               <CardTitle className="text-base font-semibold">Base de Conocimiento de Farmacovigilancia</CardTitle>
               <CardDescription>Pares de principios activos con riesgo documentado y conducta recomendada</CardDescription>

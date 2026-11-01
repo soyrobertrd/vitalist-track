@@ -188,14 +188,14 @@ function AestheticProContent() {
 
       {isResumen && (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-          <Card><CardContent className="pt-3 text-center"><TrendingUp className="h-4 w-4 mx-auto mb-1 text-blue-500" /><p className="text-xl font-bold">{leads.length}</p><p className="text-[10px] text-muted-foreground">Leads</p></CardContent></Card>
-          <Card><CardContent className="pt-3 text-center"><p className="text-xl font-bold text-green-600">{tasaConversion}%</p><p className="text-[10px] text-muted-foreground">Conversión</p></CardContent></Card>
-          <Card><CardContent className="pt-3 text-center"><Camera className="h-4 w-4 mx-auto mb-1 text-purple-500" /><p className="text-xl font-bold">{evaluaciones.length}</p><p className="text-[10px] text-muted-foreground">Evaluaciones</p></CardContent></Card>
-          <Card><CardContent className="pt-3 text-center"><Crown className="h-4 w-4 mx-auto mb-1 text-yellow-500" /><p className="text-xl font-bold">{membActivas}</p><p className="text-[10px] text-muted-foreground">Membresías</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><TrendingUp className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{leads.length}</p><p className="text-[10px] text-muted-foreground">Leads</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><p className="text-xl font-bold text-success">{tasaConversion}%</p><p className="text-[10px] text-muted-foreground">Conversión</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><Camera className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{evaluaciones.length}</p><p className="text-[10px] text-muted-foreground">Evaluaciones</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><Crown className="h-4 w-4 mx-auto mb-1 text-warning" /><p className="text-xl font-bold">{membActivas}</p><p className="text-[10px] text-muted-foreground">Membresías</p></CardContent></Card>
           <Card><CardContent className="pt-3 text-center"><Sofa className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{cabinasDisp}/{cabinas.length}</p><p className="text-[10px] text-muted-foreground">Cabinas disp.</p></CardContent></Card>
           <Card><CardContent className="pt-3 text-center"><Package className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{paquetes.length}</p><p className="text-[10px] text-muted-foreground">Paquetes</p></CardContent></Card>
-          <Card><CardContent className="pt-3 text-center"><Tag className="h-4 w-4 mx-auto mb-1 text-pink-500" /><p className="text-xl font-bold">{promosActivas}</p><p className="text-[10px] text-muted-foreground">Promos</p></CardContent></Card>
-          <Card><CardContent className="pt-3 text-center"><CreditCard className="h-4 w-4 mx-auto mb-1 text-orange-500" /><p className="text-xl font-bold">{fmt(balancePendiente)}</p><p className="text-[10px] text-muted-foreground">Por cobrar</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><Tag className="h-4 w-4 mx-auto mb-1 text-primary" /><p className="text-xl font-bold">{promosActivas}</p><p className="text-[10px] text-muted-foreground">Promos</p></CardContent></Card>
+          <Card><CardContent className="pt-3 text-center"><CreditCard className="h-4 w-4 mx-auto mb-1 text-warning" /><p className="text-xl font-bold">{fmt(balancePendiente)}</p><p className="text-[10px] text-muted-foreground">Por cobrar</p></CardContent></Card>
         </div>
       )}
 
@@ -327,7 +327,7 @@ function AestheticProContent() {
               <p className="font-bold text-lg">{p.nombre}</p>
               <div className="flex gap-2 mt-2">
                 {p.precio_regular && <span className="text-sm line-through text-muted-foreground">{fmt(p.precio_regular)}</span>}
-                {p.precio_paquete && <span className="text-lg font-bold text-green-600">{fmt(p.precio_paquete)}</span>}
+                {p.precio_paquete && <span className="text-lg font-bold text-success">{fmt(p.precio_paquete)}</span>}
               </div>
               {p.descripcion && <p className="text-sm text-muted-foreground mt-2">{p.descripcion}</p>}
             </CardContent></Card>

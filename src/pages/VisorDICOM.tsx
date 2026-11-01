@@ -298,7 +298,7 @@ export default function VisorDICOM() {
         {studies.map((s) => (
           <Card
             key={s.id}
-            className="hover:border-primary/50 transition-all cursor-pointer rounded-2xl border-border/80 shadow-none hover:shadow-sm"
+            className="hover:border-primary/50 transition-all cursor-pointer rounded-2xl border-border/80 shadow-none hover:border-primary/40"
             onClick={() => abrirVisor(s)}
           >
             <CardContent className="p-4 space-y-3">
@@ -463,7 +463,7 @@ export default function VisorDICOM() {
 
               {toolState.activeTool === "hu" && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-20 h-20 rounded-full border-2 border-dashed border-emerald-400 bg-emerald-500/10 flex flex-col items-center justify-center text-emerald-300 font-mono text-xs shadow-lg">
+                  <div className="w-20 h-20 rounded-full border-2 border-dashed border-emerald-400 bg-emerald-500/10 flex flex-col items-center justify-center text-emerald-300 font-mono text-xs">
                     <span className="font-bold">{(toolState.hounsfieldUnit || 42)} HU</span>
                     <span className="text-[9px] text-emerald-200">Parénquima</span>
                   </div>

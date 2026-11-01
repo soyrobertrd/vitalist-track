@@ -202,7 +202,7 @@ export default function DashboardGeografico() {
       {/* Grilla Principal de Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Gráfico 1: Barras de Pacientes por Zona */}
-        <Card className="rounded-2xl border-border/80 shadow-sm">
+        <Card className="rounded-2xl border-border/80">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-semibold flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-primary" /> Densidad Poblacional por Zona
@@ -242,7 +242,7 @@ export default function DashboardGeografico() {
         </Card>
 
         {/* Gráfico 2: Donut Chart de Personal por Zona */}
-        <Card className="rounded-2xl border-border/80 shadow-sm">
+        <Card className="rounded-2xl border-border/80">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-semibold flex items-center gap-2">
               <PieChartIcon className="w-4 h-4 text-emerald-600" /> Despliegue de Profesionales de Salud
@@ -286,7 +286,7 @@ export default function DashboardGeografico() {
       </div>
 
       {/* Gráfico 3: Comparativa Pacientes vs Profesionales */}
-      <Card className="rounded-2xl border-border/80 shadow-sm">
+      <Card className="rounded-2xl border-border/80">
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <Activity className="w-4 h-4 text-purple-600" /> Balance de Capacidad Asistencial por Zona
@@ -329,7 +329,7 @@ export default function DashboardGeografico() {
       </Card>
 
       {/* Tabla de Cobertura y Saturación Territorial */}
-      <Card className="rounded-2xl border-border/80 shadow-sm overflow-hidden">
+      <Card className="rounded-2xl border-border/80 overflow-hidden">
         <CardHeader className="pb-3 border-b border-border/60">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-amber-600" /> Semáforo de Carga y Saturación Asistencial

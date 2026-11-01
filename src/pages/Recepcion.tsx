@@ -408,7 +408,7 @@ export default function Recepcion() {
               return (
                 <Card
                   key={p.id}
-                  className={`transition-all hover:shadow-sm ${
+                  className={`transition-all hover:border-primary/40 ${
                     p.estado === "llamado"
                       ? "border-amber-500/60 bg-amber-500/5 animate-pulse"
                       : p.estado === "en_consulta"

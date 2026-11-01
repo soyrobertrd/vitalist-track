@@ -324,7 +324,7 @@ export default function ReportesRegulatorios() {
         {/* Tab 1: Boletines Semanales SINAVE */}
         <TabsContent value="sinave" className="space-y-3">
           {reportes.map((r) => (
-            <Card key={r.id} className="border-border/80 hover:shadow-sm transition-all">
+            <Card key={r.id} className="border-border/80 hover:border-primary/40 transition-all">
               <CardContent className="p-4 space-y-3">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
                   <div>

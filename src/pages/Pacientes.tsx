@@ -515,7 +515,7 @@ const Pacientes = () => {
               {filteredPacientesInactivos.map((paciente) => (
                 <div 
                   key={paciente.id} 
-                  className="p-4 border rounded-lg bg-card hover:shadow-md transition-shadow"
+                  className="p-4 border rounded-lg bg-card hover:border-primary/40 transition-colors"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 min-w-0">

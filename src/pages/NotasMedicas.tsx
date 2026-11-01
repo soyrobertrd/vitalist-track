@@ -295,7 +295,7 @@ export default function NotasMedicas() {
                       type="button"
                       onClick={() => setForm(f => ({ ...f, tipo_nota: "individual" }))}
                       className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all ${
-                        form.tipo_nota === "individual" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                        form.tipo_nota === "individual" ? "bg-background text-foreground " : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
                       <Stethoscope className="h-4 w-4" />
@@ -305,7 +305,7 @@ export default function NotasMedicas() {
                       type="button"
                       onClick={() => setForm(f => ({ ...f, tipo_nota: "multidisciplinaria" }))}
                       className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold transition-all ${
-                        form.tipo_nota === "multidisciplinaria" ? "bg-background text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                        form.tipo_nota === "multidisciplinaria" ? "bg-background text-primary " : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
                       <Users className="h-4 w-4" />

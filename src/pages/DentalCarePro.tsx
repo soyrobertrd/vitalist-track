@@ -237,9 +237,9 @@ function DentalCareProContent() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-border/80 shadow-none hover:border-purple-500/40 transition-colors">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <Smile className="h-5 w-5" />
             </div>
             <div>
@@ -249,9 +249,9 @@ function DentalCareProContent() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-border/80 shadow-none hover:border-amber-500/40 transition-colors">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-warning/40 transition-colors">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-warning/10 text-warning flex items-center justify-center shrink-0">
               <FlaskConical className="h-5 w-5" />
             </div>
             <div>
@@ -261,9 +261,9 @@ function DentalCareProContent() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-border/80 shadow-none hover:border-emerald-500/40 transition-colors">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-success/40 transition-colors">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-success/10 text-success flex items-center justify-center shrink-0">
               <Armchair className="h-5 w-5" />
             </div>
             <div>
@@ -273,21 +273,21 @@ function DentalCareProContent() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-border/80 shadow-none hover:border-rose-500/40 transition-colors">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-destructive/40 transition-colors">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-destructive/10 text-destructive flex items-center justify-center shrink-0">
               <DollarSign className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xl font-bold tabular-nums leading-none text-rose-600 dark:text-rose-400">{fmt(cuotasPendientes)}</p>
+              <p className="text-xl font-bold tabular-nums leading-none text-destructive">{fmt(cuotasPendientes)}</p>
               <p className="text-xs text-muted-foreground mt-1">Cuotas pend.</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-border/80 shadow-none hover:border-blue-500/40 transition-colors">
+        <Card className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <Bell className="h-5 w-5" />
             </div>
             <div>
@@ -401,10 +401,10 @@ function DentalCareProContent() {
                     {sillones.slice(0, 3).map((s: any) => (
                       <div key={s.id} className="flex items-center justify-between p-2.5 rounded-xl bg-muted/30 border border-border/60">
                         <div className="flex items-center gap-2">
-                          <span className={`h-2 w-2 rounded-full ${s.activo ? "bg-emerald-500" : "bg-muted-foreground/40"}`} />
+                          <span className={`h-2 w-2 rounded-full ${s.activo ? "bg-success" : "bg-muted-foreground/40"}`} />
                           <span className="text-xs font-medium">{s.nombre}</span>
                         </div>
-                        <Badge variant="outline" className={`text-[10px] rounded-full px-2 py-0.5 ${s.activo ? "border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10" : "text-muted-foreground"}`}>
+                        <Badge variant="outline" className={`text-[10px] rounded-full px-2 py-0.5 ${s.activo ? "border-success/30 text-success  bg-success/10" : "text-muted-foreground"}`}>
                           {s.activo ? "Operativo" : "Inactivo"}
                         </Badge>
                       </div>
@@ -446,7 +446,7 @@ function DentalCareProContent() {
           {controles.length === 0 ? (
             <Card className="rounded-2xl border-border/80 shadow-none"><CardContent className="py-8 text-center text-muted-foreground">No hay controles de ortodoncia</CardContent></Card>
           ) : controles.map((c: any) => (
-            <Card key={c.id} className="rounded-2xl border-border/80 shadow-none hover:border-purple-500/40 transition-colors">
+            <Card key={c.id} className="rounded-2xl border-border/80 shadow-none hover:border-primary/40 transition-colors">
               <CardContent className="py-4 flex items-center justify-between">
                 <div>
                   <p className="font-medium text-foreground">{format(new Date(c.fecha + "T12:00:00"), "dd/MM/yyyy", { locale: es })}</p>
@@ -469,7 +469,7 @@ function DentalCareProContent() {
             <div className="space-y-3 pt-2">
               <h3 className="text-sm font-semibold text-foreground">Historial de Órdenes Anteriores</h3>
               {ordenes.map((o: any) => (
-                <Card key={o.id} className="rounded-2xl border-border/80 shadow-none hover:border-amber-500/40 transition-colors">
+                <Card key={o.id} className="rounded-2xl border-border/80 shadow-none hover:border-warning/40 transition-colors">
                   <CardContent className="py-4 flex items-center justify-between">
                     <div>
                       <p className="font-medium text-foreground">{o.numero} — {o.tipo}</p>
@@ -503,11 +503,11 @@ function DentalCareProContent() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {sillones.map((s: any) => (
-              <Card key={s.id} className="rounded-2xl border-border/80 shadow-none hover:border-emerald-500/40 transition-colors">
+              <Card key={s.id} className="rounded-2xl border-border/80 shadow-none hover:border-success/40 transition-colors">
                 <CardContent className="pt-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                      <div className="h-8 w-8 rounded-lg bg-success/10 text-success flex items-center justify-center">
                         <Armchair className="h-4 w-4" />
                       </div>
                       <p className="font-medium text-foreground">{s.nombre}</p>
