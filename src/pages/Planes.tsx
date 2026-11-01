@@ -194,13 +194,13 @@ export default function Planes() {
               }`}
             >
               {isPro && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-bold text-primary-foreground shadow-sm">
-                  ★ Más Popular
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3.5 py-0.5 text-[11px] font-bold text-primary-foreground shadow-sm">
+                  MÁS POPULAR
                 </span>
               )}
               {isPlus && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-purple-600 px-3 py-0.5 text-xs font-bold text-white shadow-sm">
-                  Clínicas & Redes
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-purple-600 px-3.5 py-0.5 text-[11px] font-bold text-white shadow-sm">
+                  RECOMENDADO CLÍNICAS
                 </span>
               )}
               <CardHeader>
@@ -281,7 +281,7 @@ export default function Planes() {
 
               <CardFooter>
                 <Button
-                  className="w-full font-semibold"
+                  className="w-full font-semibold text-xs sm:text-sm"
                   variant={isPro || isPlus ? "default" : "outline"}
                   disabled={isCurrent || changing !== null}
                   onClick={() => handleSelectPlan(plan.codigo)}
@@ -290,8 +290,16 @@ export default function Planes() {
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : isCurrent ? (
                     "Plan actual"
+                  ) : plan.codigo === "solo" ? (
+                    "Probar Básico (Solo Doctor) 30 días"
+                  ) : plan.codigo === "pro" ? (
+                    "Probar Pro Consultorios 30 días"
+                  ) : plan.codigo === "plus" ? (
+                    "Probar Clínica Plus 30 días"
+                  ) : plan.codigo === "business" || plan.codigo === "enterprise" ? (
+                    "Hablar con ventas"
                   ) : (
-                    `Activar ${plan.nombre} (30 días)`
+                    `Activar ${plan.nombre}`
                   )}
                 </Button>
               </CardFooter>

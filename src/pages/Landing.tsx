@@ -227,7 +227,7 @@ export default function Landing() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <Button size="lg" className="h-12 px-8 text-base" onClick={() => navigate("/auth")}>
+            <Button size="lg" className="h-12 px-8 text-base" onClick={() => navigate("/auth?plan=free")}>
               Empezar gratis <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <Button
@@ -394,13 +394,13 @@ export default function Landing() {
                     }`}
                   >
                     {isPro && (
-                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">
-                        <Crown className="h-3 w-3" /> Más popular
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-primary text-primary-foreground text-[11px] font-bold tracking-wide shadow-sm">
+                        MÁS POPULAR
                       </span>
                     )}
                     {isPlus && (
-                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-600 text-white text-xs font-semibold shadow">
-                        <Sparkles className="h-3 w-3" /> Recomendado clínicas
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-purple-600 text-white text-[11px] font-bold tracking-wide shadow-sm">
+                        RECOMENDADO CLÍNICAS
                       </span>
                     )}
                     <h3 className="text-lg font-semibold">{plan.nombre}</h3>
@@ -458,7 +458,7 @@ export default function Landing() {
                       ))}
                     </ul>
                     <Button
-                      className="mt-6 w-full"
+                      className="mt-6 w-full font-semibold"
                       variant={isPro || isPlus ? "default" : "outline"}
                       onClick={() => {
                         if (plan.codigo === "business" || plan.codigo === "enterprise") {
@@ -467,13 +467,17 @@ export default function Landing() {
                             .getElementById("contacto")
                             ?.scrollIntoView({ behavior: "smooth" });
                         } else {
-                          navigate("/auth");
+                          navigate(`/auth?plan=${plan.codigo}`);
                         }
                       }}
                     >
-                      {plan.codigo === "business" || plan.codigo === "enterprise"
-                        ? "Hablar con ventas"
-                        : `Probar ${plan.nombre} 30 días`}
+                      {plan.codigo === "solo"
+                        ? "Probar Básico (Solo Doctor) 30 días"
+                        : plan.codigo === "pro"
+                        ? "Probar Pro Consultorios 30 días"
+                        : plan.codigo === "plus"
+                        ? "Probar Clínica Plus 30 días"
+                        : "Hablar con ventas"}
                     </Button>
                   </div>
                 );

@@ -33,6 +33,9 @@ import { BulkActionsToolbar, PACIENTE_BULK_ACTIONS, BulkActionType } from "@/com
 import { AgendarCitaButton } from "@/components/AgendarCitaButton";
 import { PlanLimitAlert } from "@/components/PlanLimitAlert";
 import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
+import { ExaminationsWidget } from "@/components/dashboard/ExaminationsWidget";
+import { ActiveTreatmentWidget } from "@/components/dashboard/ActiveTreatmentWidget";
+import { Pill, Activity } from "lucide-react";
 
 const MOTIVO_LABELS: Record<string, string> = {
   viaje: "De viaje",
@@ -197,7 +200,7 @@ const Pacientes = () => {
             </div>
           </div>
           <div className="flex flex-wrap items-end justify-between gap-3">
-              <TabsList>
+              <TabsList className="flex-wrap h-auto p-1">
                 <TabsTrigger value="activos" className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
                   <span>Activos</span>
@@ -207,6 +210,14 @@ const Pacientes = () => {
                   <UserX className="h-4 w-4" />
                   <span>Inactivos</span>
                   <Badge variant="outline" className="ml-1">{pacientesInactivos.length}</Badge>
+                </TabsTrigger>
+                <TabsTrigger value="monitoreo" className="flex items-center gap-2">
+                  <Activity className="h-4 w-4 text-primary" />
+                  <span>Monitoreo Clínico</span>
+                </TabsTrigger>
+                <TabsTrigger value="tratamientos" className="flex items-center gap-2">
+                  <Pill className="h-4 w-4 text-emerald-600" />
+                  <span>Prescripciones & Tratamientos</span>
                 </TabsTrigger>
               </TabsList>
               {activeTab === "activos" && (
@@ -548,6 +559,28 @@ const Pacientes = () => {
               ))}
             </div>
           )}
+        </TabsContent>
+
+        {/* Monitoreo Clínico de Pacientes (Examinations) */}
+        <TabsContent value="monitoreo" className="mt-6 space-y-6">
+          <div className="bg-card p-4 rounded-2xl border border-border/80">
+            <h3 className="font-bold text-base text-foreground mb-1">Monitoreo de Exámenes & Alertas Clínicas de Pacientes</h3>
+            <p className="text-xs text-muted-foreground">
+              Supervisión en tiempo real de resultados de laboratorio, evaluaciones de riesgo y pacientes prioritarios.
+            </p>
+          </div>
+          <ExaminationsWidget />
+        </TabsContent>
+
+        {/* Prescripciones y Tratamientos Frecuentes */}
+        <TabsContent value="tratamientos" className="mt-6 space-y-6">
+          <div className="bg-card p-4 rounded-2xl border border-border/80">
+            <h3 className="font-bold text-base text-foreground mb-1">Prescripciones Farmacológicas & Tratamientos Frecuentes</h3>
+            <p className="text-xs text-muted-foreground">
+              Catálogo y administración activa de esquemas terapéuticos, posología y adherencia de los pacientes.
+            </p>
+          </div>
+          <ActiveTreatmentWidget />
         </TabsContent>
       </Tabs>
 

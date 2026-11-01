@@ -178,6 +178,8 @@ export default function HubPaciente360() {
 🏋️ *Fisioterapia & Kinesiología:* Goniometría hombro 155° (Daniels 4/5), dolor EVA 2/10, electroterapia en Box 2.
 🍏 *Nutrición Clínica:* IMC 24.2 (Normopeso), BMR 1,480 kcal/día, plan balanceado y 2.5L agua/día.
 🧠 *Salud Mental:* GAD-7: 3 pts (Ansiedad mínima), control del estrés favorable.
+🌸 *Ginecología & Salud Femenina:* Control citológico PAP negativo, seguimiento prenatal armónico.
+👶 *Pediatría & Puericultura:* Curva de crecimiento OMS (p50), vacunas PAI al día y neurodesarrollo normal.
 
 📋 *Plan Multidisciplinario:* Seguimiento integral coordinado entre especialistas.`;
 
@@ -351,6 +353,60 @@ export default function HubPaciente360() {
                 <span className="text-muted-foreground text-[11px]">Sala 1 · Lic. Navarro</span>
                 <Link to="/psicologia-pro" className="text-purple-600 font-medium hover:underline flex items-center gap-1 text-[11px]">
                   Ver Sesiones <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </div>
+
+            {/* 7. Ginecología & Obstetricia */}
+            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-rose-500/50 transition-all">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-xl bg-rose-500/10 text-rose-600">
+                    <Heart className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-semibold text-foreground">Ginecología & Salud Femenina</h4>
+                    <span className="text-[10px] text-muted-foreground">Prenatal, PAP & Bishop</span>
+                  </div>
+                </div>
+                <Badge variant="outline" className="text-[10px] border-rose-500/30 text-rose-600">
+                  Control al día
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Tamizaje citológico negativo para malignidad. Control prenatal y ecografía obstétrica programados.
+              </p>
+              <div className="flex items-center justify-between pt-1 border-t text-xs">
+                <span className="text-muted-foreground text-[11px]">Cons. 2 · Dra. Peralta</span>
+                <Link to="/ginecologia-obstetricia" className="text-rose-600 font-medium hover:underline flex items-center gap-1 text-[11px]">
+                  Ver Ginecología <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </div>
+
+            {/* 8. Pediatría & Puericultura */}
+            <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-sm space-y-3 hover:border-sky-500/50 transition-all">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-xl bg-sky-500/10 text-sky-600">
+                    <Baby className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-semibold text-foreground">Pediatría & Puericultura</h4>
+                    <span className="text-[10px] text-muted-foreground">Curva OMS, Denver & Vacunas</span>
+                  </div>
+                </div>
+                <Badge variant="outline" className="text-[10px] border-sky-500/30 text-sky-600">
+                  Eutrófico
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Crecimiento percentil p50 OMS. Vacunas esquema PAI al día. Hitos del neurodesarrollo normales.
+              </p>
+              <div className="flex items-center justify-between pt-1 border-t text-xs">
+                <span className="text-muted-foreground text-[11px]">Cons. 5 · Dr. Rosario</span>
+                <Link to="/pediatria" className="text-sky-600 font-medium hover:underline flex items-center gap-1 text-[11px]">
+                  Ver Pediatría <ChevronRight className="h-3 w-3" />
                 </Link>
               </div>
             </div>

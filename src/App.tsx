@@ -368,6 +368,10 @@ const App = () => {
                   element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}
                 />
                 <Route
+                  path="/workspace/configuracion"
+                  element={session ? <Layout><Configuracion /></Layout> : <Navigate to="/auth" />}
+                />
+                <Route
                   path="/configuracion-admin"
                   element={session ? <Layout><ConfiguracionAdmin /></Layout> : <Navigate to="/auth" />}
                 />

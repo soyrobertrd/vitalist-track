@@ -137,10 +137,10 @@ export function VideoConsultaFields({
             />
             {enlace && (
               <>
-                <Button type="button" variant="outline" size="icon" onClick={handleCopy}>
+                <Button type="button" variant="outline" size="icon" aria-label="Copiar enlace de video consulta" onClick={handleCopy}>
                   {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
                 </Button>
-                <Button type="button" variant="outline" size="icon" asChild>
+                <Button type="button" variant="outline" size="icon" aria-label="Abrir sala de video consulta" asChild>
                   <a href={enlace} target="_blank" rel="noreferrer">
                     <ExternalLink className="h-4 w-4" />
                   </a>

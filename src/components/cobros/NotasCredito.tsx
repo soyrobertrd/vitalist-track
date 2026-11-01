@@ -168,7 +168,7 @@ export function NotasCredito({ pacienteId }: Props) {
                     <div className="flex gap-1">
                       {n.estado === "pendiente" && (
                         <>
-                          <Button size="icon" variant="ghost" title="Aprobar" onClick={() => cambiarEstado(n.id, "aprobada")}>
+                          <Button size="icon" variant="ghost" title="Aprobar" aria-label="Aprobar nota de crédito" onClick={() => cambiarEstado(n.id, "aprobada")}>
                             <CheckCircle2 className="h-4 w-4 text-green-600" />
                           </Button>
                           <IconButton label="Cerrar" size="icon" variant="ghost" title="Rechazar" onClick={() => cambiarEstado(n.id, "rechazada")}>

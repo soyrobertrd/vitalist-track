@@ -218,14 +218,14 @@ export const VisitaCardAgendada = ({
             <Ticket className="mr-1.5 h-4 w-4" aria-hidden="true" /> Ticket
           </Button>
           {mainPhone && (
-            <Button asChild variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+            <Button asChild variant="ghost" size="icon" aria-label="Llamar al paciente" className="h-8 w-8 shrink-0">
               <a href={`tel:${mainPhone.replace(/\D/g, "")}`} onClick={(e) => e.stopPropagation()} aria-label="Llamar al paciente" title="Llamar">
                 <Phone className="h-4 w-4" />
               </a>
             </Button>
           )}
           {whatsAppEnabled && whatsAppLink && (
-            <Button asChild variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-success hover:text-success">
+            <Button asChild variant="ghost" size="icon" aria-label="Enviar WhatsApp al paciente" className="h-8 w-8 shrink-0 text-success hover:text-success">
               <a href={whatsAppLink} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} aria-label="Enviar mensaje por WhatsApp" title="WhatsApp">
                 <FontAwesomeIcon icon={faWhatsapp} className="h-4 w-4" />
               </a>

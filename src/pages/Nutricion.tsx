@@ -4,14 +4,10 @@ import { db } from "@/integrations/db/client";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { 
   Apple, 
@@ -19,13 +15,9 @@ import {
   UtensilsCrossed, 
   Calculator, 
   Search, 
-  Plus, 
-  HeartPulse, 
   AlertTriangle, 
   Flame, 
-  PieChart as PieChartIcon,
-  Activity,
-  CheckCircle2
+  PieChart as PieChartIcon
 } from "lucide-react";
 import { ClinicalPageHeader } from "@/components/common/ClinicalPageHeader";
 import { ClinicalKpiCard } from "@/components/common/ClinicalKpiCard";
@@ -42,6 +34,9 @@ import {
   YAxis, 
   CartesianGrid 
 } from "recharts";
+import { CalculadoraNutricionalDietetica } from "@/components/nutricion/CalculadoraNutricionalDietetica";
+import { NuevaEvaluacionNutricionalModal } from "@/components/nutricion/NuevaEvaluacionNutricionalModal";
+import { NuevaDietaModal } from "@/components/nutricion/NuevaDietaModal";
 
 const TIPOS_DIETA = [
   { value: "normal", label: "Normal / Basal" },
@@ -79,31 +74,6 @@ export default function Nutricion() {
   const [searchPac, setSearchPac] = useState("");
   const [showNewEval, setShowNewEval] = useState(false);
   const [showNewDieta, setShowNewDieta] = useState(false);
-
-  // Estado de la calculadora interactiva
-  const [calcPeso, setCalcPeso] = useState<number>(70);
-  const [calcTalla, setCalcTalla] = useState<number>(170);
-  const [calcEdad, setCalcEdad] = useState<number>(35);
-  const [calcSexo, setCalcSexo] = useState<"M" | "F">("M");
-  const [calcActividad, setCalcActividad] = useState<number>(1.375); // ligera
-
-  // Formulario nueva evaluación
-  const [formDataEval, setFormDataEval] = useState({
-    paciente_id: "",
-    peso_kg: "",
-    talla_cm: "",
-    diagnostico_nutricional: "normal",
-    observaciones: ""
-  });
-
-  // Formulario nueva dieta
-  const [formDataDieta, setFormDataDieta] = useState({
-    paciente_id: "",
-    tipo_dieta: "normal",
-    calorias_objetivo: "2000",
-    indicaciones_especiales: "",
-    alergias_alimentarias: ""
-  });
 
   // Queries
   const { data: pacientes = [] } = useQuery({
@@ -152,23 +122,29 @@ export default function Nutricion() {
 
   // Mutaciones
   const crearEvaluacion = useMutation({
-    mutationFn: async () => {
-      if (!currentWorkspace?.id || !formDataEval.paciente_id) {
+    mutationFn: async (formData: {
+      paciente_id: string;
+      peso_kg: string;
+      talla_cm: string;
+      diagnostico_nutricional: string;
+      observaciones: string;
+    }) => {
+      if (!currentWorkspace?.id || !formData.paciente_id) {
         throw new Error("Seleccione un paciente válido.");
       }
-      const p = parseFloat(formDataEval.peso_kg) || 0;
-      const t = parseFloat(formDataEval.talla_cm) || 0;
+      const p = parseFloat(formData.peso_kg) || 0;
+      const t = parseFloat(formData.talla_cm) || 0;
       const imc = t > 0 ? +(p / ((t / 100) * (t / 100))).toFixed(1) : null;
 
       const { error } = await db.from("evaluaciones_nutricionales").insert({
         workspace_id: currentWorkspace.id,
-        paciente_id: formDataEval.paciente_id,
+        paciente_id: formData.paciente_id,
         fecha: new Date().toISOString().split("T")[0],
         peso_kg: p || null,
         talla_cm: t || null,
         imc: imc,
-        diagnostico_nutricional: formDataEval.diagnostico_nutricional,
-        notas: formDataEval.observaciones || null
+        diagnostico_nutricional: formData.diagnostico_nutricional,
+        notas: formData.observaciones || null
       } as any);
 
       if (error) throw error;
@@ -177,25 +153,30 @@ export default function Nutricion() {
       queryClient.invalidateQueries({ queryKey: ["eval-nutri"] });
       toast.success("Evaluación nutricional guardada exitosamente");
       setShowNewEval(false);
-      setFormDataEval({ paciente_id: "", peso_kg: "", talla_cm: "", diagnostico_nutricional: "normal", observaciones: "" });
     },
     onError: (err: any) => toast.error(`Error al registrar: ${err.message}`)
   });
 
   const crearDieta = useMutation({
-    mutationFn: async () => {
-      if (!currentWorkspace?.id || !formDataDieta.paciente_id) {
+    mutationFn: async (formData: {
+      paciente_id: string;
+      tipo_dieta: string;
+      calorias_objetivo: string;
+      alergias_alimentarias: string;
+      indicaciones_especiales: string;
+    }) => {
+      if (!currentWorkspace?.id || !formData.paciente_id) {
         throw new Error("Seleccione un paciente.");
       }
       const { error } = await db.from("dietas_hospitalarias").insert({
         workspace_id: currentWorkspace.id,
-        paciente_id: formDataDieta.paciente_id,
-        tipo_dieta: formDataDieta.tipo_dieta,
-        calorias_objetivo: parseInt(formDataDieta.calorias_objetivo) || 2000,
+        paciente_id: formData.paciente_id,
+        tipo_dieta: formData.tipo_dieta,
+        calorias_objetivo: parseInt(formData.calorias_objetivo) || 2000,
         estado: "activa",
         fecha_inicio: new Date().toISOString().split("T")[0],
-        notas: formDataDieta.indicaciones_especiales || null,
-        restricciones_alergenos: formDataDieta.alergias_alimentarias || null
+        notas: formData.indicaciones_especiales || null,
+        restricciones_alergenos: formData.alergias_alimentarias || null
       } as any);
 
       if (error) throw error;
@@ -204,7 +185,6 @@ export default function Nutricion() {
       queryClient.invalidateQueries({ queryKey: ["dietas-hosp"] });
       toast.success("Prescripción dietética registrada con éxito");
       setShowNewDieta(false);
-      setFormDataDieta({ paciente_id: "", tipo_dieta: "normal", calorias_objetivo: "2000", indicaciones_especiales: "", alergias_alimentarias: "" });
     },
     onError: (err: any) => toast.error(`Error al prescribir dieta: ${err.message}`)
   });
@@ -238,39 +218,6 @@ export default function Nutricion() {
       return full.includes(searchPac.toLowerCase());
     });
   }, [dietas, searchPac]);
-
-  // Cálculos dinámicos de calculadora
-  const calcResultados = useMemo(() => {
-    const alturaM = calcTalla / 100;
-    const imc = alturaM > 0 ? +(calcPeso / (alturaM * alturaM)).toFixed(1) : 0;
-    
-    // Clasificación IMC
-    let catImc = "Normal";
-    let catColor = "text-emerald-600";
-    if (imc < 18.5) { catImc = "Bajo peso"; catColor = "text-amber-500"; }
-    else if (imc >= 25 && imc < 30) { catImc = "Sobrepeso"; catColor = "text-blue-600"; }
-    else if (imc >= 30 && imc < 35) { catImc = "Obesidad Grado I"; catColor = "text-orange-600"; }
-    else if (imc >= 35) { catImc = "Obesidad Severa"; catColor = "text-rose-600"; }
-
-    // Peso Ideal Lorentz
-    const pesoIdeal = calcSexo === "M" 
-      ? +(calcTalla - 100 - ((calcTalla - 150) / 4)).toFixed(1)
-      : +(calcTalla - 100 - ((calcTalla - 150) / 2.5)).toFixed(1);
-
-    // Tasa Metabólica Basal (Mifflin-St Jeor)
-    const tmb = calcSexo === "M"
-      ? +(10 * calcPeso + 6.25 * calcTalla - 5 * calcEdad + 5).toFixed(0)
-      : +(10 * calcPeso + 6.25 * calcTalla - 5 * calcEdad - 161).toFixed(0);
-
-    const get = Math.round(tmb * calcActividad);
-
-    // Distribución macronutrientes estándar (55% CHO, 20% PROT, 25% GRASAS)
-    const choG = Math.round((get * 0.55) / 4);
-    const protG = Math.round((get * 0.20) / 4);
-    const grasaG = Math.round((get * 0.25) / 9);
-
-    return { imc, catImc, catColor, pesoIdeal, tmb, get, choG, protG, grasaG };
-  }, [calcPeso, calcTalla, calcEdad, calcSexo, calcActividad]);
 
   // Gráficos de distribución
   const datosDiagnostico = useMemo(() => {
@@ -449,11 +396,11 @@ export default function Nutricion() {
                             </span>
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline" className={`rounded-lg px-2.5 py-0.5 font-medium ${diagMeta?.color || ""}`}>
-                              {diagMeta?.label || (e.diagnostico_nutricional || "Sin diagnóstico").replace(/_/g, " ")}
+                            <Badge variant="outline" className={`border ${diagMeta?.color || "bg-muted text-muted-foreground"}`}>
+                              {diagMeta?.label || e.diagnostico_nutricional || "Eutrófico"}
                             </Badge>
                           </TableCell>
-                          <TableCell className="pr-6 max-w-xs truncate text-xs text-muted-foreground">
+                          <TableCell className="text-xs text-muted-foreground max-w-xs truncate pr-6">
                             {e.notas || "—"}
                           </TableCell>
                         </TableRow>
@@ -466,37 +413,36 @@ export default function Nutricion() {
           </Card>
         </TabsContent>
 
-        {/* Tab 2: Dietas Hospitalarias */}
+        {/* Tab 2: Dietas */}
         <TabsContent value="dietas">
           <Card className="rounded-2xl border-border/80 shadow-xs">
             <CardHeader className="pb-3 border-b border-border/50">
-              <CardTitle className="text-base font-semibold">Prescripciones Dietéticas Activas</CardTitle>
-              <CardDescription>Planes de alimentación hospitalaria, restricciones calóricas y alérgenos</CardDescription>
+              <CardTitle className="text-base font-semibold">Dietas Hospitalarias y Regímenes Prescritos</CardTitle>
+              <CardDescription>Control de dietoterapia, consistencia alimenticia y requerimientos de soporte</CardDescription>
             </CardHeader>
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead className="pl-6">Paciente</TableHead>
-                    <TableHead>Tipo de Dieta</TableHead>
-                    <TableHead>Meta Calórica</TableHead>
+                    <TableHead>Régimen Dietoterápico</TableHead>
+                    <TableHead>Meta Energética</TableHead>
+                    <TableHead>Restricciones / Alérgenos</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead>Fecha Inicio</TableHead>
-                    <TableHead>Alergias / Restricciones</TableHead>
-                    <TableHead className="pr-6">Indicaciones</TableHead>
+                    <TableHead className="pr-6">Indicaciones a Cocina</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {loadingDietas ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+                      <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
                         Cargando dietas hospitalarias...
                       </TableCell>
                     </TableRow>
                   ) : dietasFiltradas.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
-                        No hay dietas registradas.
+                      <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                        No se encontraron prescripciones dietéticas registradas.
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -512,27 +458,28 @@ export default function Nutricion() {
                               )}
                             </div>
                           </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
-                              {tipoLabel}
-                            </Badge>
+                          <TableCell className="font-semibold text-foreground">
+                            {tipoLabel}
                           </TableCell>
-                          <TableCell className="font-mono font-semibold">
-                            {d.calorias_objetivo ? `${d.calorias_objetivo} kcal` : "2000 kcal"}
+                          <TableCell className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                            {d.calorias_objetivo ? `${d.calorias_objetivo} kcal/día` : "Estándar"}
                           </TableCell>
                           <TableCell>
-                            <Badge variant={d.estado === "activa" ? "default" : "secondary"} className="rounded-md capitalize text-xs">
+                            {d.restricciones_alergenos ? (
+                              <Badge variant="outline" className="border-red-500/30 text-red-700 dark:text-red-400 bg-red-500/10">
+                                {d.restricciones_alergenos}
+                              </Badge>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">Sin alérgenos reportados</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={d.estado === "activa" ? "default" : "secondary"} className="capitalize">
                               {d.estado || "activa"}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-xs font-mono text-muted-foreground">
-                            {d.fecha_inicio ? new Date(d.fecha_inicio + "T12:00:00").toLocaleDateString("es-DO") : "—"}
-                          </TableCell>
-                          <TableCell className="text-xs text-amber-700 dark:text-amber-400 font-medium max-w-[150px] truncate">
-                            {d.restricciones_alergenos || "Ninguna"}
-                          </TableCell>
-                          <TableCell className="pr-6 text-xs text-muted-foreground max-w-xs truncate">
-                            {d.indicaciones_especiales || "Sin observaciones adicionales"}
+                          <TableCell className="text-xs text-muted-foreground max-w-xs truncate pr-6">
+                            {d.notas || "—"}
                           </TableCell>
                         </TableRow>
                       );
@@ -544,154 +491,14 @@ export default function Nutricion() {
           </Card>
         </TabsContent>
 
-        {/* Tab 3: Calculadora Antropométrica */}
+        {/* Tab 3: Calculadora Antropométrica Reutilizable */}
         <TabsContent value="calculadora">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <Card className="lg:col-span-5 rounded-2xl border-border/80 shadow-xs">
-              <CardHeader>
-                <CardTitle className="text-base font-semibold flex items-center gap-2">
-                  <Calculator className="h-5 w-5 text-emerald-600" />
-                  Parámetros del Paciente
-                </CardTitle>
-                <CardDescription>Ajuste los valores antropométricos para calcular los requerimientos en tiempo real</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="calc-peso">Peso Actual (kg)</Label>
-                    <Input
-                      id="calc-peso"
-                      type="number"
-                      step="0.5"
-                      value={calcPeso}
-                      onChange={(e) => setCalcPeso(parseFloat(e.target.value) || 0)}
-                      className="border-border/80 font-mono"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="calc-talla">Talla (cm)</Label>
-                    <Input
-                      id="calc-talla"
-                      type="number"
-                      value={calcTalla}
-                      onChange={(e) => setCalcTalla(parseFloat(e.target.value) || 0)}
-                      className="border-border/80 font-mono"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="calc-edad">Edad (Años)</Label>
-                    <Input
-                      id="calc-edad"
-                      type="number"
-                      value={calcEdad}
-                      onChange={(e) => setCalcEdad(parseInt(e.target.value) || 0)}
-                      className="border-border/80 font-mono"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="calc-sexo">Sexo Biológico</Label>
-                    <Select value={calcSexo} onValueChange={(val: any) => setCalcSexo(val)}>
-                      <SelectTrigger id="calc-sexo" className="border-border/80">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="M">Masculino</SelectItem>
-                        <SelectItem value="F">Femenino</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="calc-actividad">Nivel de Actividad / Estrés Clínico</Label>
-                  <Select 
-                    value={calcActividad.toString()} 
-                    onValueChange={(val) => setCalcActividad(parseFloat(val))}
-                  >
-                    <SelectTrigger id="calc-actividad" className="border-border/80">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1.2">Sedentario / Encamado (x1.20)</SelectItem>
-                      <SelectItem value="1.375">Actividad Ligera / Deambula (x1.375)</SelectItem>
-                      <SelectItem value="1.55">Moderada / Fisioterapia activa (x1.55)</SelectItem>
-                      <SelectItem value="1.725">Estrés Quirúrgico / Sepsis moderada (x1.725)</SelectItem>
-                      <SelectItem value="1.9">Gran Quemado / Politrauma grave (x1.90)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="lg:col-span-7 rounded-2xl border-border/80 shadow-xs bg-muted/20">
-              <CardHeader>
-                <CardTitle className="text-base font-semibold flex items-center gap-2">
-                  <HeartPulse className="h-5 w-5 text-primary" />
-                  Prescripción y Resultados Calculados
-                </CardTitle>
-                <CardDescription>Cálculo basado en fórmulas clínicas estándar (Mifflin-St Jeor & Lorentz)</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  <div className="p-3.5 rounded-xl bg-background border border-border/70 space-y-1">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Índice Masa Corp.</span>
-                    <p className="text-2xl font-bold font-mono text-foreground">{calcResultados.imc} kg/m²</p>
-                    <span className={`text-xs font-medium ${calcResultados.catColor}`}>{calcResultados.catImc}</span>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-background border border-border/70 space-y-1">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Peso Ideal (Lorentz)</span>
-                    <p className="text-2xl font-bold font-mono text-emerald-600">{calcResultados.pesoIdeal} kg</p>
-                    <span className="text-xs text-muted-foreground">Referencia fisiológica</span>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-background border border-border/70 space-y-1">
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Gasto Basal (TMB)</span>
-                    <p className="text-2xl font-bold font-mono text-foreground">{calcResultados.tmb} kcal</p>
-                    <span className="text-xs text-muted-foreground">Reposo absoluto</span>
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wide">
-                      Gasto Energético Total Diario (GET)
-                    </span>
-                    <p className="text-3xl font-extrabold font-mono text-emerald-700 dark:text-emerald-300">
-                      {calcResultados.get} <span className="text-lg font-normal">kcal/día</span>
-                    </p>
-                  </div>
-                  <Flame className="h-10 w-10 text-emerald-600/70" />
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Distribución de Macronutrientes Recomendada
-                  </h4>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="p-3 rounded-xl bg-background border border-border/70 text-center">
-                      <p className="text-xs text-muted-foreground">Carbohidratos (55%)</p>
-                      <p className="text-lg font-bold font-mono text-blue-600">{calcResultados.choG} g</p>
-                      <p className="text-[10px] text-muted-foreground">~{Math.round(calcResultados.choG * 4)} kcal</p>
-                    </div>
-                    <div className="p-3 rounded-xl bg-background border border-border/70 text-center">
-                      <p className="text-xs text-muted-foreground">Proteínas (20%)</p>
-                      <p className="text-lg font-bold font-mono text-emerald-600">{calcResultados.protG} g</p>
-                      <p className="text-[10px] text-muted-foreground">~{Math.round(calcResultados.protG * 4)} kcal</p>
-                    </div>
-                    <div className="p-3 rounded-xl bg-background border border-border/70 text-center">
-                      <p className="text-xs text-muted-foreground">Lípidos (25%)</p>
-                      <p className="text-lg font-bold font-mono text-amber-600">{calcResultados.grasaG} g</p>
-                      <p className="text-[10px] text-muted-foreground">~{Math.round(calcResultados.grasaG * 9)} kcal</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <CalculadoraNutricionalDietetica 
+            onAplicarCalorias={(cal) => {
+              setShowNewDieta(true);
+              toast.info(`Abriendo formulario con objetivo calórico de ${cal} kcal`);
+            }}
+          />
         </TabsContent>
 
         {/* Tab 4: Gráficos y Epidemiología */}
@@ -763,203 +570,24 @@ export default function Nutricion() {
         </TabsContent>
       </Tabs>
 
-      {/* Diálogo Nueva Evaluación */}
-      <Dialog open={showNewEval} onOpenChange={setShowNewEval}>
-        <DialogContent className="sm:max-w-md rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Scale className="h-5 w-5 text-emerald-600" />
-              Nueva Evaluación Nutricional
-            </DialogTitle>
-            <DialogDescription>
-              Registre el peso, talla y diagnóstico nutricional del paciente.
-            </DialogDescription>
-          </DialogHeader>
+      {/* Modales Modulares */}
+      <NuevaEvaluacionNutricionalModal
+        open={showNewEval}
+        onOpenChange={setShowNewEval}
+        pacientes={pacientes}
+        diagnosticos={DIAGNOSTICOS_NUT}
+        isPending={crearEvaluacion.isPending}
+        onSubmit={(data) => crearEvaluacion.mutate(data)}
+      />
 
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label>Paciente *</Label>
-              <Select 
-                value={formDataEval.paciente_id} 
-                onValueChange={(val) => setFormDataEval(p => ({ ...p, paciente_id: val }))}
-              >
-                <SelectTrigger className="border-border/80">
-                  <SelectValue placeholder="Seleccione un paciente" />
-                </SelectTrigger>
-                <SelectContent className="max-h-60">
-                  {pacientes.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.nombre} {p.apellido} {p.cedula ? `(${p.cedula})` : ""}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label>Peso (kg) *</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  placeholder="Ej. 68.5"
-                  className="border-border/80 font-mono"
-                  value={formDataEval.peso_kg}
-                  onChange={(e) => setFormDataEval(p => ({ ...p, peso_kg: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Talla (cm) *</Label>
-                <Input
-                  type="number"
-                  placeholder="Ej. 172"
-                  className="border-border/80 font-mono"
-                  value={formDataEval.talla_cm}
-                  onChange={(e) => setFormDataEval(p => ({ ...p, talla_cm: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Diagnóstico Nutricional</Label>
-              <Select 
-                value={formDataEval.diagnostico_nutricional} 
-                onValueChange={(val) => setFormDataEval(p => ({ ...p, diagnostico_nutricional: val }))}
-              >
-                <SelectTrigger className="border-border/80">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {DIAGNOSTICOS_NUT.map((d) => (
-                    <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Observaciones Clínicas</Label>
-              <Textarea
-                placeholder="Apetito, pérdida de peso involuntaria, disfagia, etc."
-                className="border-border/80 resize-none h-20"
-                value={formDataEval.observaciones}
-                onChange={(e) => setFormDataEval(p => ({ ...p, observaciones: e.target.value }))}
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" onClick={() => setShowNewEval(false)}>
-              Cancelar
-            </Button>
-            <Button 
-              className="bg-emerald-600 hover:bg-emerald-700 text-white" 
-              onClick={() => crearEvaluacion.mutate()}
-              disabled={crearEvaluacion.isPending || !formDataEval.paciente_id || !formDataEval.peso_kg}
-            >
-              {crearEvaluacion.isPending ? "Guardando..." : "Guardar Evaluación"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Diálogo Nueva Dieta */}
-      <Dialog open={showNewDieta} onOpenChange={setShowNewDieta}>
-        <DialogContent className="sm:max-w-md rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <UtensilsCrossed className="h-5 w-5 text-emerald-600" />
-              Prescribir Dieta Hospitalaria
-            </DialogTitle>
-            <DialogDescription>
-              Asigne un régimen alimenticio clínico estructurado y meta calórica.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label>Paciente *</Label>
-              <Select 
-                value={formDataDieta.paciente_id} 
-                onValueChange={(val) => setFormDataDieta(p => ({ ...p, paciente_id: val }))}
-              >
-                <SelectTrigger className="border-border/80">
-                  <SelectValue placeholder="Seleccione un paciente" />
-                </SelectTrigger>
-                <SelectContent className="max-h-60">
-                  {pacientes.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.nombre} {p.apellido} {p.cedula ? `(${p.cedula})` : ""}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label>Tipo de Dieta *</Label>
-                <Select 
-                  value={formDataDieta.tipo_dieta} 
-                  onValueChange={(val) => setFormDataDieta(p => ({ ...p, tipo_dieta: val }))}
-                >
-                  <SelectTrigger className="border-border/80">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-56">
-                    {TIPOS_DIETA.map((t) => (
-                      <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Objetivo Calórico (kcal)</Label>
-                <Input
-                  type="number"
-                  placeholder="Ej. 2000"
-                  className="border-border/80 font-mono"
-                  value={formDataDieta.calorias_objetivo}
-                  onChange={(e) => setFormDataDieta(p => ({ ...p, calorias_objetivo: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Alergias o Intolerancias Alimentarias</Label>
-              <Input
-                placeholder="Ej. Marisco, frutos secos, huevo, soya..."
-                className="border-border/80"
-                value={formDataDieta.alergias_alimentarias}
-                onChange={(e) => setFormDataDieta(p => ({ ...p, alergias_alimentarias: e.target.value }))}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Indicaciones Especiales para Cocina / Enfermería</Label>
-              <Textarea
-                placeholder="Ej. Textura papilla, sin sal añadida, fraccionar en 5 tomas..."
-                className="border-border/80 resize-none h-20"
-                value={formDataDieta.indicaciones_especiales}
-                onChange={(e) => setFormDataDieta(p => ({ ...p, indicaciones_especiales: e.target.value }))}
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" onClick={() => setShowNewDieta(false)}>
-              Cancelar
-            </Button>
-            <Button 
-              className="bg-emerald-600 hover:bg-emerald-700 text-white" 
-              onClick={() => crearDieta.mutate()}
-              disabled={crearDieta.isPending || !formDataDieta.paciente_id}
-            >
-              {crearDieta.isPending ? "Prescribiendo..." : "Prescribir Dieta"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <NuevaDietaModal
+        open={showNewDieta}
+        onOpenChange={setShowNewDieta}
+        pacientes={pacientes}
+        tiposDieta={TIPOS_DIETA}
+        isPending={crearDieta.isPending}
+        onSubmit={(data) => crearDieta.mutate(data)}
+      />
     </div>
   );
 }

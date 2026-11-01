@@ -66,7 +66,7 @@ export function WorkspaceSwitcher({ collapsed = false }: Props) {
           Ver planes y precios
         </DropdownMenuItem>
         {(currentWorkspace.role === "owner" || currentWorkspace.role === "admin") && (
-          <DropdownMenuItem onClick={() => navigate("/workspace/configuracion")}>
+          <DropdownMenuItem onClick={() => navigate("/configuracion")}>
             <Settings className="mr-2 h-4 w-4" />
             Configurar workspace
           </DropdownMenuItem>

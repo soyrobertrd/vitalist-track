@@ -27,14 +27,12 @@ import { VerticalMetricsWidget } from "@/components/dashboard/VerticalMetricsWid
 import { MedicalHeroBanner } from "@/components/dashboard/MedicalHeroBanner";
 import { EnhancedKPIs } from "@/components/dashboard/EnhancedKPIs";
 import { QuickLinksBar } from "@/components/dashboard/QuickLinksBar";
-import { ExaminationsWidget } from "@/components/dashboard/ExaminationsWidget";
 import { VitalStatsCards } from "@/components/dashboard/VitalStatsCards";
 import { DoctorScheduleWidget } from "@/components/dashboard/DoctorScheduleWidget";
 import { TodayAppointmentsTable } from "@/components/dashboard/TodayAppointmentsTable";
 import { NewPatientsWidget } from "@/components/dashboard/NewPatientsWidget";
 import { PhysicianProfileCard } from "@/components/dashboard/PhysicianProfileCard";
 import { HealthScoreWidget } from "@/components/dashboard/HealthScoreWidget";
-import { ActiveTreatmentWidget } from "@/components/dashboard/ActiveTreatmentWidget";
 import { OperationalEfficiencyCards } from "@/components/dashboard/OperationalEfficiencyCards";
 import {
   CalendarDays,
@@ -438,12 +436,6 @@ const Dashboard = () => {
             <div className="min-w-0 space-y-6">
               {/* Citas Programadas para Hoy */}
               <TodayAppointmentsTable />
-
-              {/* Prescripciones y Tratamientos Activos */}
-              <ActiveTreatmentWidget />
-
-              {/* Banda de Monitoreo de Exámenes Clínicos */}
-              <ExaminationsWidget />
             </div>
 
             {/* Columna Lateral Derecha */}

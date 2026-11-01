@@ -424,7 +424,7 @@ export function ModoRecepcionAgil() {
               className="pl-8"
             />
           </div>
-          <Button variant="outline" size="icon" onClick={cargarCitasHoy} title="Recargar">
+          <Button variant="outline" size="icon" onClick={cargarCitasHoy} title="Recargar" aria-label="Recargar citas de hoy">
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
           </Button>
         </div>

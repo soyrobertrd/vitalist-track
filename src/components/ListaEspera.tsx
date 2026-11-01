@@ -186,7 +186,7 @@ export function ListaEspera() {
                     <div className="flex gap-1">
                       {item.estado === "esperando" && (
                         <>
-                          <Button size="icon" variant="ghost" title="Asignar" onClick={() => cambiarEstado(item.id, "asignada")}>
+                          <Button size="icon" variant="ghost" title="Asignar" aria-label="Asignar paciente en lista de espera" onClick={() => cambiarEstado(item.id, "asignada")}>
                             <CheckCircle2 className="h-4 w-4 text-green-600" />
                           </Button>
                           <IconButton label="Cerrar" size="icon" variant="ghost" title="Cancelar" onClick={() => cambiarEstado(item.id, "cancelada")}>

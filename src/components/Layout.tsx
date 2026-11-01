@@ -123,21 +123,11 @@ const Layout = ({ children }: LayoutProps) => {
   // Enable automatic notifications for suspect patients
   useNotificacionesSospechosos();
 
-  // Convenciones por subItem:
-  //   verticales?: VerticalTipo[]  -> sólo visible en esas verticales (omitido = visible en todas)
-  //   excludeVerticales?: VerticalTipo[] -> oculto en esas verticales
-  // Items con `verticales` se ocultan si la activa no aplica.
-  // Si un grupo queda sin subItems tras el filtro, se oculta.
-
   type VTipo = VerticalTipo;
   const va = verticalActiva as VTipo | "todas";
-
   const verticalLabel = VERTICAL_LABELS;
   const verticalIcon = VERTICAL_ICONS;
   const verticalRoot = VERTICAL_ROOTS;
-
-  // El "Resumen [Vertical]" se fusiona con el Dashboard; no se muestra
-  // como item separado en el menú lateral.
 
   const menuItems: any[] = [
     { path: "/app", icon: LayoutDashboard, label: "Dashboard", moduleKey: "dashboard" },
@@ -194,9 +184,13 @@ const Layout = ({ children }: LayoutProps) => {
         { path: "/psicologia-pro?tab=tareas", label: "Tareas terapéuticas", verticales: ["psicologia"] },
         { path: "/psicologia-pro?tab=paquetes", label: "Paquetes/Bonos", verticales: ["psicologia"] },
         { path: "/fisioterapia-pro?tab=goniometria", label: "Goniometría & Daniels", icon: Dumbbell, verticales: ["fisioterapia"] },
+        { path: "/fisioterapia-pro?tab=ejercicios_hep", label: "Ejercicios HEP Domicilio", icon: Activity, verticales: ["fisioterapia"] },
+        { path: "/fisioterapia-pro?tab=puntos_gatillo", label: "Puntos Gatillo & Punción", icon: Zap, verticales: ["fisioterapia"] },
         { path: "/fisioterapia-pro?tab=boxes_sesiones", label: "Boxes & Paquetes Terapia", icon: Building2, verticales: ["fisioterapia"] },
         { path: "/nutricion-pro?tab=bioimpedancia", label: "Bioimpedancia & Metabolismo", icon: Apple, verticales: ["nutricion"] },
+        { path: "/nutricion-pro?tab=antropometria_isak", label: "Pliegues ISAK & Perímetros", icon: Activity, verticales: ["nutricion"] },
         { path: "/nutricion-pro?tab=planificador", label: "Planificador de Minutas & Dietas", icon: Utensils, verticales: ["nutricion"] },
+        { path: "/nutricion-pro?tab=bariatria", label: "Protocolo Bariátrico (% EWL)", icon: Heart, verticales: ["nutricion"] },
       ]
     },
 
@@ -408,48 +402,48 @@ const Layout = ({ children }: LayoutProps) => {
   // "Cuando selecciono un modulo en la liena vertical me debe mostrar solo lo de ese modulo"
   // "UN hospital no tiene servicio de veterinaria, esa va separada igual que recovery home"
   const subItemAplica = (sub: any): boolean => {
-    // Si la vertical activa es "todas":
-    // Veterinaria y Recovery Home son entidades estrictamente separadas del flujo hospitalario general
-    if (va === "todas") {
-      if (sub.verticales && sub.verticales.length === 1 && (sub.verticales[0] === "veterinaria" || sub.verticales[0] === "recovery")) {
-        return false;
-      }
-      return true;
-    }
-
-    // 1. Si el item excluye explícitamente esta vertical:
+    // 1. Si el subitem excluye explícitamente esta vertical:
     if (sub.excludeVerticales && sub.excludeVerticales.includes(va)) return false;
 
-    // 2. Si el item tiene declaradas las verticales a las que pertenece:
+    // 2. Si el subitem declara verticales específicas:
     if (sub.verticales) {
+      if (va === "todas") {
+        // En vista "todas", aislamos Veterinaria y Recovery Home del flujo general
+        if (sub.verticales.length === 1 && (sub.verticales[0] === "veterinaria" || sub.verticales[0] === "recovery")) {
+          return false;
+        }
+        return true;
+      }
       return sub.verticales.includes(va);
     }
 
-    // 3. Si el item NO tiene `verticales` definida:
-    // A. En Veterinaria: sólo ítems compatibles con veterinaria
+    // 3. Sub-items comunes sin `verticales` definida:
+    // A. En Veterinaria: excluir procedimientos de humanos
     if (va === "veterinaria") {
-      const pathsPermitidosVet = ["/pacientes", "/app/citas", "/calendario", "/recepcion", "/agenda-universal"];
-      return pathsPermitidosVet.includes(sub.path);
+      const exclVet = ["/atencion-paciente", "/oncologia", "/maternidad-neonatologia", "/quirofano", "/uci"];
+      return !exclVet.includes(sub.path);
     }
 
-    // B. En Recovery Care: sólo ítems compatibles con recovery home
+    // B. En Recovery Care: excluir procedimientos quirúrgicos/urgencias
     if (va === "recovery") {
-      const pathsPermitidosRecovery = ["/pacientes", "/app/citas", "/calendario", "/recepcion", "/agenda-universal"];
-      return pathsPermitidosRecovery.includes(sub.path);
+      const exclRec = ["/urgencias-triage", "/quirofano", "/uci", "/morgue", "/oncologia"];
+      return !exclRec.includes(sub.path);
     }
 
-    // C. En Clínica / Hospital: no mostrar nada exclusivo de otras verticales
-    if (va === "clinica") {
-      if (sub.verticales && !sub.verticales.includes("clinica")) {
-        return false;
-      }
+    // C. En Especialidades (fisioterapia, nutricion, dental, vision, aesthetic, psicologia):
+    // Excluir áreas de hospitalización/complejidad hospitalaria
+    if (va !== "clinica" && va !== "todas") {
+      const exclHospital = [
+        "/urgencias-triage", "/hospitalizacion", "/alta-hospitalaria",
+        "/rondas-medicas", "/enfermeria", "/uci", "/quirofano", "/censo-camas",
+        "/edificacion-hospitalaria", "/banco-sangre", "/banco-sangre-avanzado",
+        "/morgue", "/lavanderia", "/residuos", "/seguridad-fisica", "/esterilizacion"
+      ];
+      if (exclHospital.includes(sub.path)) return false;
       return true;
     }
 
-    // D. Para cualquier vertical especializada (dental, vision, aesthetic, psicologia, fisioterapia, nutricion):
-    // Si no tiene `verticales`, sólo los ítems de gestión base aplican:
-    const subItemsComunes = ["/pacientes", "/app/citas", "/calendario", "/recepcion", "/agenda-universal"];
-    return subItemsComunes.includes(sub.path);
+    return true;
   };
 
   // Plan FREE: solo Dashboard, Agenda (calendario), Pacientes, Ficha clínica.
