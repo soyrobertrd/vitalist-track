@@ -32,7 +32,7 @@ import VerticalFacturacionElectronicaTab from "@/components/vertical/VerticalFac
 export default function FisioterapiaPro() {
   const [tab, setTab] = useTabParam("goniometria");
   const { currentWorkspace } = useWorkspace();
-  const { esModoClinica } = useModoOperativo();
+  const { isCentro: esModoClinica } = useModoOperativo();
   const cur = resolveCurrency(currentWorkspace);
   const fmt = (v: number) => formatCurrency(v, cur);
 

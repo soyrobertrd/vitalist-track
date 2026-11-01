@@ -123,7 +123,7 @@ const PACIENTES_PEDIA_MOCK: ConsultaPediatrica[] = [
 ];
 
 export default function Pediatria() {
-  const { esModoClinica } = useModoOperativo();
+  const { isCentro: esModoClinica } = useModoOperativo();
   const [consultas, setConsultas] = useState<ConsultaPediatrica[]>(PACIENTES_PEDIA_MOCK);
   const [busqueda, setBusqueda] = useState("");
   const [filtroTipo, setFiltroTipo] = useState<string>("todos");

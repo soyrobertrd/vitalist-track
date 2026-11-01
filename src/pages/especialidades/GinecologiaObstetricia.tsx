@@ -118,7 +118,7 @@ const MOCK_CONSULTAS_GINECO: ConsultaGinecoObstetrica[] = [
 ];
 
 export default function GinecologiaObstetricia() {
-  const { esModoClinica } = useModoOperativo();
+  const { isCentro: esModoClinica } = useModoOperativo();
   const [consultas, setConsultas] = useState<ConsultaGinecoObstetrica[]>(MOCK_CONSULTAS_GINECO);
   const [tab, setTab] = useState<"consultas" | "calculadora_gestacional" | "score_bishop">("consultas");
   const [search, setSearch] = useState("");

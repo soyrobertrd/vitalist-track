@@ -8,7 +8,7 @@ export interface LiquidacionHonorarioData {
   codigo_liquidacion: string;
   fecha_generada: string;
   fecha_pago?: string;
-  medico_id: string;
+  medico_id?: string;
   medico_nombre: string;
   especialidad: string;
   exequatur: string;
@@ -23,7 +23,7 @@ export interface LiquidacionHonorarioData {
   retencion_isr_pct: number;
   retencion_isr_monto: number;
   monto_neto_medico: number;
-  estado: "pendiente_auditoria" | "auditado_aprobado" | "pagado_transferido" | "objetado_glosa";
+  estado: "pendiente" | "aprobada" | "pagada" | "anulada";
   banco_destino?: string;
   referencia_bancaria?: string;
   glosa_motivo?: string;

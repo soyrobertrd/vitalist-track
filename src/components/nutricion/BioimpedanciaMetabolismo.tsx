@@ -105,7 +105,7 @@ const EVALUACIONES_INICIALES: EvaluacionBioimpedancia[] = [
 ];
 
 export function BioimpedanciaMetabolismo() {
-  const { esModoClinica } = useModoOperativo();
+  const { isCentro: esModoClinica } = useModoOperativo();
   const [evaluaciones, setEvaluaciones] = useState<EvaluacionBioimpedancia[]>(EVALUACIONES_INICIALES);
   const [evaluacionSeleccionada, setEvaluacionSeleccionada] = useState<EvaluacionBioimpedancia>(EVALUACIONES_INICIALES[0]);
 

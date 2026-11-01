@@ -114,7 +114,7 @@ const PLANES_INICIALES: PlanSemanalDieta[] = [
 ];
 
 export function PlanificadorMinutasDietas() {
-  const { esModoClinica } = useModoOperativo();
+  const { isCentro: esModoClinica } = useModoOperativo();
   const [planes, setPlanes] = useState<PlanSemanalDieta[]>(PLANES_INICIALES);
   const [planActivo, setPlanActivo] = useState<PlanSemanalDieta>(PLANES_INICIALES[0]);
 

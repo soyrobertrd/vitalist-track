@@ -247,7 +247,7 @@ export default function ComisionesEmpleados() {
 
   // Formulario de Pago
   const [pagoForm, setPagoForm] = useState({
-    metodo_pago: "Transferencia ACH" as const,
+    metodo_pago: "Transferencia ACH" as string,
     banco: "Banco Popular Dominicano",
     referencia: "",
   });
@@ -376,7 +376,7 @@ export default function ComisionesEmpleados() {
               ...item,
               estado: "pagada",
               fecha_pago: today,
-              metodo_pago: pagoForm.metodo_pago,
+              metodo_pago: pagoForm.metodo_pago as LiquidacionHonorario["metodo_pago"],
               banco_destino: pagoForm.banco,
               referencia_bancaria: pagoForm.referencia,
             }
@@ -722,7 +722,7 @@ export default function ComisionesEmpleados() {
         open={nuevoModalOpen}
         onOpenChange={setNuevoModalOpen}
         form={nuevoForm}
-        setForm={setNuevoForm}
+        setForm={(f) => setNuevoForm(f as typeof nuevoForm)}
         formatDOP={formatDOP}
         onSubmit={handleCrearNuevoHonorario}
       />

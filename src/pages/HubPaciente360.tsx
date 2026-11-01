@@ -8,7 +8,7 @@ import {
   Activity, Phone, FileText, AlertTriangle, Calendar,
   FlaskConical, Image as ImageIcon, ShieldAlert, Workflow,
   User, ShieldCheck, HeartPulse, Clock, Sparkles,
-  Dumbbell, Apple, SmilePlus, Eye, Brain, Baby, Share2, ArrowRight, CheckCircle2, ChevronRight
+  Dumbbell, Apple, SmilePlus, Eye, Brain, Baby, Share2, ArrowRight, CheckCircle2, ChevronRight, Heart
 } from "lucide-react";
 import { format, differenceInYears } from "date-fns";
 import { es } from "date-fns/locale";

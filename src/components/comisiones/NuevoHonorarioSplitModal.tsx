@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus } from "lucide-react";
 
 export interface NuevoHonorarioFormData {
-  medico_id: string;
+  medico_id?: string;
   medico_nombre: string;
   especialidad: string;
   exequatur: string;

@@ -26,7 +26,7 @@ import VerticalPacientesTab from "@/components/vertical/VerticalPacientesTab";
 
 export default function NutricionPro() {
   const [activeTab, setActiveTab] = useTabParam("bioimpedancia");
-  const { esModoClinica } = useModoOperativo();
+  const { isCentro: esModoClinica } = useModoOperativo();
 
   return (
     <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto">
